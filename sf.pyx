@@ -65,6 +65,35 @@ cdef class Color:
     def __dealloc__(self):
         del self.p_this
 
+    def __repr__(self):
+        return 'Color({0.r}, {0.g}, {0.b}, {0.a})'.format(self)
+
+    def __richcmp__(Color x, Color y, int op):
+        # ==
+        if op == 2:
+            return (x.r == y.r and
+                    x.g == y.g and
+                    x.b == y.b and
+                    x.a == y.a)
+
+        # !=
+        if op == 3:
+            return not x == y
+
+        return NotImplemented
+
+    def __add__(Color x, Color y):
+        return Color(min(x.r + y.r, 255),
+                     min(x.g + y.g, 255),
+                     min(x.b + y.b, 255),
+                     min(x.a + y.a, 255))
+
+    def __mul__(Color x, Color y):
+        return Color(x.r * y.r / 255,
+                     x.g * y.g / 255,
+                     x.b * y.b / 255,
+                     x.a * y.a / 255)
+
     property r:
         def __get__(self):
             return self.p_this.r
@@ -80,6 +109,14 @@ cdef class Color:
     property a:
         def __get__(self):
             return self.p_this.a
+
+
+cdef Color wrap_color_instance(decl.Color *p_cpp_instance):
+    cdef Color ret = Color.__new__(Color)
+    ret.p_this = p_cpp_instance
+
+    return ret
+
 
 
 cdef class Event:
@@ -201,6 +238,10 @@ cdef class RenderWindow:
             return self.event
 
         raise StopIteration
+
+    property framerate_limit:
+        def __set__(self, int value):
+            self.p_this.SetFramerateLimit(value)
 
     def clear(self, Color color=None):
         if color is None:

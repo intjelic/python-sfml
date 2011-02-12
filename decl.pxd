@@ -106,6 +106,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass Color:
         Color()
+        Color(unsigned int r, unsigned int g, unsigned b)
         Color(unsigned int r, unsigned int g, unsigned b, unsigned int a)
         unsigned int r
         unsigned int g

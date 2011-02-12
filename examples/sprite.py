@@ -6,6 +6,7 @@ import sf
 
 def main():
     window = sf.RenderWindow(sf.VideoMode(640, 480), 'Title')
+    window.framerate_limit = 60
     running = True
     image = sf.Image.load_from_file('python-logo.png')
     sprite = sf.Sprite(image)
