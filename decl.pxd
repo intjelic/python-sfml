@@ -72,6 +72,28 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Event":
         int X
         int Y
 
+    cdef struct TextEvent:
+        int Unicode
+
+    cdef struct MouseWheelEvent:
+        int Delta
+        int X
+        int Y
+
+    cdef struct JoyMoveEvent:
+        unsigned int JoystickId
+        int Axis
+        float Position
+
+    cdef struct JoyButtonEvent:
+        unsigned int JoystickId
+        unsigned int Button
+
+    cdef struct SizeEvent:
+        unsigned int Width
+        unsigned int Height
+
+
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Unicode":
     cdef cppclass Text:
@@ -119,6 +141,11 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         KeyEvent Key
         MouseMoveEvent MouseMove
         MouseButtonEvent MouseButton
+        TextEvent Text
+        MouseWheelEvent MouseWheel
+        JoyMoveEvent JoyMove
+        JoyButtonEvent JoyButton
+        SizeEvent Size
 
     cdef cppclass Input:
         Input()

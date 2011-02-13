@@ -35,6 +35,10 @@ Multimedia Library)."""
 
 cimport decl
 cimport declevent
+cimport declmouse
+cimport declkey
+cimport decljoy
+
 
 
 class PySFMLException(Exception):
@@ -43,6 +47,138 @@ class PySFMLException(Exception):
 
 class FileLoadingException(PySFMLException):
     """Raised when a file can't be loaded."""
+
+
+
+
+cdef class Mouse:
+    LEFT = declmouse.Left
+    RIGHT = declmouse.Right
+    MIDDLE = declmouse.Middle
+    X_BUTTON1 = declmouse.XButton1
+    X_BUTTON2 = declmouse.XButton2
+    BUTTON_COUNT = declmouse.ButtonCount
+
+
+
+cdef class Joy:
+    AXIS_X = decljoy.AxisX
+    AXIS_Y = decljoy.AxisY
+    AXIS_Z = decljoy.AxisZ
+    AXIS_R = decljoy.AxisR
+    AXIS_U = decljoy.AxisU
+    AXIS_V = decljoy.AxisV
+    AXIS_POV = decljoy.AxisPOV
+    AXIS_COUNT = decljoy.AxisCount
+
+    COUNT = decljoy.Count
+    BUTTON_COUNT = decljoy.ButtonCount
+
+
+
+cdef class Key:
+    A = declkey.A
+    B = declkey.B
+    C = declkey.C
+    D = declkey.D
+    E = declkey.E
+    F = declkey.F
+    G = declkey.G
+    H = declkey.H
+    I = declkey.I
+    J = declkey.J
+    K = declkey.K
+    L = declkey.L
+    M = declkey.M
+    N = declkey.N
+    O = declkey.O
+    P = declkey.P
+    Q = declkey.Q
+    R = declkey.R
+    S = declkey.S
+    T = declkey.T
+    U = declkey.U
+    V = declkey.V
+    W = declkey.W
+    X = declkey.X
+    Y = declkey.Y
+    Z = declkey.Z
+    NUM0 = declkey.Num0
+    NUM1 = declkey.Num1
+    NUM2 = declkey.Num2
+    NUM3 = declkey.Num3
+    NUM4 = declkey.Num4
+    NUM5 = declkey.Num5
+    NUM6 = declkey.Num6
+    NUM7 = declkey.Num7
+    NUM8 = declkey.Num8
+    NUM9 = declkey.Num9
+    ESCAPE = declkey.Escape
+    L_CONTROL = declkey.LControl
+    L_SHIFT = declkey.LShift
+    L_ALT = declkey.LAlt
+    L_SYSTEM = declkey.LSystem
+    R_CONTROL = declkey.RControl
+    R_SHIFT = declkey.RShift
+    R_ALT = declkey.RAlt
+    R_SYSTEM = declkey.RSystem
+    MENU = declkey.Menu
+    L_BRACKET = declkey.LBracket
+    R_BRACKET = declkey.RBracket
+    SEMI_COLON = declkey.SemiColon
+    COMMA = declkey.Comma
+    PERIOD = declkey.Period
+    QUOTE = declkey.Quote
+    SLASH = declkey.Slash
+    BACK_SLASH = declkey.BackSlash
+    TILDE = declkey.Tilde
+    EQUAL = declkey.Equal
+    DASH = declkey.Dash
+    SPACE = declkey.Space
+    RETURN = declkey.Return
+    BACK = declkey.Back
+    TAB = declkey.Tab
+    PAGE_UP = declkey.PageUp
+    PAGE_DOWN = declkey.PageDown
+    END = declkey.End
+    HOME = declkey.Home
+    INSERT = declkey.Insert
+    DELETE = declkey.Delete
+    ADD = declkey.Add
+    SUBTRACT = declkey.Subtract
+    MULTIPLY = declkey.Multiply
+    DIVIDE = declkey.Divide
+    LEFT = declkey.Left
+    RIGHT = declkey.Right
+    UP = declkey.Up
+    DOWN = declkey.Down
+    NUMPAD0 = declkey.Numpad0
+    NUMPAD1 = declkey.Numpad1
+    NUMPAD2 = declkey.Numpad2
+    NUMPAD3 = declkey.Numpad3
+    NUMPAD4 = declkey.Numpad4
+    NUMPAD5 = declkey.Numpad5
+    NUMPAD6 = declkey.Numpad6
+    NUMPAD7 = declkey.Numpad7
+    NUMPAD8 = declkey.Numpad8
+    NUMPAD9 = declkey.Numpad9
+    F1 = declkey.F1
+    F2 = declkey.F2
+    F3 = declkey.F3
+    F4 = declkey.F4
+    F5 = declkey.F5
+    F6 = declkey.F6
+    F7 = declkey.F7
+    F8 = declkey.F8
+    F9 = declkey.F9
+    F10 = declkey.F10
+    F11 = declkey.F11
+    F12 = declkey.F12
+    F13 = declkey.F13
+    F14 = declkey.F14
+    F15 = declkey.F15
+    PAUSE = declkey.Pause
+    COUNT = declkey.Count
 
 
 
@@ -111,17 +247,10 @@ cdef class Color:
             return self.p_this.a
 
 
-cdef Color wrap_color_instance(decl.Color *p_cpp_instance):
-    cdef Color ret = Color.__new__(Color)
-    ret.p_this = p_cpp_instance
 
-    return ret
-
-
-
-cdef class Event:
+class Event:
     CLOSED = declevent.Closed
-    RESIZED_ = declevent.Resized
+    RESIZED = declevent.Resized
     LOST_FOCUS = declevent.LostFocus
     GAINED_FOCUS = declevent.GainedFocus
     TEXT_ENTERED = declevent.TextEntered
@@ -138,19 +267,104 @@ cdef class Event:
     JOY_MOVED = declevent.JoyMoved
     COUNT = declevent.Count
 
-    cdef decl.Event *p_this
+    NAMES = {
+        CLOSED: 'Closed',
+        RESIZED: 'Resized',
+        LOST_FOCUS: 'Lost focus',
+        GAINED_FOCUS: 'Gained focus',
+        TEXT_ENTERED: 'Text entered',
+        KEY_PRESSED: 'Key pressed',
+        KEY_RELEASED: 'Key released',
+        MOUSE_WHEEL_MOVED: 'Mouse wheel moved',
+        MOUSE_BUTTON_PRESSED: 'Mouse button pressed',
+        MOUSE_BUTTON_RELEASED: 'Mouse button released',
+        MOUSE_MOVED: 'Mouse moved',
+        MOUSE_ENTERED: 'Mouse entered',
+        MOUSE_LEFT: 'Mouse left',
+        JOY_BUTTON_PRESSED: 'Joystick button pressed',
+        JOY_BUTTON_RELEASED: 'Joystick button released',
+        JOY_MOVED: 'Joystick moved'
+        }
 
-    def __cinit__(self):
-        self.p_this = new decl.Event()
+    def __str__(self):
+        """Return a short description of the event."""
 
-    def __dealloc__(self):
-        del self.p_this
-
-    property type:
-        def __get__(self):
-            return self.p_this.Type
+        return self.NAMES[self.type]
 
 
+# Create an Python Event object that matches the C++ object
+# by dynamically setting the corresponding attributes.
+cdef wrap_event_instance(decl.Event *p_cpp_instance):
+    cdef ret = Event()
+
+    # Set the type
+    if p_cpp_instance.Type == declevent.Closed:
+        ret.type = Event.CLOSED
+    elif p_cpp_instance.Type == declevent.KeyPressed:
+        ret.type = Event.KEY_PRESSED
+    elif p_cpp_instance.Type == declevent.KeyReleased:
+        ret.type = Event.KEY_RELEASED
+    elif p_cpp_instance.Type == declevent.Resized:
+        ret.type = Event.RESIZED
+    elif p_cpp_instance.Type == declevent.TextEntered:
+        ret.type = Event.TEXT_ENTERED
+    elif p_cpp_instance.Type == declevent.MouseButtonPressed:
+        ret.type = Event.MOUSE_BUTTON_PRESSED
+    elif p_cpp_instance.Type == declevent.MouseButtonReleased:
+        ret.type = Event.MOUSE_BUTTON_RELEASED
+    elif p_cpp_instance.Type == declevent.MouseMoved:
+        ret.type = Event.MOUSE_MOVED
+    elif p_cpp_instance.Type == declevent.LostFocus:
+        ret.type = Event.LOST_FOCUS
+    elif p_cpp_instance.Type == declevent.GainedFocus:
+        ret.type = Event.GAINED_FOCUS
+    elif p_cpp_instance.Type == declevent.MouseWheelMoved:
+        ret.type = Event.MOUSE_WHEEL_MOVED
+    elif p_cpp_instance.Type == declevent.MouseMoved:
+        ret.type = Event.MOUSE_MOVED
+    elif p_cpp_instance.Type == declevent.MouseEntered:
+        ret.type = Event.MOUSE_ENTERED
+    elif p_cpp_instance.Type == declevent.MouseLeft:
+        ret.type = Event.MOUSE_LEFT
+    elif p_cpp_instance.Type == declevent.JoyButtonPressed:
+        ret.type = Event.JOY_BUTTON_PRESSED
+    elif p_cpp_instance.Type == declevent.JoyButtonReleased:
+        ret.type = Event.JOY_BUTTON_RELEASED
+    elif p_cpp_instance.Type == declevent.JoyMoved:
+        ret.type = Event.JOY_MOVED
+
+    # Set other attributes if needed
+    if p_cpp_instance.Type == declevent.Resized:
+        ret.width = p_cpp_instance.Size.Width
+        ret.height = p_cpp_instance.Size.Height
+    elif (p_cpp_instance.Type == declevent.KeyPressed or
+          p_cpp_instance.Type == declevent.KeyReleased):
+        ret.code = p_cpp_instance.Key.Code
+        ret.alt = p_cpp_instance.Key.Alt
+        ret.control = p_cpp_instance.Key.Control
+        ret.shift = p_cpp_instance.Key.Shift
+    elif (p_cpp_instance.Type == declevent.MouseButtonPressed or
+          p_cpp_instance.Type == declevent.MouseButtonReleased):
+        ret.button = p_cpp_instance.MouseButton.Button
+        ret.x = p_cpp_instance.MouseButton.X
+        ret.y = p_cpp_instance.MouseButton.Y
+    elif p_cpp_instance.Type == declevent.MouseMoved:
+        ret.x = p_cpp_instance.MouseMove.X
+        ret.y = p_cpp_instance.MouseMove.Y
+    elif p_cpp_instance.Type == declevent.MouseWheelMoved:
+        ret.delta = p_cpp_instance.MouseWheel.Delta
+        ret.x = p_cpp_instance.MouseWheel.X
+        ret.y = p_cpp_instance.MouseWheel.Y
+    elif (p_cpp_instance.Type == declevent.JoyButtonPressed or
+          p_cpp_instance.Type == declevent.JoyButtonReleased):
+        ret.joystick_id = p_cpp_instance.JoyButton.JoystickId
+        ret.button = p_cpp_instance.JoyButton.Button
+    elif p_cpp_instance.Type == declevent.JoyMoved:
+        ret.joystick_id = p_cpp_instance.JoyMove.JoystickId
+        ret.axis = p_cpp_instance.JoyMove.Axis
+        ret.position = p_cpp_instance.JoyMove.Position
+
+    return ret
 
 
 cdef class Image:
@@ -221,11 +435,11 @@ cdef class RenderWindow:
     cdef decl.RenderWindow *p_this
 
     # Event returned when iterating on iter_events()
-    cdef Event event
+    cdef decl.Event *p_event
 
     def __cinit__(self, VideoMode mode, char* title):
         self.p_this = new decl.RenderWindow(mode.p_this[0], title)
-        self.event = Event()
+        self.p_event = new decl.Event()
 
     def __dealloc__(self):
         del self.p_this
@@ -234,8 +448,8 @@ cdef class RenderWindow:
         return self
 
     def __next__(self):
-        if self.p_this.GetEvent(self.event.p_this[0]):
-            return self.event
+        if self.p_this.GetEvent(self.p_event[0]):
+            return wrap_event_instance(self.p_event)
 
         raise StopIteration
 
