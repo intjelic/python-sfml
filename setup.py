@@ -47,7 +47,7 @@ if platform.system() == 'Linux':
         extra_compile_args.append('-ggdb')
 
 libs = ['sfml-graphics', 'sfml-window', 'sfml-system']
-ext_modules = [Extension('sf', ['sf.pyx', 'hacks.cpp'],
+ext_modules = [Extension('sf', ['sf.pyx'],
                          language='c++',
                          libraries=libs,
                          extra_compile_args=extra_compile_args)]

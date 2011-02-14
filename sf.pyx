@@ -33,12 +33,12 @@
 Multimedia Library)."""
 
 
+from libc.stdlib cimport free
 from libcpp.vector cimport vector
 from cython.operator cimport preincrement as preinc, dereference as deref
 
 cimport decl
 cimport declevent
-cimport declhacks
 cimport decljoy
 cimport declkey
 cimport declmouse
@@ -466,20 +466,22 @@ cdef class VideoMode:
         cdef decl.VideoMode *p = new decl.VideoMode()
         p[0] = decl.GetDesktopMode()
 
-        return wrap_video_mode_instance(p, False)
+        return wrap_video_mode_instance(p, True)
 
     @classmethod
     def get_fullscreen_modes(cls):
         cdef list ret = []
-        cdef decl.VideoMode *p
-        cdef int size = declhacks.get_fullscreen_modes(&p)
+        cdef vector[decl.VideoMode] v = decl.GetFullscreenModes()
+        cdef vector[decl.VideoMode].iterator it = v.begin()
+        cdef decl.VideoMode current
+        cdef decl.VideoMode *p_temp
 
-        if size == -1:
-            raise PySFMLException("Couldn't allocate memory for video modes")
-
-        for i in range(size):
-            ret.append(wrap_video_mode_instance(p, False))
-            preinc(p)
+        while it != v.end():
+            current = deref(it)
+            p_temp = new decl.VideoMode(current.Width, current.Height,
+                                        current.BitsPerPixel)
+            ret.append(wrap_video_mode_instance(p_temp, True))
+            preinc(it)
 
         return ret
 
