@@ -29,6 +29,8 @@
 # SUCH DAMAGE.
 
 
+from libcpp.vector cimport vector
+
 cimport declkey
 cimport declmouse
 
@@ -166,11 +168,10 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass VideoMode:
         VideoMode()
+        VideoMode(unsigned int width, unsigned int height)
         VideoMode(unsigned int width, unsigned int height,
                   unsigned int bits_per_pixel)
         bint IsValid()
-        bint operator==(VideoMode& other)
-        bint operator!=(VideoMode& other)
         unsigned int Width
         unsigned int Height
         unsigned int BitsPerPixel
@@ -248,3 +249,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetFramerateLimit(unsigned int)
         void SetSize(unsigned int, unsigned int)
         void SetView(View&)
+
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf::VideoMode":
+    cdef VideoMode& GetDesktopMode()
+    cdef vector[VideoMode]& GetFullscreenModes()

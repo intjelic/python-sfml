@@ -33,11 +33,15 @@
 Multimedia Library)."""
 
 
+from libcpp.vector cimport vector
+from cython.operator cimport preincrement as preinc, dereference as deref
+
 cimport decl
 cimport declevent
-cimport declmouse
-cimport declkey
+cimport declhacks
 cimport decljoy
+cimport declkey
+cimport declmouse
 
 
 
@@ -420,6 +424,7 @@ cdef class Sprite(Drawable):
 
 cdef class VideoMode:
     cdef decl.VideoMode *p_this
+    cdef bint delete_this
 
     def __cinit__(self, width=None, height=None, bits_per_pixel=32):
         if width is None or height is None:
@@ -427,8 +432,66 @@ cdef class VideoMode:
         else:
             self.p_this = new decl.VideoMode(width, height, bits_per_pixel)
 
+        self.delete_this = True
+
     def __dealloc__(self):
-        del self.p_this
+        if self.delete_this:
+            del self.p_this
+
+    def __str__(self):
+        """Return a string about the mode in this format: WIDTHxHEIGHTxBPP.
+
+        For example, '1024x768x32'."""
+
+        return '{0.width}x{0.height}x{0.bits_per_pixel}'.format(self)
+
+    def __repr__(self):
+        return ('VideoMode({0.width}, {0.height}, {0.bits_per_pixel})'
+                .format(self))
+
+    property width:
+        def __get__(self):
+            return self.p_this.Width
+
+    property height:
+        def __get__(self):
+            return self.p_this.Height
+
+    property bits_per_pixel:
+        def __get__(self):
+            return self.p_this.BitsPerPixel
+
+    @classmethod
+    def get_desktop_mode(cls):
+        cdef decl.VideoMode *p = new decl.VideoMode()
+        p[0] = decl.GetDesktopMode()
+
+        return wrap_video_mode_instance(p, False)
+
+    @classmethod
+    def get_fullscreen_modes(cls):
+        cdef list ret = []
+        cdef decl.VideoMode *p
+        cdef int size = declhacks.get_fullscreen_modes(&p)
+
+        if size == -1:
+            raise PySFMLException("Couldn't allocate memory for video modes")
+
+        for i in range(size):
+            ret.append(wrap_video_mode_instance(p, False))
+            preinc(p)
+
+        return ret
+
+
+cdef VideoMode wrap_video_mode_instance(decl.VideoMode *p_cpp_instance,
+                                        bint delete_this):
+    cdef VideoMode ret = VideoMode.__new__(VideoMode)
+    ret.p_this = p_cpp_instance
+    ret.delete_this = delete_this
+
+    return ret
+
 
 
 cdef class RenderWindow:

@@ -1,6 +1,7 @@
+# -*- python -*-
 # -*- coding: utf-8 -*-
 
-# Copyright 2010, 2011 Bastien Léonard. All rights reserved.
+# Copyright 2011 Bastien Léonard. All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -27,33 +28,9 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-import platform
-from distutils.core import setup
-from distutils.extension import Extension
-from Cython.Distutils import build_ext
 
-debug = False
-enable_warnings = False
+cimport decl
 
-extra_compile_args = []
 
-if platform.system() == 'Linux':
-    if enable_warnings:
-        for option in ('-Wall',  '-Wextra', '-pedantic'):
-            extra_compile_args.append(option)
-
-    if debug:
-        extra_compile_args.append('-g')
-        extra_compile_args.append('-ggdb')
-
-libs = ['sfml-graphics', 'sfml-window', 'sfml-system']
-ext_modules = [Extension('sf', ['sf.pyx', 'hacks.cpp'],
-                         language='c++',
-                         libraries=libs,
-                         extra_compile_args=extra_compile_args)]
-
-setup(
-  name = 'PySFML',
-  cmdclass = {'build_ext': build_ext},
-  ext_modules = ext_modules
-)
+cdef extern from "hacks.hpp":
+    int get_fullscreen_modes(decl.VideoMode**)
