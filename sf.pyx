@@ -215,9 +215,8 @@ cdef class Color:
                     x.g == y.g and
                     x.b == y.b and
                     x.a == y.a)
-
         # !=
-        if op == 3:
+        elif op == 3:
             return not x == y
 
         return NotImplemented
@@ -449,6 +448,38 @@ cdef class VideoMode:
         return ('VideoMode({0.width}, {0.height}, {0.bits_per_pixel})'
                 .format(self))
 
+    def __richcmp__(VideoMode x, VideoMode y, int op):
+        # ==
+        if op == 2:
+            return (x.width == y.width and
+                    x.height == y.height and
+                    x.bits_per_pixel == y.bits_per_pixel)
+        # !=
+        elif op == 3:
+            return not x == y
+
+        # <
+        elif op == 0:
+            if x.bits_per_pixel == y.bits_per_pixel:
+                if x.width == y.width:
+                    return x.height < y.height
+                else:
+                    return x.width < y.width
+            else:
+                return x.bits_per_pixel < y.bits_per_pixel
+        # >
+        elif op == 4:
+            return y < x
+
+        # <=
+        elif op == 1:
+            return not y < x
+        # >=
+        elif op == 5:
+            return not x < y
+
+        return NotImplemented
+
     property width:
         def __get__(self):
             return self.p_this.Width
@@ -484,6 +515,9 @@ cdef class VideoMode:
             preinc(it)
 
         return ret
+
+    def is_valid(self):
+        return self.p_this.IsValid()
 
 
 cdef VideoMode wrap_video_mode_instance(decl.VideoMode *p_cpp_instance,
