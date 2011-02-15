@@ -617,20 +617,11 @@ cdef class Image:
     def get_pixels(self):
         """Return a string containing the pixels of the image in RGBA fomat."""
 
-        cdef decl.Uint8 *p = <decl.Uint8*>self.p_this.GetPixelsPtr()
-        cdef int i = 0
-        buf = StringIO.StringIO()
-        packer = struct.Struct('B')
+        cdef char* p = <char*>self.p_this.GetPixelsPtr()
+        cdef int length = self.width * self.height * 4
+        cdef bytes ret = p[:length]
 
-        while i < self.width * self.height * 4:
-            buf.write(packer.pack(deref(p)))
-            i += 1
-            preinc(p)
-
-        s = buf.getvalue()
-        buf.close()
-
-        return s
+        return ret
 
     def get_tex_coords(self, rect):
         cdef decl.IntRect cpp_rect = convert_to_int_rect(rect)
