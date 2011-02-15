@@ -35,9 +35,11 @@ cimport declkey
 cimport declmouse
 
 
+
 # Useful sometimes to print values for debugging
 cdef extern from "stdio.h":
     void printf(char*, ...)
+
 
 
 # Declaration of the standard std::string class.  This is useful
@@ -103,6 +105,11 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Unicode":
 
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf":
+    # Forward declarations
+    cdef cppclass RenderWindow
+
+    ctypedef char Uint8
+
     # You normally shouldn't use Vector2f in pure Python, use tuples
     # instead
     cdef cppclass Vector2f:
@@ -113,20 +120,25 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass IntRect:
         IntRect()
-        IntRect(int LeftCoord, int TopCoord, int RightCoord, int BottomCoord)
+        IntRect(int, int, int, int)
+        bint Contains(int, int)
+        bint Intersects(IntRect&)
+        bint Intersects(IntRect&, IntRect&)
         int Left
         int Top
-        int Right
-        int Bottom
+        int Width
+        int Height
 
     cdef cppclass FloatRect:
         FloatRect()
-        FloatRect(float LeftCoord, float TopCoord, float RightCoord,
-                  float BottomCoord)
+        FloatRect(float, float, float, float)
+        bint Contains(int, int)
+        bint Intersects(FloatRect&)
+        bint Intersects(FloatRect&, FloatRect&)
         float Left
         float Top
-        float Right
-        float Bottom
+        float Width
+        float Height
 
     cdef cppclass Color:
         Color()
@@ -179,12 +191,32 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass Image:
         Image()
+        Image(Image&)
+        void Bind()
+        void Copy(Image&, unsigned int, unsigned int)
+        void Copy(Image&, unsigned int, unsigned int, IntRect&)
+        void Copy(Image&, unsigned int, unsigned int, IntRect&, bint)
+        bint CopyScreen(RenderWindow&)
+        bint CopyScreen(RenderWindow&, IntRect&)
+        bint Create(unsigned int, unsigned int)
+        bint Create(unsigned int, unsigned int, Color&)
+        void CreateMaskFromColor(Color&)
+        void CreateMaskFromColor(Color&, unsigned char)
         unsigned int GetHeight()
         Color& GetPixel(unsigned int, unsigned int)
+        unsigned char* GetPixelsPtr()
+        FloatRect& GetTexCoords(IntRect&)
         unsigned int GetWidth() 
         bint IsSmooth()
         bint LoadFromFile(char*)
+        bint LoadFromMemory(void*, size_t)
+        bint LoadFromPixels(unsigned int, unsigned int, unsigned char*)
+        bint SaveToFile(string&)
+        bint SaveToFile(char*)
+        void SetPixel(unsigned int, unsigned int, Color&)
         void SetSmooth(bint)
+        void UpdatePixels(unsigned char*)
+        void UpdatePixels(unsigned char*, IntRect&)
 
     cdef cppclass Drawable:
         Drawable()
@@ -251,6 +283,12 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetView(View&)
 
 
+
+
+# Hacks for static methods
 cdef extern from "SFML/Graphics.hpp" namespace "sf::VideoMode":
     cdef VideoMode& GetDesktopMode()
     cdef vector[VideoMode]& GetFullscreenModes()
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Image":
+    cdef unsigned int GetMaximumSize()

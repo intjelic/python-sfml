@@ -33,6 +33,13 @@
 Multimedia Library)."""
 
 
+import struct
+
+try:
+    import cStringIO as StringIO
+except ImportError:
+    import StringIO
+
 from libc.stdlib cimport free
 from libcpp.vector cimport vector
 from cython.operator cimport preincrement as preinc, dereference as deref
@@ -42,6 +49,12 @@ cimport declevent
 cimport decljoy
 cimport declkey
 cimport declmouse
+
+
+
+# Forward declarations
+cdef class RenderWindow
+
 
 
 
@@ -186,6 +199,104 @@ cdef class Key:
 
 
 
+cdef class IntRect:
+    cdef decl.IntRect *p_this
+
+    def __cinit__(self, int left=0, int top=0, int width=0, int height=0):
+        self.p_this = new decl.IntRect(left, top, width, height)
+
+    def __dealloc__(self):
+        del self.p_this
+
+    def __repr__(self):
+        return ('IntRect(left={0.left!r}, top={0.top!r}, '
+                'width={0.width!r}, height={0.height!r})'.format(self))
+
+    property left:
+        def __get__(self):
+            return self.p_this.Left
+
+    property top:
+        def __get__(self):
+            return self.p_this.Top
+
+    property width:
+        def __get__(self):
+            return self.p_this.Width
+
+    property height:
+        def __get__(self):
+            return self.p_this.Height
+
+    def contains(self, int x, int y):
+        return self.p_this.Contains(x, y)
+
+    def intersects(self, IntRect rect, IntRect intersection=None):
+        if intersection is None:
+            return self.p_this.Intersects(rect.p_this[0])
+        else:
+            return self.p_this.Intersects(rect.p_this[0],
+                                          intersection.p_this[0])
+
+
+cdef decl.IntRect convert_to_int_rect(value):
+    if isinstance(value, IntRect):
+        return (<IntRect>value).p_this[0]
+
+    if isinstance(value, tuple):
+        return decl.IntRect(value[0], value[1], value[2], value[3])
+    
+    raise TypeError("Required IntRect or tuple, found {0}".format(type(value)))
+
+
+cdef class FloatRect:
+    cdef decl.FloatRect *p_this
+
+    def __init__(self, float left=0, float top=0, float width=0,
+                  float height=0):
+        self.p_this = new decl.FloatRect(left, top, width, height)
+
+    def __dealloc__(self):
+        del self.p_this
+
+    def __repr__(self):
+        return ('FloatRect(left={0.left!r}, top={0.top!r}, '
+                'width={0.width!r}, height={0.height!r})'.format(self))
+
+    property left:
+        def __get__(self):
+            return self.p_this.Left
+
+    property top:
+        def __get__(self):
+            return self.p_this.Top
+
+    property width:
+        def __get__(self):
+            return self.p_this.Width
+
+    property height:
+        def __get__(self):
+            return self.p_this.Height
+
+    def contains(self, int x, int y):
+        return self.p_this.Contains(x, y)
+
+    def intersects(self, FloatRect rect, FloatRect intersection=None):
+        if intersection is None:
+            return self.p_this.Intersects(rect.p_this[0])
+        else:
+            return self.p_this.Intersects(rect.p_this[0],
+                                          intersection.p_this[0])
+
+
+cdef FloatRect wrap_float_rect_instance(decl.FloatRect *p_cpp_instance):
+    cdef FloatRect ret = FloatRect.__new__(FloatRect)
+    ret.p_this = p_cpp_instance
+
+    return ret
+
+
 
 cdef class Color:
     BLACK = Color(0, 0, 0)
@@ -248,6 +359,13 @@ cdef class Color:
     property a:
         def __get__(self):
             return self.p_this.a
+
+
+cdef wrap_color_instance(decl.Color *p_cpp_instance):
+    cdef Color ret = Color.__new__(Color)
+    ret.p_this = p_cpp_instance
+
+    return ret
 
 
 
@@ -373,12 +491,41 @@ cdef wrap_event_instance(decl.Event *p_cpp_instance):
 cdef class Image:
     cdef decl.Image *p_this
 
-    def __init__(self):
-        raise NotImplementedError('Use a classmethod like load_from_file() ' +
-                                  'to create Image objects')
+    def __init__(self, int width, int height, Color color=None):
+        self.p_this = new decl.Image()
+
+        if color is None:
+            self.p_this.Create(width, height)
+        else:
+            self.p_this.Create(width, height, color.p_this[0])
 
     def __dealloc__(self):
         del self.p_this
+
+    def __getitem__(self, tuple coords):
+        x, y = coords
+
+        return self.get_pixel(x, y)
+
+    def __setitem__(self, tuple coords, Color color):
+        x, y = coords
+
+        self.set_pixel(x, y, color)
+
+    property height:
+        def __get__(self):
+            return self.p_this.GetHeight()
+
+    property smooth:
+        def __get__(self):
+            return self.p_this.IsSmooth()
+
+        def __set__(self, bint value):
+            self.p_this.SetSmooth(value)
+
+    property width:
+        def __get__(self):
+            return self.p_this.GetWidth()
 
     @classmethod
     def load_from_file(cls, char *filename):
@@ -388,6 +535,126 @@ cdef class Image:
             return wrap_image_instance(p_cpp_instance)
 
         raise FileLoadingException()
+
+    @classmethod
+    def load_from_screen(cls, RenderWindow window, IntRect source_rect=None):
+        """Return a new image with the screen content."""
+
+        cdef decl.Image *p_cpp_instance = new decl.Image()
+        cdef bint result = False
+
+        if source_rect is None:
+            result = p_cpp_instance.CopyScreen(window.p_this[0])
+        else:
+            result = p_cpp_instance.CopyScreen(window.p_this[0],
+                                               source_rect.p_this[0])
+
+        if result:
+            return wrap_image_instance(p_cpp_instance)
+
+        raise PySFMLException("Couldn't copy screen")
+
+    @classmethod
+    def load_from_memory(cls, char* mem):
+        cdef decl.Image *p_cpp_instance = new decl.Image()
+
+        if p_cpp_instance.LoadFromMemory(mem, len(mem)):
+            return wrap_image_instance(p_cpp_instance)
+
+        raise PySFMLException("Couldn't create image from memory")
+
+    @classmethod
+    def load_from_pixels(cls, int width, int height, char *pixels):
+        cdef decl.Image *p_cpp_instance = new decl.Image()
+
+        if p_cpp_instance.LoadFromPixels(width, height, <unsigned char*>pixels):
+            return wrap_image_instance(p_cpp_instance)
+
+        raise PySFMLException("Couldn't create image from pixels")
+
+    @classmethod
+    def get_maximum_size(cls):
+        return decl.GetMaximumSize()
+
+    def bind(self):
+        self.p_this.Bind()
+
+    def copy(self, Image source, int dest_x, int dest_y,
+             source_rect=None, bint apply_alpha=None):
+        cdef decl.IntRect cpp_source_rect
+
+        if source_rect is None:
+            self.p_this.Copy(source.p_this[0], dest_x, dest_y)
+        else:
+            if isinstance(source_rect, tuple):
+                cpp_source_rect = decl.IntRect(source_rect[0],
+                                               source_rect[1],
+                                               source_rect[2],
+                                               source_rect[3])
+            elif isinstance(source_rect, IntRect):
+                cpp_source_rect = (<IntRect>source_rect).p_this[0]
+            else:
+                raise TypeError('source_rect must be tuple or IntRect')
+
+            if apply_alpha is None:
+                self.p_this.Copy(source.p_this[0], dest_x, dest_y,
+                                 cpp_source_rect)
+            else:
+                self.p_this.Copy(source.p_this[0], dest_x, dest_y,
+                                 cpp_source_rect, apply_alpha)
+
+    def create_mask_from_color(self, Color color, int alpha=0):
+        self.p_this.CreateMaskFromColor(color.p_this[0], alpha)
+
+    def get_pixel(self, int x, int y):
+        cdef decl.Color *p_color = new decl.Color()
+        cdef decl.Color temp = self.p_this.GetPixel(x, y)
+
+        p_color[0] = temp
+
+        return wrap_color_instance(p_color)
+
+    def get_pixels(self):
+        """Return a string containing the pixels of the image in RGBA fomat."""
+
+        cdef decl.Uint8 *p = <decl.Uint8*>self.p_this.GetPixelsPtr()
+        cdef int i = 0
+        buf = StringIO.StringIO()
+        packer = struct.Struct('B')
+
+        while i < self.width * self.height * 4:
+            buf.write(packer.pack(deref(p)))
+            i += 1
+            preinc(p)
+
+        s = buf.getvalue()
+        buf.close()
+
+        return s
+
+    def get_tex_coords(self, rect):
+        cdef decl.IntRect cpp_rect = convert_to_int_rect(rect)
+        cdef decl.FloatRect res = self.p_this.GetTexCoords(cpp_rect)
+        cdef decl.FloatRect *p
+
+        p[0] = res
+
+        return wrap_float_rect_instance(p)
+
+    def save_to_file(self, char* filename):
+        self.p_this.SaveToFile(filename)
+
+    def set_pixel(self, int x, int y, Color color):
+        self.p_this.SetPixel(x, y, color.p_this[0])
+
+    def update_pixels(self, char *pixels, rect=None):
+        cdef decl.IntRect cpp_rect
+
+        if rect is None:
+            self.p_this.UpdatePixels(<unsigned char*>pixels)
+        else:
+            cpp_rect = convert_to_int_rect(rect)
+            self.p_this.UpdatePixels(<unsigned char*>pixels, cpp_rect)
 
 
 cdef Image wrap_image_instance(decl.Image *p_cpp_instance):
