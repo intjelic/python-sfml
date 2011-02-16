@@ -31,6 +31,7 @@
 
 from libcpp.vector cimport vector
 
+cimport declblendmode
 cimport declkey
 cimport declmouse
 
@@ -50,14 +51,6 @@ cdef extern from "stdio.h":
 cdef extern from "<string>" namespace "std":
     cdef cppclass string:
         char* c_str()
-
-
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Style":
-    int None
-    int Titlebar
-    int Resize
-    int Close
-    int Fullscreen
 
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Event":
@@ -239,15 +232,47 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
     cdef cppclass Sprite:
         Sprite()
         Sprite(Image&)
+        Sprite(Image&, Vector2f&)
+        Sprite(Image&, Vector2f&, Vector2f&)
+        Sprite(Image&, Vector2f&, Vector2f&, float)
+        Sprite(Image&, Vector2f&, Vector2f&, float, Color&)
+        void FlipX(bint)
+        void FlipY(bint)
+        int GetBlendMode()
+        Color& GetColor()
         Image* GetImage()
+        Vector2f& GetOrigin()
+        Color GetPixel(unsigned int, unsigned int)
         Vector2f& GetPosition()
+        float GetRotation()
+        Vector2f& GetScale()
         Vector2f GetSize()
         IntRect& GetSubRect()
+        void Move(float, float)
+        void Move(Vector2f&)
+        void Resize(float, float)
+        void Resize(Vector2f&)
+        void Rotate(float)
+        void Scale(float, float)
+        void Scale(Vector2f&)
+        void SetBlendMode(declblendmode.Mode)
+        void SetColor(Color&)
         void SetImage(Image&)
-        void SetPosition(float X, float Y)
+        void SetImage(Image&, bint)
+        void SetOrigin(float, float)
+        void SetOrigin(Vector2f&)
+        void SetPosition(float, float)
+        void SetPosition(Vector2f&)
+        void SetRotation(float)
+        void SetScale(float, float)
+        void SetScale(Vector2f&)
+        void SetScaleX(float)
+        void SetScaleY(float)
         void SetSubRect(IntRect&)
         void SetX(float)
         void SetY(float)
+        Vector2f TransformToLocal(Vector2f&)
+        Vector2f TransformToGlobal(Vector2f&)
 
     cdef cppclass View:
         View()

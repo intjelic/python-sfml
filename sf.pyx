@@ -33,22 +33,16 @@
 Multimedia Library)."""
 
 
-import struct
-
-try:
-    import cStringIO as StringIO
-except ImportError:
-    import StringIO
-
-from libc.stdlib cimport free
 from libcpp.vector cimport vector
 from cython.operator cimport preincrement as preinc, dereference as deref
 
 cimport decl
+cimport declblendmode
 cimport declevent
 cimport decljoy
 cimport declkey
 cimport declmouse
+cimport declstyle
 
 
 
@@ -197,6 +191,13 @@ cdef class Key:
     PAUSE = declkey.Pause
     COUNT = declkey.Count
 
+
+
+cdef class Blend:
+    ALPHA = declblendmode.Alpha
+    ADD = declblendmode.Add
+    MULTIPLY = declblendmode.Multiply
+    NONE = declblendmode.None
 
 
 cdef class IntRect:
@@ -490,9 +491,11 @@ cdef wrap_event_instance(decl.Event *p_cpp_instance):
 
 cdef class Image:
     cdef decl.Image *p_this
+    cdef bint delete_this
 
     def __init__(self, int width, int height, Color color=None):
         self.p_this = new decl.Image()
+        self.delete_this = True
 
         if color is None:
             self.p_this.Create(width, height)
@@ -500,7 +503,8 @@ cdef class Image:
             self.p_this.Create(width, height, color.p_this[0])
 
     def __dealloc__(self):
-        del self.p_this
+        if self.delete_this:
+            del self.p_this
 
     def __getitem__(self, tuple coords):
         x, y = coords
@@ -532,7 +536,7 @@ cdef class Image:
         cdef decl.Image *p_cpp_instance = new decl.Image()
 
         if p_cpp_instance.LoadFromFile(filename):
-            return wrap_image_instance(p_cpp_instance)
+            return wrap_image_instance(p_cpp_instance, True)
 
         raise FileLoadingException()
 
@@ -550,7 +554,7 @@ cdef class Image:
                                                source_rect.p_this[0])
 
         if result:
-            return wrap_image_instance(p_cpp_instance)
+            return wrap_image_instance(p_cpp_instance, True)
 
         raise PySFMLException("Couldn't copy screen")
 
@@ -559,7 +563,7 @@ cdef class Image:
         cdef decl.Image *p_cpp_instance = new decl.Image()
 
         if p_cpp_instance.LoadFromMemory(mem, len(mem)):
-            return wrap_image_instance(p_cpp_instance)
+            return wrap_image_instance(p_cpp_instance, True)
 
         raise PySFMLException("Couldn't create image from memory")
 
@@ -568,7 +572,7 @@ cdef class Image:
         cdef decl.Image *p_cpp_instance = new decl.Image()
 
         if p_cpp_instance.LoadFromPixels(width, height, <unsigned char*>pixels):
-            return wrap_image_instance(p_cpp_instance)
+            return wrap_image_instance(p_cpp_instance, True)
 
         raise PySFMLException("Couldn't create image from pixels")
 
@@ -648,9 +652,10 @@ cdef class Image:
             self.p_this.UpdatePixels(<unsigned char*>pixels, cpp_rect)
 
 
-cdef Image wrap_image_instance(decl.Image *p_cpp_instance):
+cdef Image wrap_image_instance(decl.Image *p_cpp_instance, bint delete_this):
     cdef Image ret = Image.__new__(Image)
     ret.p_this = p_cpp_instance
+    ret.delete_this = delete_this
 
     return ret
 
@@ -670,13 +675,191 @@ cdef class Drawable:
 
 
 cdef class Sprite(Drawable):
-    def __cinit__(self, Image image):
-        self.p_this = <decl.Drawable*>new decl.Sprite(image.p_this[0])
+    def __cinit__(self, Image image=None, tuple position=(0,0),
+                  tuple scale=(1,1), float rotation=0.0,
+                  Color color=Color.WHITE):
+        cdef decl.Vector2f cpp_position
+        cdef decl.Vector2f cpp_scale
+
+        if image is None:
+            self.p_this = <decl.Drawable*>new decl.Sprite()
+        else:
+            cpp_position.x = position[0]
+            cpp_position.y = position[1]
+            cpp_scale.x = scale[0]
+            cpp_scale.y = scale[1]
+            self.p_this = <decl.Drawable*>new decl.Sprite(image.p_this[0],
+                                                          cpp_position,
+                                                          cpp_scale,
+                                                          rotation,
+                                                          color.p_this[0])
 
     def __dealloc__(self):
         del self.p_this
 
+    def __getitem__(self, tuple coords):
+        x, y = coords
 
+        return self.get_pixel(x, y)
+
+    property blend_mode:
+        def __get__(self):
+            return (<decl.Sprite*>self.p_this).GetBlendMode()
+
+        def __set__(self, int value):
+            (<decl.Sprite*>self.p_this).SetBlendMode(<declblendmode.Mode>value)
+
+    property color:
+        def __get__(self):
+            cdef decl.Color *p
+            cdef decl.Color c
+
+            c = (<decl.Sprite*>self.p_this).GetColor()
+            p = new decl.Color(c.r, c.g, c.b, c.a)
+
+            return wrap_color_instance(p)
+
+        def __set__(self, Color value):
+            (<decl.Sprite*>self.p_this).SetColor(value.p_this[0])
+
+    property height:
+        def __get__(self):
+            return (<decl.Sprite*>self.p_this).GetSize().x
+
+    property image:
+        def __get__(self):
+            return wrap_image_instance(
+                <decl.Image*>((<decl.Sprite*>self.p_this).GetImage()),
+                False)
+
+        def __set__(self, Image value):
+            (<decl.Sprite*>self.p_this).SetImage(value.p_this[0])
+
+    property origin:
+        def __get__(self):
+            cdef decl.Vector2f o = (<decl.Sprite*>self.p_this).GetOrigin()
+
+            return (o.x, o.y)
+
+        def __set__(self, tuple value):
+            x, y = value
+
+            (<decl.Sprite*>self.p_this).SetOrigin(x, y)
+
+    property position:
+        def __get__(self):
+            return (self.x, self.y)
+
+        def __set__(self, tuple value):
+            x, y = value
+            self.x = x
+            self.y = y
+
+    property rotation:
+        def __get__(self):
+            return (<decl.Sprite*>self.p_this).GetRotation()
+
+        def __set__(self, float value):
+            (<decl.Sprite*>self.p_this).SetRotation(value)
+
+    property scale:
+        def __get__(self):
+            cdef decl.Vector2f scale = (<decl.Sprite*>self.p_this).GetScale()
+
+            return (scale.x, scale.y)
+
+        def __set__(self, tuple value):
+            x, y = value
+
+            (<decl.Sprite*>self.p_this).SetScale(x, y)
+
+    property size:
+        def __get__(self):
+            return (self.width, self.height)
+
+    property sub_rect:
+        def __get__(self):
+            cdef decl.IntRect r = (<decl.Sprite*>self.p_this).GetSubRect()
+
+            return IntRect(r.Left, r.Top, r.Width, r.Height)
+
+        def __set__(self, value):
+            cdef decl.IntRect r = convert_to_int_rect(value)
+
+            (<decl.Sprite*>self.p_this).SetSubRect(r)
+
+    property width:
+        def __get__(self):
+            return (<decl.Sprite*>self.p_this).GetSize().y
+
+    property x:
+        def __get__(self):
+            cdef decl.Vector2f pos = (<decl.Sprite*>self.p_this).GetPosition()
+
+            return pos.x
+
+        def __set__(self, float value):
+            (<decl.Sprite*>self.p_this).SetX(value)
+
+    property y:
+        def __get__(self):
+            cdef decl.Vector2f pos = (<decl.Sprite*>self.p_this).GetPosition()
+
+            return pos.y
+
+        def __set__(self, float value):
+            (<decl.Sprite*>self.p_this).SetY(value)
+
+    def get_pixel(self, unsigned int x, unsigned int y):
+        cdef decl.Color *p
+        cdef decl.Color c
+
+        c = (<decl.Sprite*>self.p_this).GetPixel(x, y)
+        p = new decl.Color(c.r, c.g, c.b, c.a)
+
+        return wrap_color_instance(p)
+
+    def flip_x(self, bint flipped):
+        (<decl.Sprite*>self.p_this).FlipX(flipped)
+
+    def flip_y(self, bint flipped):
+        (<decl.Sprite*>self.p_this).FlipY(flipped)
+
+    def move(self, float x, float y):
+        (<decl.Sprite*>self.p_this).Move(x, y)
+
+    def resize(self, float width, float height):
+        (<decl.Sprite*>self.p_this).Resize(width, height)
+
+    def rotate(self, float angle):
+        (<decl.Sprite*>self.p_this).Rotate(angle)
+
+    def scale(self, float x, float y):
+        (<decl.Sprite*>self.p_this).Scale(x, y)
+
+    def set_image(self, Image image, bint adjust_to_new_size=False):
+        (<decl.Sprite*>self.p_this).SetImage(image.p_this[0],
+                                             adjust_to_new_size)
+
+    def transform_to_global(self, float x, float y):
+        cdef decl.Vector2f v
+        cdef decl.Vector2f res
+
+        v.x = x
+        v.y = y
+        res = (<decl.Sprite*>self.p_this).TransformToGlobal(v)
+
+        return (res.x, res.y)
+
+    def transform_to_local(self, float x, float y):
+        cdef decl.Vector2f v
+        cdef decl.Vector2f res
+
+        v.x = x
+        v.y = y
+        res = (<decl.Sprite*>self.p_this).TransformToLocal(v)
+
+        return (res.x, res.y)
 
 
 cdef class VideoMode:
