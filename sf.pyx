@@ -299,6 +299,101 @@ cdef FloatRect wrap_float_rect_instance(decl.FloatRect *p_cpp_instance):
 
 
 
+
+cdef class Matrix3:
+    cdef decl.Matrix3 *p_this
+
+    IDENTITY = wrap_matrix_instance(<decl.Matrix3*>&decl.Identity)
+
+    def __init__(self, float a00, float a01, float a02,
+                  float a10, float a11, float a12,
+                  float a20, float a21, float a22):
+        self.p_this = new decl.Matrix3(a00, a01, a02,
+                                       a10, a11, a12,
+                                       a20, a21, a22)
+
+    def __dealloc__(self):
+        del self.p_this
+
+    def __str__(self):
+        cdef float *p
+
+        p = <float*>self.p_this.Get4x4Elements()
+
+        return ('[{0} {4} {8} {12}]\n'
+                '[{1} {5} {9} {13}]\n'
+                '[{2} {6} {10} {14}]\n'
+                '[{3} {7} {11} {15}]'
+                .format(p[0], p[1], p[2], p[3],
+                        p[4], p[5], p[6], p[7],
+                        p[8], p[9], p[10], p[11],
+                        p[12], p[13], p[14], p[15]))
+
+    def __mul__(Matrix3 self, Matrix3 other):
+        cdef decl.Matrix3 *p = new decl.Matrix3()
+
+        p[0] = self.p_this[0] * other.p_this[0]
+
+        return wrap_matrix_instance(p)
+
+    @classmethod
+    def projection(cls, tuple center, tuple size, float rotation):
+        cdef decl.Vector2f cpp_center
+        cdef decl.Vector2f cpp_size
+        cdef decl.Matrix3 *p
+
+        cpp_center.x, cpp_center.y = center
+        cpp_size.x, cpp_size.y = size
+        p[0] = decl.Projection(cpp_center, cpp_size, rotation)
+
+        return wrap_matrix_instance(p)
+        
+
+    @classmethod
+    def transformation(cls, tuple origin, tuple translation, float rotation,
+                       tuple scale):
+        cdef decl.Vector2f cpp_origin
+        cdef decl.Vector2f cpp_translation
+        cdef decl.Vector2f cpp_scale
+        cdef decl.Matrix3 *p = new decl.Matrix3()
+
+        cpp_origin.x, cpp_origin.y = origin
+        cpp_translation.x, cpp_translation.y = translation
+        cpp_scale.x, cpp_scale.y = scale
+
+        p[0] = decl.Transformation(cpp_origin, cpp_translation, rotation,
+                                   cpp_scale)
+
+        return wrap_matrix_instance(p)
+
+    def get_inverse(self):
+        cdef decl.Matrix3 m = self.p_this.GetInverse()
+        cdef decl.Matrix3 *p = new decl.Matrix3()
+
+        p[0] = m
+
+        return wrap_matrix_instance(p)
+
+    def transform(self, tuple point):
+        cdef decl.Vector2f cpp_point
+        cdef decl.Vector2f res
+
+        cpp_point.x = point.x
+        cpp_point.y = point.y
+        res = self.p_this.Transform(cpp_point)
+
+        return (res.x, res.y)
+
+
+cdef Matrix3 wrap_matrix_instance(decl.Matrix3 *p_cpp_instance):
+    cdef Matrix3 ret = Matrix3.__new__(Matrix3)
+
+    ret.p_this = p_cpp_instance
+
+    return ret
+
+
+
 cdef class Color:
     BLACK = Color(0, 0, 0)
     WHITE = Color(255, 255, 255)
@@ -968,6 +1063,20 @@ cdef VideoMode wrap_video_mode_instance(decl.VideoMode *p_cpp_instance,
     ret.delete_this = delete_this
 
     return ret
+
+
+
+
+
+cdef class View:
+    cdef decl.View *p_this
+
+    def __cinit__(self):
+        self.p_this = new decl.View()
+
+    def __dealloc__(self):
+        del self.p_this
+
 
 
 

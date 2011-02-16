@@ -133,6 +133,16 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         float Width
         float Height
 
+    cdef cppclass Matrix3:
+        Matrix3()
+        Matrix3(float, float, float,
+                float, float, float,
+                float, float, float)
+        Vector2f Transform(Vector2f&)
+        Matrix3 GetInverse()
+        float* Get4x4Elements()
+        Matrix3 operator*(Matrix3&)
+
     cdef cppclass Color:
         Color()
         Color(unsigned int r, unsigned int g, unsigned b)
@@ -276,8 +286,25 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass View:
         View()
+        View(FloatRect&)
+        View(Vector2f&, Vector2f&)
+        Vector2f& GetCenter()
+        Matrix3& GetInverseMatrix()
+        Matrix3& GetMatrix()
+        float GetRotation()
+        FloatRect& GetViewPort()
+        Vector2f& GetSize()
         void Move(float, float)
+        void Move(Vector2f&)
+        void Reset(FloatRect&)
+        void Rotate(float)
+        void SetCenter(float, float)
+        void SetCenter(Vector2f&)
         void SetFromRect(FloatRect&)
+        void SetRotation(float)
+        void SetSize(float, float)
+        void SetSize(Vector2f&)
+        void SetViewPort(FloatRect&)
         void Zoom(float)
 
     cdef cppclass RenderWindow:
@@ -317,3 +344,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::VideoMode":
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Image":
     cdef unsigned int GetMaximumSize()
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Matrix3":
+    cdef Matrix3 Transformation(Vector2f&, Vector2f&, float, Vector2f&)
+    cdef Matrix3 Projection(Vector2f&, Vector2f&, float)
+    cdef Matrix3 Identity
