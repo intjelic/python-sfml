@@ -193,7 +193,7 @@ cdef class Key:
 
 
 
-cdef class Blend:
+cdef class BlendMode:
     ALPHA = declblendmode.Alpha
     ADD = declblendmode.Add
     MULTIPLY = declblendmode.Multiply
@@ -1077,6 +1077,88 @@ cdef class View:
     def __dealloc__(self):
         del self.p_this
 
+    property center:
+        def __get__(self):
+            cdef decl.Vector2f center = self.p_this.GetCenter()
+
+            return (center.x, center.y)
+
+        def __set__(self, tuple value):
+            cdef float x
+            cdef float y
+
+            x, y = value
+            self.p_this.SetCenter(x, y)
+
+    property rotation:
+        def __get__(self):
+            return self.p_this.GetRotation()
+
+        def __set__(self, float value):
+            self.p_this.SetRotation(value)
+
+    property size:
+        def __get__(self):
+            cdef decl.Vector2f size = self.p_this.GetSize()
+
+            return (size.x, size.y)
+
+        def __set__(self, tuple value):
+            cdef float x
+            cdef float y
+
+            x, y = value
+            self.p_this.SetSize(x, y)
+
+    property viewport:
+        def __get__(self):
+            cdef decl.FloatRect *p = new decl.FloatRect()
+
+            p[0] = self.p_this.GetViewport()
+
+            return wrap_float_rect_instance(p)
+
+        def __set__(self, FloatRect value):
+            self.p_this.SetViewport(value.p_this[0])
+
+    @classmethod
+    def from_center_and_size(cls, tuple center, tuple size):
+        cdef decl.Vector2f cpp_center
+        cdef decl.Vector2f cpp_size
+        cdef decl.View *p
+
+        cpp_center.x, cpp_center.y = center
+        cpp_size.x, cpp_size.y = size
+        p = new decl.View(cpp_center, cpp_size)
+
+        return wrap_view_instance(p)
+        
+
+    @classmethod
+    def from_rect(cls, FloatRect rect):
+        cdef decl.View *p = new decl.View(rect.p_this[0])
+
+        return wrap_view_instance(p)
+
+    def move(self, float x, float y):
+        self.p_this.Move(x, y)
+
+    def reset(self, FloatRect rect):
+        self.p_this.Reset(rect.p_this[0])
+
+    def rotate(self, float angle):
+        self.p_this.Rotate(angle)
+
+    def zoom(self, float factor):
+        self.p_this.Zoom(factor)
+
+
+cdef View wrap_view_instance(decl.View *p_cpp_view):
+    cdef View ret = View.__new__(View)
+
+    ret.p_this = p_cpp_view
+
+    return ret
 
 
 

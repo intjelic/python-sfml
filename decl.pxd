@@ -292,7 +292,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         Matrix3& GetInverseMatrix()
         Matrix3& GetMatrix()
         float GetRotation()
-        FloatRect& GetViewPort()
+        FloatRect& GetViewport()
         Vector2f& GetSize()
         void Move(float, float)
         void Move(Vector2f&)
@@ -304,7 +304,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetRotation(float)
         void SetSize(float, float)
         void SetSize(Vector2f&)
-        void SetViewPort(FloatRect&)
+        void SetViewport(FloatRect&)
         void Zoom(float)
 
     cdef cppclass RenderWindow:
