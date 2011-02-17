@@ -217,17 +217,29 @@ cdef class IntRect:
         def __get__(self):
             return self.p_this.Left
 
+        def __set__(self, int value):
+            self.p_this.Left = value
+
     property top:
         def __get__(self):
             return self.p_this.Top
+
+        def __set__(self, int value):
+            self.p_this.Top = value
 
     property width:
         def __get__(self):
             return self.p_this.Width
 
+        def __set__(self, int value):
+            self.p_this.Width = value
+
     property height:
         def __get__(self):
             return self.p_this.Height
+
+        def __set__(self, int value):
+            self.p_this.Height = value
 
     def contains(self, int x, int y):
         return self.p_this.Contains(x, y)
@@ -268,17 +280,29 @@ cdef class FloatRect:
         def __get__(self):
             return self.p_this.Left
 
+        def __set__(self, float value):
+            self.p_this.Left = value
+
     property top:
         def __get__(self):
             return self.p_this.Top
+
+        def __set__(self, float value):
+            self.p_this.Top = value
 
     property width:
         def __get__(self):
             return self.p_this.Width
 
+        def __set__(self, float value):
+            self.p_this.Width = value
+
     property height:
         def __get__(self):
             return self.p_this.Height
+
+        def __set__(self, float value):
+            self.p_this.Height = value
 
     def contains(self, int x, int y):
         return self.p_this.Contains(x, y)
