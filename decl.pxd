@@ -92,16 +92,12 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Event":
 
 
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Unicode":
-    cdef cppclass Text:
-        Text()
-
-
 cdef extern from "SFML/Graphics.hpp" namespace "sf":
     # Forward declarations
     cdef cppclass RenderWindow
 
-    ctypedef char Uint8
+    ctypedef unsigned char Uint8
+    ctypedef unsigned int Uint32
 
     # You normally shouldn't use Vector2f in pure Python, use tuples
     # instead
@@ -141,6 +137,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         Vector2f Transform(Vector2f&)
         Matrix3 GetInverse()
         float* Get4x4Elements()
+
         Matrix3 operator*(Matrix3&)
 
     cdef cppclass Color:
@@ -221,23 +218,67 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void UpdatePixels(unsigned char*)
         void UpdatePixels(unsigned char*, IntRect&)
 
+    cdef cppclass String:
+        String()
+        string ToAnsiString()
+
+    cdef cppclass Glyph:
+        Glyph()
+
+    cdef cppclass Font:
+        Font()
+        Font(Font&)
+        Glyph& GetGlyph(Uint32, unsigned int, bint)
+        Image& GetImage(unsigned int)
+        int GetKerning(Uint32, Uint32, unsigned int)
+        int GetLineSpacing(unsigned int)
+        bint LoadFromFile(char*)
+        bint LoadFromMemory(void*, size_t)
+
     cdef cppclass Drawable:
         Drawable()
 
-    cdef cppclass String:
-        String()
-
-        # The real C++ class doesn't take a char*, but it does work
-        # to call it with char* (via implicit constructors), that's
-        # all we need
-        String(char*)
+    cdef cppclass Text:
+        Text()
+        Text(char*)
+        Text(char*, Font&)
+        Text(char*, Font&, unsigned int)
+        declblendmode.Mode GetBlendMode()
+        Vector2f GetCharacterPos(size_t)
+        unsigned int GetCharacterSize()
+        Color& GetColor()
+        Font& GetFont()
+        Vector2f& GetOrigin()
         Vector2f& GetPosition()
         FloatRect GetRect()
-        Text& GetText()
+        float GetRotation()
+        Vector2f& GetScale()
+        String& GetString()
+        unsigned long GetStyle()
+        void Move(float, float)
+        void Move(Vector2f&)
+        void Rotate(float)
+        void Scale(float, float)
+        void Scale(Vector2f&)
+        void SetBlendMode(declblendmode.Mode)
+        void SetCharacterSize(unsigned int)
+        void SetColor(Color&)
+        void SetFont(Font&)
+        void SetOrigin(float, float)
+        void SetOrigin(Vector2f&)
         void SetPosition(float, float)
-        void SetText(char*)
+        void SetPosition(Vector2f&)
+        void SetRotation(float)
+        void SetScale(float, float)
+        void SetScale(Vector2f&)
+        void SetScaleX(float)
+        void SetScaleY(float)
+        void SetString(char*)
+        void SetStyle(unsigned long)
         void SetX(float)
         void SetY(float)
+        Vector2f TransformToGlobal(Vector2f&)
+        Vector2f TransformToLocal(Vector2f&)
 
     cdef cppclass Sprite:
         Sprite()
@@ -349,3 +390,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Matrix3":
     cdef Matrix3 Transformation(Vector2f&, Vector2f&, float, Vector2f&)
     cdef Matrix3 Projection(Vector2f&, Vector2f&, float)
     cdef Matrix3 Identity
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Font":
+    cdef Font& GetDefaultFont()

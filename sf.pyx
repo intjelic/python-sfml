@@ -608,6 +608,42 @@ cdef wrap_event_instance(decl.Event *p_cpp_instance):
     return ret
 
 
+
+
+cdef class Font:
+    cdef decl.Font *p_this
+    cdef bint delete_this
+
+    DEFAULT_FONT = wrap_font_instance(<decl.Font*>&decl.GetDefaultFont(), False)
+
+    def __cinit__(self):
+        self.p_this = new decl.Font()
+        self.delete_this = True
+
+    def __dealloc__(self):
+        if self.delete_this:
+            del self.p_this
+
+    @classmethod
+    def load_from_file(cls, char* filename):
+        cdef decl.Font *p = new decl.Font()
+
+        if p.LoadFromFile(filename):
+            return wrap_font_instance(p, True)
+
+        raise PySFMLException("Couldn't load font from file " + filename)
+
+
+cdef Font wrap_font_instance(decl.Font *p_cpp_instance, bint delete_this):
+    cdef Font ret = Font.__new__(Font)
+
+    ret.p_this = p_cpp_instance
+    ret.delete_this = delete_this
+
+    return ret
+
+
+
 cdef class Image:
     cdef decl.Image *p_this
     cdef bint delete_this
@@ -790,6 +826,170 @@ cdef class Drawable:
     def __init__(self, *args, **kwargs):
         if self.__class__ == Drawable:
             raise NotImplementedError('Drawable is abstact')
+
+
+
+cdef class Text(Drawable):
+    REGULAR = declstyle.Regular
+    BOLD = declstyle.Bold
+    ITALIC = declstyle.Italic
+    UNDERLINED = declstyle.Underlined
+
+    def __cinit__(self, string=None, Font font=None, int character_size=0):
+        if string is None:
+            self.p_this = <decl.Drawable*>new decl.Text()
+        elif font is None:
+            self.p_this = <decl.Drawable*>new decl.Text(string)
+        elif character_size == 0:
+            self.p_this = <decl.Drawable*>new decl.Text(string, font.p_this[0])
+        else:
+            self.p_this = <decl.Drawable*>new decl.Text(string, font.p_this[0],
+                                                        character_size)
+
+    def __dealloc__(self):
+        del self.p_this
+
+    property blend_mode:
+        def __get__(self):
+            return <int>(<decl.Text*>self.p_this).GetBlendMode()
+
+        def __set__(self, int value):
+            (<decl.Text*>self.p_this).SetBlendMode(<declblendmode.Mode>value)
+
+    property character_size:
+        def __get__(self):
+            return (<decl.Text*>self.p_this).GetCharacterSize()
+
+        def __set__(self, int value):
+            (<decl.Text*>self.p_this).SetCharacterSize(value)
+
+    property color:
+        def __get__(self):
+            cdef decl.Color *p = new decl.Color()
+
+            p[0] = (<decl.Text*>self.p_this).GetColor()
+
+            return wrap_color_instance(p)
+
+        def __set__(self, Color value):
+            (<decl.Text*>self.p_this).SetColor(value.p_this[0])
+
+    property font:
+        def __get__(self):
+            cdef decl.Font *p = <decl.Font*>&(<decl.Text*>self.p_this).GetFont()
+
+            return wrap_font_instance(p, False)
+
+    property origin:
+        def __get__(self):
+            cdef decl.Vector2f origin = (<decl.Text*>self.p_this).GetOrigin()
+
+            return (origin.x, origin.y)
+
+        def __set__(self, tuple value):
+            x, y = value
+            (<decl.Text*>self.p_this).SetOrigin(x, y)
+
+    property position:
+        def __get__(self):
+            cdef decl.Vector2f pos = (<decl.Text*>self.p_this).GetPosition()
+
+            return (pos.x, pos.y)
+
+        def __set__(self, tuple value):
+            x, y = value
+            (<decl.Text*>self.p_this).SetPosition(x, y)
+
+    property rect:
+        def __get__(self):
+            cdef decl.FloatRect *p = new decl.FloatRect()
+
+            p[0] = (<decl.Text*>self.p_this).GetRect()
+
+            return wrap_float_rect_instance(p)
+
+    property rotation:
+        def __get__(self):
+            return (<decl.Text*>self.p_this).GetRotation()
+
+        def __set__(self, float value):
+            (<decl.Text*>self.p_this).SetRotation(value)
+
+    property scale:
+        def __get__(self):
+            cdef decl.Vector2f scale = (<decl.Text*>self.p_this).GetScale()
+
+            return (scale.x, scale.y)
+
+        def __set__(self, tuple value):
+            x, y = value
+            (<decl.Text*>self.p_this).SetScale(x, y)
+
+    property string:
+        def __get__(self):
+            cdef decl.string res = ((<decl.Text*>self.p_this).GetString()
+                                    .ToAnsiString())
+
+            return res.c_str()
+
+    property style:
+        def __get__(self):
+            return (<decl.Text*>self.p_this).GetStyle()
+
+        def __set__(self, int value):
+            (<decl.Text*>self.p_this).SetStyle(value)
+
+    property x:
+        def __get__(self):
+            return self.position[0]
+
+        def __set__(self, float value):
+            (<decl.Text*>self.p_this).SetX(value)
+
+    property y:
+        def __get__(self):
+            return self.position[1]
+
+        def __set__(self, float value):
+            (<decl.Text*>self.p_this).SetY(value)
+
+    def tranform_to_local(self, float x, float y):
+        cdef decl.Vector2f cpp_point
+        cdef decl.Vector2f res
+
+        cpp_point.x = x
+        cpp_point.y = y
+        res = (<decl.Text*>self.p_this).TransformToLocal(cpp_point)
+
+        return (res.x, res.y)
+
+    def transform_to_global(self, float x, float y):
+        cdef decl.Vector2f cpp_point
+        cdef decl.Vector2f res
+
+        cpp_point.x = x
+        cpp_point.y = y
+        res = (<decl.Text*>self.p_this).TransformToGlobal(cpp_point)
+
+        return (res.x, res.y)
+
+    def get_character_pos(self, int index):
+        cdef decl.Vector2f res = (<decl.Text*>self.p_this).GetCharacterPos(
+            index)
+
+        return (res.x, res.y)
+
+    def move(self, float x, float y):
+        (<decl.Text*>self.p_this).Move(x, y)
+
+    def rotate(self, float angle):
+        (<decl.Text*>self.p_this).Rotate(angle)
+
+    def scale(self, float x, float y):
+        (<decl.Text*>self.p_this).Scale(x, y)
+
+
+
 
 
 
@@ -1211,6 +1411,28 @@ cdef class RenderWindow:
     property framerate_limit:
         def __set__(self, int value):
             self.p_this.SetFramerateLimit(value)
+
+    property height:
+        def __get__(self):
+            return self.p_this.GetHeight()
+
+        def __set__(self, unsigned int value):
+            self.size = (self.width, value)
+
+    property size:
+        def __get__(self):
+            return (self.width, self.height)
+
+        def __set__(self, tuple value):
+            x, y = value
+            self.p_this.SetSize(x, y)
+
+    property width:
+        def __get__(self):
+            return self.p_this.GetWidth()
+
+        def __set__(self, unsigned int value):
+            self.size = (value, self.height)
 
     def clear(self, Color color=None):
         if color is None:

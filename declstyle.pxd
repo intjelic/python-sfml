@@ -36,3 +36,9 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Style":
     int Close
     int Fullscreen
 
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Text":
+    int Regular
+    int Bold
+    int Italic
+    int Underlined
