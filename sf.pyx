@@ -637,6 +637,42 @@ cdef wrap_event_instance(decl.Event *p_cpp_instance):
 
 
 
+cdef class Input:
+    cdef decl.Input *p_this
+
+    def __init__(self):
+        raise NotImplementedError("You shouldn't need to create Input objects")
+
+    property mouse_x:
+        def __get__(self):
+            return self.get_mouse_x()
+
+    property mouse_y:
+        def __get__(self):
+            return self.get_mouse_y()
+
+    def get_joystick_axis(self, unsigned int joy_id, int axis):
+        return self.GetJoystickAxis(joy_id, axis)
+
+    def get_mouse_x(self):
+         return self.p_this.GetMouseX()
+
+    def get_mouse_y(self):
+         return self.p_this.GetMouseY()
+
+    def is_key_down(self, int key_code):
+         return self.p_this.IsKeyDown(<declkey.Code>key_code)
+
+    def is_mouse_button_down(self, int button):
+         return self.p_this.IsMouseButtonDown(<declmouse.Button>button)
+
+    def is_joystick_button_down(self, unsigned int joy_id, unsigned int button):
+         return self.p_this.IsJoystickButtonDown(joy_id, button)
+
+
+
+
+
 cdef class Font:
     cdef decl.Font *p_this
     cdef bint delete_this
@@ -1421,8 +1457,11 @@ cdef class Shader:
 
 cdef class RenderWindow:
     cdef decl.RenderWindow *p_this
+    cdef Input input
 
     def __cinit__(self, VideoMode mode, char* title, style=None):
+        self.input = Input.__new__(Input)
+
         if style is None:
             self.p_this = new decl.RenderWindow(mode.p_this[0], title)
         else:
@@ -1565,7 +1604,9 @@ cdef class RenderWindow:
             raise NotImplementedError("The Shader class isn't available yet")
 
     def get_input(self):
-        raise NotImplementedError("The Input class isn't available yet")
+        self.input.p_this = <decl.Input*>&self.p_this.GetInput()
+
+        return self.input
 
     def get_viewport(self, View view):
         cdef decl.IntRect *p = new decl.IntRect()
