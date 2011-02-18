@@ -53,7 +53,11 @@ ext_modules = [Extension('sf', ['sf.pyx'],
                          extra_compile_args=extra_compile_args)]
 
 setup(
-    name = 'PySFML',
+    name = 'PySFML 2',
     cmdclass = {'build_ext': build_ext},
-    ext_modules = ext_modules
+    ext_modules = ext_modules,
+    version='0.0.1',
+    description='A Python binding for SFML 2',
+    author=u'Bastien Léonard',
+    author_email='bastien.leonard@gmail.com'
 )
