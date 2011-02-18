@@ -56,11 +56,6 @@ class PySFMLException(Exception):
     """Base class for the exceptions raised by PySFML."""
 
 
-class FileLoadingException(PySFMLException):
-    """Raised when a file can't be loaded."""
-
-
-
 
 cdef class Mouse:
     LEFT = declmouse.Left
@@ -705,7 +700,7 @@ cdef class Image:
         if p_cpp_instance.LoadFromFile(filename):
             return wrap_image_instance(p_cpp_instance, True)
 
-        raise FileLoadingException()
+        raise PySFMLException("Couldn't load file {0}".format(filename))
 
     @classmethod
     def load_from_screen(cls, RenderWindow window, IntRect source_rect=None):
