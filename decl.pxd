@@ -348,32 +348,57 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetViewport(FloatRect&)
         void Zoom(float)
 
+    cdef cppclass Shader:
+        pass
+
+    cdef cppclass ContextSettings:
+        ContextSettings()
+
+    cdef cppclass WindowHandle:
+        pass
+
     cdef cppclass RenderWindow:
         RenderWindow()
-        RenderWindow(VideoMode mode, char* title)
-        RenderWindow(VideoMode mode, char* title, unsigned long window_style,
-                     WindowSettings& window_settings)
+        RenderWindow(VideoMode, char*)
+        RenderWindow(VideoMode, char*, unsigned long)
+        RenderWindow(VideoMode, char*, unsigned long, ContextSettings&)
+        RenderWindow(WindowHandle, ContextSettings&)
         void Clear()
         void Clear(Color&)
         void Close()
-
-        # Cython doesn't seem to support optional parameters (should
-        # be View*=NULL), but it does support method overloading
         Vector2f ConvertCoords(unsigned int, unsigned int)
-        Vector2f ConvertCoords(unsigned int, unsigned int, View*)
+        Vector2f ConvertCoords(unsigned int, unsigned int, View&)
         void Display()
         void Draw(Drawable&)
+        void Draw(Drawable&, Shader&)
+        void EnableKeyRepeat(bint)
         View& GetDefaultView()
         bint GetEvent(Event&)
         float GetFrameTime()
         Input& GetInput()
         unsigned int GetHeight()
+        ContextSettings& GetSettings()
+        WindowHandle GetSystemHandle()
         View& GetView()
+        IntRect GetViewport(View&)
         unsigned int GetWidth()
+        bint IsOpened()
+        void RestoreGLStates()
+        void SaveGLStates()
+        void SetActive()
+        void SetActive(bint)
         void SetCursorPosition(unsigned int, unsigned int)
+        void SetIcon(unsigned int, unsigned int, Uint8*)
+        void SetJoystickThreshold(float)
         void SetFramerateLimit(unsigned int)
+        void SetPosition(int, int)
         void SetSize(unsigned int, unsigned int)
+        void SetTitle(char*)
         void SetView(View&)
+        void Show(bint)
+        void ShowMouseCursor(bint)
+        void UseVerticalSync(bint)
+        bint WaitEvent(Event&)
 
 
 

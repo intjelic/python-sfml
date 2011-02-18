@@ -195,6 +195,16 @@ cdef class BlendMode:
     NONE = declblendmode.None
 
 
+
+cdef class Style:
+    NONE = declstyle.None
+    TITLEEBAR = declstyle.Titlebar
+    RESIZE = declstyle.Resize
+    CLOSE = declstyle.Close
+    FULLSCREEN = declstyle.Fullscreen
+
+
+
 cdef class IntRect:
     cdef decl.IntRect *p_this
 
@@ -247,6 +257,13 @@ cdef class IntRect:
                                           intersection.p_this[0])
 
 
+cdef IntRect wrap_int_rect_instance(decl.IntRect *p_cpp_instance):
+    cdef IntRect ret = IntRect.__new__(IntRect)
+    ret.p_this = p_cpp_instance
+
+    return ret
+
+
 cdef decl.IntRect convert_to_int_rect(value):
     if isinstance(value, IntRect):
         return (<IntRect>value).p_this[0]
@@ -255,6 +272,9 @@ cdef decl.IntRect convert_to_int_rect(value):
         return decl.IntRect(value[0], value[1], value[2], value[3])
     
     raise TypeError("Required IntRect or tuple, found {0}".format(type(value)))
+
+
+
 
 
 cdef class FloatRect:
@@ -1393,15 +1413,21 @@ cdef View wrap_view_instance(decl.View *p_cpp_view):
 
 
 
+cdef class Shader:
+    def __cinit__(self):
+        raise NotImplementedError
+
+
+
 cdef class RenderWindow:
     cdef decl.RenderWindow *p_this
 
-    # Event returned when iterating on iter_events()
-    cdef decl.Event *p_event
-
-    def __cinit__(self, VideoMode mode, char* title):
-        self.p_this = new decl.RenderWindow(mode.p_this[0], title)
-        self.p_event = new decl.Event()
+    def __cinit__(self, VideoMode mode, char* title, style=None):
+        if style is None:
+            self.p_this = new decl.RenderWindow(mode.p_this[0], title)
+        else:
+            self.p_this = new decl.RenderWindow(mode.p_this[0], title,
+                                                <int?>style)
 
     def __dealloc__(self):
         del self.p_this
@@ -1410,14 +1436,37 @@ cdef class RenderWindow:
         return self
 
     def __next__(self):
-        if self.p_this.GetEvent(self.p_event[0]):
-            return wrap_event_instance(self.p_event)
+        cdef decl.Event *p = new decl.Event()
+
+        if self.p_this.GetEvent(p[0]):
+            return wrap_event_instance(p)
 
         raise StopIteration
+
+    property active:
+        def __set__(self, bint value):
+            self.p_this.SetActive(value)
+
+    property cursor_position:
+        def __set__(self, tuple value):
+            x, y = value
+            self.p_this.SetCursorPosition(x, y)
+
+    property default_view:
+        def __get__(self):
+            cdef decl.View *p = new decl.View()
+
+            p[0] = self.p_this.GetDefaultView()
+
+            return wrap_view_instance(p)
 
     property framerate_limit:
         def __set__(self, int value):
             self.p_this.SetFramerateLimit(value)
+
+    property frame_time:
+        def __get__(self):
+            return self.p_this.GetFrameTime()
 
     property height:
         def __get__(self):
@@ -1426,6 +1475,32 @@ cdef class RenderWindow:
         def __set__(self, unsigned int value):
             self.size = (self.width, value)
 
+    property joystick_threshold:
+        def __set__(self, bint value):
+            self.p_this.SetJoystickThreshold(value)
+
+    property key_repeat_enabled:
+        def __set__(self, bint value):
+            self.p_this.EnableKeyRepeat(value)
+
+    property opened:
+        def __get__(self):
+            return self.p_this.IsOpened()
+
+    property position:
+        def __set__(self, tuple value):
+            x, y = value
+            self.p_this.SetPosition(x, y)
+
+    property settings:
+        def __get__(self):
+            raise NotImplementedError(
+                "The ContextSettings class isn't available yet")
+
+    property show_mouse_cursor:
+        def __set__(self, bint value):
+            self.p_this.ShowMouseCursor(value)
+
     property size:
         def __get__(self):
             return (self.width, self.height)
@@ -1433,6 +1508,26 @@ cdef class RenderWindow:
         def __set__(self, tuple value):
             x, y = value
             self.p_this.SetSize(x, y)
+
+    property system_handle:
+        def __get__(self):
+            raise NotImplementedError(
+                "The WindowHandle class isn't available yet")
+
+    property title:
+        def __set__(self, char* value):
+            self.p_this.SetTitle(value)
+
+    property view:
+        def __get__(self):
+            cdef decl.View *p = new decl.View()
+
+            p[0] = self.p_this.GetView()
+
+            return wrap_view_instance(p)
+
+        def __set__(self, View value):
+            self.p_this.SetView(value.p_this[0])
 
     property width:
         def __get__(self):
@@ -1450,19 +1545,37 @@ cdef class RenderWindow:
     def close(self):
         self.p_this.Close()
 
+    def convert_coords(self, unsigned int x, unsigned int y, View view=None):
+        cdef decl.Vector2f res
+
+        if view is None:
+            res = self.p_this.ConvertCoords(x, y)
+        else:
+            res = self.p_this.ConvertCoords(x, y, view.p_this[0])
+
+        return (res.x, res.y)
+
     def display(self):
         self.p_this.Display()
 
-    def draw(self, Drawable drawable):
-        self.p_this.Draw(drawable.p_this[0])
+    def draw(self, Drawable drawable, Shader shader=None):
+        if shader is None:
+            self.p_this.Draw(drawable.p_this[0])
+        else:
+            raise NotImplementedError("The Shader class isn't available yet")
+
+    def get_input(self):
+        raise NotImplementedError("The Input class isn't available yet")
+
+    def get_viewport(self, View view):
+        cdef decl.IntRect *p = new decl.IntRect()
+
+        p[0] = self.p_this.GetViewport(view.p_this[0])
+
+        return wrap_int_rect_instance(p)
 
     def iter_events(self):
         """Return an iterator which yields the current pending events.
-
-        Warning: to avoid consistency problems, you should never
-        modify the events obtained by this method. This is because it
-        actually always gives the same Event instance, which is stored
-        internally.
 
         Example::
         
@@ -1471,3 +1584,24 @@ cdef class RenderWindow:
                     # ..."""
 
         return self
+
+    def restore_gl_states(self):
+        self.p_this.RestoreGLStates()
+
+    def save_gl_states(self):
+        self.p_this.SaveGLStates()
+
+    def set_icon(self, unsigned int width, unsigned int height, char* pixels):
+        self.p_this.SetIcon(width, height, <decl.Uint8*>pixels)
+
+    def show(self, bint show):
+        self.p_this.Show(show)
+
+    def wait_event(self):
+        cdef decl.Event e
+
+        if self.p_this.WaitEvent(e):
+            return wrap_event_instance(&e)
+
+        raise PySFMLException("Error reported by C++ method "
+                              "sf::RenderWindow::WaitEvent()")
