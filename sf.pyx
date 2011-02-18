@@ -468,17 +468,29 @@ cdef class Color:
         def __get__(self):
             return self.p_this.r
 
+        def __set__(self, unsigned int value):
+            self.p_this.r = value
+
     property g:
         def __get__(self):
             return self.p_this.g
+
+        def __set__(self, unsigned int value):
+            self.p_this.g = value
 
     property b:
         def __get__(self):
             return self.p_this.b
 
+        def __set__(self, unsigned int value):
+            self.p_this.b = value
+
     property a:
         def __get__(self):
             return self.p_this.a
+
+        def __set__(self, unsigned int value):
+            self.p_this.a = value
 
 
 cdef wrap_color_instance(decl.Color *p_cpp_instance):
