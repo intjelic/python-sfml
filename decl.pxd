@@ -227,6 +227,9 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass Glyph:
         Glyph()
+        int Advance
+        IntRect Bounds
+        IntRect SubRect
 
     cdef cppclass Font:
         Font()

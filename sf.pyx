@@ -674,6 +674,44 @@ cdef class Input:
 
 
 
+cdef class Glyph:
+    cdef decl.Glyph *p_this
+
+    def __init__(self):
+        self.p_this = new decl.Glyph()
+
+    def __dealloc__(self):
+        del self.p_this
+
+    property advance:
+        def __get__(self):
+            return self.p_this.Advance
+
+    property bounds:
+        def __get__(self):
+            cdef decl.IntRect *p = new decl.IntRect()
+
+            p[0] = self.p_this.Bounds
+
+            return wrap_int_rect_instance(p)
+
+    property sub_rect:
+        def __get__(self):
+            cdef decl.IntRect *p = new decl.IntRect()
+
+            p[0] = self.p_this.SubRect
+
+            return wrap_int_rect_instance(p)
+
+
+cdef Glyph wrap_glyph_instance(decl.Glyph *p_cpp_instance):
+    cdef Glyph ret = Glyph.__new__(Glyph)
+
+    ret.p_this = p_cpp_instance
+
+    return ret
+
+
 cdef class Font:
     cdef decl.Font *p_this
     cdef bint delete_this
@@ -696,6 +734,35 @@ cdef class Font:
             return wrap_font_instance(p, True)
 
         raise PySFMLException("Couldn't load font from file " + filename)
+
+    @classmethod
+    def load_from_memory(cls, char* data):
+        cdef decl.Font *p = new decl.Font()
+
+        if p.LoadFromMemory(data, len(data)):
+            return wrap_font_instance(p, True)
+
+        raise PySFMLException("Couldn't load font from memory")
+
+    def get_glyph(self, unsigned int code_point, unsigned int character_size,
+                  bint bold):
+        cdef decl.Glyph *p = new decl.Glyph()
+
+        p[0] = self.p_this.GetGlyph(code_point, character_size, bold)
+
+        return wrap_glyph_instance(p)
+
+    def get_image(self, unsigned int character_size):
+        cdef decl.Image *p = <decl.Image*>&self.p_this.GetImage(character_size)
+
+        return wrap_image_instance(p, False)
+
+    def get_kerning(self, unsigned int first, unsigned int second,
+                    unsigned int character_size):
+        return self.p_this.GetKerning(first, second, character_size)
+
+    def get_line_spacing(self, unsigned int character_size):
+        return self.p_this.GetLineSpacing(character_size)
 
 
 cdef Font wrap_font_instance(decl.Font *p_cpp_instance, bint delete_this):
