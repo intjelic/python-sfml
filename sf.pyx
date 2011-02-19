@@ -1038,6 +1038,9 @@ cdef class Text(Drawable):
 
             return wrap_font_instance(p, False)
 
+        def __set__(self, Font value):
+            (<decl.Text*>self.p_this).SetFont(value.p_this[0])
+
     property origin:
         def __get__(self):
             cdef decl.Vector2f origin = (<decl.Text*>self.p_this).GetOrigin()
