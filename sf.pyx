@@ -902,9 +902,8 @@ cdef class Text(Drawable):
     UNDERLINED = declstyle.Underlined
 
     def __cinit__(self, string=None, Font font=None, int character_size=0):
-        cdef decl.Uint32 *p = NULL
-        cdef decl.Uint32 *p_temp = NULL
         cdef decl.String cpp_string
+        cdef char* c_string = NULL
 
         self.is_unicode = False
 
@@ -921,19 +920,10 @@ cdef class Text(Drawable):
                     <char*>string, font.p_this[0], character_size)
         elif isinstance(string, unicode):
             self.is_unicode = True
-            p = <decl.Uint32*>malloc(len(string) * sizeof(decl.Uint32) + 1)
-
-            if p == NULL:
-                raise PySFMLException("Couldn't allocate memory for string")
-
-            p_temp = p
-
-            for c in string:
-                p_temp[0] = ord(c)
-                preinc(p_temp)
-
-            p_temp[0] = 0
-            cpp_string = decl.String(p)
+            string += '\x00'
+            py_byte_string = string.encode('utf-32-le')
+            c_string = py_byte_string
+            cpp_string = decl.String(<decl.Uint32*>c_string)
 
             if font is None:
                 self.p_this = <decl.Drawable*>new decl.Text(cpp_string)
@@ -943,8 +933,6 @@ cdef class Text(Drawable):
             else:
                 self.p_this = <decl.Drawable*>new decl.Text(
                     cpp_string, font.p_this[0], character_size)
-
-            free(p)
         else:
             raise TypeError("Expected str or unicode for string, got {0}"
                             .format(type(string)))
