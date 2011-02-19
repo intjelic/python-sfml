@@ -434,6 +434,24 @@ cdef Matrix3 wrap_matrix_instance(decl.Matrix3 *p_cpp_instance):
 
 
 
+cdef class Clock:
+    cdef decl.Clock *p_this
+
+    def __cinit__(self):
+        self.p_this = new decl.Clock()
+
+    def __dealloc__(self):
+        del self.p_this
+
+    property elapsed_time:
+        def __get__(self):
+            return self.p_this.GetElapsedTime()
+
+    def reset(self):
+        self.p_this.Reset()
+
+
+
 cdef class Color:
     BLACK = Color(0, 0, 0)
     WHITE = Color(255, 255, 255)
@@ -1228,7 +1246,7 @@ cdef class Sprite(Drawable):
 
     property height:
         def __get__(self):
-            return (<decl.Sprite*>self.p_this).GetSize().x
+            return (<decl.Sprite*>self.p_this).GetSize().y
 
     property image:
         def __get__(self):
@@ -1294,7 +1312,7 @@ cdef class Sprite(Drawable):
 
     property width:
         def __get__(self):
-            return (<decl.Sprite*>self.p_this).GetSize().y
+            return (<decl.Sprite*>self.p_this).GetSize().x
 
     property x:
         def __get__(self):
@@ -1499,6 +1517,13 @@ cdef class View:
             x, y = value
             self.p_this.SetCenter(x, y)
 
+    property height:
+        def __get__(self):
+            return self.size[1]
+
+        def __set__(self, float value):
+            self.size = (self.width, value)
+
     property rotation:
         def __get__(self):
             return self.p_this.GetRotation()
@@ -1529,6 +1554,13 @@ cdef class View:
 
         def __set__(self, FloatRect value):
             self.p_this.SetViewport(value.p_this[0])
+
+    property width:
+        def __get__(self):
+            return self.size[0]
+
+        def __set__(self, float value):
+            self.size = (value, self.height)
 
     @classmethod
     def from_center_and_size(cls, tuple center, tuple size):

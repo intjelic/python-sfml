@@ -145,6 +145,11 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
         Matrix3 operator*(Matrix3&)
 
+    cdef cppclass Clock:
+        Clock()
+        float GetElapsedTime()
+        void Reset()
+
     cdef cppclass Color:
         Color()
         Color(unsigned int r, unsigned int g, unsigned b)
