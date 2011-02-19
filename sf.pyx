@@ -1569,8 +1569,59 @@ cdef View wrap_view_instance(decl.View *p_cpp_view):
 
 
 cdef class Shader:
-    def __cinit__(self):
-        raise NotImplementedError
+    cdef decl.Shader *p_this
+
+    IS_AVAILABLE = decl.IsAvailable()
+
+    def __init__(self):
+        self.p_this = new decl.Shader()
+
+    def __dealloc__(self):
+        del self.p_this
+
+    @classmethod
+    def load_from_file(cls, char *filename):
+        cdef decl.Shader *p = new decl.Shader()
+
+        if p.LoadFromFile(filename):
+            return wrap_shader_instance(p)
+        else:
+            raise PySFMLException("Couldn't load shader from file " + filename)
+
+    @classmethod
+    def load_from_memory(cls, char* shader):
+        cdef decl.Shader *p = new decl.Shader()
+
+        if p.LoadFromMemory(shader):
+            return wrap_shader_instance(p)
+        else:
+            raise PySFMLException("Couldn't load shader from memory")
+
+    def bind(self):
+        self.p_this.Bind()
+
+    def set_parameter(self, char *name, float x, float y=None,
+                      float z=None, float w=None):
+        if y is None:
+            self.p_this.SetParameter(name, x)
+        elif z is None:
+            self.p_this.SetParameter(name, x, y)
+        elif w is None:
+            self.p_this.SetParameter(name, x, y, z)
+        else:
+            self.p_this.SetParameter(name, x, y, z, w)
+
+    def unbind(self):
+        self.p_this.Unbind()
+
+
+cdef Shader wrap_shader_instance(decl.Shader *p_cpp_instance):
+    cdef Shader ret = Shader.__new__(Shader)
+
+    ret.p_this = p_cpp_instance
+
+    return ret
+
 
 
 

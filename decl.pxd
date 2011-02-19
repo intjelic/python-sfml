@@ -99,13 +99,18 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
     ctypedef unsigned char Uint8
     ctypedef unsigned int Uint32
 
-    # You normally shouldn't use Vector2f in pure Python, use tuples
-    # instead
     cdef cppclass Vector2f:
         Vector2f()
-        Vector2f(float x, float y)
+        Vector2f(float, float)
         float x
         float y
+
+    cdef cppclass Vector3f:
+        Vector3f()
+        Vector3f(float, float, float)
+        float x
+        float y
+        float z
 
     cdef cppclass IntRect:
         IntRect()
@@ -359,7 +364,18 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void Zoom(float)
 
     cdef cppclass Shader:
-        pass
+        Shader()
+        void Bind()
+        bint LoadFromFile(char*)
+        bint LoadFromMemory(char*)
+        void SetParameter(char*, float)
+        void SetParameter(char*, float, float)
+        void SetParameter(char*, float, float, float)
+        void SetParameter(char*, float, float, float, float)
+        void SetParameter(char*, Vector2f&)
+        void SetParameter(char*, Vector3f&)
+        void SetTexture(char*, Image&)
+        void Unbind()
 
     cdef cppclass ContextSettings:
         ContextSettings()
@@ -428,3 +444,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Matrix3":
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Font":
     cdef Font& GetDefaultFont()
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
+    cdef bint IsAvailable()
+    cdef Image CurrentTexture
