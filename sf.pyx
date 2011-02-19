@@ -1600,8 +1600,7 @@ cdef class Shader:
     def bind(self):
         self.p_this.Bind()
 
-    def set_parameter(self, char *name, float x, float y=None,
-                      float z=None, float w=None):
+    def set_parameter(self, char *name, float x, y=None, z=None, w=None):
         if y is None:
             self.p_this.SetParameter(name, x)
         elif z is None:
