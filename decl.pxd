@@ -220,6 +220,9 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass String:
         String()
+        String(Uint32*)
+        Uint32* GetData()
+        size_t GetSize()
         string ToAnsiString()
 
     cdef cppclass Glyph:
@@ -243,6 +246,9 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         Text(char*)
         Text(char*, Font&)
         Text(char*, Font&, unsigned int)
+        Text(String&)
+        Text(String&, Font&)
+        Text(String&, Font&, unsigned int)
         declblendmode.Mode GetBlendMode()
         Vector2f GetCharacterPos(size_t)
         unsigned int GetCharacterSize()
@@ -274,6 +280,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetScaleX(float)
         void SetScaleY(float)
         void SetString(char*)
+        void SetString(String&)
         void SetStyle(unsigned long)
         void SetX(float)
         void SetY(float)

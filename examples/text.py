@@ -7,7 +7,8 @@ import sf
 def main():
     window = sf.RenderWindow(sf.VideoMode(640, 480), 'Title')
     window.framerate_limit = 60
-    text = sf.Text('Text', sf.Font.DEFAULT_FONT, 100)
+    text = sf.Text(u'éèà', sf.Font.DEFAULT_FONT, 100)
+    print 'Test:', text.string, repr(text.string)
     text.color = sf.Color.BLACK
     text.style = sf.Text.UNDERLINED | sf.Text.BOLD | sf.Text.ITALIC
     text.x = window.width / 2.0 - text.rect.width / 2.0

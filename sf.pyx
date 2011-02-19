@@ -33,6 +33,7 @@
 Multimedia Library)."""
 
 
+from libc.stdlib cimport malloc, free
 from libcpp.vector cimport vector
 from cython.operator cimport preincrement as preinc, dereference as deref
 
@@ -893,21 +894,60 @@ cdef class Drawable:
 
 
 cdef class Text(Drawable):
+    cdef bint is_unicode
+
     REGULAR = declstyle.Regular
     BOLD = declstyle.Bold
     ITALIC = declstyle.Italic
     UNDERLINED = declstyle.Underlined
 
     def __cinit__(self, string=None, Font font=None, int character_size=0):
+        cdef decl.Uint32 *p = NULL
+        cdef decl.Uint32 *p_temp = NULL
+        cdef decl.String cpp_string
+
+        self.is_unicode = False
+
         if string is None:
             self.p_this = <decl.Drawable*>new decl.Text()
-        elif font is None:
-            self.p_this = <decl.Drawable*>new decl.Text(string)
-        elif character_size == 0:
-            self.p_this = <decl.Drawable*>new decl.Text(string, font.p_this[0])
+        elif isinstance(string, str):
+            if font is None:
+                self.p_this = <decl.Drawable*>new decl.Text(<char*>string)
+            elif character_size == 0:
+                self.p_this = <decl.Drawable*>new decl.Text(
+                    <char*>string, font.p_this[0])
+            else:
+                self.p_this = <decl.Drawable*>new decl.Text(
+                    <char*>string, font.p_this[0], character_size)
+        elif isinstance(string, unicode):
+            self.is_unicode = True
+            p = <decl.Uint32*>malloc(len(string) * sizeof(decl.Uint32) + 1)
+
+            if p == NULL:
+                raise PySFMLException("Couldn't allocate memory for string")
+
+            p_temp = p
+
+            for c in string:
+                p_temp[0] = ord(c)
+                preinc(p_temp)
+
+            p_temp[0] = 0
+            cpp_string = decl.String(p)
+
+            if font is None:
+                self.p_this = <decl.Drawable*>new decl.Text(cpp_string)
+            elif character_size == 0:
+                self.p_this = <decl.Drawable*>new decl.Text(
+                    cpp_string, font.p_this[0])
+            else:
+                self.p_this = <decl.Drawable*>new decl.Text(
+                    cpp_string, font.p_this[0], character_size)
+
+            free(p)
         else:
-            self.p_this = <decl.Drawable*>new decl.Text(string, font.p_this[0],
-                                                        character_size)
+            raise TypeError("Expected str or unicode for string, got {0}"
+                            .format(type(string)))
 
     def __dealloc__(self):
         del self.p_this
@@ -990,10 +1030,37 @@ cdef class Text(Drawable):
 
     property string:
         def __get__(self):
-            cdef decl.string res = ((<decl.Text*>self.p_this).GetString()
-                                    .ToAnsiString())
+            cdef decl.string res
+            cdef char *p = NULL
+            cdef bytes data
 
-            return res.c_str()
+            if not self.is_unicode:
+                res = ((<decl.Text*>self.p_this).GetString()
+                       .ToAnsiString())
+                ret = res.c_str()
+            else:
+                p = <char*>(<decl.Text*>self.p_this).GetString().GetData()
+                data = p[:(<decl.Text*>self.p_this).GetString().GetSize() * 4]
+                ret = data.decode('utf-32-le')
+
+            return ret
+
+        def __set__(self, value):
+            cdef char* c_string = NULL
+
+            if isinstance(value, str):
+                (<decl.Text*>self.p_this).SetString(<char*>value)
+                self.is_unicode = False
+            elif isinstance(value, unicode):
+                value += '\x00'
+                py_byte_string = value.encode('utf-32-le')
+                c_string = py_byte_string
+                (<decl.Text*>self.p_this).SetString(
+                    decl.String(<decl.Uint32*>c_string))
+                self.is_unicode = True
+            else:
+                raise TypeError("Expected str or unicode for string, got {0}"
+                               .format(type(value)))
 
     property style:
         def __get__(self):
@@ -1050,9 +1117,6 @@ cdef class Text(Drawable):
 
     def scale(self, float x, float y):
         (<decl.Text*>self.p_this).Scale(x, y)
-
-
-
 
 
 
