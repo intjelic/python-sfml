@@ -180,14 +180,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         int GetMouseY()
         float GetJoystickAxis(unsigned int JoyId, int Axis)
 
-
-    cdef cppclass WindowSettings:
-        WindowSettings(unsigned int depth, unsigned int stencil,
-                       unsigned int antialiasing)
-        unsigned int DepthBits
-        unsigned int StencilBits
-        unsigned int AntialiasingLevel
-
     cdef cppclass VideoMode:
         VideoMode()
         VideoMode(unsigned int width, unsigned int height)
