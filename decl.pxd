@@ -92,12 +92,16 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Event":
 
 
 
+cdef extern from "SFML/System.hpp" namespace "sf":
+    ctypedef short Int16
+    ctypedef unsigned char Uint8
+    ctypedef unsigned int Uint32
+
+
+
 cdef extern from "SFML/Graphics.hpp" namespace "sf":
     # Forward declarations
     cdef cppclass RenderWindow
-
-    ctypedef unsigned char Uint8
-    ctypedef unsigned int Uint32
 
     cdef cppclass Vector2f:
         Vector2f()

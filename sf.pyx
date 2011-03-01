@@ -38,6 +38,7 @@ from libcpp.vector cimport vector
 from cython.operator cimport preincrement as preinc, dereference as deref
 
 cimport decl
+cimport declaudio
 cimport declblendmode
 cimport declevent
 cimport decljoy
@@ -533,6 +534,210 @@ cdef wrap_color_instance(decl.Color *p_cpp_instance):
 
     return ret
 
+
+
+
+cdef class SoundBuffer:
+    cdef declaudio.SoundBuffer *p_this
+    cdef bint delete_this
+
+    def __init__(self):
+        # self.delete_this = True
+        raise NotImplementedError("Use static methods like load_from_file "
+                                  "to create SoundBuffer instances")
+
+    def __dealloc__(self):
+        if self.delete_this:
+            del self.p_this
+
+    property channels_count:
+        def __get__(self):
+            return self.p_this.GetChannelsCount()
+
+    property duration:
+        def __get__(self):
+            return self.p_this.GetDuration()
+
+    property sample_rate:
+        def __get__(self):
+            return self.p_this.GetSampleRate()
+
+    property samples:
+        def __get__(self):
+            cdef decl.Int16 *p = <decl.Int16*>self.p_this.GetSamples()
+            ret = []
+
+            for i from 0 <= i < self.p_this.GetSamplesCount():
+                ret.append(int(p[i]))
+
+            return ret
+
+    property samples_count:
+        def __get__(self):
+            return self.p_this.GetSamplesCount()
+
+    @classmethod
+    def load_from_file(cls, char* filename):
+        cdef declaudio.SoundBuffer *p = new declaudio.SoundBuffer()
+
+        if p.LoadFromFile(filename):
+            return wrap_sound_buffer_instance(p, True)
+
+        raise PySFMLException("Couldn't load sound buffer from " + filename)
+
+    @classmethod
+    def load_from_memory(cls, char* data):
+        cdef declaudio.SoundBuffer *p = new declaudio.SoundBuffer()
+
+        if p.LoadFromMemory(data, len(data)):
+            return wrap_sound_buffer_instance(p, True)
+
+        raise PySFMLException("Couldn't load sound buffer from memory")
+
+    @classmethod
+    def load_from_samples(cls, list samples, unsigned int channels_count,
+                          unsigned int sample_rate):
+        cdef declaudio.SoundBuffer *p_sb = new declaudio.SoundBuffer()
+        cdef decl.Int16 *p_samples = <decl.Int16*>malloc(
+            len(samples) * sizeof(decl.Int16))
+        cdef decl.Int16 *p_temp = NULL
+
+        if p_samples == NULL:
+            raise PySFMLException("Couldn't allocate memory for samples")
+        else:
+            p_temp = p_samples
+
+            for sample in samples:
+                p_temp[0] = <int>sample
+                preinc(p_temp)
+
+            if p_sb.LoadFromSamples(p_samples, len(samples), channels_count,
+                                    sample_rate):
+                free(p_samples)
+                return wrap_sound_buffer_instance(p_sb, True)
+            else:
+                free(p_samples)
+                raise PySFMLException("Couldn't load samples")
+
+    def save_to_file(self, char* filename):
+        self.p_this.SaveToFile(filename)
+
+
+cdef SoundBuffer wrap_sound_buffer_instance(
+    declaudio.SoundBuffer *p_cpp_instance, bint delete_this):
+    cdef SoundBuffer ret = SoundBuffer.__new__(SoundBuffer)
+
+    ret.p_this = p_cpp_instance
+    ret.delete_this = delete_this
+
+    return ret
+
+
+
+cdef class Sound:
+    cdef declaudio.Sound *p_this
+
+    STOPPED = declaudio.Stopped
+    PAUSED = declaudio.Paused
+    PLAYING = declaudio.Playing
+
+    def __cinit__(self, SoundBuffer buffer=None, bint loop=False,
+                  float pitch=1.0, float volume=100.0, tuple position=(0,0,0)):
+        cdef decl.Vector3f cpp_position
+
+        cpp_position.x = position[0]
+        cpp_position.y = position[1]
+        cpp_position.z = position[2]
+
+        if buffer is None:
+            self.p_this = new declaudio.Sound()
+        else:
+            self.p_this = new declaudio.Sound(buffer.p_this[0], loop, pitch,
+                                              volume, cpp_position)
+
+    def __dealloc__(self):
+        del self.p_this
+
+    property attenuation:
+        def __get__(self):
+            return self.p_this.GetAttenuation()
+
+        def __set__(self, float value):
+            self.p_this.SetAttenuation(value)
+
+    property buffer:
+        def __get__(self):
+            return wrap_sound_buffer_instance(
+                <declaudio.SoundBuffer*>self.p_this.GetBuffer(), False)
+
+        def __set__(self, SoundBuffer value):
+            self.p_this.SetBuffer(value.p_this[0])
+
+    property loop:
+        def __get__(self):
+            return self.p_this.GetLoop()
+
+        def __set__(self, bint value):
+            self.p_this.SetLoop(value)
+
+    property min_distance:
+        def __get__(self):
+            return self.p_this.GetMinDistance()
+
+        def __set__(self, float value):
+            self.p_this.SetMinDistance(value)
+
+    property pitch:
+        def __get__(self):
+            return self.p_this.GetPitch()
+
+        def __set__(self, float value):
+            self.p_this.SetPitch(value)
+
+    property playing_offset:
+        def __get__(self):
+            return self.p_this.GetPlayingOffset()
+
+        def __set__(self, float value):
+            self.p_this.SetPlayingOffset(value)
+
+    property position:
+        def __get__(self):
+            cdef decl.Vector3f pos = self.p_this.GetPosition()
+
+            return (pos.x, pos.y, pos.z)
+
+        def __set__(self, tuple value):
+            x, y, z = value
+
+            self.p_this.SetPosition(x, y, z)
+
+    property relative_to_listener:
+        def __get__(self):
+            return self.p_this.IsRelativeToListener()
+
+        def __set__(self, bint value):
+            self.p_this.SetRelativeToListener(value)
+
+    property status:
+        def __get__(self):
+            return <int>self.p_this.GetStatus()
+
+    property volume:
+        def __get__(self):
+            return self.p_this.GetVolume()
+
+        def __set__(self, float value):
+            self.p_this.SetVolume(value)
+
+    def pause(self):
+        self.p_this.Pause()
+
+    def play(self):
+        self.p_this.Play()
+
+    def stop(self):
+        self.p_this.Stop()
 
 
 class Event:
