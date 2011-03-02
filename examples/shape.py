@@ -8,7 +8,6 @@ def main():
     window = sf.RenderWindow(sf.VideoMode(640, 480), 'Shape example')
     window.framerate_limit = 60
     running = True
-    image = sf.Image.load_from_file('python-logo.png')
     circle0 = sf.circle(50, 50, 50, sf.Color.YELLOW)
     circle0.position = 100, 100
     
@@ -26,6 +25,7 @@ def main():
     shape0 = sf.Shape(points)
     shape0.position = 300, 200
     shape0.color = sf.Color(50, 100, 200, 128)
+    shape0.origin = 25.0, 32.0
     
     shapes = [line0, circle0, rect0, rect1, shape0]
 
