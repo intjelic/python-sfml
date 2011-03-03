@@ -2266,6 +2266,38 @@ cdef class Shape(Drawable):
         (<decl.Shape*>self.p_this).SetPointPosition(index, point.x, point.y)
         (<decl.Shape*>self.p_this).SetPointColor(index, point.color.p_this[0])
         (<decl.Shape*>self.p_this).SetPointOutlineColor(index, point.outline.p_this[0])
+    
+    @classmethod
+    def line(cls, float p1x, float p1y, float p2x, float p2y, float thickness, Color color, float outline=0.0, Color outline_color=None):
+        if outline_color is None:
+            outline_color = Color(0, 0, 0)
+        cdef decl.Shape *s = new decl.Shape()
+        s[0] = decl.Line(p1x, p1y, p2x, p2y, thickness, color.p_this[0], outline, outline_color.p_this[0])
+        return  wrap_shape_instance(s)
+
+    @classmethod
+    def rectangle(cls, float left, float top, float width, float height, Color color, float outline=0.0, Color outline_color=None):
+        if outline_color is None:
+            outline_color = Color(0, 0, 0)
+        cdef decl.Shape *s = new decl.Shape()
+        s[0] = decl.Rectangle(left, top, width, height, color.p_this[0], outline, outline_color.p_this[0])
+        return  wrap_shape_instance(s)
+
+    @classmethod
+    def rectangle_from_rect(cls, FloatRect rect, Color color, float outline=0.0, Color outline_color=None):
+        if outline_color is None:
+            outline_color = Color(0, 0, 0)
+        cdef decl.Shape *s = new decl.Shape()
+        s[0] = decl.Rectangle(rect.p_this[0], color.p_this[0], outline, outline_color.p_this[0])
+        return  wrap_shape_instance(s)
+
+    @classmethod
+    def circle(cls, float x, float y, float radius, Color color, float outline=0.0, Color outline_color=None):
+        if outline_color is None:
+            outline_color = Color(0, 0, 0)
+        cdef decl.Shape *s = new decl.Shape()
+        s[0] = decl.Circle(x, y, radius, color.p_this[0], outline, outline_color.p_this[0])
+        return  wrap_shape_instance(s)
         
     property blend_mode:
         def __get__(self):
