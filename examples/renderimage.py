@@ -10,16 +10,12 @@ def main():
         print "Your system doesn't support RenderImage"
         sys.exit(1)
     
-    window = sf.RenderWindow(sf.VideoMode(640, 480), 'Shape example')
+    window = sf.RenderWindow(sf.VideoMode(640, 480), 'RenderImage example')
     window.framerate_limit = 60
     running = True
-    image = sf.Image.load_from_file('python-logo.png')
-    circle0 = sf.circle(50, 50, 50, sf.Color.YELLOW)
-    circle0.position = 100, 100
     
-    rect0 = sf.rectangle(5, 5, 90, 50, sf.Color.GREEN, 2, sf.Color.BLUE)
-    
-    rect1 = sf.rectangle_from_rect(sf.FloatRect(20.0, 30.0, 50.0, 50.0),
+    rect0 = sf.Shape.rectangle(5, 5, 90, 50, sf.Color.GREEN, 2, sf.Color.BLUE)
+    rect1 = sf.Shape.rectangle_from_rect(sf.FloatRect(20.0, 30.0, 50.0, 50.0),
                                    sf.Color.CYAN)
     ri = sf.RenderImage(110, 110)
     ri.clear(sf.Color(0, 0, 0, 0))

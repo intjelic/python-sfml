@@ -1180,7 +1180,104 @@ cdef class Drawable:
     def __init__(self, *args, **kwargs):
         if self.__class__ == Drawable:
             raise NotImplementedError('Drawable is abstact')
+    
+    property blend_mode:
+        def __get__(self):
+            return <int>self.p_this.GetBlendMode()
 
+        def __set__(self, int value):
+            self.p_this.SetBlendMode(<declblendmode.Mode>value)
+
+    property color:
+        def __get__(self):
+            cdef decl.Color *p = new decl.Color()
+
+            p[0] = self.p_this.GetColor()
+
+            return wrap_color_instance(p)
+
+        def __set__(self, Color value):
+            self.p_this.SetColor(value.p_this[0])
+
+    property origin:
+        def __get__(self):
+            cdef decl.Vector2f origin = self.p_this.GetOrigin()
+
+            return (origin.x, origin.y)
+
+        def __set__(self, tuple value):
+            x, y = value
+            self.p_this.SetOrigin(x, y)
+
+    property position:
+        def __get__(self):
+            cdef decl.Vector2f pos = self.p_this.GetPosition()
+
+            return (pos.x, pos.y)
+
+        def __set__(self, tuple value):
+            x, y = value
+            self.p_this.SetPosition(x, y)
+
+    property rotation:
+        def __get__(self):
+            return self.p_this.GetRotation()
+
+        def __set__(self, float value):
+            self.p_this.SetRotation(value)
+
+    property scale:
+        def __get__(self):
+            cdef decl.Vector2f scale = self.p_this.GetScale()
+
+            return (scale.x, scale.y)
+
+        def __set__(self, tuple value):
+            x, y = value
+            self.p_this.SetScale(x, y)
+
+    property x:
+        def __get__(self):
+            return self.position[0]
+
+        def __set__(self, float value):
+            self.p_this.SetX(value)
+
+    property y:
+        def __get__(self):
+            return self.position[1]
+
+        def __set__(self, float value):
+            self.p_this.SetY(value)
+
+    def tranform_to_local(self, float x, float y):
+        cdef decl.Vector2f cpp_point
+        cdef decl.Vector2f res
+
+        cpp_point.x = x
+        cpp_point.y = y
+        res = self.p_this.TransformToLocal(cpp_point)
+
+        return (res.x, res.y)
+
+    def transform_to_global(self, float x, float y):
+        cdef decl.Vector2f cpp_point
+        cdef decl.Vector2f res
+
+        cpp_point.x = x
+        cpp_point.y = y
+        res = self.p_this.TransformToGlobal(cpp_point)
+
+        return (res.x, res.y)
+
+    def move(self, float x, float y):
+        self.p_this.Move(x, y)
+
+    def rotate(self, float angle):
+        self.p_this.Rotate(angle)
+
+    def scale(self, float x, float y):
+        self.p_this.Scale(x, y)
 
 
 cdef class Text(Drawable):
@@ -1230,30 +1327,12 @@ cdef class Text(Drawable):
     def __dealloc__(self):
         del self.p_this
 
-    property blend_mode:
-        def __get__(self):
-            return <int>(<decl.Text*>self.p_this).GetBlendMode()
-
-        def __set__(self, int value):
-            (<decl.Text*>self.p_this).SetBlendMode(<declblendmode.Mode>value)
-
     property character_size:
         def __get__(self):
             return (<decl.Text*>self.p_this).GetCharacterSize()
 
         def __set__(self, int value):
             (<decl.Text*>self.p_this).SetCharacterSize(value)
-
-    property color:
-        def __get__(self):
-            cdef decl.Color *p = new decl.Color()
-
-            p[0] = (<decl.Text*>self.p_this).GetColor()
-
-            return wrap_color_instance(p)
-
-        def __set__(self, Color value):
-            (<decl.Text*>self.p_this).SetColor(value.p_this[0])
 
     property font:
         def __get__(self):
@@ -1264,26 +1343,6 @@ cdef class Text(Drawable):
         def __set__(self, Font value):
             (<decl.Text*>self.p_this).SetFont(value.p_this[0])
 
-    property origin:
-        def __get__(self):
-            cdef decl.Vector2f origin = (<decl.Text*>self.p_this).GetOrigin()
-
-            return (origin.x, origin.y)
-
-        def __set__(self, tuple value):
-            x, y = value
-            (<decl.Text*>self.p_this).SetOrigin(x, y)
-
-    property position:
-        def __get__(self):
-            cdef decl.Vector2f pos = (<decl.Text*>self.p_this).GetPosition()
-
-            return (pos.x, pos.y)
-
-        def __set__(self, tuple value):
-            x, y = value
-            (<decl.Text*>self.p_this).SetPosition(x, y)
-
     property rect:
         def __get__(self):
             cdef decl.FloatRect *p = new decl.FloatRect()
@@ -1291,23 +1350,6 @@ cdef class Text(Drawable):
             p[0] = (<decl.Text*>self.p_this).GetRect()
 
             return wrap_float_rect_instance(p)
-
-    property rotation:
-        def __get__(self):
-            return (<decl.Text*>self.p_this).GetRotation()
-
-        def __set__(self, float value):
-            (<decl.Text*>self.p_this).SetRotation(value)
-
-    property scale:
-        def __get__(self):
-            cdef decl.Vector2f scale = (<decl.Text*>self.p_this).GetScale()
-
-            return (scale.x, scale.y)
-
-        def __set__(self, tuple value):
-            x, y = value
-            (<decl.Text*>self.p_this).SetScale(x, y)
 
     property string:
         def __get__(self):
@@ -1350,54 +1392,11 @@ cdef class Text(Drawable):
         def __set__(self, int value):
             (<decl.Text*>self.p_this).SetStyle(value)
 
-    property x:
-        def __get__(self):
-            return self.position[0]
-
-        def __set__(self, float value):
-            (<decl.Text*>self.p_this).SetX(value)
-
-    property y:
-        def __get__(self):
-            return self.position[1]
-
-        def __set__(self, float value):
-            (<decl.Text*>self.p_this).SetY(value)
-
-    def tranform_to_local(self, float x, float y):
-        cdef decl.Vector2f cpp_point
-        cdef decl.Vector2f res
-
-        cpp_point.x = x
-        cpp_point.y = y
-        res = (<decl.Text*>self.p_this).TransformToLocal(cpp_point)
-
-        return (res.x, res.y)
-
-    def transform_to_global(self, float x, float y):
-        cdef decl.Vector2f cpp_point
-        cdef decl.Vector2f res
-
-        cpp_point.x = x
-        cpp_point.y = y
-        res = (<decl.Text*>self.p_this).TransformToGlobal(cpp_point)
-
-        return (res.x, res.y)
-
     def get_character_pos(self, int index):
         cdef decl.Vector2f res = (<decl.Text*>self.p_this).GetCharacterPos(
             index)
 
         return (res.x, res.y)
-
-    def move(self, float x, float y):
-        (<decl.Text*>self.p_this).Move(x, y)
-
-    def rotate(self, float angle):
-        (<decl.Text*>self.p_this).Rotate(angle)
-
-    def scale(self, float x, float y):
-        (<decl.Text*>self.p_this).Scale(x, y)
 
 
 
@@ -1429,26 +1428,6 @@ cdef class Sprite(Drawable):
 
         return self.get_pixel(x, y)
 
-    property blend_mode:
-        def __get__(self):
-            return (<decl.Sprite*>self.p_this).GetBlendMode()
-
-        def __set__(self, int value):
-            (<decl.Sprite*>self.p_this).SetBlendMode(<declblendmode.Mode>value)
-
-    property color:
-        def __get__(self):
-            cdef decl.Color *p
-            cdef decl.Color c
-
-            c = (<decl.Sprite*>self.p_this).GetColor()
-            p = new decl.Color(c.r, c.g, c.b, c.a)
-
-            return wrap_color_instance(p)
-
-        def __set__(self, Color value):
-            (<decl.Sprite*>self.p_this).SetColor(value.p_this[0])
-
     property height:
         def __get__(self):
             return (<decl.Sprite*>self.p_this).GetSize().y
@@ -1461,44 +1440,6 @@ cdef class Sprite(Drawable):
 
         def __set__(self, Image value):
             (<decl.Sprite*>self.p_this).SetImage(value.p_this[0])
-
-    property origin:
-        def __get__(self):
-            cdef decl.Vector2f o = (<decl.Sprite*>self.p_this).GetOrigin()
-
-            return (o.x, o.y)
-
-        def __set__(self, tuple value):
-            x, y = value
-
-            (<decl.Sprite*>self.p_this).SetOrigin(x, y)
-
-    property position:
-        def __get__(self):
-            return (self.x, self.y)
-
-        def __set__(self, tuple value):
-            x, y = value
-            self.x = x
-            self.y = y
-
-    property rotation:
-        def __get__(self):
-            return (<decl.Sprite*>self.p_this).GetRotation()
-
-        def __set__(self, float value):
-            (<decl.Sprite*>self.p_this).SetRotation(value)
-
-    property scale:
-        def __get__(self):
-            cdef decl.Vector2f scale = (<decl.Sprite*>self.p_this).GetScale()
-
-            return (scale.x, scale.y)
-
-        def __set__(self, tuple value):
-            x, y = value
-
-            (<decl.Sprite*>self.p_this).SetScale(x, y)
 
     property size:
         def __get__(self):
@@ -1519,24 +1460,6 @@ cdef class Sprite(Drawable):
         def __get__(self):
             return (<decl.Sprite*>self.p_this).GetSize().x
 
-    property x:
-        def __get__(self):
-            cdef decl.Vector2f pos = (<decl.Sprite*>self.p_this).GetPosition()
-
-            return pos.x
-
-        def __set__(self, float value):
-            (<decl.Sprite*>self.p_this).SetX(value)
-
-    property y:
-        def __get__(self):
-            cdef decl.Vector2f pos = (<decl.Sprite*>self.p_this).GetPosition()
-
-            return pos.y
-
-        def __set__(self, float value):
-            (<decl.Sprite*>self.p_this).SetY(value)
-
     def get_pixel(self, unsigned int x, unsigned int y):
         cdef decl.Color *p
         cdef decl.Color c
@@ -1552,41 +1475,12 @@ cdef class Sprite(Drawable):
     def flip_y(self, bint flipped):
         (<decl.Sprite*>self.p_this).FlipY(flipped)
 
-    def move(self, float x, float y):
-        (<decl.Sprite*>self.p_this).Move(x, y)
-
     def resize(self, float width, float height):
         (<decl.Sprite*>self.p_this).Resize(width, height)
-
-    def rotate(self, float angle):
-        (<decl.Sprite*>self.p_this).Rotate(angle)
-
-    def scale(self, float x, float y):
-        (<decl.Sprite*>self.p_this).Scale(x, y)
 
     def set_image(self, Image image, bint adjust_to_new_size=False):
         (<decl.Sprite*>self.p_this).SetImage(image.p_this[0],
                                              adjust_to_new_size)
-
-    def transform_to_global(self, float x, float y):
-        cdef decl.Vector2f v
-        cdef decl.Vector2f res
-
-        v.x = x
-        v.y = y
-        res = (<decl.Sprite*>self.p_this).TransformToGlobal(v)
-
-        return (res.x, res.y)
-
-    def transform_to_local(self, float x, float y):
-        cdef decl.Vector2f v
-        cdef decl.Vector2f res
-
-        v.x = x
-        v.y = y
-        res = (<decl.Sprite*>self.p_this).TransformToLocal(v)
-
-        return (res.x, res.y)
 
 
 cdef class VideoMode:
@@ -1849,6 +1743,20 @@ cdef class Shader:
             self.p_this.SetParameter(name, x, y, z)
         else:
             self.p_this.SetParameter(name, x, y, z, w)
+    
+    def set_vect2_parameter(self, char *name, float x, float y):
+        cdef decl.Vector2f v = decl.Vector2f(x, y)
+        self.p_this.SetParameter(name, v)
+    
+    def set_vect3_parameter(self, char *name, float x, float y, float z):
+        cdef decl.Vector3f v = decl.Vector3f(x, y, z)
+        self.p_this.SetParameter(name, v)
+    
+    def set_texture(self, char *name, Image image=None):
+        if image is None:
+            self.p_this.SetTexture(name, decl.CurrentTexture)
+        else:
+            self.p_this.SetTexture(name, image.p_this[0])
 
     def unbind(self):
         self.p_this.Unbind()
@@ -2093,8 +2001,6 @@ cdef class RenderImage:
             cdef decl.Image *im = new decl.Image()
             im[0] = self.p_this.GetImage()
             return wrap_image_instance(im, False)
-#            return wrap_image_instance(<decl.Image*>&(<decl.RenderImage*>self.p_this).GetImage(), 
-#                                       False)
     
     property smooth:
         def __get__(self):
@@ -2144,8 +2050,7 @@ cdef class RenderImage:
         if shader is None:
             self.p_this.Draw(drawable.p_this[0])
         else:
-            self.p_this.Draw(drawable.p_this[0], shader.p_this[0])
-#            raise NotImplementedError("The Shader class isn't available yet")
+            raise NotImplementedError("The Shader class isn't available yet")
 
     def get_viewport(self, View view):
         cdef decl.IntRect *p = new decl.IntRect()
@@ -2246,7 +2151,8 @@ cdef class Shape(Drawable):
         cdef Color outline = Color(0, 0, 0)
         if points is not None:
             for p in points:
-                (<decl.Shape*>self.p_this).AddPoint(p.x, p.y, p.color.p_this[0], p.outline.p_this[0])
+                (<decl.Shape*>self.p_this).AddPoint(p.x, p.y, p.color.p_this[0],
+                                                    p.outline.p_this[0])
 
     def __len__(self):
         return (<decl.Shape*>self.p_this).GetPointsCount()
@@ -2255,108 +2161,53 @@ cdef class Shape(Drawable):
         p = ShapePointProxy()
         p._init(<decl.Shape*>self.p_this, index)
         return p
-#        cdef decl.Vector2f pos = (<decl.Shape*>self.p_this).GetPointPosition(index)
-#        cdef decl.Color *color = new decl.Color()
-#        cdef decl.Color *outline = new decl.Color()
-#        color[0] = (<decl.Shape*>self.p_this).GetPointColor(index)
-#        outline[0] = (<decl.Shape*>self.p_this).GetPointOutlineColor(index)
-#        return ShapePoint(pos.x, pos.y, wrap_color_instance(color), wrap_color_instance(outline))
     
     def __setitem__(self, unsigned int index, ShapePoint point):
         (<decl.Shape*>self.p_this).SetPointPosition(index, point.x, point.y)
         (<decl.Shape*>self.p_this).SetPointColor(index, point.color.p_this[0])
-        (<decl.Shape*>self.p_this).SetPointOutlineColor(index, point.outline.p_this[0])
+        (<decl.Shape*>self.p_this).SetPointOutlineColor(index,
+                                                        point.outline.p_this[0])
     
     @classmethod
-    def line(cls, float p1x, float p1y, float p2x, float p2y, float thickness, Color color, float outline=0.0, Color outline_color=None):
+    def line(cls, float p1x, float p1y, float p2x, float p2y, float thickness,
+             Color color, float outline=0.0, Color outline_color=None):
         if outline_color is None:
             outline_color = Color(0, 0, 0)
         cdef decl.Shape *s = new decl.Shape()
-        s[0] = decl.Line(p1x, p1y, p2x, p2y, thickness, color.p_this[0], outline, outline_color.p_this[0])
+        s[0] = decl.Line(p1x, p1y, p2x, p2y, thickness, color.p_this[0],
+                         outline, outline_color.p_this[0])
         return  wrap_shape_instance(s)
 
     @classmethod
-    def rectangle(cls, float left, float top, float width, float height, Color color, float outline=0.0, Color outline_color=None):
+    def rectangle(cls, float left, float top, float width, float height,
+                  Color color, float outline=0.0, Color outline_color=None):
         if outline_color is None:
             outline_color = Color(0, 0, 0)
         cdef decl.Shape *s = new decl.Shape()
-        s[0] = decl.Rectangle(left, top, width, height, color.p_this[0], outline, outline_color.p_this[0])
+        s[0] = decl.Rectangle(left, top, width, height, color.p_this[0],
+                              outline, outline_color.p_this[0])
         return  wrap_shape_instance(s)
 
     @classmethod
-    def rectangle_from_rect(cls, FloatRect rect, Color color, float outline=0.0, Color outline_color=None):
+    def rectangle_from_rect(cls, FloatRect rect, Color color, float outline=0.0,
+                            Color outline_color=None):
         if outline_color is None:
             outline_color = Color(0, 0, 0)
         cdef decl.Shape *s = new decl.Shape()
-        s[0] = decl.Rectangle(rect.p_this[0], color.p_this[0], outline, outline_color.p_this[0])
+        s[0] = decl.Rectangle(rect.p_this[0], color.p_this[0], outline,
+                              outline_color.p_this[0])
         return  wrap_shape_instance(s)
 
     @classmethod
-    def circle(cls, float x, float y, float radius, Color color, float outline=0.0, Color outline_color=None):
+    def circle(cls, float x, float y, float radius, Color color,
+               float outline=0.0, Color outline_color=None):
         if outline_color is None:
             outline_color = Color(0, 0, 0)
         cdef decl.Shape *s = new decl.Shape()
-        s[0] = decl.Circle(x, y, radius, color.p_this[0], outline, outline_color.p_this[0])
+        s[0] = decl.Circle(x, y, radius, color.p_this[0], outline,
+                           outline_color.p_this[0])
         return  wrap_shape_instance(s)
         
-    property blend_mode:
-        def __get__(self):
-            return (<decl.Shape*>self.p_this).GetBlendMode()
-
-        def __set__(self, int value):
-            (<decl.Shape*>self.p_this).SetBlendMode(<declblendmode.Mode>value)
-
-    property color:
-        def __get__(self):
-            cdef decl.Color *p
-            cdef decl.Color c
-
-            c = (<decl.Shape*>self.p_this).GetColor()
-            p = new decl.Color(c.r, c.g, c.b, c.a)
-
-            return wrap_color_instance(p)
-
-        def __set__(self, Color value):
-            (<decl.Shape*>self.p_this).SetColor(value.p_this[0])
-            
-    property origin:
-        def __get__(self):
-            cdef decl.Vector2f o = (<decl.Shape*>self.p_this).GetOrigin()
-
-            return (o.x, o.y)
-
-        def __set__(self, tuple value):
-            x, y = value
-
-            (<decl.Shape*>self.p_this).SetOrigin(x, y)
-
-    property position:
-        def __get__(self):
-            return (self.x, self.y)
-
-        def __set__(self, tuple value):
-            x, y = value
-            self.x = x
-            self.y = y
-
-    property rotation:
-        def __get__(self):
-            return (<decl.Shape*>self.p_this).GetRotation()
-
-        def __set__(self, float value):
-            (<decl.Shape*>self.p_this).SetRotation(value)
-
-    property scale:
-        def __get__(self):
-            cdef decl.Vector2f scale = (<decl.Shape*>self.p_this).GetScale()
-
-            return (scale.x, scale.y)
-
-        def __set__(self, tuple value):
-            x, y = value
-
-            (<decl.Shape*>self.p_this).SetScale(x, y)
-
     property thickness:
         def __get__(self):
             return (<decl.Shape*>self.p_this).GetOutlineThickness()
@@ -2364,26 +2215,9 @@ cdef class Shape(Drawable):
         def __set__(self, float value):
             (<decl.Shape*>self.p_this).SetOutlineThickness(value)
     
-    property x:
-        def __get__(self):
-            cdef decl.Vector2f pos = (<decl.Shape*>self.p_this).GetPosition()
-
-            return pos.x
-
-        def __set__(self, float value):
-            (<decl.Shape*>self.p_this).SetX(value)
-
-    property y:
-        def __get__(self):
-            cdef decl.Vector2f pos = (<decl.Shape*>self.p_this).GetPosition()
-
-            return pos.y
-
-        def __set__(self, float value):
-            (<decl.Shape*>self.p_this).SetY(value)
-
     def append(self, ShapePoint p):
-        (<decl.Shape*>self.p_this).AddPoint(p.x, p.y, p.color.p_this[0], p.outline.p_this[0])
+        (<decl.Shape*>self.p_this).AddPoint(p.x, p.y, p.color.p_this[0],
+                                            p.outline.p_this[0])
 
     def enable_fill(self, bint value):
         (<decl.Shape*>self.p_this).EnableFill(value)
@@ -2391,66 +2225,9 @@ cdef class Shape(Drawable):
     def enable_outline(self, bint value):
         (<decl.Shape*>self.p_this).EnableOutline(value)
     
-    def move(self, float x, float y):
-        (<decl.Shape*>self.p_this).Move(x, y)
-
-    def rotate(self, float angle):
-        (<decl.Shape*>self.p_this).Rotate(angle)
-
-    def scale(self, float x, float y):
-        (<decl.Shape*>self.p_this).Scale(x, y)
-
-    def transform_to_global(self, float x, float y):
-        cdef decl.Vector2f v
-        cdef decl.Vector2f res
-
-        v.x = x
-        v.y = y
-        res = (<decl.Shape*>self.p_this).TransformToGlobal(v)
-
-        return (res.x, res.y)
-
-    def transform_to_local(self, float x, float y):
-        cdef decl.Vector2f v
-        cdef decl.Vector2f res
-
-        v.x = x
-        v.y = y
-        res = (<decl.Shape*>self.p_this).TransformToLocal(v)
-
-        return (res.x, res.y)
-
 
 cdef Shape wrap_shape_instance(decl.Shape *p_cpp_instance):
     cdef Shape ret = Shape.__new__(Shape)
     ret.p_this = <decl.Drawable*>p_cpp_instance
     
     return ret
-    
-def line(float p1x, float p1y, float p2x, float p2y, float thickness, Color color, float outline=0.0, Color outline_color=None):
-    if outline_color is None:
-        outline_color = Color(0, 0, 0)
-    cdef decl.Shape *s = new decl.Shape()
-    s[0] = decl.Line(p1x, p1y, p2x, p2y, thickness, color.p_this[0], outline, outline_color.p_this[0])
-    return  wrap_shape_instance(s)
-
-def rectangle(float left, float top, float width, float height, Color color, float outline=0.0, Color outline_color=None):
-    if outline_color is None:
-        outline_color = Color(0, 0, 0)
-    cdef decl.Shape *s = new decl.Shape()
-    s[0] = decl.Rectangle(left, top, width, height, color.p_this[0], outline, outline_color.p_this[0])
-    return  wrap_shape_instance(s)
-
-def rectangle_from_rect(FloatRect rect, Color color, float outline=0.0, Color outline_color=None):
-    if outline_color is None:
-        outline_color = Color(0, 0, 0)
-    cdef decl.Shape *s = new decl.Shape()
-    s[0] = decl.Rectangle(rect.p_this[0], color.p_this[0], outline, outline_color.p_this[0])
-    return  wrap_shape_instance(s)
-
-def circle(float x, float y, float radius, Color color, float outline=0.0, Color outline_color=None):
-    if outline_color is None:
-        outline_color = Color(0, 0, 0)
-    cdef decl.Shape *s = new decl.Shape()
-    s[0] = decl.Circle(x, y, radius, color.p_this[0], outline, outline_color.p_this[0])
-    return  wrap_shape_instance(s)
