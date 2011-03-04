@@ -27,37 +27,45 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-import platform
+# Set to False if you don't have Cython installed. The script will
+# then build the extension module from the sf.cpp file, like a regular
+# extension.
+USE_CYTHON = True
+
+
 from distutils.core import setup
 from distutils.extension import Extension
-from Cython.Distutils import build_ext
 
-debug = False
-enable_warnings = False
-
-extra_compile_args = []
-
-if platform.system() == 'Linux':
-    if enable_warnings:
-        for option in ('-Wall',  '-Wextra', '-pedantic'):
-            extra_compile_args.append(option)
-
-    if debug:
-        extra_compile_args.append('-g')
-        extra_compile_args.append('-ggdb')
+if USE_CYTHON:
+    from Cython.Distutils import build_ext
 
 libs = ['sfml-graphics', 'sfml-window', 'sfml-audio', 'sfml-system']
-ext_modules = [Extension('sf', ['sf.pyx'],
-                         language='c++',
-                         libraries=libs,
-                         extra_compile_args=extra_compile_args)]
 
-setup(
-    name = 'PySFML 2',
-    cmdclass = {'build_ext': build_ext},
-    ext_modules = ext_modules,
-    version='0.0.1',
-    description='A Python binding for SFML 2',
-    author=u'Bastien Léonard',
-    author_email='bastien.leonard@gmail.com'
-)
+if USE_CYTHON:
+    ext_modules = [Extension('sf', ['sf.pyx'],
+                             language='c++',
+                             libraries=libs)]
+else:
+    ext_modules = [Extension('sf', ['sf.cpp'],
+                             libraries=libs)]
+
+
+if USE_CYTHON:
+    setup(
+        name = 'PySFML 2',
+        cmdclass = {'build_ext': build_ext},
+        ext_modules = ext_modules,
+        version='0.0.1',
+        description='A Python binding for SFML 2',
+        author=u'Bastien Léonard',
+        author_email='bastien.leonard@gmail.com'
+        )
+else:
+    setup(
+        name = 'PySFML 2',
+        ext_modules = ext_modules,
+        version='0.0.1',
+        description='A Python binding for SFML 2',
+        author=u'Bastien Léonard',
+        author_email='bastien.leonard@gmail.com'
+        )
