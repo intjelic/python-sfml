@@ -27,8 +27,14 @@ Graphics
 
 
 
-.. class:: Image(int width, int height[, color])
 
+
+
+Image display
+-------------
+
+
+.. class:: Image(int width, int height[, color])
 
    .. attribute:: height
    .. attribute:: smooth
@@ -70,7 +76,6 @@ Graphics
 .. class:: Sprite([image, position=(0,0), scale=(1,1), rotation=0.0,\
                   color=sf.Color.WHITE])
 
-
    .. attribute:: blend_mode
    .. attribute:: color
    .. attribute:: height
@@ -102,19 +107,24 @@ Graphics
 
 
 
+
+Windowing
+---------
+
+
 .. class:: RenderWindow(VideoMode mode, title[, style])
 
    *style* can be one of:
 
-   =================== ===========
-   Name                Description
-   =================== ===========
-   sf.Style.NONE
-   sf.Style.TITLEEBAR
-   sf.Style.RESIZE
-   sf.Style.CLOSE
-   sf.Style.FULLSCREEN
-   =================== ===========
+   ======================= ===========
+   Name                    Description
+   ======================= ===========
+   ``sf.Style.NONE``
+   ``sf.Style.TITLEEBAR``
+   ``sf.Style.RESIZE``
+   ``sf.Style.CLOSE``
+   ``sf.Style.FULLSCREEN``
+   ======================= ===========
 
    .. attribute:: active
    .. attribute:: cursor_position
@@ -169,3 +179,125 @@ Graphics
    .. classmethod:: get_fullscreen_modes()
 
    .. method:: is_valid()
+
+
+
+.. class:: View( )
+
+
+
+   .. attribute:: center
+   .. attribute:: height
+   .. attribute:: rotation
+   .. attribute:: size
+   .. attribute:: viewport
+   .. attribute:: width
+
+   .. classmethod:: from_rect(rect)
+   .. classmethod:: from_rect_and_size(rect, (width, height))
+
+   .. method:: move
+   .. method:: reset
+   .. method:: rotate
+   .. method:: zoom
+
+
+
+
+
+Text
+----
+
+
+.. class:: Font()
+
+   .. attribute:: DEFAULT_FONT
+
+      The default font (Arial), as a class attribute::
+
+         print sf.Font.DEFAULT_FONT
+
+
+   .. classmethod:: load_from_file(filename)
+   .. classmethod:: load_from_memory(str data)
+
+   .. method:: get_glyph(int code_point, int character_size, bool bold)
+   .. method:: get_image(int character_size)
+   .. method:: get_kerning(int first, int second, int character_size)
+   .. method:: get_line_spacing(int character_size)
+
+
+
+.. class:: Text([string, font, character_size=0])
+
+   *string* can be either a regular string or Unicode. SFML will
+   internally store characters as 32-bit integers. A ``str`` object
+   will end up being interpreted by SFML as an "ANSI string" (cp1252
+   encoding). A ``unicode`` object will be interpreted as 32-bit code
+   points, as you would expect.
+
+   .. attribute:: blend_mode
+   .. attribute:: color
+   .. attribute:: origin
+   .. attribute:: position
+   .. attribute:: rotation
+   .. attribute:: scale
+   .. attribute:: x
+   .. attribute:: y
+
+   .. attribute:: character_size
+   .. attribute:: font
+   .. attribute:: rect
+   .. attribute:: string
+
+      This attribute can be set as either a ``str`` or ``unicode``
+      object. The value retrieved will be either ``str`` or
+      ``unicode`` as well, depending on what type has been set
+      before. See :class:`Text` for more information.
+
+   .. attribute:: style
+
+      Can be one or more of the following:
+
+      * ``sf.Text.REGULAR``
+      * ``sf.Text.BOLD``
+      * ``sf.Text.ITALIC``
+      * ``sf.Text.UNDERLINED``
+
+      Example::
+
+         text.style = sf.Text.BOLD | sf.Text.ITALIC
+
+   .. method:: tranform_to_local(float x, float y)
+   .. method:: transform_to_global(float x, float y)
+   .. method:: move(float x, float y)
+   .. method:: rotate(float angle)
+   .. method:: scale(float x, float y)
+
+
+
+.. class:: Glyph
+
+   .. attribute:: advance
+   .. attribute:: bounds
+   .. attribute:: sub_rect
+
+
+
+To do...
+--------
+
+
+.. class:: Shader
+
+
+
+.. class:: Drawable
+
+
+
+.. class:: RenderImage
+
+
+
+.. class:: Shape
