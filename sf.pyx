@@ -1998,9 +1998,8 @@ cdef class RenderImage:
     
     property image:
         def __get__(self):
-            cdef decl.Image *im = new decl.Image()
-            im[0] = self.p_this.GetImage()
-            return wrap_image_instance(im, False)
+            return wrap_image_instance(<decl.Image*>&self.p_this.GetImage(),
+                                       False)
     
     property smooth:
         def __get__(self):
