@@ -8,10 +8,17 @@ currently you need to build the ``sf`` module from source.
 Building without Cython
 -----------------------
 
-If you simply want to build the current source, you don't need to
-install Cython.
-Make that ``USE_CYTHON`` is set to ``False`` in setup.py.
-You can then build the module by typing this command::
+I've tried to keep the C++ generated file under source control, but it
+seemed to take too much space, so I removed it. You'll have install
+Cython and read the next section to build the module from the latest
+source.
+
+When the module gets somewhat stable, however, I will make a release
+that you'll be able to build with Cython installed. This section is
+relevant to that use case.
+
+Make sure that ``USE_CYTHON`` is set to ``False`` in setup.py.  You
+can then build the module by typing this command::
 
     python setup.py build_ext --inplace
 
