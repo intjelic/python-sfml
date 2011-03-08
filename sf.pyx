@@ -434,6 +434,8 @@ cdef Matrix3 wrap_matrix_instance(decl.Matrix3 *p_cpp_instance):
 
 
 
+
+
 cdef class Clock:
     cdef decl.Clock *p_this
 
@@ -633,6 +635,7 @@ cdef SoundBuffer wrap_sound_buffer_instance(
 
 
 
+
 cdef class Sound:
     cdef declaudio.Sound *p_this
 
@@ -737,6 +740,8 @@ cdef class Sound:
 
     def stop(self):
         self.p_this.Stop()
+
+
 
 
 class Event:
@@ -891,7 +896,6 @@ cdef class Input:
 
     def is_joystick_button_down(self, unsigned int joy_id, unsigned int button):
          return self.p_this.IsJoystickButtonDown(joy_id, button)
-
 
 
 
@@ -1560,13 +1564,22 @@ cdef class VideoMode:
         def __get__(self):
             return self.p_this.Width
 
+        def __set__(self, unsigned int value):
+            self.p_this.Width = value
+
     property height:
         def __get__(self):
             return self.p_this.Height
 
+        def __set__(self, unsigned value):
+            self.p_this.Height = value
+
     property bits_per_pixel:
         def __get__(self):
             return self.p_this.BitsPerPixel
+
+        def __set__(self, unsigned int value):
+            self.p_this.BitsPerPixel = value
 
     @classmethod
     def get_desktop_mode(cls):
@@ -2097,9 +2110,6 @@ cdef class ShapePoint:
         self.outline = outline
 
 
-
-
-
 cdef class ShapePointProxy:
     cdef decl.Shape *parent
     cdef unsigned int index
@@ -2164,9 +2174,6 @@ cdef class ShapePointProxy:
             self.parent.SetPointOutlineColor(self.index, outline.p_this[0])
 
 
-
-
-
 cdef class Shape(Drawable):
     def __cinit__(self):
         self.p_this = <decl.Drawable*>new decl.Shape()
@@ -2201,6 +2208,13 @@ cdef class Shape(Drawable):
         (<decl.Shape*>self.p_this).SetPointOutlineColor(index,
                                                         point.outline.p_this[0])
     
+    property thickness:
+        def __get__(self):
+            return (<decl.Shape*>self.p_this).GetOutlineThickness()
+            
+        def __set__(self, float value):
+            (<decl.Shape*>self.p_this).SetOutlineThickness(value)
+
     @classmethod
     def line(cls, float p1x, float p1y, float p2x, float p2y, float thickness,
              Color color, float outline=0.0, Color outline_color=None):
@@ -2246,13 +2260,6 @@ cdef class Shape(Drawable):
                            outline_color.p_this[0])
 
         return  wrap_shape_instance(s)
-        
-    property thickness:
-        def __get__(self):
-            return (<decl.Shape*>self.p_this).GetOutlineThickness()
-            
-        def __set__(self, float value):
-            (<decl.Shape*>self.p_this).SetOutlineThickness(value)
     
     def append(self, ShapePoint p):
         (<decl.Shape*>self.p_this).AddPoint(p.x, p.y, p.color.p_this[0],
