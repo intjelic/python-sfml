@@ -1736,7 +1736,9 @@ cdef class Shader:
     IS_AVAILABLE = decl.IsAvailable()
 
     def __init__(self):
-        self.p_this = new decl.Shader()
+        raise NotImplementedError(
+            "Use class methods like Shader.load_from_file() "
+            "to create Shader objects")
 
     def __dealloc__(self):
         del self.p_this

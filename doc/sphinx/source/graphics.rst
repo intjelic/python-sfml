@@ -107,6 +107,30 @@ Image display
 
 
 
+.. class:: Shader
+
+   The constructor will raise ``NotImplementedError`` if called.  Use
+   class methods like :meth:`load_from_file()` or :meth:`load_from_memory()`
+   instead.
+
+   .. classmethod:: load_from_file(filename)
+   .. classmethod:: load_from_memory(str shader)
+
+   .. method:: bind()
+
+   .. method:: set_parameter(str name, float x[, float y, float z, float w])
+
+      After *name*, you can pass as many parameters as four, depending
+      on your need.
+
+   .. method:: set_texture(str name[, image])
+
+      If you don't specify an image, the current texture will be used.
+      (This is the same as passing ``sf::Shader::CurrentTexture`` in C++.)
+
+   .. method:: unbind()
+
+
 
 Windowing
 ---------
@@ -286,10 +310,6 @@ Text
 
 To do...
 --------
-
-
-.. class:: Shader
-
 
 
 .. class:: Drawable
