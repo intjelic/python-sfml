@@ -16,15 +16,15 @@ def main():
     
     rect0 = sf.Shape.rectangle(5, 5, 90, 50, sf.Color.GREEN, 2, sf.Color.BLUE)
     rect1 = sf.Shape.rectangle_from_rect(sf.FloatRect(20.0, 30.0, 50.0, 50.0),
-                                   sf.Color.CYAN)
+                                         sf.Color.CYAN)
     ri = sf.RenderImage(110, 110)
     ri.clear(sf.Color(0, 0, 0, 0))
     ri.draw(rect0)
     ri.draw(rect1)
     ri.display()
     s = sf.Sprite(ri.image)
-    s.origin = 55, 55
-    s.position = 320, 240
+    s.origin = (55, 55)
+    s.position = (320, 240)
 
     while running:
         for event in window.iter_events():

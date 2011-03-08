@@ -29,6 +29,7 @@ def main():
         window.draw(sprite, shader)
         window.draw(sprite2, shader2)
         window.display()
+
     window.close()
 
 

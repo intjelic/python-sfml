@@ -389,7 +389,6 @@ cdef class Matrix3:
 
         return wrap_matrix_instance(p)
         
-
     @classmethod
     def transformation(cls, tuple origin, tuple translation, float rotation,
                        tuple scale):
@@ -935,6 +934,9 @@ cdef Glyph wrap_glyph_instance(decl.Glyph *p_cpp_instance):
     return ret
 
 
+
+
+
 cdef class Font:
     cdef decl.Font *p_this
     cdef bint delete_this
@@ -995,6 +997,8 @@ cdef Font wrap_font_instance(decl.Font *p_cpp_instance, bint delete_this):
     ret.delete_this = delete_this
 
     return ret
+
+
 
 
 
@@ -1171,6 +1175,7 @@ cdef Image wrap_image_instance(decl.Image *p_cpp_instance, bint delete_this):
 
 
 
+
 cdef class Drawable:
     cdef decl.Drawable *p_this
 
@@ -1278,6 +1283,9 @@ cdef class Drawable:
 
     def scale(self, float x, float y):
         self.p_this.Scale(x, y)
+
+
+
 
 
 cdef class Text(Drawable):
@@ -1400,6 +1408,8 @@ cdef class Text(Drawable):
 
 
 
+
+
 cdef class Sprite(Drawable):
     def __cinit__(self, Image image=None, tuple position=(0,0),
                   tuple scale=(1,1), float rotation=0.0,
@@ -1481,6 +1491,10 @@ cdef class Sprite(Drawable):
     def set_image(self, Image image, bint adjust_to_new_size=False):
         (<decl.Sprite*>self.p_this).SetImage(image.p_this[0],
                                              adjust_to_new_size)
+
+
+
+
 
 
 cdef class VideoMode:
@@ -1673,7 +1687,6 @@ cdef class View:
 
         return wrap_view_instance(p)
         
-
     @classmethod
     def from_rect(cls, FloatRect rect):
         cdef decl.View *p = new decl.View(rect.p_this[0])
@@ -1699,6 +1712,8 @@ cdef View wrap_view_instance(decl.View *p_cpp_view):
     ret.p_this = p_cpp_view
 
     return ret
+
+
 
 
 
@@ -1744,14 +1759,6 @@ cdef class Shader:
         else:
             self.p_this.SetParameter(name, x, y, z, w)
     
-    def set_vect2_parameter(self, char *name, float x, float y):
-        cdef decl.Vector2f v = decl.Vector2f(x, y)
-        self.p_this.SetParameter(name, v)
-    
-    def set_vect3_parameter(self, char *name, float x, float y, float z):
-        cdef decl.Vector3f v = decl.Vector3f(x, y, z)
-        self.p_this.SetParameter(name, v)
-    
     def set_texture(self, char *name, Image image=None):
         if image is None:
             self.p_this.SetTexture(name, decl.CurrentTexture)
@@ -1768,6 +1775,7 @@ cdef Shader wrap_shader_instance(decl.Shader *p_cpp_instance):
     ret.p_this = p_cpp_instance
 
     return ret
+
 
 
 
@@ -1919,7 +1927,6 @@ cdef class RenderWindow:
             self.p_this.Draw(drawable.p_this[0])
         else:
             self.p_this.Draw(drawable.p_this[0], shader.p_this[0])
-#            raise NotImplementedError("The Shader class isn't available yet")
 
     def get_input(self):
         self.input.p_this = <decl.Input*>&self.p_this.GetInput()
@@ -1964,6 +1971,9 @@ cdef class RenderWindow:
 
         raise PySFMLException("Error reported by C++ method "
                               "sf::RenderWindow::WaitEvent()")
+
+
+
 
 
 cdef class RenderImage:
@@ -2065,6 +2075,10 @@ cdef class RenderImage:
         self.p_this.SaveGLStates()
 
 
+
+
+
+
 cdef class ShapePoint:
     cdef public float x, y
     cdef public Color color, outline
@@ -2072,12 +2086,18 @@ cdef class ShapePoint:
     def __init__(self, float x, float y, Color color=None, Color outline=None):
         self.x = x
         self.y = y
+
         if color is None:
             color = Color(255, 255, 255)
+
         if outline is None:
             outline = Color(0, 0, 0)
+
         self.color = color
         self.outline = outline
+
+
+
 
 
 cdef class ShapePointProxy:
@@ -2096,30 +2116,37 @@ cdef class ShapePointProxy:
         def __set__(self, tuple value):
             cdef float x = value[0]
             cdef float y = value[1]
+
             self.parent.SetPointPosition(self.index, x, y)
     
     property x:
         def __get__(self):
             cdef decl.Vector2f pos = self.parent.GetPointPosition(self.index)
+
             return pos.x
         
         def __set__(self, float x):
             cdef decl.Vector2f pos = self.parent.GetPointPosition(self.index)
+
             self.parent.SetPointPosition(self.index, x, pos.y)
             
     property y:
         def __get__(self):
             cdef decl.Vector2f pos = self.parent.GetPointPosition(self.index)
+
             return pos.y
         
         def __set__(self, float y):
             cdef decl.Vector2f pos = self.parent.GetPointPosition(self.index)
+
             self.parent.SetPointPosition(self.index, pos.x, y)
             
     property color:
         def __get__(self):
             cdef decl.Color *color = new decl.Color()
+
             color[0] = self.parent.GetPointColor(self.index)
+
             return wrap_color_instance(color)
         
         def __set__(self, Color color):
@@ -2128,11 +2155,16 @@ cdef class ShapePointProxy:
     property outline:
         def __get__(self):
             cdef decl.Color *outline = new decl.Color()
+
             outline[0] = self.parent.GetPointOutlineColor(self.index)
+
             return wrap_color_instance(outline)
         
         def __set__(self, Color outline):
             self.parent.SetPointOutlineColor(self.index, outline.p_this[0])
+
+
+
 
 
 cdef class Shape(Drawable):
@@ -2144,10 +2176,11 @@ cdef class Shape(Drawable):
     
     def __init__(self, points=None):
         cdef ShapePoint p
-        cdef float x, y
-        cdef int l_p
         cdef Color color = Color(255, 255, 255)
         cdef Color outline = Color(0, 0, 0)
+        cdef float x, y
+        cdef int l_p
+
         if points is not None:
             for p in points:
                 (<decl.Shape*>self.p_this).AddPoint(p.x, p.y, p.color.p_this[0],
@@ -2159,6 +2192,7 @@ cdef class Shape(Drawable):
     def __getitem__(self, unsigned int index):
         p = ShapePointProxy()
         p._init(<decl.Shape*>self.p_this, index)
+
         return p
     
     def __setitem__(self, unsigned int index, ShapePoint point):
@@ -2182,9 +2216,11 @@ cdef class Shape(Drawable):
                   Color color, float outline=0.0, Color outline_color=None):
         if outline_color is None:
             outline_color = Color(0, 0, 0)
+
         cdef decl.Shape *s = new decl.Shape()
         s[0] = decl.Rectangle(left, top, width, height, color.p_this[0],
                               outline, outline_color.p_this[0])
+
         return  wrap_shape_instance(s)
 
     @classmethod
@@ -2192,9 +2228,11 @@ cdef class Shape(Drawable):
                             Color outline_color=None):
         if outline_color is None:
             outline_color = Color(0, 0, 0)
+
         cdef decl.Shape *s = new decl.Shape()
         s[0] = decl.Rectangle(rect.p_this[0], color.p_this[0], outline,
                               outline_color.p_this[0])
+
         return  wrap_shape_instance(s)
 
     @classmethod
@@ -2202,9 +2240,11 @@ cdef class Shape(Drawable):
                float outline=0.0, Color outline_color=None):
         if outline_color is None:
             outline_color = Color(0, 0, 0)
+
         cdef decl.Shape *s = new decl.Shape()
         s[0] = decl.Circle(x, y, radius, color.p_this[0], outline,
                            outline_color.p_this[0])
+
         return  wrap_shape_instance(s)
         
     property thickness:
