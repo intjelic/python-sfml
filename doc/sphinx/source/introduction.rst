@@ -32,12 +32,12 @@ Also, I find that the current binding lacks some features, such as:
 
 * It doesn't follow Python's naming conventions.
 * It lacks some fancy features such as properties, exceptions and
-  iterators. (For example, my binding allows you to iterate on events
-  with a simple ``for`` loop.)
+  iterators (for example, my binding allows you to iterate on events
+  with a simple ``for`` loop).
 
 You should also note that the current PySFML release on SFML's website
 is buggy (for example, ``Image.SetSmooth()`` doesn't work).
-You'd need to compile the latest yourself to avoid these bugs.
+You'd need to compile the latest version yourself to avoid these bugs.
 
 
 Why SFML 2?
