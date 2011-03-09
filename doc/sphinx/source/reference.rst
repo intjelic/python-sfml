@@ -11,4 +11,5 @@ Every class is available in the same ``sf`` namespace.
    :maxdepth: 2
 
    graphics
+   events
    audio
