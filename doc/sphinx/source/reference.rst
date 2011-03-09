@@ -1,5 +1,5 @@
 API reference
-=========
+=============
 
 
 This reference is splitted in sections for readability only.
