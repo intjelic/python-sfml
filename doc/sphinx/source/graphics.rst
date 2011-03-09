@@ -62,6 +62,48 @@ Image display and effects
 -------------------------
 
 
+
+.. class:: Shape
+
+
+   .. attribute:: blend_mode
+   .. attribute:: color
+   .. attribute:: fill_enabled
+   .. attribute:: origin
+   .. attribute:: outline_enabled
+   .. attribute:: outline_thickness
+   .. attribute:: points_count
+   .. attribute:: position
+   .. attribute:: rotation
+   .. attribute:: scale
+   .. attribute:: x
+   .. attribute:: y
+
+   .. classmethod:: line(float p1x, float p1y, float p2x, float p2y,\
+                         float thickness, color\
+                         [, float outline=0.0[, outline_color]])
+   .. classmethod:: rectangle(float left, float top, float width,\
+                              float height, color\
+                              [, float outline=0.0[, outline_color]])
+   .. classmethod:: circle(float x, float y, float radius, color\
+                           [, float outline=0.0[, outline_color]])
+
+   .. method:: add_point(float x, float y[, color[, outline_color]])
+   .. method:: get_point_color(int index)
+   .. method:: get_point_outline_color(int index)
+   .. method:: get_point_position(int index)
+   .. method:: move(float x, float y)
+   .. method:: rotate(float angle)
+   .. method:: scale(float x, float y)
+   .. method:: set_point_color(int index, color)
+   .. method:: set_point_outline_color(int index, color)
+   .. method:: set_point_position(int index, float x, float y)
+   .. method:: tranform_to_local(float x, float y)
+   .. method:: transform_to_global(float x, float y)
+
+
+
+
 .. class:: Image(int width, int height[, color])
 
    .. attribute:: height
@@ -362,11 +404,3 @@ Text
    .. attribute:: advance
    .. attribute:: bounds
    .. attribute:: sub_rect
-
-
-
-To do...
---------
-
-
-.. class:: Shape
