@@ -4,6 +4,11 @@ Graphics
 .. module:: sf
 
 
+
+Misc
+----
+
+
 .. class:: Color(int r, int g, int b[, int a=255])
 
    Note: this class overrides comparison operators.
@@ -28,10 +33,33 @@ Graphics
 
 
 
+.. class:: Drawable
+
+   Base class for classes like :class:`Sprite` or :class:`Text`. Creating your
+   own drawables by deriving this class currently isn't supported, so you
+   shouldn't need to directly interact with it.
+
+   .. attribute:: blend_mode
+   .. attribute:: color
+   .. attribute:: origin
+   .. attribute:: position
+   .. attribute:: rotation
+   .. attribute:: scale
+   .. attribute:: x
+   .. attribute:: y
+
+   .. method:: tranform_to_local(float x, float y)
+   .. method:: transform_to_global(float x, float y)
+   .. method:: move(float x, float y)
+   .. method:: rotate(float angle)
+   .. method:: scale(float x, float y)
 
 
-Image display
--------------
+
+
+
+Image display and effects
+-------------------------
 
 
 .. class:: Image(int width, int height[, color])
@@ -129,6 +157,36 @@ Image display
       (This is the same as passing ``sf::Shader::CurrentTexture`` in C++.)
 
    .. method:: unbind()
+
+
+
+
+.. class:: RenderImage(int width, int height[, bool depth=False])
+
+   .. attribute:: IS_AVAILABLE
+
+      Boolean class attribute equal to ``True`` if the class is available::
+
+         print sf.RenderImage.IS_AVAILABLE
+
+   .. attribute:: active
+   .. attribute:: default_view
+   .. attribute:: height
+   .. attribute:: image
+   .. attribute:: smooth
+   .. attribute:: view
+   .. attribute:: width
+    
+   .. method:: clear([color])
+   .. method:: convert_coords(int x, int y[, view])
+   .. method:: create(int width, int height[, bool depth=False])
+   .. method:: display()
+   .. method:: draw(drawable[, shader])
+   .. method:: get_viewport(view)
+   .. method:: restore_gl_states()
+   .. method:: save_gl_states()
+
+
 
 
 
@@ -262,17 +320,16 @@ Text
 
    .. attribute:: blend_mode
    .. attribute:: color
-   .. attribute:: origin
-   .. attribute:: position
-   .. attribute:: rotation
-   .. attribute:: scale
-   .. attribute:: x
-   .. attribute:: y
-
    .. attribute:: character_size
    .. attribute:: font
+   .. attribute:: origin
+   .. attribute:: position
    .. attribute:: rect
+   .. attribute:: rotation
+   .. attribute:: scale
    .. attribute:: string
+   .. attribute:: x
+   .. attribute:: y
 
       This attribute can be set as either a ``str`` or ``unicode``
       object. The value retrieved will be either ``str`` or
@@ -310,14 +367,6 @@ Text
 
 To do...
 --------
-
-
-.. class:: Drawable
-
-
-
-.. class:: RenderImage
-
 
 
 .. class:: Shape

@@ -1999,7 +1999,8 @@ cdef class RenderImage:
     def __cinit__(self):
         self.p_this = new decl.RenderImage()
     
-    def __init__(self, unsigned int width, unsigned height, bint depth=False):
+    def __init__(self, unsigned int width, unsigned int height,
+                 bint depth=False):
         self.create(width, height, depth)
     
     def __dealloc__(self):
