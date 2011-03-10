@@ -36,6 +36,7 @@ Multimedia Library)."""
 from libc.stdlib cimport malloc, free
 from libcpp.vector cimport vector
 from cython.operator cimport preincrement as preinc, dereference as deref
+cimport cpython.object
 
 cimport decl
 cimport declaudio
@@ -742,6 +743,132 @@ cdef class Sound:
     def stop(self):
         self.p_this.Stop()
 
+
+
+
+cdef class Music:
+    cdef declaudio.Music *p_this
+
+    STOPPED = declaudio.Stopped
+    PAUSED = declaudio.Paused
+    PLAYING = declaudio.Playing
+
+    def __init__(self):
+        raise NotImplementedError(
+            "Use class methods like open_from_file() or open_from_memory() "
+            "to create Music objects")
+
+    def __dealloc__(self):
+        del self.p_this
+
+    property attenuation:
+        def __get__(self):
+            return self.p_this.GetAttenuation()
+
+        def __set__(self, float value):
+            self.p_this.SetAttenuation(value)
+
+    property channels_count:
+        def __get__(self):
+            return self.p_this.GetChannelsCount()
+
+    property duration:
+        def __get__(self):
+            return self.p_this.GetDuration()
+
+    property loop:
+        def __get__(self):
+            return self.p_this.GetLoop()
+
+        def __set__(self, bint value):
+            self.p_this.SetLoop(value)
+
+    property min_distance:
+        def __get__(self):
+            return self.p_this.GetMinDistance()
+
+        def __set__(self, float value):
+            self.p_this.SetMinDistance(value)
+
+    property pitch:
+        def __get__(self):
+            return self.p_this.GetPitch()
+
+        def __set__(self, float value):
+            self.p_this.SetPitch(value)
+
+    property playing_offset:
+        def __get__(self):
+            return self.p_this.GetPlayingOffset()
+
+        def __set__(self, float value):
+            self.p_this.SetPlayingOffset(value)
+
+    property position:
+        def __get__(self):
+            cdef decl.Vector3f pos = self.p_this.GetPosition()
+
+            return (pos.x, pos.y, pos.z)
+
+        def __set__(self, tuple value):
+            x, y, z = value
+            self.p_this.SetPosition(x, y, z)
+
+    property relative_to_listener:
+        def __get__(self):
+            return self.p_this.IsRelativeToListener()
+
+        def __set__(self, bint value):
+            self.p_this.SetRelativeToListener(value)
+
+    property sample_rate:
+        def __get__(self):
+            return self.p_this.GetSampleRate()
+
+    property status:
+        def __get__(self):
+            return <int>self.p_this.GetStatus()
+
+    property volume:
+        def __get__(self):
+            return self.p_this.GetVolume()
+
+        def __set__(self, float value):
+            self.p_this.SetVolume(value)
+
+    @classmethod
+    def open_from_file(cls, char* filename):
+        cdef declaudio.Music *p = new declaudio.Music()
+
+        if p.OpenFromFile(filename):
+            return wrap_music_instance(p)
+
+        raise PySFMLException("Couldn't open music in file " + filename)
+
+    @classmethod
+    def open_from_memory(cls, bytes data):
+        cdef declaudio.Music *p = new declaudio.Music()
+
+        if p.OpenFromMemory(<char*>data, len(data)):
+            return wrap_music_instance(p)
+
+        raise PySFMLException("Couldn't open music from memory")
+
+    def pause(self):
+        self.p_this.Pause()
+
+    def play(self):
+        self.p_this.Play()
+
+    def stop(self):
+        self.p_this.Stop()
+
+cdef Music wrap_music_instance(declaudio.Music *p_cpp_instance):
+    cdef Music ret = Music.__new__(Music)
+
+    ret.p_this = p_cpp_instance
+
+    return ret
 
 
 

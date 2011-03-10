@@ -37,13 +37,48 @@ Audio
    .. attribute:: relative_to_listener
    .. attribute:: status
 
-      Can be one of:
+      Read-only. Can be one of:
 
       * sf.Sound.STOPPED
       * sf.Sound.PAUSED
       * sf.Sound.PLAYING
 
    .. attribute:: volume
+
+   .. method:: pause()
+   .. method:: play()
+   .. method:: stop()
+
+
+
+
+.. class:: Music
+
+   Will raise ``NotImplementedError`` if the constructor is called. Use class
+   methods instead.
+
+   .. attribute:: attenuation
+   .. attribute:: channels_count
+   .. attribute:: duration
+   .. attribute:: loop
+   .. attribute:: min_distance
+   .. attribute:: pitch
+   .. attribute:: playing_offset
+   .. attribute:: position
+   .. attribute:: relative_to_listener
+   .. attribute:: sample_rate
+   .. attribute:: status
+
+      Read-onlt. Can be one of:
+
+      * sf.Music.STOPPED
+      * sf.Music.PAUSED
+      * sf.Music.PLAYING
+
+   .. attribute:: volume
+
+   .. classmethod:: open_from_file(filename)
+   .. classmethod:: open_from_memory(str data)
 
    .. method:: pause()
    .. method:: play()
