@@ -35,6 +35,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Style":
     int Resize
     int Close
     int Fullscreen
+    int Default
 
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Text":

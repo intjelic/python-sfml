@@ -204,6 +204,7 @@ cdef class Style:
     RESIZE = declstyle.Resize
     CLOSE = declstyle.Close
     FULLSCREEN = declstyle.Fullscreen
+    DEFAULT = declstyle.Default
 
 
 
@@ -1799,14 +1800,11 @@ cdef class RenderWindow:
     cdef decl.RenderWindow *p_this
     cdef Input input
 
-    def __cinit__(self, VideoMode mode, char* title, style=None):
-        self.input = Input.__new__(Input)
+    def __cinit__(self, VideoMode mode, char* title, int style=Style.DEFAULT):
+        self.p_this = new decl.RenderWindow(mode.p_this[0], title, style)
 
-        if style is None:
-            self.p_this = new decl.RenderWindow(mode.p_this[0], title)
-        else:
-            self.p_this = new decl.RenderWindow(mode.p_this[0], title,
-                                                <int?>style)
+    def __init__(self, *args, **kwargs):
+        self.input = Input.__new__(Input)
 
     def __dealloc__(self):
         del self.p_this
@@ -1933,6 +1931,10 @@ cdef class RenderWindow:
             res = self.p_this.ConvertCoords(x, y, view.p_this[0])
 
         return (res.x, res.y)
+
+    # TODO: add ContextSettings parameters
+    def create(self, VideoMode mode, char* title, int style=Style.DEFAULT):
+        self.p_this.Create(mode.p_this[0], title, style)
 
     def display(self):
         self.p_this.Display()
