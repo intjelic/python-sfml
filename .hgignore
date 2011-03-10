@@ -1,5 +1,7 @@
 syntax: glob
 
+MANIFEST
+sf.cpp
 build/
 *~
 sf.so
