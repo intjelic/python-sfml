@@ -1,0 +1,7 @@
+include LICENSE.txt
+include sf.cpp
+include examples/*.py
+include doc/sphinx/source/*.rst
+include doc/sphinx/source/conf.py
+include doc/sphinx/Makefile
+include doc/sphinx/make.bat
