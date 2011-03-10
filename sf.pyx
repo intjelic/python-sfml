@@ -55,7 +55,7 @@ cdef class RenderWindow
 
 
 class PySFMLException(Exception):
-    """Base class for the exceptions raised by PySFML."""
+    pass
 
 
 

@@ -10,6 +10,7 @@ Every class is available in the same ``sf`` namespace.
 .. toctree::
    :maxdepth: 2
 
+   exceptions
    graphics
    events
    audio
