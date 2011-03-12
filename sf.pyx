@@ -36,7 +36,6 @@ Multimedia Library)."""
 from libc.stdlib cimport malloc, free
 from libcpp.vector cimport vector
 from cython.operator cimport preincrement as preinc, dereference as deref
-cimport cpython.object
 
 cimport decl
 cimport declaudio

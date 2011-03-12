@@ -27,6 +27,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+
 # Set to False if you don't have Cython installed. The script will
 # then build the extension module from the sf.cpp file, like a regular
 # extension.
