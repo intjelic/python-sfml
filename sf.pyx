@@ -1922,6 +1922,66 @@ cdef Shader wrap_shader_instance(decl.Shader *p_cpp_instance):
 
 
 
+cdef class ContextSettings:
+    cdef decl.ContextSettings *p_this
+
+    def __cinit__(self, unsigned int depth=24, unsigned int stencil=8,
+                  unsigned int antialiasing=0, unsigned int major=2,
+                  unsigned int minor=0):
+        self.p_this = new decl.ContextSettings(depth, stencil, antialiasing,
+                                               major, minor)
+
+    def __dealloc__(self):
+        del self.p_this
+
+    property antialiasing_level:
+        def __get__(self):
+            return self.p_this.AntialiasingLevel
+
+        def __set__(self, unsigned int value):
+            self.p_this.AntialiasingLevel = value
+
+    property depth_bits:
+        def __get__(self):
+            return self.p_this.DepthBits
+
+        def __set__(self, unsigned int value):
+            self.p_this.DepthBits = value
+
+    property major_version:
+        def __get__(self):
+            return self.p_this.MajorVersion
+
+        def __set__(self, unsigned int value):
+            self.p_this.MajorVersion = value
+
+    property minor_version:
+        def __get__(self):
+            return self.p_this.MinorVersion
+
+        def __set__(self, unsigned int value):
+            self.p_this.MinorVersion = value
+
+    property stencil_bits:
+        def __get__(self):
+            return self.p_this.StencilBits
+
+        def __set__(self, unsigned int value):
+            self.p_this.StencilBits = value
+
+
+cdef ContextSettings wrap_context_settings_instance(
+    decl.ContextSettings *p_cpp_instance):
+    cdef ContextSettings ret = ContextSettings.__new__(ContextSettings)
+
+    ret.p_this = p_cpp_instance
+
+    return ret
+
+
+
+
+
 cdef class RenderWindow:
     cdef decl.RenderWindow *p_this
     cdef Input input
@@ -1997,8 +2057,11 @@ cdef class RenderWindow:
 
     property settings:
         def __get__(self):
-            raise NotImplementedError(
-                "The ContextSettings class isn't available yet")
+            cdef decl.ContextSettings *p = new decl.ContextSettings()
+
+            p[0] = self.p_this.GetSettings()
+
+            return wrap_context_settings_instance(p)
 
     property show_mouse_cursor:
         def __set__(self, bint value):
@@ -2058,9 +2121,12 @@ cdef class RenderWindow:
 
         return (res.x, res.y)
 
-    # TODO: add ContextSettings parameters
-    def create(self, VideoMode mode, char* title, int style=Style.DEFAULT):
-        self.p_this.Create(mode.p_this[0], title, style)
+    def create(self, VideoMode mode, char* title, int style=Style.DEFAULT,
+               ContextSettings settings=None):
+        if settings is None:
+            self.p_this.Create(mode.p_this[0], title, style)
+        else:
+            self.p_this.Create(mode.p_this[0], title, style, settings.p_this[0])
 
     def display(self):
         self.p_this.Display()

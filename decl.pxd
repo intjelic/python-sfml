@@ -358,6 +358,17 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass ContextSettings:
         ContextSettings()
+        ContextSettings(unsigned int)
+        ContextSettings(unsigned int, unsigned int)
+        ContextSettings(unsigned int, unsigned int, unsigned int)
+        ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int)
+        ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int,
+                        unsigned int)
+        unsigned int AntialiasingLevel
+        unsigned int DepthBits
+        unsigned int MajorVersion
+        unsigned int MinorVersion
+        unsigned int StencilBits
 
     cdef cppclass WindowHandle:
         pass
