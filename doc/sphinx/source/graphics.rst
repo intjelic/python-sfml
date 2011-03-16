@@ -44,7 +44,11 @@ Misc
    .. attribute:: origin
    .. attribute:: position
    .. attribute:: rotation
-   .. attribute:: scale
+   .. attribute:: the_scale
+
+      Note that this attribute is named ``the_scale`` to avoid clashes with the
+      :meth:`scale()` method.
+
    .. attribute:: x
    .. attribute:: y
 
@@ -75,7 +79,7 @@ Image display and effects
    .. attribute:: points_count
    .. attribute:: position
    .. attribute:: rotation
-   .. attribute:: scale
+   .. attribute:: the_scale
    .. attribute:: x
    .. attribute:: y
 
@@ -153,7 +157,7 @@ Image display and effects
    .. attribute:: origin
    .. attribute:: position
    .. attribute:: rotation
-   .. attribute:: scale
+   .. attribute:: the_scale
    .. attribute:: size
    .. attribute:: sub_rect
    .. attribute:: width
@@ -382,7 +386,7 @@ Text
    .. attribute:: position
    .. attribute:: rect
    .. attribute:: rotation
-   .. attribute:: scale
+   .. attribute:: the_scale
    .. attribute:: string
    .. attribute:: x
    .. attribute:: y

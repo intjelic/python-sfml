@@ -1362,7 +1362,7 @@ cdef class Drawable:
         def __set__(self, float value):
             self.p_this.SetRotation(value)
 
-    property scale:
+    property the_scale:
         def __get__(self):
             cdef decl.Vector2f scale = self.p_this.GetScale()
 
