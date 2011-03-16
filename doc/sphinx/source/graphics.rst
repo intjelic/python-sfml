@@ -271,6 +271,8 @@ Windowing
    .. method:: clear([color])
    .. method:: close()
    .. method:: convert_coords(x, y[, view])
+   .. method:: create(VideoMode mode, title\
+                      [, int style[, ContextSettings settings]])
    .. method:: display()
    .. method:: draw()
    .. method:: get_input()
@@ -288,6 +290,18 @@ Windowing
    .. method:: set_icon(int width, int height, str pixels)
    .. method:: show(show)
    .. method:: wait_event()
+
+
+
+
+.. class:: ContextSettings(int depth=24, int stencil=8, int antialiasing=0,\
+                           int major=2, int minor=0)
+
+   .. attribute:: antialiasing_level
+   .. attribute:: depth_bits
+   .. attribute:: major_version
+   .. attribute:: minor_version
+   .. attribute:: stencil_bits
 
 
 
