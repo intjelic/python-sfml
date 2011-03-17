@@ -274,7 +274,7 @@ cdef decl.IntRect convert_to_int_rect(value):
     if isinstance(value, tuple):
         return decl.IntRect(value[0], value[1], value[2], value[3])
     
-    raise TypeError("Required IntRect or tuple, found {0}".format(type(value)))
+    raise TypeError("Expected IntRect or tuple, found {0}".format(type(value)))
 
 
 
@@ -342,6 +342,113 @@ cdef FloatRect wrap_float_rect_instance(decl.FloatRect *p_cpp_instance):
 
 
 
+cdef class Vector2f:
+    cdef decl.Vector2f *p_this
+
+    def __cinit__(self, float x=0.0, float y=0.0):
+        self.p_this = new decl.Vector2f(x, y)
+
+    def __dealloc__(self):
+        del self.p_this
+
+    def __repr__(self):
+        return 'Vector2f({0}, {1})'.format(self.x, self.y)
+
+    def __richcmp__(Vector2f a, Vector2f b, int op):
+        # ==
+        if op == 2:
+            return a.x == b.x and a.y == b.y
+        # !=
+        elif op == 3:
+            return a.x != b.x or a.y != b.y
+
+        return NotImplemented
+
+    def __add__(a, b):
+        if isinstance(a, Vector2f) and isinstance(b, Vector2f):
+            return Vector2f(a.x + b.x, a.y + b.y)
+
+        return NotImplemented
+
+    def __iadd__(self, b):
+        if isinstance(b, Vector2f):
+            self.p_this.x += b.x
+            self.p_this.y += b.y
+        else:
+            return NotImplemented
+
+    def __sub__(a, b):
+        if isinstance(a, Vector2f) and isinstance(b, Vector2f):
+            return Vector2f(a.x - b.x, a.y - b.y)
+
+    def __isub__(self, b):
+        if isinstance(b, Vector2f):
+            self.p_this.x -= b.x
+            self.p_this.y -= b.y
+        else:
+            return NotImplemented
+
+    def __mul__(a, b):
+        if isinstance(a, Vector2f) and isinstance(b, (int, float)):
+            return Vector2f(a.x * b, a.y * b)
+        elif isinstance(a, (int, float)) and isinstance(b, Vector2f):
+            return Vector2f(b.x * a, b.y * a)
+
+        return NotImplemented
+
+    def __imul__(self, b):
+        if isinstance(b, (int, float)):
+            self.p_this.x *= b
+            self.p_this.y *= b
+        else:
+            return NotImplemented
+
+    def __div__(a, b):
+        if isinstance(a, Vector2f) and isinstance(b, (int, float)):
+            return Vector2f(a.x / <float>b, a.y / <float>b)
+
+        return NotImplemented
+
+    def __idiv__(self, b):
+        if isinstance(b, (int, float)):
+            self.p_this.x /= <float>b
+            self.p_this.y /= <float>b
+        else:
+            return NotImplemented
+
+    property x:
+        def __get__(self):
+            return self.p_this.x
+
+        def __set__(self, float value):
+            self.p_this.y = value
+
+    property y:
+        def __get__(self):
+            return self.p_this.y
+
+        def __set__(self, float value):
+            self.p_this.y = value
+
+    @classmethod
+    def from_tuple(cls, tuple t):
+        return Vector2f(t[0], t[1])
+
+
+cdef decl.Vector2f convert_to_vector2f(value):
+    if isinstance(value, Vector2f):
+        return (<Vector2f>value).p_this[0]
+
+    if isinstance(value, tuple):
+        return decl.Vector2f(value[0], value[1])
+    
+    raise TypeError("Expected Vector2f or tuple, found {0}".format(type(value)))
+
+
+
+
+
+
 cdef class Matrix3:
     cdef decl.Matrix3 *p_this
 
@@ -379,28 +486,21 @@ cdef class Matrix3:
         return wrap_matrix_instance(p)
 
     @classmethod
-    def projection(cls, tuple center, tuple size, float rotation):
-        cdef decl.Vector2f cpp_center
-        cdef decl.Vector2f cpp_size
-        cdef decl.Matrix3 *p
+    def projection(cls, center, size, float rotation):
+        cdef decl.Vector2f cpp_center = convert_to_vector2f(center)
+        cdef decl.Vector2f cpp_size = convert_to_vector2f(size)
+        cdef decl.Matrix3 *p = new decl.Matrix3()
 
-        cpp_center.x, cpp_center.y = center
-        cpp_size.x, cpp_size.y = size
         p[0] = decl.Projection(cpp_center, cpp_size, rotation)
 
         return wrap_matrix_instance(p)
         
     @classmethod
-    def transformation(cls, tuple origin, tuple translation, float rotation,
-                       tuple scale):
-        cdef decl.Vector2f cpp_origin
-        cdef decl.Vector2f cpp_translation
-        cdef decl.Vector2f cpp_scale
+    def transformation(cls, origin, translation, float rotation, scale):
+        cdef decl.Vector2f cpp_origin = convert_to_vector2f(origin)
+        cdef decl.Vector2f cpp_translation = convert_to_vector2f(translation)
+        cdef decl.Vector2f cpp_scale = convert_to_vector2f(scale)
         cdef decl.Matrix3 *p = new decl.Matrix3()
-
-        cpp_origin.x, cpp_origin.y = origin
-        cpp_translation.x, cpp_translation.y = translation
-        cpp_scale.x, cpp_scale.y = scale
 
         p[0] = decl.Transformation(cpp_origin, cpp_translation, rotation,
                                    cpp_scale)
@@ -415,12 +515,10 @@ cdef class Matrix3:
 
         return wrap_matrix_instance(p)
 
-    def transform(self, tuple point):
-        cdef decl.Vector2f cpp_point
+    def transform(self, point):
+        cdef decl.Vector2f cpp_point = convert_to_vector2f(point)
         cdef decl.Vector2f res
 
-        cpp_point.x = point.x
-        cpp_point.y = point.y
         res = self.p_this.Transform(cpp_point)
 
         return (res.x, res.y)
@@ -712,7 +810,6 @@ cdef class Sound:
 
         def __set__(self, tuple value):
             x, y, z = value
-
             self.p_this.SetPosition(x, y, z)
 
     property relative_to_listener:
@@ -1150,15 +1247,15 @@ cdef class Image:
         if self.delete_this:
             del self.p_this
 
-    def __getitem__(self, tuple coords):
-        x, y = coords
+    def __getitem__(self, coords):
+        cdef decl.Vector2f v = convert_to_vector2f(coords)
 
-        return self.get_pixel(x, y)
+        return self.get_pixel(v.x, v.y)
 
-    def __setitem__(self, tuple coords, Color color):
-        x, y = coords
+    def __setitem__(self, coords, Color color):
+        cdef decl.Vector2f v = convert_to_vector2f(coords)
 
-        self.set_pixel(x, y, color)
+        self.set_pixel(v.x, v.y, color)
 
     property height:
         def __get__(self):
@@ -1341,9 +1438,10 @@ cdef class Drawable:
 
             return (origin.x, origin.y)
 
-        def __set__(self, tuple value):
-            x, y = value
-            self.p_this.SetOrigin(x, y)
+        def __set__(self, value):
+            cdef decl.Vector2f v = convert_to_vector2f(value)
+
+            self.p_this.SetOrigin(v.x, v.y)
 
     property position:
         def __get__(self):
@@ -1351,9 +1449,10 @@ cdef class Drawable:
 
             return (pos.x, pos.y)
 
-        def __set__(self, tuple value):
-            x, y = value
-            self.p_this.SetPosition(x, y)
+        def __set__(self, value):
+            cdef decl.Vector2f v = convert_to_vector2f(value)
+
+            self.p_this.SetPosition(v.x, v.y)
 
     property rotation:
         def __get__(self):
@@ -1368,9 +1467,10 @@ cdef class Drawable:
 
             return (scale.x, scale.y)
 
-        def __set__(self, tuple value):
-            x, y = value
-            self.p_this.SetScale(x, y)
+        def __set__(self, value):
+            cdef decl.Vector2f v = convert_to_vector2f(value)
+
+            self.p_this.SetScale(v.x, v.y)
 
     property x:
         def __get__(self):
@@ -1542,19 +1642,14 @@ cdef class Text(Drawable):
 
 
 cdef class Sprite(Drawable):
-    def __cinit__(self, Image image=None, tuple position=(0,0),
-                  tuple scale=(1,1), float rotation=0.0,
-                  Color color=Color.WHITE):
-        cdef decl.Vector2f cpp_position
-        cdef decl.Vector2f cpp_scale
+    def __cinit__(self, Image image=None, position=(0,0), scale=(1,1),
+                  float rotation=0.0, Color color=Color.WHITE):
+        cdef decl.Vector2f cpp_position = convert_to_vector2f(position)
+        cdef decl.Vector2f cpp_scale = convert_to_vector2f(scale)
 
         if image is None:
             self.p_this = <decl.Drawable*>new decl.Sprite()
         else:
-            cpp_position.x = position[0]
-            cpp_position.y = position[1]
-            cpp_scale.x = scale[0]
-            cpp_scale.y = scale[1]
             self.p_this = <decl.Drawable*>new decl.Sprite(image.p_this[0],
                                                           cpp_position,
                                                           cpp_scale,
@@ -1564,10 +1659,10 @@ cdef class Sprite(Drawable):
     def __dealloc__(self):
         del self.p_this
 
-    def __getitem__(self, tuple coords):
-        x, y = coords
+    def __getitem__(self, coords):
+        cdef decl.Vector2f v = convert_to_vector2f(coords)
 
-        return self.get_pixel(x, y)
+        return self.get_pixel(v.x, v.y)
 
     property height:
         def __get__(self):
@@ -1763,12 +1858,10 @@ cdef class View:
 
             return (center.x, center.y)
 
-        def __set__(self, tuple value):
-            cdef float x
-            cdef float y
+        def __set__(self, value):
+            cdef decl.Vector2f v = convert_to_vector2f(value)
 
-            x, y = value
-            self.p_this.SetCenter(x, y)
+            self.p_this.SetCenter(v.x, v.y)
 
     property height:
         def __get__(self):
@@ -1790,12 +1883,10 @@ cdef class View:
 
             return (size.x, size.y)
 
-        def __set__(self, tuple value):
-            cdef float x
-            cdef float y
+        def __set__(self, value):
+            cdef decl.Vector2f v = convert_to_vector2f(value)
 
-            x, y = value
-            self.p_this.SetSize(x, y)
+            self.p_this.SetSize(v.x, v.y)
 
     property viewport:
         def __get__(self):
@@ -1816,13 +1907,11 @@ cdef class View:
             self.size = (value, self.height)
 
     @classmethod
-    def from_center_and_size(cls, tuple center, tuple size):
-        cdef decl.Vector2f cpp_center
-        cdef decl.Vector2f cpp_size
+    def from_center_and_size(cls, center, size):
+        cdef decl.Vector2f cpp_center = convert_to_vector2f(center)
+        cdef decl.Vector2f cpp_size = convert_to_vector2f(size)
         cdef decl.View *p
 
-        cpp_center.x, cpp_center.y = center
-        cpp_size.x, cpp_size.y = size
         p = new decl.View(cpp_center, cpp_size)
 
         return wrap_view_instance(p)
