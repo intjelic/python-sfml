@@ -11,6 +11,7 @@ Every class is available in the same ``sf`` namespace.
    :maxdepth: 2
 
    exceptions
+   system
    graphics
    events
    audio
