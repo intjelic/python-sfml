@@ -11,7 +11,8 @@ Misc
 
 .. class:: Color(int r, int g, int b[, int a=255])
 
-   Note: this class overrides comparison operators.
+   Note: this class overrides some comparison and arithmetic operators in the
+   same way that the C++ class does..
 
    The following colors are available as static attibutes, e.g. you can use
    ``sf.Color.WHITE`` to obtain a reference to the white color.
@@ -57,6 +58,30 @@ Misc
    .. method:: move(float x, float y)
    .. method:: rotate(float angle)
    .. method:: scale(float x, float y)
+
+
+
+.. class:: Matrix3(float a00, float a01, float a02,\
+                   float a10, float a11, float a12,\
+                   float a20, float a21, float a22)
+
+   Note: this class overrides the multiplication operator.
+
+   .. attribute:: IDENTITY
+
+      Class attribute containing the identity matrix.
+
+   .. classmethod:: projection(center, size, float rotation)
+   .. classmethod:: transformation(origin, translation, float rotation, scale)
+
+   .. method:: __str__()
+
+      Return the content of the matrix in a human-readable format.
+
+   .. method:: get_inverse()
+   .. method:: transform()
+
+
 
 
 
