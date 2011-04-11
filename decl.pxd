@@ -347,6 +347,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void Bind()
         bint LoadFromFile(char*)
         bint LoadFromMemory(char*)
+        void SetCurrentTexture(char*)
         void SetParameter(char*, float)
         void SetParameter(char*, float, float)
         void SetParameter(char*, float, float, float)
@@ -490,10 +491,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Font":
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
     cdef bint IsAvailable()
-    cdef Image CurrentTexture
-
-cdef extern from "SFML/Graphics.hpp" namespace "sf::RenderImage":
-    cdef bint RenderImageIsAvailable "sf::RenderImage::IsAvailable" ()
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Shape":
     cdef Shape Line(float, float, float, float, float, Color&, float)

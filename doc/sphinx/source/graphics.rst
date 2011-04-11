@@ -222,23 +222,14 @@ Image display and effects
       After *name*, you can pass as many parameters as four, depending
       on your need.
 
-   .. method:: set_texture(str name[, image])
-
-      If you don't specify an image, the current texture will be used.
-      (This is the same as passing ``sf::Shader::CurrentTexture`` in C++.)
-
+   .. method:: set_texture(str name)
+   .. method:: set_current_texture(str name)
    .. method:: unbind()
 
 
 
 
 .. class:: RenderImage(int width, int height[, bool depth=False])
-
-   .. attribute:: IS_AVAILABLE
-
-      Boolean class attribute equal to ``True`` if the class is available::
-
-         print sf.RenderImage.IS_AVAILABLE
 
    .. attribute:: active
    .. attribute:: default_view

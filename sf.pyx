@@ -1959,6 +1959,10 @@ cdef class Shader:
     def __dealloc__(self):
         del self.p_this
 
+    property current_texture:
+        def __set__(self, char* value):
+            self.p_this.SetCurrentTexture(value)
+
     @classmethod
     def load_from_file(cls, char *filename):
         cdef decl.Shader *p = new decl.Shader()
@@ -1990,11 +1994,11 @@ cdef class Shader:
         else:
             self.p_this.SetParameter(name, x, y, z, w)
     
-    def set_texture(self, char *name, Image image=None):
-        if image is None:
-            self.p_this.SetTexture(name, decl.CurrentTexture)
-        else:
-            self.p_this.SetTexture(name, image.p_this[0])
+    def set_texture(self, char *name, Image image):
+        self.p_this.SetTexture(name, image.p_this[0])
+
+    def set_current_texture(self, char* name):
+        self.p_this.SetCurrentTexture(name)
 
     def unbind(self):
         self.p_this.Unbind()
@@ -2276,8 +2280,6 @@ cdef class RenderWindow:
 
 cdef class RenderImage:
     cdef decl.RenderImage *p_this
-    
-    IS_AVAILABLE = decl.RenderImageIsAvailable()
     
     def __cinit__(self):
         self.p_this = new decl.RenderImage()
