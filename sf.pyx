@@ -2094,7 +2094,7 @@ cdef class RenderWindow:
     def __next__(self):
         cdef decl.Event *p = new decl.Event()
 
-        if self.p_this.GetEvent(p[0]):
+        if self.p_this.PollEvent(p[0]):
             return wrap_event_instance(p)
 
         raise StopIteration

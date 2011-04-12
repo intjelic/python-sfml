@@ -393,7 +393,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void Draw(Drawable&, Shader&)
         void EnableKeyRepeat(bint)
         View& GetDefaultView()
-        bint GetEvent(Event&)
+        bint PollEvent(Event&)
         float GetFrameTime()
         Input& GetInput()
         unsigned int GetHeight()
