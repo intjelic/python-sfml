@@ -12,7 +12,7 @@ but this is still a work in progress.  Feel free to report any issue
 you encounter.
 
 You can find the source code and the issue tracker here:
-https://bitbucket.org/bastienleonard/pysfml2-cython
+https://github.com/bastienleonard/pysfml2-cython
 
 Currently the reference just lists the available classes, their
 members, and information specific to this binding.  For the
