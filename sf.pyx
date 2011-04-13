@@ -1122,6 +1122,13 @@ cdef class Input:
          return self.p_this.IsJoystickButtonDown(joy_id, button)
 
 
+cdef wrap_input_instance(decl.Input *p_cpp_instance):
+    cdef Input ret = Input.__new__(Input)
+
+    ret.p_this = p_cpp_instance
+
+    return ret
+
 
 
 cdef class Glyph:
@@ -2083,7 +2090,7 @@ cdef class RenderWindow:
         self.p_this = new decl.RenderWindow(mode.p_this[0], title, style)
 
     def __init__(self, *args, **kwargs):
-        self.input = Input.__new__(Input)
+        self.input = wrap_input_instance(NULL)
 
     def __dealloc__(self):
         del self.p_this
