@@ -305,6 +305,7 @@ Windowing
              if event.type == sf.Event.CLOSED:
                  # ...
 
+   .. method:: poll_event()
    .. method:: restore_gl_states()
    .. method:: save_gl_states()
    .. method:: set_icon(int width, int height, str pixels)

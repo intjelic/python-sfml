@@ -2260,6 +2260,15 @@ cdef class RenderWindow:
 
         return self
 
+    def poll_event(self):
+        cdef decl.Event *p = new decl.Event()
+
+        if self.p_this.PollEvent(p[0]):
+            return wrap_event_instance(p)
+
+        raise PySFMLException("Error reported by C++ method "
+                              "sf::RenderWindow::PollEvent()")
+
     def restore_gl_states(self):
         self.p_this.RestoreGLStates()
 
