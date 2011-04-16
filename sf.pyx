@@ -2273,10 +2273,10 @@ cdef class RenderWindow:
         self.p_this.Show(show)
 
     def wait_event(self):
-        cdef decl.Event e
+        cdef decl.Event *p = new decl.Event()
 
-        if self.p_this.WaitEvent(e):
-            return wrap_event_instance(&e)
+        if self.p_this.WaitEvent(p[0]):
+            return wrap_event_instance(p)
 
         raise PySFMLException("Error reported by C++ method "
                               "sf::RenderWindow::WaitEvent()")
