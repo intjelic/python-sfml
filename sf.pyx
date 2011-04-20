@@ -1468,11 +1468,11 @@ cdef class Drawable:
         def __set__(self, float value):
             self.p_this.SetRotation(value)
 
-    property the_scale:
+    property scale:
         def __get__(self):
             cdef decl.Vector2f scale = self.p_this.GetScale()
 
-            return (scale.x, scale.y)
+            return ScaleWrapper(self, scale.x, scale.y)
 
         def __set__(self, value):
             cdef decl.Vector2f v = convert_to_vector2f(value)
@@ -1519,9 +1519,19 @@ cdef class Drawable:
     def rotate(self, float angle):
         self.p_this.Rotate(angle)
 
-    def scale(self, float x, float y):
+    def _scale(self, float x, float y):
         self.p_this.Scale(x, y)
 
+
+class ScaleWrapper(tuple):
+    def __new__(cls, Drawable drawable, float x, float y):
+        return tuple.__new__(cls, (x, y))
+
+    def __init__(self, Drawable drawable, float x, float y):
+        self.drawable = drawable
+
+    def __call__(self, float x, float y):
+        self.drawable._scale(x, y)
 
 
 

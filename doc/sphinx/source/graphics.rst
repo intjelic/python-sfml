@@ -45,10 +45,17 @@ Misc
    .. attribute:: origin
    .. attribute:: position
    .. attribute:: rotation
-   .. attribute:: the_scale
+   .. attribute:: scale
 
-      Note that this attribute is named ``the_scale`` to avoid clashes with the
-      :meth:`scale()` method.
+      The object returned by this property will behave, but it might
+      be important in some cases to know that its exact type isn't
+      tuple, although its class does inherit tuple. In practice it
+      should behave just like a tuple, except if you write code that
+      checks for exact type using the ``type()`` function. Instead,
+      use ``isinstance()``::
+
+        if isinstance(some_object, tuple):
+            # We now know that some_object is a tuple
 
    .. attribute:: x
    .. attribute:: y
