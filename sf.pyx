@@ -1523,6 +1523,13 @@ cdef class Drawable:
         self.p_this.Scale(x, y)
 
 
+
+# This class allows the user to use the Drawable.scale attribute both
+# for GetScale()/SetScale() property and the Scale() method.  When the
+# user calls the getter for Drawable.scale, the object returned is an
+# instance of this class. It will behave like a tuple, except that the
+# call overrides __call__() so that the C++ Scale() method is called
+# when the user types some_drawable.scale().
 class ScaleWrapper(tuple):
     def __new__(cls, Drawable drawable, float x, float y):
         return tuple.__new__(cls, (x, y))
