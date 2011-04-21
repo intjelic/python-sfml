@@ -33,3 +33,43 @@ When you've done so, you can build the module by typing this command::
 
 The ``--inplace`` option means that the module will be dropped in the current
 directory, which is usually more practical.
+
+
+Building a Python 3 module
+--------------------------
+
+It's possible to build a Python 3 module, but you may get into
+problems at several levels.
+
+First of all, on my machine, the Cython class used in ``setup.py`` to
+automate Cython invocation is only installed for Python 2. It's
+probably possible to install it for Python 3, but it's not complicated
+to invoke Cython manually::
+
+    cython --cplus sf.pyx
+
+The next step is to invoke the ``setup3k.py`` script to build the
+module. Since we called Cython already, make sure that ``USE_CYTHON``
+is set to ``False`` in ``setup3k.py``, then invoke this command::
+
+    python3 setup3k.py build_ext --inplace
+
+(Note that you may have to type ``python`` instead of ``python3``;
+typically, GNU/Linux systems provide this as a way to call a specific
+version of the interpreter, but I'm not sure that's the case for all
+of them as well as Windows.)
+
+Also note that the generated file won't be called ``sf.so`` but
+something like ``sf.cpython-32mu.so``.
+
+A recurring problem with the Python 3 version of this binding is that
+the SFML API uses raw strings a lot. This maps well into Python 2: you
+just use normal string litterals most of the time, except that when
+you want to use the Unicode functionality exposed in the
+:py:class:`sf.Text` class.
+
+However, in Python 2, string literals are Unicode by default, and you
+need to use the ``b`` prefix if you want a raw string.  For example,
+when you create a :py:class:`sf.RenderWindow`::
+
+    window = sf.RenderWindow(video_mode, b'The title')
