@@ -68,7 +68,7 @@ just use normal string litterals most of the time, except that when
 you want to use the Unicode functionality exposed in the
 :py:class:`sf.Text` class.
 
-However, in Python 2, string literals are Unicode by default, and you
+However, in Python 3, string literals are Unicode by default, and you
 need to use the ``b`` prefix if you want a raw string.  For example,
 when you create a :py:class:`sf.RenderWindow`::
 
