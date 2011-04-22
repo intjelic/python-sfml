@@ -421,7 +421,7 @@ cdef class Vector2f:
             return self.p_this.x
 
         def __set__(self, float value):
-            self.p_this.y = value
+            self.p_this.x = value
 
     property y:
         def __get__(self):
