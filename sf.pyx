@@ -374,8 +374,8 @@ cdef class Vector2f:
         if isinstance(b, Vector2f):
             self.p_this.x += b.x
             self.p_this.y += b.y
-        else:
-            return NotImplemented
+            return self
+        return NotImplemented
 
     def __sub__(a, b):
         if isinstance(a, Vector2f) and isinstance(b, Vector2f):
@@ -385,8 +385,8 @@ cdef class Vector2f:
         if isinstance(b, Vector2f):
             self.p_this.x -= b.x
             self.p_this.y -= b.y
-        else:
-            return NotImplemented
+            return self
+        return NotImplemented
 
     def __mul__(a, b):
         if isinstance(a, Vector2f) and isinstance(b, (int, float)):
@@ -400,8 +400,8 @@ cdef class Vector2f:
         if isinstance(b, (int, float)):
             self.p_this.x *= b
             self.p_this.y *= b
-        else:
-            return NotImplemented
+            return self
+        return NotImplemented
 
     def __div__(a, b):
         if isinstance(a, Vector2f) and isinstance(b, (int, float)):
@@ -413,15 +413,15 @@ cdef class Vector2f:
         if isinstance(b, (int, float)):
             self.p_this.x /= <float>b
             self.p_this.y /= <float>b
-        else:
-            return NotImplemented
+            return self
+        return NotImplemented
 
     property x:
         def __get__(self):
             return self.p_this.x
 
         def __set__(self, float value):
-            self.p_this.y = value
+            self.p_this.x = value
 
     property y:
         def __get__(self):
