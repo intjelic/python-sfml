@@ -416,6 +416,9 @@ cdef class Vector2f:
             return self
         return NotImplemented
 
+    def copy(self):
+        return Vector2f(self.p_this.x, self.p_this.y)
+
     property x:
         def __get__(self):
             return self.p_this.x
