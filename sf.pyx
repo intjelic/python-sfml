@@ -1493,7 +1493,7 @@ cdef class Drawable:
         def __set__(self, float value):
             self.p_this.SetY(value)
 
-    def tranform_to_local(self, float x, float y):
+    def transform_to_local(self, float x, float y):
         cdef decl.Vector2f cpp_point
         cdef decl.Vector2f res
 
