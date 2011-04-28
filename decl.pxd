@@ -59,6 +59,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Event":
         bint Alt
         bint Control
         bint Shift
+        bint System
 
     cdef struct MouseMoveEvent:
         int X
