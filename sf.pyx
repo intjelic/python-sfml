@@ -1066,6 +1066,7 @@ cdef wrap_event_instance(decl.Event *p_cpp_instance):
         ret.alt = p_cpp_instance.Key.Alt
         ret.control = p_cpp_instance.Key.Control
         ret.shift = p_cpp_instance.Key.Shift
+        ret.system = p_cpp_instance.Key.System
     elif (p_cpp_instance.Type == declevent.MouseButtonPressed or
           p_cpp_instance.Type == declevent.MouseButtonReleased):
         ret.button = p_cpp_instance.MouseButton.Button
@@ -1496,7 +1497,7 @@ cdef class Drawable:
         def __set__(self, float value):
             self.p_this.SetY(value)
 
-    def tranform_to_local(self, float x, float y):
+    def transform_to_local(self, float x, float y):
         cdef decl.Vector2f cpp_point
         cdef decl.Vector2f res
 
