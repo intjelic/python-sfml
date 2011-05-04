@@ -2107,8 +2107,13 @@ cdef class RenderWindow:
     cdef decl.RenderWindow *p_this
     cdef Input input
 
-    def __cinit__(self, VideoMode mode, char* title, int style=Style.DEFAULT):
-        self.p_this = new decl.RenderWindow(mode.p_this[0], title, style)
+    def __cinit__(self, VideoMode mode, char* title, int style=Style.DEFAULT,
+                  ContextSettings settings=None):
+        if settings is None:
+            self.p_this = new decl.RenderWindow(mode.p_this[0], title, style)
+        else:
+            self.p_this = new decl.RenderWindow(mode.p_this[0], title, style,
+                                                settings.p_this[0])
 
     def __init__(self, *args, **kwargs):
         self.input = wrap_input_instance(NULL)
