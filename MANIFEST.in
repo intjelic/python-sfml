@@ -1,6 +1,5 @@
-include LICENSE.txt
-include sf.cpp
-include examples/*.py
+include setup.py setup3k.py *.txt sf.cpp
+recursive-include examples *.py *.txt *.png *.sfx
 include doc/sphinx/source/*.rst
 include doc/sphinx/source/conf.py
 include doc/sphinx/Makefile
