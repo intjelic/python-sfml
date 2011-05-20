@@ -33,6 +33,7 @@ from libcpp.vector cimport vector
 
 cimport declblendmode
 cimport declkey
+cimport decljoy
 cimport declmouse
 
 
@@ -183,7 +184,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         bint IsJoystickButtonDown(unsigned int JoyId, unsigned int Button)
         int GetMouseX()
         int GetMouseY()
-        float GetJoystickAxis(unsigned int JoyId, int Axis)
+        float GetJoystickAxis(unsigned int JoyId, decljoy.Axis Axis)
 
     cdef cppclass VideoMode:
         VideoMode()

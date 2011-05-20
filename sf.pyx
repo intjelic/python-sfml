@@ -1108,7 +1108,7 @@ cdef class Input:
             return self.get_mouse_y()
 
     def get_joystick_axis(self, unsigned int joy_id, int axis):
-        return self.GetJoystickAxis(joy_id, axis)
+        return self.p_this.GetJoystickAxis(joy_id, <decljoy.Axis>axis)
 
     def get_mouse_x(self):
          return self.p_this.GetMouseX()

@@ -46,4 +46,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Joy":
     int ButtonCount
 
 
-
+# Alias for the sf::Joy::Axis enum
+cdef extern from "SFML/Window.hpp" namespace "sf::Joy":
+    cdef cppclass Axis:
+        pass
