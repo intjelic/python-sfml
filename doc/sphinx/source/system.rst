@@ -22,3 +22,8 @@ System
    .. attribute:: y
 
    .. classmethod:: from_tuple(t)
+
+   .. method:: copy()
+
+      Return a new :class:`Vector2f` with ``x`` and ``y`` set to the
+      value of ``self``.
