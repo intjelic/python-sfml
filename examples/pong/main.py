@@ -45,12 +45,12 @@ def main():
 
     # Define the paddles properties
     ai_timer = sf.Clock()
-    ai_time= 0.1;
-    left_paddle_speed  = 400.0;
-    right_paddle_speed = 400.0;
+    ai_time= 100
+    left_paddle_speed  = 0.4
+    right_paddle_speed = 0.4
 
     # Define the ball properties
-    ball_speed = 400.0
+    ball_speed = 0.4
     ball_angle = 0.0
 
     while True:

@@ -802,7 +802,7 @@ cdef class Sound:
         def __get__(self):
             return self.p_this.GetPlayingOffset()
 
-        def __set__(self, float value):
+        def __set__(self, int value):
             self.p_this.SetPlayingOffset(value)
 
     property position:
