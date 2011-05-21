@@ -6,10 +6,6 @@ import sys
 
 
 def main():
-    if not sf.RenderImage.IS_AVAILABLE:
-        print "Your system doesn't support RenderImage"
-        sys.exit(1)
-    
     window = sf.RenderWindow(sf.VideoMode(640, 480), 'RenderImage example')
     window.framerate_limit = 60
     running = True
