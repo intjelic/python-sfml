@@ -263,7 +263,8 @@ Windowing
 ---------
 
 
-.. class:: RenderWindow(VideoMode mode, title[, style])
+.. class:: RenderWindow(VideoMode mode, title\
+                        [, style[, ContextSettings settings]])
 
    *style* can be one of:
 
