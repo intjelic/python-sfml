@@ -47,7 +47,9 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Event":
     int MouseMoved
     int MouseEntered
     int MouseLeft
-    int JoyButtonPressed
-    int JoyButtonReleased
-    int JoyMoved
+    int JoystickButtonPressed
+    int JoystickButtonReleased
+    int JoystickMoved
+    int JoystickConnected
+    int JoystickDisconnected
     int Count

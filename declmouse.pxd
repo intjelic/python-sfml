@@ -33,6 +33,15 @@
 # with other enums which have the same members
 
 
+cimport decl
+
+
+# Alias for the sf::Mouse::Button enum
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Mouse":
+    cdef cppclass Button:
+        pass
+
+
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Mouse":
     int Left
     int Right
@@ -41,8 +50,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Mouse":
     int XButton2
     int ButtonCount
 
-
-# Alias for the sf::Mouse::Button enum
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Mouse":
-    cdef cppclass Button:
-        pass
+    cdef bint IsButtonPressed(Button)
+    cdef decl.Vector2i GetPosition()
+    cdef decl.Vector2i GetPosition(decl.RenderWindow&)
+    cdef void SetPosition(decl.Vector2i&)
+    cdef void SetPosition(decl.Vector2i&, decl.RenderWindow&)

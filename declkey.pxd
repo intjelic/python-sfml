@@ -33,7 +33,15 @@
 # other enums which have the same members
 
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Key":
+
+
+# Hack for static methods and attributes
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Keyboard":
+    cdef cppclass Key:
+        pass
+
+    bint IsKeyPressed(Key)
+
     int A
     int B
     int C
@@ -136,11 +144,4 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Key":
     int F15
     int Pause
 
-    int Count
-
-
-
-# Alias for the sf::Key::Code enum
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Key":
-    cdef cppclass Code:
-        pass
+    int KeyCount

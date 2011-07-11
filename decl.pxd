@@ -31,6 +31,13 @@
 
 from libcpp.vector cimport vector
 
+# Forward declarations, to avoid some circular import errors when
+# these declarations are imported elsewhere (e.g. from declmouse.pxd)
+cdef extern from "SFML/Graphics.hpp" namespace "sf":
+    cppclass RenderWindow
+    cppclass Vector2i
+
+
 cimport declblendmode
 cimport declkey
 cimport decljoy
@@ -55,6 +62,10 @@ cdef extern from "<string>" namespace "std":
 
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Event":
+    cdef struct SizeEvent:
+        unsigned int Width
+        unsigned int Height
+
     cdef struct KeyEvent:
         int Code
         bint Alt
@@ -79,18 +90,17 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Event":
         int X
         int Y
 
-    cdef struct JoyMoveEvent:
+    cdef struct JoystickMoveEvent:
         unsigned int JoystickId
         int Axis
         float Position
 
-    cdef struct JoyButtonEvent:
+    cdef struct JoystickButtonEvent:
         unsigned int JoystickId
         unsigned int Button
 
-    cdef struct SizeEvent:
-        unsigned int Width
-        unsigned int Height
+    cdef struct JoystickConnectEvent:
+        unsigned int JoystickId
 
 
 
@@ -110,6 +120,12 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         Vector2f(float, float)
         float x
         float y
+
+    cdef cppclass Vector2i:
+        Vector2i()
+        Vector2i(int, int)
+        int x
+        int y
 
     cdef cppclass Vector3f:
         Vector3f()
@@ -168,23 +184,15 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
     cdef cppclass Event:
         Event()
         int Type
+        SizeEvent Size
         KeyEvent Key
         MouseMoveEvent MouseMove
         MouseButtonEvent MouseButton
         TextEvent Text
         MouseWheelEvent MouseWheel
-        JoyMoveEvent JoyMove
-        JoyButtonEvent JoyButton
-        SizeEvent Size
-
-    cdef cppclass Input:
-        Input()
-        bint IsKeyDown(declkey.Code KeyCode)
-        bint IsMouseButtonDown(declmouse.Button Button)
-        bint IsJoystickButtonDown(unsigned int JoyId, unsigned int Button)
-        int GetMouseX()
-        int GetMouseY()
-        float GetJoystickAxis(unsigned int JoyId, decljoy.Axis Axis)
+        JoystickMoveEvent JoystickMove
+        JoystickButtonEvent JoystickButton
+        JoystickConnectEvent JoystickConnect
 
     cdef cppclass VideoMode:
         VideoMode()
@@ -396,7 +404,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void EnableKeyRepeat(bint)
         View& GetDefaultView()
         Uint32 GetFrameTime()
-        Input& GetInput()
         unsigned int GetHeight()
         ContextSettings& GetSettings()
         WindowHandle GetSystemHandle()
@@ -409,7 +416,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SaveGLStates()
         void SetActive()
         void SetActive(bint)
-        void SetCursorPosition(unsigned int, unsigned int)
         void SetIcon(unsigned int, unsigned int, Uint8*)
         void SetJoystickThreshold(float)
         void SetFramerateLimit(unsigned int)

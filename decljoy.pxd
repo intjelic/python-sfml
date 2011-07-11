@@ -33,20 +33,26 @@
 # with other enums which have the same members
 
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Joy":
-    int AxisX
-    int AxisY
-    int AxisZ
-    int AxisR
-    int AxisU
-    int AxisV
-    int AxisPOV
-    int AxisCount
-    int Count
-    int ButtonCount
-
-
-# Alias for the sf::Joy::Axis enum
-cdef extern from "SFML/Window.hpp" namespace "sf::Joy":
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Joystick":
+    # Alias for the sf::Joystick::Axis enum
     cdef cppclass Axis:
         pass
+
+    int Count
+    int ButtonCount
+    int AxisCount
+    int X
+    int Y
+    int Z
+    int R
+    int U
+    int V
+    int PovX
+    int PovY
+
+    bint IsConnected(unsigned int)
+    unsigned int GetButtonCount(unsigned int)
+    bint HasAxis(unsigned int, Axis)
+    bint IsButtonPressed(unsigned int, unsigned int)
+    float GetAxisPosition(unsigned int, Axis)
+

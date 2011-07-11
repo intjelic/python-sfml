@@ -67,24 +67,71 @@ cdef class Mouse:
     X_BUTTON2 = declmouse.XButton2
     BUTTON_COUNT = declmouse.ButtonCount
 
+    @classmethod
+    def is_button_pressed(cls, int button):
+        return declmouse.IsButtonPressed(<declmouse.Button>button)
+
+    @classmethod
+    def get_position(cls, RenderWindow window=None):
+        cdef decl.Vector2i pos
+
+        if window is None:
+            pos = declmouse.GetPosition()
+        else:
+            pos = declmouse.GetPosition(window.p_this[0])
+
+        return (pos.x, pos.y)
+
+    @classmethod
+    def set_position(cls, tuple position, RenderWindow window=None):
+        cdef decl.Vector2i cpp_pos
+
+        cpp_pos.x, cpp_pos.y = position
+
+        if window is None:
+            declmouse.SetPosition(cpp_pos)
+        else:
+            declmouse.SetPosition(cpp_pos, window.p_this[0])
 
 
-cdef class Joy:
-    AXIS_X = decljoy.AxisX
-    AXIS_Y = decljoy.AxisY
-    AXIS_Z = decljoy.AxisZ
-    AXIS_R = decljoy.AxisR
-    AXIS_U = decljoy.AxisU
-    AXIS_V = decljoy.AxisV
-    AXIS_POV = decljoy.AxisPOV
-    AXIS_COUNT = decljoy.AxisCount
 
+cdef class Joystick:
     COUNT = decljoy.Count
     BUTTON_COUNT = decljoy.ButtonCount
+    AXIS_COUNT = decljoy.AxisCount
+    X = decljoy.X
+    Y = decljoy.Y
+    Z = decljoy.Z
+    R = decljoy.R
+    U = decljoy.U
+    V = decljoy.V
+    POV_X = decljoy.PovX
+    POV_Y = decljoy.PovY
+
+    @classmethod
+    def is_connected(cls, unsigned int joystick):
+        return decljoy.IsConnected(joystick)
+
+    @classmethod
+    def get_button_count(cls, unsigned int joystick):
+        return decljoy.GetButtonCount(joystick)
+
+    @classmethod
+    def has_axis(cls, unsigned int joystick, int axis):
+        return decljoy.HasAxis(joystick, <decljoy.Axis>axis)
+
+    @classmethod
+    def is_button_pressed(cls, unsigned int joystick, unsigned int button):
+        return decljoy.IsButtonPressed(joystick, button)
+
+    @classmethod
+    def get_axis_position(cls, unsigned int joystick, int axis):
+        return decljoy.GetAxisPosition(joystick, <decljoy.Axis> axis)
+
+    
 
 
-
-cdef class Key:
+cdef class Keyboard:
     A = declkey.A
     B = declkey.B
     C = declkey.C
@@ -186,8 +233,11 @@ cdef class Key:
     F14 = declkey.F14
     F15 = declkey.F15
     PAUSE = declkey.Pause
-    COUNT = declkey.Count
+    KEY_COUNT = declkey.KeyCount
 
+    @classmethod
+    def is_key_pressed(cls, int key):
+        return declkey.IsKeyPressed(<declkey.Key>key)
 
 
 cdef class BlendMode:
@@ -985,9 +1035,11 @@ class Event:
     MOUSE_MOVED = declevent.MouseMoved
     MOUSE_ENTERED = declevent.MouseEntered
     MOUSE_LEFT = declevent.MouseLeft
-    JOY_BUTTON_PRESSED = declevent.JoyButtonPressed
-    JOY_BUTTON_RELEASED = declevent.JoyButtonReleased
-    JOY_MOVED = declevent.JoyMoved
+    JOYSTICK_BUTTON_PRESSED = declevent.JoystickButtonPressed
+    JOYSTICK_BUTTON_RELEASED = declevent.JoystickButtonReleased
+    JOYSTICK_MOVED = declevent.JoystickMoved
+    JOYSTICK_CONNECTED = declevent.JoystickConnected
+    JOYSTICK_DISCONNECTED = declevent.JoystickDisconnected
     COUNT = declevent.Count
 
     NAMES = {
@@ -1004,9 +1056,11 @@ class Event:
         MOUSE_MOVED: 'Mouse moved',
         MOUSE_ENTERED: 'Mouse entered',
         MOUSE_LEFT: 'Mouse left',
-        JOY_BUTTON_PRESSED: 'Joystick button pressed',
-        JOY_BUTTON_RELEASED: 'Joystick button released',
-        JOY_MOVED: 'Joystick moved'
+        JOYSTICK_BUTTON_PRESSED: 'Joystick button pressed',
+        JOYSTICK_BUTTON_RELEASED: 'Joystick button released',
+        JOYSTICK_MOVED: 'Joystick moved',
+        JOYSTICK_CONNECTED: 'Joystick connected',
+        JOYSTICK_DISCONNECTED: 'Joystick disconnected'
         }
 
     def __str__(self):
@@ -1049,12 +1103,16 @@ cdef wrap_event_instance(decl.Event *p_cpp_instance):
         ret.type = Event.MOUSE_ENTERED
     elif p_cpp_instance.Type == declevent.MouseLeft:
         ret.type = Event.MOUSE_LEFT
-    elif p_cpp_instance.Type == declevent.JoyButtonPressed:
-        ret.type = Event.JOY_BUTTON_PRESSED
-    elif p_cpp_instance.Type == declevent.JoyButtonReleased:
-        ret.type = Event.JOY_BUTTON_RELEASED
-    elif p_cpp_instance.Type == declevent.JoyMoved:
-        ret.type = Event.JOY_MOVED
+    elif p_cpp_instance.Type == declevent.JoystickButtonPressed:
+        ret.type = Event.JOYSTICK_BUTTON_PRESSED
+    elif p_cpp_instance.Type == declevent.JoystickButtonReleased:
+        ret.type = Event.JOYSTICK_BUTTON_RELEASED
+    elif p_cpp_instance.Type == declevent.JoystickMoved:
+        ret.type = Event.JOYSTICK_MOVED
+    elif p_cpp_instance.Type == declevent.JoystickConnected:
+        ret.type = Event.JOYSTICK_CONNECTED
+    elif p_cpp_instance.Type == declevent.JoystickDisconnected:
+        ret.type = Event.JOYSTICK_DISCONNECTED
 
     # Set other attributes if needed
     if p_cpp_instance.Type == declevent.Resized:
@@ -1079,57 +1137,18 @@ cdef wrap_event_instance(decl.Event *p_cpp_instance):
         ret.delta = p_cpp_instance.MouseWheel.Delta
         ret.x = p_cpp_instance.MouseWheel.X
         ret.y = p_cpp_instance.MouseWheel.Y
-    elif (p_cpp_instance.Type == declevent.JoyButtonPressed or
-          p_cpp_instance.Type == declevent.JoyButtonReleased):
-        ret.joystick_id = p_cpp_instance.JoyButton.JoystickId
-        ret.button = p_cpp_instance.JoyButton.Button
-    elif p_cpp_instance.Type == declevent.JoyMoved:
-        ret.joystick_id = p_cpp_instance.JoyMove.JoystickId
-        ret.axis = p_cpp_instance.JoyMove.Axis
-        ret.position = p_cpp_instance.JoyMove.Position
-
-    return ret
-
-
-
-
-cdef class Input:
-    cdef decl.Input *p_this
-
-    def __init__(self):
-        raise NotImplementedError("You shouldn't need to create Input objects")
-
-    property mouse_x:
-        def __get__(self):
-            return self.get_mouse_x()
-
-    property mouse_y:
-        def __get__(self):
-            return self.get_mouse_y()
-
-    def get_joystick_axis(self, unsigned int joy_id, int axis):
-        return self.p_this.GetJoystickAxis(joy_id, <decljoy.Axis>axis)
-
-    def get_mouse_x(self):
-         return self.p_this.GetMouseX()
-
-    def get_mouse_y(self):
-         return self.p_this.GetMouseY()
-
-    def is_key_down(self, int key_code):
-         return self.p_this.IsKeyDown(<declkey.Code>key_code)
-
-    def is_mouse_button_down(self, int button):
-         return self.p_this.IsMouseButtonDown(<declmouse.Button>button)
-
-    def is_joystick_button_down(self, unsigned int joy_id, unsigned int button):
-         return self.p_this.IsJoystickButtonDown(joy_id, button)
-
-
-cdef wrap_input_instance(decl.Input *p_cpp_instance):
-    cdef Input ret = Input.__new__(Input)
-
-    ret.p_this = p_cpp_instance
+    elif (p_cpp_instance.Type == declevent.JoystickButtonPressed or
+          p_cpp_instance.Type == declevent.JoystickButtonReleased):
+        ret.joystick_id = p_cpp_instance.JoystickButton.JoystickId
+        ret.button = p_cpp_instance.JoystickButton.Button
+    elif p_cpp_instance.Type == declevent.JoystickMoved:
+        ret.joystick_id = p_cpp_instance.JoystickMove.JoystickId
+        ret.axis = p_cpp_instance.JoystickMove.Axis
+        ret.position = p_cpp_instance.JoystickMove.Position
+    elif p_cpp_instance.Type == declevent.JoystickConnected:
+        ret.joystick_id = p_cpp_instance.JoystickConnect.JoystickId
+    elif p_cpp_instance.Type == declevent.JoystickDisconnected:
+        ret.joystick_id = p_cpp_instance.JoystickConnect.JoystickId
 
     return ret
 
@@ -2105,7 +2124,6 @@ cdef ContextSettings wrap_context_settings_instance(
 
 cdef class RenderWindow:
     cdef decl.RenderWindow *p_this
-    cdef Input input
 
     def __cinit__(self, VideoMode mode, char* title, int style=Style.DEFAULT,
                   ContextSettings settings=None):
@@ -2114,9 +2132,6 @@ cdef class RenderWindow:
         else:
             self.p_this = new decl.RenderWindow(mode.p_this[0], title, style,
                                                 settings.p_this[0])
-
-    def __init__(self, *args, **kwargs):
-        self.input = wrap_input_instance(NULL)
 
     def __dealloc__(self):
         del self.p_this
@@ -2135,11 +2150,6 @@ cdef class RenderWindow:
     property active:
         def __set__(self, bint value):
             self.p_this.SetActive(value)
-
-    property cursor_position:
-        def __set__(self, tuple value):
-            x, y = value
-            self.p_this.SetCursorPosition(x, y)
 
     property default_view:
         def __get__(self):
@@ -2262,11 +2272,6 @@ cdef class RenderWindow:
             self.p_this.Draw(drawable.p_this[0])
         else:
             self.p_this.Draw(drawable.p_this[0], shader.p_this[0])
-
-    def get_input(self):
-        self.input.p_this = <decl.Input*>&self.p_this.GetInput()
-
-        return self.input
 
     def get_viewport(self, View view):
         cdef decl.IntRect *p = new decl.IntRect()

@@ -68,17 +68,17 @@ def main():
             # Window closed or escape key pressed : exit
             if ((event.type == sf.Event.CLOSED) or
                 (event.type == sf.Event.KEY_PRESSED and
-                 event.code == sf.Key.ESCAPE)):
+                 event.code == sf.Keyboard.ESCAPE)):
                 window.close()
                 break
 
         if is_playing:
             # Move the player's paddle
-            if (window.get_input().is_key_down(sf.Key.UP) and
+            if (sf.Keyboard.is_key_pressed(sf.Keyboard.UP) and
                 left_paddle.y > 5.0):
                 left_paddle.move(0.0, -left_paddle_speed * window.frame_time)
 
-            if (window.get_input().is_key_down(sf.Key.DOWN) and
+            if (sf.Keyboard.is_key_pressed(sf.Keyboard.DOWN) and
                 (left_paddle.y <
                  window.view.size[1] - left_paddle.height - 5.0)):
                 left_paddle.move(0.0, left_paddle_speed * window.frame_time)
