@@ -1073,6 +1073,7 @@ class Event:
 # by dynamically setting the corresponding attributes.
 cdef wrap_event_instance(decl.Event *p_cpp_instance):
     cdef ret = Event()
+    cdef decl.Uint32 code
 
     # Set the type
     if p_cpp_instance.Type == declevent.Closed:
@@ -1118,6 +1119,9 @@ cdef wrap_event_instance(decl.Event *p_cpp_instance):
     if p_cpp_instance.Type == declevent.Resized:
         ret.width = p_cpp_instance.Size.Width
         ret.height = p_cpp_instance.Size.Height
+    elif p_cpp_instance.Type == declevent.TextEntered:
+        code = p_cpp_instance.Text.Unicode
+        ret.unicode = ((<char*>&code)[:4]).decode('utf-32-le')
     elif (p_cpp_instance.Type == declevent.KeyPressed or
           p_cpp_instance.Type == declevent.KeyReleased):
         ret.code = p_cpp_instance.Key.Code
