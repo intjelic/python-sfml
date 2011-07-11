@@ -261,7 +261,7 @@ cdef class Style:
 cdef class IntRect:
     cdef decl.IntRect *p_this
 
-    def __cinit__(self, int left=0, int top=0, int width=0, int height=0):
+    def __init__(self, int left=0, int top=0, int width=0, int height=0):
         self.p_this = new decl.IntRect(left, top, width, height)
 
     def __dealloc__(self):
@@ -1201,7 +1201,7 @@ cdef class Font:
 
     DEFAULT_FONT = wrap_font_instance(<decl.Font*>&decl.GetDefaultFont(), False)
 
-    def __cinit__(self):
+    def __init__(self):
         self.p_this = new decl.Font()
         self.delete_this = True
 
@@ -1774,7 +1774,7 @@ cdef class VideoMode:
     cdef decl.VideoMode *p_this
     cdef bint delete_this
 
-    def __cinit__(self, width=None, height=None, bits_per_pixel=32):
+    def __init__(self, width=None, height=None, bits_per_pixel=32):
         if width is None or height is None:
             self.p_this = new decl.VideoMode()
         else:
@@ -1893,7 +1893,7 @@ cdef VideoMode wrap_video_mode_instance(decl.VideoMode *p_cpp_instance,
 cdef class View:
     cdef decl.View *p_this
 
-    def __cinit__(self):
+    def __init__(self):
         self.p_this = new decl.View()
 
     def __dealloc__(self):
@@ -2065,9 +2065,9 @@ cdef Shader wrap_shader_instance(decl.Shader *p_cpp_instance):
 cdef class ContextSettings:
     cdef decl.ContextSettings *p_this
 
-    def __cinit__(self, unsigned int depth=24, unsigned int stencil=8,
-                  unsigned int antialiasing=0, unsigned int major=2,
-                  unsigned int minor=0):
+    def __init__(self, unsigned int depth=24, unsigned int stencil=8,
+                 unsigned int antialiasing=0, unsigned int major=2,
+                 unsigned int minor=0):
         self.p_this = new decl.ContextSettings(depth, stencil, antialiasing,
                                                major, minor)
 
@@ -2418,7 +2418,7 @@ cdef class RenderImage:
 
 
 cdef class Shape(Drawable):
-    def __cinit__(self):
+    def __init__(self):
         self.p_this = <decl.Drawable*>new decl.Shape()
     
     def __dealloc__(self):
