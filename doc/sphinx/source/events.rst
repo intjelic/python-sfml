@@ -16,14 +16,14 @@ Events
    For example, this is the kind of code you'd write in C++::
 
       if (event.Type == sf::Event::KeyPressed &&
-          event.Key.Code == sf::Key::Escape)
+          event.Key.Code == sf::Keyboard::Escape)
       {
           // ...
       }
 
    In Python, it becomes::
 
-      if event.type == sf.Event.KEY_PRESSED and event.code == sf.Key.ESCAPE:
+      if event.type == sf.Event.KEY_PRESSED and event.code == sf.Keyboard.ESCAPE:
           # ...
 
    .. attribute:: NAMES
@@ -40,33 +40,145 @@ Events
       the description for you.
 
 
-.. class:: Input
+.. class:: Joystick
 
-   Calling the constructor will raise ``NotImplementedError``. Use
-   :meth:`sf.RenderWindow.get_input()` instead.
 
-   This table explains how you deduce the various from the C++ documentation:
+   .. attribute:: COUNT
+   .. attribute:: BUTTON_COUNT
+   .. attribute:: AXIS_COUNT
+   .. attribute:: X
+   .. attribute:: Y
+   .. attribute:: Z
+   .. attribute:: R
+   .. attribute:: U
+   .. attribute:: V
+   .. attribute:: POV_X
+   .. attribute:: POV_Y
 
-   ================== ============================== =================================
-   Description        Python examples                C++ examples
-   ================== ============================== =================================
-   Mouse button codes sf.Mouse.LEFT, sf.Mouse.MIDDLE sf::Mouse::Left, sf::Mouse::Right
-   Key codes          sf.Key.ESCAPE, sf.Key.SPACE    sf::Key::Escape, sf::Key::Space
-   Joystick axises    sf.Joy.AXIS_X, sf.Joy.AXIS_R   sf::Joy::AxisX, sf::Joy::AxisR
-   ================== ============================== =================================
+   .. classmethod:: is_connected(int joystick)
+   .. classmethod:: get_button_count(int joystick)
+   .. classmethod:: has_axis(int joystick, int axis)
+   .. classmethod:: is_button_pressed(int joystick, int button)
+   .. classmethod:: get_axis_position(int joystick, int axis)
 
-   .. attribute:: mouse_x
+.. class:: Keyboard
 
-      The same value as returned by :meth:`get_mouse_x()`. (I'm not
-      really sure what choice between these two would make the most sense?)
 
-   .. attribute:: mouse_y
+   .. attribute:: A
+   .. attribute:: B
+   .. attribute:: C
+   .. attribute:: D
+   .. attribute:: E
+   .. attribute:: F
+   .. attribute:: G
+   .. attribute:: H
+   .. attribute:: I
+   .. attribute:: J
+   .. attribute:: K
+   .. attribute:: L
+   .. attribute:: M
+   .. attribute:: N
+   .. attribute:: O
+   .. attribute:: P
+   .. attribute:: Q
+   .. attribute:: R
+   .. attribute:: S
+   .. attribute:: T
+   .. attribute:: U
+   .. attribute:: V
+   .. attribute:: W
+   .. attribute:: X
+   .. attribute:: Y
+   .. attribute:: Z
+   .. attribute:: NUM0
+   .. attribute:: NUM1
+   .. attribute:: NUM2
+   .. attribute:: NUM3
+   .. attribute:: NUM4
+   .. attribute:: NUM5
+   .. attribute:: NUM6
+   .. attribute:: NUM7
+   .. attribute:: NUM8
+   .. attribute:: NUM9
+   .. attribute:: ESCAPE
+   .. attribute:: L_CONTROL
+   .. attribute:: L_SHIFT
+   .. attribute:: L_ALT
+   .. attribute:: L_SYSTEM
+   .. attribute:: R_CONTROL
+   .. attribute:: R_SHIFT
+   .. attribute:: R_ALT
+   .. attribute:: R_SYSTEM
+   .. attribute:: MENU
+   .. attribute:: L_BRACKET
+   .. attribute:: R_BRACKET
+   .. attribute:: SEMI_COLON
+   .. attribute:: COMMA
+   .. attribute:: PERIOD
+   .. attribute:: QUOTE
+   .. attribute:: SLASH
+   .. attribute:: BACK_SLASH
+   .. attribute:: TILDE
+   .. attribute:: EQUAL
+   .. attribute:: DASH
+   .. attribute:: SPACE
+   .. attribute:: RETURN
+   .. attribute:: BACK
+   .. attribute:: TAB
+   .. attribute:: PAGE_UP
+   .. attribute:: PAGE_DOWN
+   .. attribute:: END
+   .. attribute:: HOME
+   .. attribute:: INSERT
+   .. attribute:: DELETE
+   .. attribute:: ADD
+   .. attribute:: SUBTRACT
+   .. attribute:: MULTIPLY
+   .. attribute:: DIVIDE
+   .. attribute:: LEFT
+   .. attribute:: RIGHT
+   .. attribute:: UP
+   .. attribute:: DOWN
+   .. attribute:: NUMPAD0
+   .. attribute:: NUMPAD1
+   .. attribute:: NUMPAD2
+   .. attribute:: NUMPAD3
+   .. attribute:: NUMPAD4
+   .. attribute:: NUMPAD5
+   .. attribute:: NUMPAD6
+   .. attribute:: NUMPAD7
+   .. attribute:: NUMPAD8
+   .. attribute:: NUMPAD9
+   .. attribute:: F1
+   .. attribute:: F2
+   .. attribute:: F3
+   .. attribute:: F4
+   .. attribute:: F5
+   .. attribute:: F6
+   .. attribute:: F7
+   .. attribute:: F8
+   .. attribute:: F9
+   .. attribute:: F10
+   .. attribute:: F11
+   .. attribute:: F12
+   .. attribute:: F13
+   .. attribute:: F14
+   .. attribute:: F15
+   .. attribute:: PAUSE
+   .. attribute:: KEY_COUNT
 
-      The same value as returned by :meth:`get_mouse_y()`.
+   .. classmethod:: is_key_pressed(int key)
 
-   .. method:: get_joystick_axis(int joy_id, int axis)
-   .. method:: get_mouse_x()
-   .. method:: get_mouse_y()
-   .. method:: is_key_down(int key_code)
-   .. method:: is_mouse_button_down(int button)
-   .. method:: is_joystick_button_down(int joy_id, int button)
+.. class:: Mouse
+
+
+   .. attribute:: LEFT
+   .. attribute:: RIGHT
+   .. attribute:: MIDDLE
+   .. attribute:: X_BUTTON1
+   .. attribute:: X_BUTTON2
+   .. attribute:: BUTTON_COUNT
+
+   .. classmethod:: is_button_pressed(int button)
+   .. classmethod:: get_position([window])
+   .. classmethod:: set_position(tuple position[, window])
