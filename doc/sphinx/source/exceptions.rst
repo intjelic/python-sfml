@@ -40,6 +40,8 @@ be used in the future.
 
    .. attribute:: message
 
-      A string describing the error.  Currently these messages are quite
-      useless, and the real error message will be written in the console. This
-      is because SFML's API doesn't make it obvious to retrieve 
+      A string describing the error.  Currently these messages are
+      quite useless, and the real error message will be written in the
+      console. This is because SFML's API doesn't make it easy to
+      retrieve the actual error message.  A work-around will probably
+      be used in the future.
