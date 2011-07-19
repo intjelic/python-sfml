@@ -2015,9 +2015,16 @@ cdef VideoMode wrap_video_mode_instance(decl.VideoMode *p_cpp_instance,
 
 cdef class View:
     cdef decl.View *p_this
+    # A RenderTarget (e.g., a RenderWindow or a RenderImage) can be
+    # bound to the view. Every time the view is changed, the target
+    # will be automatically updated. The target object must have a
+    # view property.  This is used so that code like
+    # window.view.mode(10, 10) works as expected.
+    cdef object render_target
 
     def __init__(self):
         self.p_this = new decl.View()
+        self.window = None
 
     def __dealloc__(self):
         del self.p_this
@@ -2032,6 +2039,7 @@ cdef class View:
             cdef decl.Vector2f v = convert_to_vector2f(value)
 
             self.p_this.SetCenter(v.x, v.y)
+            self._update_target()
 
     property height:
         def __get__(self):
@@ -2039,6 +2047,7 @@ cdef class View:
 
         def __set__(self, float value):
             self.size = (self.width, value)
+            self._update_target()
 
     property rotation:
         def __get__(self):
@@ -2046,6 +2055,7 @@ cdef class View:
 
         def __set__(self, float value):
             self.p_this.SetRotation(value)
+            self._update_target()
 
     property size:
         def __get__(self):
@@ -2057,6 +2067,7 @@ cdef class View:
             cdef decl.Vector2f v = convert_to_vector2f(value)
 
             self.p_this.SetSize(v.x, v.y)
+            self._update_target()
 
     property viewport:
         def __get__(self):
@@ -2068,6 +2079,7 @@ cdef class View:
 
         def __set__(self, FloatRect value):
             self.p_this.SetViewport(value.p_this[0])
+            self._update_target()
 
     property width:
         def __get__(self):
@@ -2075,6 +2087,7 @@ cdef class View:
 
         def __set__(self, float value):
             self.size = (value, self.height)
+            self._update_target()
 
     @classmethod
     def from_center_and_size(cls, center, size):
@@ -2084,31 +2097,40 @@ cdef class View:
 
         p = new decl.View(cpp_center, cpp_size)
 
-        return wrap_view_instance(p)
+        return wrap_view_instance(p, None)
         
     @classmethod
     def from_rect(cls, FloatRect rect):
         cdef decl.View *p = new decl.View(rect.p_this[0])
 
-        return wrap_view_instance(p)
+        return wrap_view_instance(p, None)
+
+    def _update_target(self):
+        if self.render_target is not None:
+            self.render_target.view = self
 
     def move(self, float x, float y):
         self.p_this.Move(x, y)
+        self._update_target()
 
     def reset(self, FloatRect rect):
         self.p_this.Reset(rect.p_this[0])
+        self._update_target()
 
     def rotate(self, float angle):
         self.p_this.Rotate(angle)
+        self._update_target()
 
     def zoom(self, float factor):
         self.p_this.Zoom(factor)
+        self._update_target()
 
 
-cdef View wrap_view_instance(decl.View *p_cpp_view):
+cdef View wrap_view_instance(decl.View *p_cpp_view, object window):
     cdef View ret = View.__new__(View)
 
     ret.p_this = p_cpp_view
+    ret.render_target = window
 
     return ret
 
@@ -2280,7 +2302,7 @@ cdef class RenderWindow:
 
             p[0] = self.p_this.GetDefaultView()
 
-            return wrap_view_instance(p)
+            return wrap_view_instance(p, None)
 
     property framerate_limit:
         def __set__(self, int value):
@@ -2349,7 +2371,7 @@ cdef class RenderWindow:
 
             p[0] = self.p_this.GetView()
 
-            return wrap_view_instance(p)
+            return wrap_view_instance(p, self)
 
         def __set__(self, View value):
             self.p_this.SetView(value.p_this[0])
@@ -2463,7 +2485,7 @@ cdef class RenderImage:
 
             p[0] = self.p_this.GetDefaultView()
 
-            return wrap_view_instance(p)
+            return wrap_view_instance(p, None)
 
     property height:
         def __get__(self):
@@ -2487,7 +2509,7 @@ cdef class RenderImage:
 
             p[0] = self.p_this.GetView()
 
-            return wrap_view_instance(p)
+            return wrap_view_instance(p, self)
 
         def __set__(self, View value):
             self.p_this.SetView(value.p_this[0])
