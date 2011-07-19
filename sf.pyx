@@ -1774,6 +1774,125 @@ cdef class Sprite(Drawable):
 
 
 
+
+cdef class Shape(Drawable):
+    def __init__(self):
+        self.p_this = <decl.Drawable*>new decl.Shape()
+    
+    def __dealloc__(self):
+        del self.p_this
+    
+    property fill_enabled:
+        def __set__(self, bint value):
+            (<decl.Shape*>self.p_this).EnableFill(value)
+
+    property outline_enabled:
+        def __set__(self, bint value):
+            (<decl.Shape*>self.p_this).EnableOutline(value)
+
+    property outline_thickness:
+        def __get__(self):
+            return (<decl.Shape*>self.p_this).GetOutlineThickness()
+
+        def __set__(self, float value):
+            (<decl.Shape*>self.p_this).SetOutlineThickness(value)
+
+    property points_count:
+        def __get__(self):
+            return (<decl.Shape*>self.p_this).GetPointsCount()
+
+    @classmethod
+    def line(cls, float p1x, float p1y, float p2x, float p2y, float thickness,
+             Color color, float outline=0.0, Color outline_color=None):
+        cdef decl.Shape *p = new decl.Shape()
+
+        if outline_color is None:
+            p[0] = decl.Line(p1x, p1y, p2x, p2y, thickness, color.p_this[0],
+                             outline)
+        else:
+            p[0] = decl.Line(p1x, p1y, p2x, p2y, thickness, color.p_this[0],
+                             outline, outline_color.p_this[0])
+
+        return wrap_shape_instance(p)
+
+    @classmethod
+    def rectangle(cls, float left, float top, float width, float height,
+                  Color color, float outline=0.0, Color outline_color=None):
+        cdef decl.Shape *p = new decl.Shape()
+
+        if outline_color is None:
+            p[0] = decl.Rectangle(left, top, width, height, color.p_this[0],
+                                  outline)
+        else:
+            p[0] = decl.Rectangle(left, top, width, height, color.p_this[0],
+                                  outline, outline_color.p_this[0])
+
+        return wrap_shape_instance(p)
+
+    @classmethod
+    def circle(cls, float x, float y, float radius, Color color,
+               float outline=0.0, Color outline_color=None):
+        cdef decl.Shape *p = new decl.Shape()
+
+        if outline_color is None:
+            p[0] = decl.Circle(x, y, radius, color.p_this[0], outline)
+        else:
+            p[0] = decl.Circle(x, y, radius, color.p_this[0], outline,
+                               outline_color.p_this[0])
+
+        return wrap_shape_instance(p)
+
+    def add_point(self, float x, float y, Color color=None,
+                  Color outline_color=None):
+        if color is None:
+            (<decl.Shape*>self.p_this).AddPoint(x, y)
+        elif outline_color is None:
+            (<decl.Shape*>self.p_this).AddPoint(x, y, color.p_this[0])
+        else:
+            (<decl.Shape*>self.p_this).AddPoint(x, y, color.p_this[0],
+                                                outline_color.p_this[0])
+
+    def get_point_color(self, unsigned int index):
+        cdef decl.Color *p = new decl.Color()
+
+        p[0] = (<decl.Shape*>self.p_this).GetPointColor(index)
+
+        return wrap_color_instance(p)
+
+    def get_point_outline_color(self, unsigned int index):
+        cdef decl.Color *p = new decl.Color()
+
+        p[0] = (<decl.Shape*>self.p_this).GetPointOutlineColor(index)
+
+        return wrap_color_instance(p)
+
+    def get_point_position(self, unsigned int index):
+        cdef decl.Vector2f pos
+
+        pos = (<decl.Shape*>self.p_this).GetPointPosition(index)
+
+        return (pos.x, pos.y)
+
+    def set_point_color(self, unsigned int index, Color color):
+        (<decl.Shape*>self.p_this).SetPointColor(index, color.p_this[0])
+
+    def set_point_outline_color(self, unsigned int index, Color color):
+        (<decl.Shape*>self.p_this).SetPointOutlineColor(index, color.p_this[0])
+
+    def set_point_position(self, unsigned int index, float x, float y):
+        (<decl.Shape*>self.p_this).SetPointPosition(index, x, y)
+    
+
+cdef Shape wrap_shape_instance(decl.Shape *p_cpp_instance):
+    cdef Shape ret = Shape.__new__(Shape)
+
+    ret.p_this = <decl.Drawable*>p_cpp_instance
+    
+    return ret
+
+
+
+
 cdef class VideoMode:
     cdef decl.VideoMode *p_this
     cdef bint delete_this
@@ -2417,121 +2536,3 @@ cdef class RenderImage:
 
     def save_gl_states(self):
         self.p_this.SaveGLStates()
-
-
-
-
-cdef class Shape(Drawable):
-    def __init__(self):
-        self.p_this = <decl.Drawable*>new decl.Shape()
-    
-    def __dealloc__(self):
-        del self.p_this
-    
-    property fill_enabled:
-        def __set__(self, bint value):
-            (<decl.Shape*>self.p_this).EnableFill(value)
-
-    property outline_enabled:
-        def __set__(self, bint value):
-            (<decl.Shape*>self.p_this).EnableOutline(value)
-
-    property outline_thickness:
-        def __get__(self):
-            return (<decl.Shape*>self.p_this).GetOutlineThickness()
-
-        def __set__(self, float value):
-            (<decl.Shape*>self.p_this).SetOutlineThickness(value)
-
-    property points_count:
-        def __get__(self):
-            return (<decl.Shape*>self.p_this).GetPointsCount()
-
-    @classmethod
-    def line(cls, float p1x, float p1y, float p2x, float p2y, float thickness,
-             Color color, float outline=0.0, Color outline_color=None):
-        cdef decl.Shape *p = new decl.Shape()
-
-        if outline_color is None:
-            p[0] = decl.Line(p1x, p1y, p2x, p2y, thickness, color.p_this[0],
-                             outline)
-        else:
-            p[0] = decl.Line(p1x, p1y, p2x, p2y, thickness, color.p_this[0],
-                             outline, outline_color.p_this[0])
-
-        return wrap_shape_instance(p)
-
-    @classmethod
-    def rectangle(cls, float left, float top, float width, float height,
-                  Color color, float outline=0.0, Color outline_color=None):
-        cdef decl.Shape *p = new decl.Shape()
-
-        if outline_color is None:
-            p[0] = decl.Rectangle(left, top, width, height, color.p_this[0],
-                                  outline)
-        else:
-            p[0] = decl.Rectangle(left, top, width, height, color.p_this[0],
-                                  outline, outline_color.p_this[0])
-
-        return wrap_shape_instance(p)
-
-    @classmethod
-    def circle(cls, float x, float y, float radius, Color color,
-               float outline=0.0, Color outline_color=None):
-        cdef decl.Shape *p = new decl.Shape()
-
-        if outline_color is None:
-            p[0] = decl.Circle(x, y, radius, color.p_this[0], outline)
-        else:
-            p[0] = decl.Circle(x, y, radius, color.p_this[0], outline,
-                               outline_color.p_this[0])
-
-        return wrap_shape_instance(p)
-
-    def add_point(self, float x, float y, Color color=None,
-                  Color outline_color=None):
-        if color is None:
-            (<decl.Shape*>self.p_this).AddPoint(x, y)
-        elif outline_color is None:
-            (<decl.Shape*>self.p_this).AddPoint(x, y, color.p_this[0])
-        else:
-            (<decl.Shape*>self.p_this).AddPoint(x, y, color.p_this[0],
-                                                outline_color.p_this[0])
-
-    def get_point_color(self, unsigned int index):
-        cdef decl.Color *p = new decl.Color()
-
-        p[0] = (<decl.Shape*>self.p_this).GetPointColor(index)
-
-        return wrap_color_instance(p)
-
-    def get_point_outline_color(self, unsigned int index):
-        cdef decl.Color *p = new decl.Color()
-
-        p[0] = (<decl.Shape*>self.p_this).GetPointOutlineColor(index)
-
-        return wrap_color_instance(p)
-
-    def get_point_position(self, unsigned int index):
-        cdef decl.Vector2f pos
-
-        pos = (<decl.Shape*>self.p_this).GetPointPosition(index)
-
-        return (pos.x, pos.y)
-
-    def set_point_color(self, unsigned int index, Color color):
-        (<decl.Shape*>self.p_this).SetPointColor(index, color.p_this[0])
-
-    def set_point_outline_color(self, unsigned int index, Color color):
-        (<decl.Shape*>self.p_this).SetPointOutlineColor(index, color.p_this[0])
-
-    def set_point_position(self, unsigned int index, float x, float y):
-        (<decl.Shape*>self.p_this).SetPointPosition(index, x, y)
-    
-
-cdef Shape wrap_shape_instance(decl.Shape *p_cpp_instance):
-    cdef Shape ret = Shape.__new__(Shape)
-
-    ret.p_this = <decl.Drawable*>p_cpp_instance
-    
-    return ret
