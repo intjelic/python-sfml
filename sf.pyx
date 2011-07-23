@@ -1586,7 +1586,7 @@ cdef class Text(Drawable):
 
         if string is None:
             self.p_this = <decl.Drawable*>new decl.Text()
-        elif isinstance(string, str):
+        elif isinstance(string, bytes):
             if font is None:
                 self.p_this = <decl.Drawable*>new decl.Text(<char*>string)
             elif character_size == 0:
@@ -1611,7 +1611,7 @@ cdef class Text(Drawable):
                 self.p_this = <decl.Drawable*>new decl.Text(
                     cpp_string, font.p_this[0], character_size)
         else:
-            raise TypeError("Expected str or unicode for string, got {0}"
+            raise TypeError("Expected bytes/str or unicode for string, got {0}"
                             .format(type(string)))
 
     def __dealloc__(self):
@@ -1661,7 +1661,7 @@ cdef class Text(Drawable):
         def __set__(self, value):
             cdef char* c_string = NULL
 
-            if isinstance(value, str):
+            if isinstance(value, bytes):
                 (<decl.Text*>self.p_this).SetString(<char*>value)
                 self.is_unicode = False
             elif isinstance(value, unicode):
@@ -1672,8 +1672,9 @@ cdef class Text(Drawable):
                     decl.String(<decl.Uint32*>c_string))
                 self.is_unicode = True
             else:
-                raise TypeError("Expected str or unicode for string, got {0}"
-                               .format(type(value)))
+                raise TypeError(
+                    "Expected bytes/str or unicode for string, got {0}"
+                    .format(type(value)))
 
     property style:
         def __get__(self):
