@@ -18,7 +18,7 @@ def main():
             # or if the user presses Escape
             if (event.type == sf.Event.CLOSED or
                 (event.type == sf.Event.KEY_PRESSED and
-                 event.code == sf.Key.ESCAPE)):
+                 event.code == sf.Keyboard.ESCAPE)):
                 running = False
 
     window.close()
