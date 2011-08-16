@@ -14,11 +14,11 @@ def main():
     sprite2.position = 0, 300
     
     shader = sf.Shader.load_from_file('blur.sfx')
-    shader.set_texture('texture')
+    shader.set_current_texture('texture')
     shader.set_parameter('offset', 0.0)
     
     shader2 = sf.Shader.load_from_file('edge.sfx')
-    shader2.set_texture('texture')
+    shader2.set_current_texture('texture')
 
     while running:
         for event in window.iter_events():
