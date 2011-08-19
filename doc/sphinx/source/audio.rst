@@ -24,8 +24,7 @@ Audio
 
 
 
-.. class:: Sound(SoundBuffer buffer=None, loop=False, pitch=1.0, volume=100.0,\
-                 position=(0,0,0))
+.. class:: Sound([SoundBuffer buffer])
 
    .. attribute:: attenuation
    .. attribute:: buffer

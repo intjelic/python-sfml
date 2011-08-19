@@ -208,31 +208,50 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
     cdef cppclass Image:
         Image()
         Image(Image&)
-        void Bind()
         void Copy(Image&, unsigned int, unsigned int)
         void Copy(Image&, unsigned int, unsigned int, IntRect&)
         void Copy(Image&, unsigned int, unsigned int, IntRect&, bint)
-        bint CopyScreen(RenderWindow&)
-        bint CopyScreen(RenderWindow&, IntRect&)
         bint Create(unsigned int, unsigned int)
         bint Create(unsigned int, unsigned int, Color&)
+        bint Create(unsigned int, unsigned int, Uint8*)
         void CreateMaskFromColor(Color&)
         void CreateMaskFromColor(Color&, unsigned char)
         unsigned int GetHeight()
         Color& GetPixel(unsigned int, unsigned int)
         unsigned char* GetPixelsPtr()
-        FloatRect& GetTexCoords(IntRect&)
         unsigned int GetWidth() 
-        bint IsSmooth()
         bint LoadFromFile(char*)
         bint LoadFromMemory(void*, size_t)
-        bint LoadFromPixels(unsigned int, unsigned int, unsigned char*)
         bint SaveToFile(string&)
         bint SaveToFile(char*)
         void SetPixel(unsigned int, unsigned int, Color&)
+
+    cdef cppclass Texture:
+        Texture()
+        Texture(Texture&)
+        void Bind()
+        Image CopyToImage()
+        bint Create(unsigned int, unsigned int)
+        unsigned int GetHeight()
+        FloatRect GetTexCoords(IntRect&)
+        unsigned int GetWidth()
+        bint IsSmooth()
+        bint LoadFromFile(char*)
+        bint LoadFromFile(char*, IntRect&)
+        bint LoadFromImage(Image&)
+        bint LoadFromImage(Image&, IntRect&)
+        bint LoadFromMemory(void*, size_t)
+        bint LoadFromMemory(void*, size_t, IntRect&)
+        # bint LoadFromStream(InputStream&)
+        # bint LoadFromStream(InputStream&, IntRect&)
         void SetSmooth(bint)
-        void UpdatePixels(unsigned char*)
-        void UpdatePixels(unsigned char*, IntRect&)
+        void Update(Uint8*)
+        void Update(Uint8*, unsigned int, unsigned int, unsigned int,
+                    unsigned int)
+        void Update(Image&)
+        void Update(Image&, unsigned int, unsigned int)
+        void Update(RenderWindow&)
+        void Update(RenderWindow&, unsigned int, unsigned int)
 
     cdef cppclass String:
         String()
@@ -251,7 +270,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         Font()
         Font(Font&)
         Glyph& GetGlyph(Uint32, unsigned int, bint)
-        Image& GetImage(unsigned int)
+        Texture& GetTexture(unsigned int)
         int GetKerning(Uint32, Uint32, unsigned int)
         int GetLineSpacing(unsigned int)
         bint LoadFromFile(char*)
@@ -310,24 +329,19 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass Sprite:
         Sprite()
-        Sprite(Image&)
-        Sprite(Image&, Vector2f&)
-        Sprite(Image&, Vector2f&, Vector2f&)
-        Sprite(Image&, Vector2f&, Vector2f&, float)
-        Sprite(Image&, Vector2f&, Vector2f&, float, Color&)
+        Sprite(Texture&)
         void FlipX(bint)
         void FlipY(bint)
 #        Color& GetColor()
-        Image* GetImage()
-        Color GetPixel(unsigned int, unsigned int)
         Vector2f GetSize()
         IntRect& GetSubRect()
+        Texture* GetTexture()
         void Resize(float, float)
         void Resize(Vector2f&)
 #        void SetColor(Color&)
-        void SetImage(Image&)
-        void SetImage(Image&, bint)
         void SetSubRect(IntRect&)
+        void SetTexture(Texture&)
+        void SetTexture(Texture&, bint)
 
     cdef cppclass View:
         View()
@@ -364,7 +378,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetParameter(char*, float, float, float, float)
         void SetParameter(char*, Vector2f&)
         void SetParameter(char*, Vector3f&)
-        void SetTexture(char*, Image&)
+        void SetTexture(char*, Texture&)
         void Unbind()
 
     cdef cppclass ContextSettings:
@@ -429,8 +443,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         bint WaitEvent(Event&)
 
 
-    cdef cppclass RenderImage:
-        RenderImage()
+    cdef cppclass RenderTexture:
+        RenderTexture()
         bint Create(unsigned int, unsigned int)
         bint Create(unsigned int, unsigned int, bint depth)
         void SetSmooth(bint)
@@ -440,7 +454,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void Display()
         unsigned int GetWidth()
         unsigned int GetHeight()
-        Image& GetImage()
+        Texture& GetTexture()
         bint IsAvailable()
         void Draw(Drawable&)
         void Draw(Drawable&, Shader&)
@@ -486,13 +500,13 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::VideoMode":
     cdef VideoMode& GetDesktopMode()
     cdef vector[VideoMode]& GetFullscreenModes()
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Image":
-    cdef unsigned int GetMaximumSize()
-
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Matrix3":
     cdef Matrix3 Transformation(Vector2f&, Vector2f&, float, Vector2f&)
     cdef Matrix3 Projection(Vector2f&, Vector2f&, float)
     cdef Matrix3 Identity
+
+cdef extern from "SFML/Graphics.hpp":
+    cdef unsigned int Texture_GetMaximumSize "sf::Texture::GetMaximumSize"()
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Font":
     cdef Font& GetDefaultFont()

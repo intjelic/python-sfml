@@ -56,10 +56,6 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
     cdef cppclass Sound:
         Sound()
         Sound(SoundBuffer&)
-        Sound(SoundBuffer&, bint)
-        Sound(SoundBuffer&, bint, float)
-        Sound(SoundBuffer&, bint, float, float)
-        Sound(SoundBuffer&, bint, float, float, decl.Vector3f&)
         float GetAttenuation()
         SoundBuffer* GetBuffer()
         bint GetLoop()

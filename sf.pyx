@@ -795,19 +795,11 @@ cdef class Sound:
     PAUSED = declaudio.Paused
     PLAYING = declaudio.Playing
 
-    def __cinit__(self, SoundBuffer buffer=None, bint loop=False,
-                  float pitch=1.0, float volume=100.0, tuple position=(0,0,0)):
-        cdef decl.Vector3f cpp_position
-
-        cpp_position.x = position[0]
-        cpp_position.y = position[1]
-        cpp_position.z = position[2]
-
+    def __cinit__(self, SoundBuffer buffer=None):
         if buffer is None:
             self.p_this = new declaudio.Sound()
         else:
-            self.p_this = new declaudio.Sound(buffer.p_this[0], loop, pitch,
-                                              volume, cpp_position)
+            self.p_this = new declaudio.Sound(buffer.p_this[0])
 
     def __dealloc__(self):
         del self.p_this
@@ -1239,10 +1231,11 @@ cdef class Font:
 
         return wrap_glyph_instance(p)
 
-    def get_image(self, unsigned int character_size):
-        cdef decl.Image *p = <decl.Image*>&self.p_this.GetImage(character_size)
+    def get_texture(self, unsigned int character_size):
+        cdef decl.Texture *p = <decl.Texture*>&self.p_this.GetTexture(
+            character_size)
 
-        return wrap_image_instance(p, False)
+        return wrap_texture_instance(p, False)
 
     def get_kerning(self, unsigned int first, unsigned int second,
                     unsigned int character_size):
@@ -1295,13 +1288,6 @@ cdef class Image:
         def __get__(self):
             return self.p_this.GetHeight()
 
-    property smooth:
-        def __get__(self):
-            return self.p_this.IsSmooth()
-
-        def __set__(self, bint value):
-            self.p_this.SetSmooth(value)
-
     property width:
         def __get__(self):
             return self.p_this.GetWidth()
@@ -1316,24 +1302,6 @@ cdef class Image:
         raise PySFMLException("Couldn't load file {0}".format(filename))
 
     @classmethod
-    def load_from_screen(cls, RenderWindow window, IntRect source_rect=None):
-        """Return a new image with the screen content."""
-
-        cdef decl.Image *p_cpp_instance = new decl.Image()
-        cdef bint result = False
-
-        if source_rect is None:
-            result = p_cpp_instance.CopyScreen(window.p_this[0])
-        else:
-            result = p_cpp_instance.CopyScreen(window.p_this[0],
-                                               source_rect.p_this[0])
-
-        if result:
-            return wrap_image_instance(p_cpp_instance, True)
-
-        raise PySFMLException("Couldn't copy screen")
-
-    @classmethod
     def load_from_memory(cls, char* mem):
         cdef decl.Image *p_cpp_instance = new decl.Image()
 
@@ -1342,21 +1310,15 @@ cdef class Image:
 
         raise PySFMLException("Couldn't create image from memory")
 
+    # TODO: maybe this should be moved to the constructor, since the method
+    # was renamed from LoadFromPixels() to Create()
     @classmethod
     def load_from_pixels(cls, int width, int height, char *pixels):
         cdef decl.Image *p_cpp_instance = new decl.Image()
 
-        if p_cpp_instance.LoadFromPixels(width, height, <unsigned char*>pixels):
-            return wrap_image_instance(p_cpp_instance, True)
+        p_cpp_instance.Create(width, height, <unsigned char*>pixels)
 
-        raise PySFMLException("Couldn't create image from pixels")
-
-    @classmethod
-    def get_maximum_size(cls):
-        return decl.GetMaximumSize()
-
-    def bind(self):
-        self.p_this.Bind()
+        return wrap_image_instance(p_cpp_instance, True)
 
     def copy(self, Image source, int dest_x, int dest_y,
              source_rect=None, bint apply_alpha=None):
@@ -1402,6 +1364,112 @@ cdef class Image:
 
         return ret
 
+    def save_to_file(self, char* filename):
+        self.p_this.SaveToFile(filename)
+
+    def set_pixel(self, int x, int y, Color color):
+        self.p_this.SetPixel(x, y, color.p_this[0])
+
+
+cdef Image wrap_image_instance(decl.Image *p_cpp_instance, bint delete_this):
+    cdef Image ret = Image.__new__(Image)
+    ret.p_this = p_cpp_instance
+    ret.delete_this = delete_this
+
+    return ret
+
+
+
+
+
+cdef class Texture:
+    cdef decl.Texture *p_this
+    cdef bint delete_this
+
+    MAXIMUM_SIZE = decl.Texture_GetMaximumSize()
+
+    def __init__(self, unsigned int width=0, unsigned int height=0):
+        self.p_this = new decl.Texture()
+        self.delete_this = True
+
+        if width > 0 and height > 0:
+            if self.p_this.Create(width, height) != True:
+                raise PySFMLException("Error while creating texture "
+                                      "(with={0}, height={1})"
+                                      .format(width, height))
+
+    def __dealloc__(self):
+        if self.delete_this:
+            del self.p_this
+
+    property height:
+        def __get__(self):
+            return self.p_this.GetHeight()
+
+    property smooth:
+        def __get__(self):
+            return self.p_this.IsSmooth()
+
+        def __set__(self, bint value):
+            self.p_this.SetSmooth(value)
+
+    property width:
+        def __get__(self):
+            return self.p_this.GetWidth()
+
+    @classmethod
+    def load_from_file(cls, char *filename, object area=None):
+        cdef decl.IntRect cpp_rect
+        cdef decl.Texture *p_cpp_instance = new decl.Texture()
+
+        if area is None:
+            if p_cpp_instance.LoadFromFile(filename):
+                return wrap_texture_instance(p_cpp_instance, True)
+        else:
+            cpp_rect = convert_to_int_rect(area)
+
+            if p_cpp_instance.LoadFromFile(filename, cpp_rect):
+                return wrap_texture_instance(p_cpp_instance, True)
+
+        raise PySFMLException("Couldn't load texture from file {0}"
+                              .format(filename))
+
+    @classmethod
+    def load_from_image(cls, Image image, object area=None):
+        cdef decl.IntRect cpp_rect
+        cdef decl.Texture *p_cpp_instance = new decl.Texture()
+
+        if area is None:
+            if p_cpp_instance.LoadFromImage(image.p_this[0]):
+                return wrap_texture_instance(p_cpp_instance, True)
+        else:
+            cpp_rect = convert_to_int_rect(area)
+
+            if p_cpp_instance.LoadFromImage(image.p_this[0], cpp_rect):
+                return wrap_texture_instance(p_cpp_instance, True)
+
+        raise PySFMLException("Couldn't load texture from image {0}"
+                              .format(image))
+
+    @classmethod
+    def load_from_memory(cls, bytes data, area=None):
+        cdef decl.IntRect cpp_rect
+        cdef decl.Texture *p_cpp_instance = new decl.Texture()
+
+        if area is None:
+            if p_cpp_instance.LoadFromMemory(<char*>data, len(data)):
+                return wrap_texture_instance(p_cpp_instance, True)
+        else:
+            cpp_rect = convert_to_int_rect(area)
+
+            if p_cpp_instance.LoadFromMemory(<char*>data, len(data), cpp_rect):
+                return wrap_texture_instance(p_cpp_instance, True)
+
+        raise PySFMLException("Couldn't create texture from memory")
+
+    def bind(self):
+        self.p_this.Bind()
+
     def get_tex_coords(self, rect):
         cdef decl.IntRect cpp_rect = convert_to_int_rect(rect)
         cdef decl.FloatRect res = self.p_this.GetTexCoords(cpp_rect)
@@ -1411,24 +1479,32 @@ cdef class Image:
 
         return wrap_float_rect_instance(p)
 
-    def save_to_file(self, char* filename):
-        self.p_this.SaveToFile(filename)
-
-    def set_pixel(self, int x, int y, Color color):
-        self.p_this.SetPixel(x, y, color.p_this[0])
-
-    def update_pixels(self, char *pixels, rect=None):
-        cdef decl.IntRect cpp_rect
-
-        if rect is None:
-            self.p_this.UpdatePixels(<unsigned char*>pixels)
+    def update(self, object source, int p1=-1, int p2=-1, int p3=-1, int p4=-1):
+        if isinstance(source, bytes):
+            if p1 == -1:
+                self.p_this.Update(<decl.Uint8*>(<char*>source))
+            else:
+                self.p_this.Update(<decl.Uint8*>(<char*>source),
+                                   p1, p2, p3, p4)
+        elif isinstance(source, Image):
+            if p1 == -1:
+                self.p_this.Update((<Image>source).p_this[0])
+            else:
+                self.p_this.Update((<Image>source).p_this[0], p1, p2)
+        elif isinstance(source, RenderWindow):
+            if p1 == -1:
+                self.p_this.Update((<RenderWindow>source).p_this[0])
+            else:
+                self.p_this.Update((<RenderWindow>source).p_this[0], p1, p2)
         else:
-            cpp_rect = convert_to_int_rect(rect)
-            self.p_this.UpdatePixels(<unsigned char*>pixels, cpp_rect)
+            raise TypeError(
+                "The source argument should be of type str / bytes(py3k), "
+                "Image or RenderWindow (found {0})".format(type(source)))
 
 
-cdef Image wrap_image_instance(decl.Image *p_cpp_instance, bint delete_this):
-    cdef Image ret = Image.__new__(Image)
+cdef Texture wrap_texture_instance(decl.Texture *p_cpp_instance,
+                                   bint delete_this):
+    cdef Texture ret = Texture.__new__(Texture)
     ret.p_this = p_cpp_instance
     ret.delete_this = delete_this
 
@@ -1694,19 +1770,11 @@ cdef class Text(Drawable):
 
 
 cdef class Sprite(Drawable):
-    def __cinit__(self, Image image=None, position=(0,0), scale=(1,1),
-                  float rotation=0.0, Color color=Color.WHITE):
-        cdef decl.Vector2f cpp_position = convert_to_vector2f(position)
-        cdef decl.Vector2f cpp_scale = convert_to_vector2f(scale)
-
-        if image is None:
+    def __cinit__(self, Texture texture=None):
+        if texture is None:
             self.p_this = <decl.Drawable*>new decl.Sprite()
         else:
-            self.p_this = <decl.Drawable*>new decl.Sprite(image.p_this[0],
-                                                          cpp_position,
-                                                          cpp_scale,
-                                                          rotation,
-                                                          color.p_this[0])
+            self.p_this = <decl.Drawable*>new decl.Sprite(texture.p_this[0])
 
     def __dealloc__(self):
         del self.p_this
@@ -1719,15 +1787,6 @@ cdef class Sprite(Drawable):
     property height:
         def __get__(self):
             return (<decl.Sprite*>self.p_this).GetSize().y
-
-    property image:
-        def __get__(self):
-            return wrap_image_instance(
-                <decl.Image*>((<decl.Sprite*>self.p_this).GetImage()),
-                False)
-
-        def __set__(self, Image value):
-            (<decl.Sprite*>self.p_this).SetImage(value.p_this[0])
 
     property size:
         def __get__(self):
@@ -1744,18 +1803,18 @@ cdef class Sprite(Drawable):
 
             (<decl.Sprite*>self.p_this).SetSubRect(r)
 
+    property texture:
+        def __get__(self):
+            return wrap_texture_instance(
+                <decl.Texture*>((<decl.Sprite*>self.p_this).GetTexture()),
+                False)
+
+        def __set__(self, Texture value):
+            (<decl.Sprite*>self.p_this).SetTexture(value.p_this[0])
+
     property width:
         def __get__(self):
             return (<decl.Sprite*>self.p_this).GetSize().x
-
-    def get_pixel(self, unsigned int x, unsigned int y):
-        cdef decl.Color *p
-        cdef decl.Color c
-
-        c = (<decl.Sprite*>self.p_this).GetPixel(x, y)
-        p = new decl.Color(c.r, c.g, c.b, c.a)
-
-        return wrap_color_instance(p)
 
     def flip_x(self, bint flipped):
         (<decl.Sprite*>self.p_this).FlipX(flipped)
@@ -1765,13 +1824,6 @@ cdef class Sprite(Drawable):
 
     def resize(self, float width, float height):
         (<decl.Sprite*>self.p_this).Resize(width, height)
-
-    def set_image(self, Image image, bint adjust_to_new_size=False):
-        (<decl.Sprite*>self.p_this).SetImage(image.p_this[0],
-                                             adjust_to_new_size)
-
-
-
 
 
 
@@ -2187,8 +2239,8 @@ cdef class Shader:
         else:
             self.p_this.SetParameter(name, x, y, z, w)
     
-    def set_texture(self, char *name, Image image):
-        self.p_this.SetTexture(name, image.p_this[0])
+    def set_texture(self, char *name, Texture texture):
+        self.p_this.SetTexture(name, texture.p_this[0])
 
     def set_current_texture(self, char* name):
         self.p_this.SetCurrentTexture(name)
@@ -2463,11 +2515,11 @@ cdef class RenderWindow:
 
 
 
-cdef class RenderImage:
-    cdef decl.RenderImage *p_this
+cdef class RenderTexture:
+    cdef decl.RenderTexture *p_this
     
     def __cinit__(self):
-        self.p_this = new decl.RenderImage()
+        self.p_this = new decl.RenderTexture()
     
     def __init__(self, unsigned int width, unsigned int height,
                  bint depth=False):
@@ -2492,10 +2544,10 @@ cdef class RenderImage:
         def __get__(self):
             return self.p_this.GetHeight()
     
-    property image:
+    property texture:
         def __get__(self):
-            return wrap_image_instance(<decl.Image*>&self.p_this.GetImage(),
-                                       False)
+            return wrap_texture_instance(
+                <decl.Texture*>&self.p_this.GetTexture(), False)
     
     property smooth:
         def __get__(self):
