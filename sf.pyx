@@ -1473,7 +1473,7 @@ cdef class Texture:
     def get_tex_coords(self, rect):
         cdef decl.IntRect cpp_rect = convert_to_int_rect(rect)
         cdef decl.FloatRect res = self.p_this.GetTexCoords(cpp_rect)
-        cdef decl.FloatRect *p
+        cdef decl.FloatRect *p = new decl.FloatRect()
 
         p[0] = res
 
