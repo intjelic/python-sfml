@@ -8,8 +8,8 @@ def main():
     window = sf.RenderWindow(sf.VideoMode(640, 480), 'Sprite example')
     window.framerate_limit = 60
     running = True
-    image = sf.Image.load_from_file('python-logo.png')
-    sprite = sf.Sprite(image)
+    texture = sf.Texture.load_from_file('python-logo.png')
+    sprite = sf.Sprite(texture)
 
     while running:
         for event in window.iter_events():

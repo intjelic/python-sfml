@@ -29,7 +29,8 @@ def main():
             else:
                 pass
 
-    sprite = sf.Sprite(new_image)
+    texture = sf.Texture.load_from_image(new_image)
+    sprite = sf.Sprite(texture)
     running = True
 
     while running:

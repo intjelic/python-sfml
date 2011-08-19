@@ -10,7 +10,8 @@ def main():
     logo = sf.Image.load_from_file('python-logo.png')
     princess = sf.Image.load_from_file('princess.png')
     logo.copy(princess, 0, 0, sf.IntRect(0, 0, 0, 0), True)
-    sprite = sf.Sprite(logo)
+    texture = sf.Texture.load_from_image(logo)
+    sprite = sf.Sprite(texture)
     running = True
 
     while running:
