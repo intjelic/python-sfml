@@ -68,6 +68,40 @@ Misc
 
 
 
+.. class:: IntRect(int left=0, int top=0, int width=0, int height=0)
+
+   You don't have to use this class; everywhere you can pass a
+   :class:`IntRect`, you should be able to pass a tuple as
+   well. However, it can be more practical to use it, as it provides
+   useful methods and is mutable.
+
+   .. attribute:: left
+   .. attribute:: top
+   .. attribute:: width
+   .. attribute:: height
+
+   .. method:: contains(int x, int y)
+   .. method:: intersects(IntRect rect[, IntRect intersection])
+
+
+
+.. class:: FloatRect(float left=0, float top=0, float width=0, float height=0)
+
+   You don't have to use this class; everywhere you can pass a
+   :class:`FloatRect`, you should be able to pass a tuple as
+   well. However, it can be more practical to use it, as it provides
+   useful methods and is mutable.
+
+   .. attribute:: left
+   .. attribute:: top
+   .. attribute:: width
+   .. attribute:: height
+
+   .. method:: contains(int x, int y)
+   .. method:: intersects(FloatRect rect[, FloatRect intersection])
+
+
+
 .. class:: Matrix3(float a00, float a01, float a02,\
                    float a10, float a11, float a12,\
                    float a20, float a21, float a22)
