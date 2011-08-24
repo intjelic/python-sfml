@@ -23,10 +23,10 @@ such wrappers available in Python, such as Pygame, PyOpenGL or pyglet.
 Doesn't SFML already have a Python binding?
 -------------------------------------------
 
-Indeed, but it needed to be rewritten, mainly because the current
-binding is directly written in C++ and is a maintenance nightmare.
-This new binding is written in `Cython <http://cython.org>`_, hence
-the name.
+It does, but the binding needed to be rewritten, mainly because the
+current binding is directly written in C++ and is a maintenance
+nightmare.  This new binding is written in `Cython
+<http://cython.org>`_, hence the name.
 
 Also, I find that the current binding lacks some features, such as:
 
