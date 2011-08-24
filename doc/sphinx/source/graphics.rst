@@ -143,12 +143,9 @@ Image display and effects
 .. class:: Image(int width, int height[, color])
 
    .. attribute:: height
-   .. attribute:: smooth
    .. attribute:: width
 
-   .. classmethod:: get_maxmimum_size()
    .. classmethod:: load_from_file(filename)
-   .. classmethod:: load_from_screen(window[, source_rect])
    .. classmethod:: load_from_memory(str mem)
    .. classmethod:: load_from_pixels(int width, int height, str pixels)
 
@@ -166,32 +163,67 @@ Image display and effects
          image[0,0] = sf.Color(10, 20, 30)  # Create tuple implicitly
          image[(0,0)] = sf.Color(10, 20, 30)  # Create tuple explicitly
 
-   .. method:: bind()
    .. method:: copy(Image source, int dest_x, int dest_y\
                     [, source_rect, apply_alpha])
    .. method:: create_mask_from_color(color, int alpha)
    .. method:: get_pixel(int x, int y)
    .. method:: get_pixels()
-   .. method:: get_tex_coords(rect)
    .. method:: save_to_file(filename)
    .. method:: set_pixel(int x, int y, color)
    .. method:: update_pixels(str pixels[, rect])
 
 
 
-.. class:: Sprite([image, position=(0,0), scale=(1,1), rotation=0.0,\
-                  color=sf.Color.WHITE])
+.. class:: Texture([int width[, int height]])
+
+   This class has been recently introduced in SFML 2. It basically
+   replaces the :class:`Image` class, except when you need to access
+   or set pixels, which is only possible with Images.
+
+   .. attribute:: MAXIMUM_SIZE
+   .. attribute:: height   
+   .. attribute:: smooth
+   .. attribute:: width
+
+   .. classmethod:: load_from_file(filename[, area])
+
+      *area* can be either a tuple or an :class:`sf.IntRect`.
+
+   .. classmethod:: load_from_image(image[, area])
+
+      *area* can be either a tuple or an :class:`sf.IntRect`.
+
+   .. classmethod:: load_from_memory(bytes data[, area])
+
+      *area* can be either a tuple or an :class:`sf.IntRect`.
+
+   .. method:: bind()
+   .. method:: get_tex_coords(rect):
+
+      *rect* can be either a tuple or an :class:`sf.IntRect`.
+
+   .. method:: update(object source, int p1=-1, int p2=-1, int p3=-1, int p4=-1)
+
+      This method can be called in three ways, to be consistent with
+      the C++ method overloading::
+
+          update(bytes pixels[, width, height, x, y])
+          update(image[, x, y])
+          update(window[, x, y])
+
+
+.. class:: Sprite([texture])
 
    .. attribute:: blend_mode
    .. attribute:: color
    .. attribute:: height
-   .. attribute:: image
    .. attribute:: origin
    .. attribute:: position
    .. attribute:: rotation
    .. attribute:: the_scale
    .. attribute:: size
    .. attribute:: sub_rect
+   .. attribute:: texture
    .. attribute:: width
    .. attribute:: x
    .. attribute:: y
@@ -207,7 +239,7 @@ Image display and effects
    .. method:: resize(float width, float height)
    .. method:: rotate(float angle)
    .. method:: scale(float x, float y)
-   .. method:: set_image(image[, adjust_to_new_size=False])
+   .. method:: set_texture(image[, adjust_to_new_size=False])
    .. method:: transform_to_global(float x, float y)
    .. method:: transform_to_local(float x, float y)
 
@@ -236,12 +268,12 @@ Image display and effects
 
 
 
-.. class:: RenderImage(int width, int height[, bool depth=False])
+.. class:: RenderTexture(int width, int height[, bool depth=False])
 
    .. attribute:: active
    .. attribute:: default_view
    .. attribute:: height
-   .. attribute:: image
+   .. attribute:: texture
    .. attribute:: smooth
    .. attribute:: view
    .. attribute:: width
@@ -389,7 +421,7 @@ Text
    .. classmethod:: load_from_memory(str data)
 
    .. method:: get_glyph(int code_point, int character_size, bool bold)
-   .. method:: get_image(int character_size)
+   .. method:: get_texture(int character_size)
    .. method:: get_kerning(int first, int second, int character_size)
    .. method:: get_line_spacing(int character_size)
 
