@@ -1825,6 +1825,10 @@ cdef class Sprite(Drawable):
     def resize(self, float width, float height):
         (<decl.Sprite*>self.p_this).Resize(width, height)
 
+    def set_texture(self, Texture texture, bint adjust_to_new_size=False):
+        (<decl.Sprite*>self.p_this).SetTexture(texture.p_this[0],
+                                               adjust_to_new_size)
+
 
 
 
