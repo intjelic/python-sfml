@@ -17,7 +17,7 @@ https://github.com/bastienleonard/pysfml2-cython
 Currently the reference just lists the available classes, their
 members, and information specific to this binding.  For the
 documentation itself, please see the `SFML 2 documentation
-<http://sfml-dev.org/documentation/2.0/annotated.htm>`_.  The mapping
+<http://sfml-dev.org/documentation/2.0/annotated>`_.  The mapping
 between SFML and this binding should be fairly easy to grasp.
 
 Contents:
