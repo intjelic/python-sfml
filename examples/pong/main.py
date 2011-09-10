@@ -15,11 +15,12 @@ def main():
     ball_sound_buffer = sf.SoundBuffer.load_from_file("resources/ball.wav")
     ball_sound = sf.Sound(ball_sound_buffer);
 
-    # Load the images used in the game
-    background_image = sf.Image.load_from_file('resources/background.jpg')
-    left_paddle_image = sf.Image.load_from_file('resources/paddle_left.png')
-    right_paddle_image = sf.Image.load_from_file('resources/paddle_right.png')
-    ball_image = sf.Image.load_from_file('resources/ball.png')
+    # Load the textures used in the game
+    background_texture = sf.Texture.load_from_file('resources/background.jpg')
+    left_paddle_texture = sf.Texture.load_from_file('resources/paddle_left.png')
+    right_paddle_texture = sf.Texture.load_from_file(
+        'resources/paddle_right.png')
+    ball_texture = sf.Texture.load_from_file('resources/ball.png')
 
     # Load the text font
     font = sf.Font.load_from_file('resources/sansation.ttf')
@@ -32,10 +33,10 @@ def main():
     end.color = sf.Color(50, 50, 250)
 
     # Create the sprites of the background, the paddles and the ball
-    background = sf.Sprite(background_image)
-    left_paddle = sf.Sprite(left_paddle_image)
-    right_paddle = sf.Sprite(right_paddle_image)
-    ball = sf.Sprite(ball_image)
+    background = sf.Sprite(background_texture)
+    left_paddle = sf.Sprite(left_paddle_texture)
+    right_paddle = sf.Sprite(right_paddle_texture)
+    ball = sf.Sprite(ball_texture)
 
     left_paddle.move(10, (window.view.size[1] - left_paddle.size[1]) / 2)
     right_paddle.move(window.view.size[0] - right_paddle.size[0] - 10,
