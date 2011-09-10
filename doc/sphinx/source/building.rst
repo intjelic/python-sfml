@@ -23,6 +23,13 @@ directory, which is usually more practical.
 Building with Cython installed
 ------------------------------
 
+.. warning::
+
+   A common issue on Ubuntu is that the Cython package is currently
+   outdated.  One solution is to `install Cython manually
+   <http://docs.cython.org/src/quickstart/install.html>`_, for example with
+   ``easy_install cython``.
+
 If you downloaded the source straight from the Git repo or if you have
 modified the source, you'll need to install Cython to build a module
 including the changes.  Also, make sure that ``USE_CYTHON`` is set to
