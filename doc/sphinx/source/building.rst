@@ -5,6 +5,27 @@ Binary packages will probably be available in the future, but currently you need
 to build the ``sf`` module from source.
 
 
+Common build options
+--------------------
+
+You can build the module with the ``setup.py`` script (or
+``setup3k.py`` for Python 3).  This section discusses some common
+options that you may need or find useful.
+
+``--inplace`` means that the module will be dropped in the current
+directory. I find this more practical, so it makes it easier to test
+the module once built.
+
+``--compiler=mingw32`` obviously means that `MinGW <http://www.mingw.org/>`_
+will be invoked instead of the default compiler. This is needed when you want
+to use GCC on Windows. This command will show you the list of compiler you
+specify: ``python setup.py build_ext --help-compiler``.
+
+In the end, the command will look something like this::
+
+    python setup.py build_ext --inplace --compiler=mingw32
+
+
 Building without Cython
 -----------------------
 
@@ -14,10 +35,7 @@ need to install Cython.
 Make sure that ``USE_CYTHON`` is set to ``False`` in setup.py.  You can then
 build the module by typing this command::
 
-    python setup.py build_ext --inplace
-
-The ``--inplace`` option means that the module will be dropped in the current
-directory, which is usually more practical.
+    python setup.py build_ext
 
 
 Building with Cython installed
@@ -37,10 +55,7 @@ including the changes.  Also, make sure that ``USE_CYTHON`` is set to
 
 When you've done so, you can build the module by typing this command::
 
-    python setup.py build_ext --inplace
-
-The ``--inplace`` option means that the module will be dropped in the current
-directory, which is usually more practical.
+    python setup.py build_ext
 
 
 Building a Python 3 module
@@ -59,7 +74,7 @@ The next step is to invoke the ``setup3k.py`` script to build the
 module. Since we called Cython already, make sure that ``USE_CYTHON``
 is set to ``False`` in ``setup3k.py``, then invoke this command::
 
-    python3 setup3k.py build_ext --inplace
+    python3 setup3k.py build_ext
 
 (Note that you may have to type ``python`` instead of ``python3``;
 typically, GNU/Linux systems provide this as a way to call a specific
