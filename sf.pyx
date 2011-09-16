@@ -250,7 +250,7 @@ cdef class BlendMode:
 
 cdef class Style:
     NONE = declstyle.None
-    TITLEEBAR = declstyle.Titlebar
+    TITLEBAR = declstyle.Titlebar
     RESIZE = declstyle.Resize
     CLOSE = declstyle.Close
     FULLSCREEN = declstyle.Fullscreen
