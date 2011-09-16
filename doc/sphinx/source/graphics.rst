@@ -256,7 +256,6 @@ Image display and effects
    .. attribute:: rotation
    .. attribute:: the_scale
    .. attribute:: size
-   .. attribute:: sub_rect
    .. attribute:: texture
    .. attribute:: width
    .. attribute:: x
@@ -266,16 +265,23 @@ Image display and effects
 
       Equivalent to :meth:`get_pixel()`.
 
-   .. method:: get_pixel(int x, int y)
+   .. method:: get_sub_rect()
+
+      .. warning::
+
+         This method returns a copy of the rectangle, so code like
+         this won't work::
+
+             sprite.get_sub_rect().top = 10
+
    .. method:: flip_x(flipped)
    .. method:: flip_y(flipped)
-   .. method:: move(float x, float y)
    .. method:: resize(float width, float height)
-   .. method:: rotate(float angle)
-   .. method:: scale(float x, float y)
+   .. method:: set_sub_rect(rect)
+
+      *rect* can be either a tuple or an :class:`IntRect`.
+
    .. method:: set_texture(image[, adjust_to_new_size=False])
-   .. method:: transform_to_global(float x, float y)
-   .. method:: transform_to_local(float x, float y)
 
 
 

@@ -1792,17 +1792,6 @@ cdef class Sprite(Drawable):
         def __get__(self):
             return (self.width, self.height)
 
-    property sub_rect:
-        def __get__(self):
-            cdef decl.IntRect r = (<decl.Sprite*>self.p_this).GetSubRect()
-
-            return IntRect(r.Left, r.Top, r.Width, r.Height)
-
-        def __set__(self, value):
-            cdef decl.IntRect r = convert_to_int_rect(value)
-
-            (<decl.Sprite*>self.p_this).SetSubRect(r)
-
     property texture:
         def __get__(self):
             return wrap_texture_instance(
@@ -1816,6 +1805,11 @@ cdef class Sprite(Drawable):
         def __get__(self):
             return (<decl.Sprite*>self.p_this).GetSize().x
 
+    def get_sub_rect(self):
+        cdef decl.IntRect r = (<decl.Sprite*>self.p_this).GetSubRect()
+
+        return IntRect(r.Left, r.Top, r.Width, r.Height)
+
     def flip_x(self, bint flipped):
         (<decl.Sprite*>self.p_this).FlipX(flipped)
 
@@ -1824,6 +1818,11 @@ cdef class Sprite(Drawable):
 
     def resize(self, float width, float height):
         (<decl.Sprite*>self.p_this).Resize(width, height)
+
+    def set_sub_rect(self, object rect):
+        cdef decl.IntRect r = convert_to_int_rect(rect)
+
+        (<decl.Sprite*>self.p_this).SetSubRect(r)
 
     def set_texture(self, Texture texture, bint adjust_to_new_size=False):
         (<decl.Sprite*>self.p_this).SetTexture(texture.p_this[0],
