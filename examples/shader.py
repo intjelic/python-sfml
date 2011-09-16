@@ -5,18 +5,18 @@ import sf
 
 
 def main():
-    window = sf.RenderWindow(sf.VideoMode(640, 480), 'Sprite example')
+    window = sf.RenderWindow(sf.VideoMode(640, 480), 'Shader example')
     window.framerate_limit = 60
     running = True
-    image = sf.Image.load_from_file('python-logo.png')
+    image = sf.Texture.load_from_file('python-logo.png')
     sprite = sf.Sprite(image)
     sprite2 = sf.Sprite(image)
     sprite2.position = 0, 300
-    
+
     shader = sf.Shader.load_from_file('blur.sfx')
     shader.set_current_texture('texture')
-    shader.set_parameter('offset', 0.0)
-    
+    shader.set_parameter('offset', 1./image.width)
+
     shader2 = sf.Shader.load_from_file('edge.sfx')
     shader2.set_current_texture('texture')
 
