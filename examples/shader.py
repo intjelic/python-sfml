@@ -15,7 +15,8 @@ def main():
 
     shader = sf.Shader.load_from_file('blur.sfx')
     shader.set_current_texture('texture')
-    shader.set_parameter('offset', 1./image.width)
+    shader.set_parameter('offsetx', 1./image.width)
+    shader.set_parameter('offsety', 1./image.height)
 
     shader2 = sf.Shader.load_from_file('edge.sfx')
     shader2.set_current_texture('texture')
