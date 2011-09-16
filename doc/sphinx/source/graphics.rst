@@ -276,12 +276,17 @@ Image display and effects
 
    .. method:: flip_x(flipped)
    .. method:: flip_y(flipped)
+   .. method:: move(float x, float y)
    .. method:: resize(float width, float height)
+   .. method:: rotate(float angle)
+   .. method:: scale(float x, float y)
    .. method:: set_sub_rect(rect)
 
       *rect* can be either a tuple or an :class:`IntRect`.
 
    .. method:: set_texture(image[, adjust_to_new_size=False])
+   .. method:: transform_to_global(float x, float y)
+   .. method:: transform_to_local(float x, float y)
 
 
 
