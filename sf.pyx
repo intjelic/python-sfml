@@ -1770,10 +1770,14 @@ cdef class Text(Drawable):
 
 
 cdef class Sprite(Drawable):
+    cdef Texture texture
+
     def __cinit__(self, Texture texture=None):
         if texture is None:
+            self.texture = None
             self.p_this = <decl.Drawable*>new decl.Sprite()
         else:
+            self.texture = texture
             self.p_this = <decl.Drawable*>new decl.Sprite(texture.p_this[0])
 
     def __dealloc__(self):
@@ -1794,11 +1798,10 @@ cdef class Sprite(Drawable):
 
     property texture:
         def __get__(self):
-            return wrap_texture_instance(
-                <decl.Texture*>((<decl.Sprite*>self.p_this).GetTexture()),
-                False)
+            return self.texture
 
         def __set__(self, Texture value):
+            self.texture = value
             (<decl.Sprite*>self.p_this).SetTexture(value.p_this[0])
 
     property width:
@@ -1825,6 +1828,7 @@ cdef class Sprite(Drawable):
         (<decl.Sprite*>self.p_this).SetSubRect(r)
 
     def set_texture(self, Texture texture, bint adjust_to_new_size=False):
+        self.texture = texture
         (<decl.Sprite*>self.p_this).SetTexture(texture.p_this[0],
                                                adjust_to_new_size)
 
