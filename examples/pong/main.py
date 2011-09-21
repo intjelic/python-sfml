@@ -1,6 +1,8 @@
 #! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 
+# This example is ported from the SFML C++ examples.
+
 import math
 import random
 
