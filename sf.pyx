@@ -2604,7 +2604,7 @@ cdef class RenderTexture:
         if shader is None:
             self.p_this.Draw(drawable.p_this[0])
         else:
-            raise NotImplementedError("The Shader class isn't available yet")
+            self.p_this.Draw(drawable.p_this[0], shader.p_this[0])
 
     def get_viewport(self, View view):
         cdef decl.IntRect *p = new decl.IntRect()
