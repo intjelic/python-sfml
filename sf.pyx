@@ -789,6 +789,7 @@ cdef SoundBuffer wrap_sound_buffer_instance(
 
 
 cdef class Sound:
+    cdef SoundBuffer buffer
     cdef declaudio.Sound *p_this
 
     STOPPED = declaudio.Stopped
@@ -798,7 +799,9 @@ cdef class Sound:
     def __cinit__(self, SoundBuffer buffer=None):
         if buffer is None:
             self.p_this = new declaudio.Sound()
+            self.buffer = None
         else:
+            self.buffer = buffer
             self.p_this = new declaudio.Sound(buffer.p_this[0])
 
     def __dealloc__(self):
@@ -813,10 +816,10 @@ cdef class Sound:
 
     property buffer:
         def __get__(self):
-            return wrap_sound_buffer_instance(
-                <declaudio.SoundBuffer*>self.p_this.GetBuffer(), False)
+            return self.buffer
 
         def __set__(self, SoundBuffer value):
+            self.buffer = value
             self.p_this.SetBuffer(value.p_this[0])
 
     property loop:
