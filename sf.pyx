@@ -2082,12 +2082,12 @@ cdef class View:
     # bound to the view. Every time the view is changed, the target
     # will be automatically updated. The target object must have a
     # view property.  This is used so that code like
-    # window.view.mode(10, 10) works as expected.
+    # window.view.move(10, 10) works as expected.
     cdef object render_target
 
     def __init__(self):
         self.p_this = new decl.View()
-        self.window = None
+        self.render_target = None
 
     def __dealloc__(self):
         del self.p_this
