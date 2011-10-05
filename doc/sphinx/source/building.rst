@@ -5,6 +5,51 @@ Binary packages will probably be available in the future, but currently you need
 to build the ``sf`` module from source.
 
 
+Getting SFML 2
+--------------
+
+The first thing you should do is get `SFML 2
+<https://github.com/LaurentGomila/SFML>`_ and make sure it
+works. Please refer to the official tutorial:
+http://sfml-dev.org/tutorials/2.0/compile-with-cmake.php
+
+Some platforms may make it easier to install it, for example Arch
+Linux users can get it from AUR.
+
+If you are on Windows, you will probably want to copy SFML's headers
+and libraries directories to the corresponding directories of your
+compiler/IDE, and SFML's DLLs to Windows' DLL directory.
+
+
+Building on Windows
+-------------------
+
+If you don't have a C++ compiler installed, I suggest using `MinGW
+<http://www.mingw.org>`_.
+
+If you are using a recent version of MinGW, you may encounter this
+error when building the module::
+
+    error: unrecognized command line option '-mno-cygwin'
+
+The `problem <http://bugs.python.org/issue12641>`_ is that the
+``-mno-cygwin`` has been dropped in recent MinGW releases.  A quick
+way to fix this is to remove the option from the distutils
+source. Find the ``distutils/cygwinccompiler.py`` in your Python
+installation (it should be something like
+``C:\Python27\Lib\distutils\cygwinccompiler.py``). Find the
+``MinGW32CCompiler`` class and remove the ``-mno-cygwin`` options::
+
+    # class CygwinCCompiler
+    self.set_executables(compiler='gcc -mno-cygwin -O -Wall',
+                         compiler_so='gcc -mno-cygwin -mdll -O -Wall',
+                         compiler_cxx='g++ -mno-cygwin -O -Wall',
+                         linker_exe='gcc -mno-cygwin',
+                         linker_so='%s -mno-cygwin %s %s'
+                                    % (self.linker_dll, shared_option,
+                                       entry_point))
+
+
 Common build options
 --------------------
 
@@ -16,7 +61,7 @@ options that you may need or find useful.
 directory. I find this more practical, so it makes it easier to test
 the module once built.
 
-``--compiler=mingw32`` obviously means that `MinGW <http://www.mingw.org/>`_
+``--compiler=mingw32`` obviously means that `MinGW`_
 will be invoked instead of the default compiler. This is needed when you want
 to use GCC on Windows. This command will show you the list of compiler you
 specify: ``python setup.py build_ext --help-compiler``.
