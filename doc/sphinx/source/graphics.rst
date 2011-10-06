@@ -369,9 +369,22 @@ Windowing
    .. attribute:: show_mouse_cursor
    .. attribute:: size
    .. attribute:: system_handle
+
+      Return the system handle as a long (or int on Python 3). Windows
+      and Mac users will probably need to cast this as another type
+      suitable for their system's API. Please contact me and show me
+      your use case so that I can make the API more user-friendly.
+
    .. attribute:: title
    .. attribute:: view
    .. attribute:: width
+
+   .. classmethod:: from_window_handle(long window_handle\
+                                       [, ContextSettings settings])
+
+      Equivalent to this C++ constructor::
+
+         RenderWindow(WindowHandle, ContextSettings=ContextSettings())
 
    .. method:: clear([color])
    .. method:: close()

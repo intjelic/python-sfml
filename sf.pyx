@@ -2333,7 +2333,7 @@ cdef ContextSettings wrap_context_settings_instance(
 cdef class RenderWindow:
     cdef decl.RenderWindow *p_this
 
-    def __cinit__(self, VideoMode mode, char* title, int style=Style.DEFAULT,
+    def __init__(self, VideoMode mode, char* title, int style=Style.DEFAULT,
                   ContextSettings settings=None):
         if settings is None:
             self.p_this = new decl.RenderWindow(mode.p_this[0], title, style)
@@ -2421,8 +2421,7 @@ cdef class RenderWindow:
 
     property system_handle:
         def __get__(self):
-            raise NotImplementedError(
-                "The WindowHandle class isn't available yet")
+            return <unsigned long>self.p_this.GetSystemHandle()
 
     property title:
         def __set__(self, char* value):
@@ -2445,6 +2444,19 @@ cdef class RenderWindow:
 
         def __set__(self, unsigned int value):
             self.size = (value, self.height)
+
+    @classmethod
+    def from_window_handle(cls, unsigned long window_handle,
+                           ContextSettings settings=None):
+        cdef decl.RenderWindow *p = NULL
+
+        if settings is None:
+            p = new decl.RenderWindow(<decl.WindowHandle>window_handle)
+        else:
+            p = new decl.RenderWindow(<decl.WindowHandle>window_handle,
+                                      settings.p_this[0])
+
+        return wrap_render_window_instance(p)
 
     def clear(self, Color color=None):
         if color is None:
@@ -2522,6 +2534,16 @@ cdef class RenderWindow:
 
         if self.p_this.WaitEvent(p[0]):
             return wrap_event_instance(p)
+
+
+cdef RenderWindow wrap_render_window_instance(
+    decl.RenderWindow *p_cpp_instance):
+    cdef RenderWindow ret = RenderWindow.__new__(RenderWindow)
+
+    ret.p_this = p_cpp_instance
+
+    return ret
+
 
 
 
