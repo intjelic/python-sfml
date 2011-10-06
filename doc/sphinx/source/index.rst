@@ -20,6 +20,13 @@ documentation itself, please see the `SFML 2 documentation
 <http://sfml-dev.org/documentation/2.0/annotated>`_.  The mapping
 between SFML and this binding should be fairly easy to grasp.
 
+.. note::
+
+   A current limitation is that :class:`sf.Texture` objects won't work
+   as expected unless they are created after your
+   :class:`sf.RenderWindow`.  It isn't a big problem in practice, but
+   it's something to keep in mind until the issue is fixed.
+
 Contents:
 
 .. toctree::
