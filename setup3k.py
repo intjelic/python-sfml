@@ -60,7 +60,8 @@ if USE_CYTHON:
         description='A Python binding for SFML 2',
         author='Bastien Léonard',
         author_email='bastien.leonard@gmail.com',
-        url='https://github.com/bastienleonard/pysfml2-cython'
+        url='https://github.com/bastienleonard/pysfml2-cython',
+        license='BSD'
         )
 else:
     setup(
@@ -70,5 +71,6 @@ else:
         description='A Python binding for SFML 2',
         author='Bastien Léonard',
         author_email='bastien.leonard@gmail.com',
-        url='https://github.com/bastienleonard/pysfml2-cython'
+        url='https://github.com/bastienleonard/pysfml2-cython',
+        license='BSD'
         )
