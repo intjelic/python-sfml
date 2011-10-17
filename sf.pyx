@@ -37,6 +37,8 @@ from libc.stdlib cimport malloc, free
 from libcpp.vector cimport vector
 from cython.operator cimport preincrement as preinc, dereference as deref
 
+import threading
+
 cimport decl
 cimport declaudio
 cimport declblendmode
@@ -48,14 +50,51 @@ cimport declstyle
 
 
 
+cdef error_messages = {}
+cdef error_messages_lock = threading.Lock()
+
+
+cdef extern void set_error_message(char* message):
+    ident = threading.current_thread().ident
+
+    with error_messages_lock:
+        error_messages[ident] = message
+
+
+decl.replace_error_handler()
+
+
+# Return the last error message for the current thread, or None.  Will
+# return None after you consumed the latest message, until a new
+# message is added. The goal is to avoid showing the same message
+# twice.
+cdef object get_last_error_message():
+    ident = threading.current_thread().ident
+
+    with error_messages_lock:
+        if ident in error_messages:
+            message = error_messages[ident]
+            del error_messages[ident]
+            return message
+
+    return None
+
+
+
+
 # Forward declarations
 cdef class RenderWindow
 
 
 
-
 class PySFMLException(Exception):
-    pass
+    def __init__(self):
+        message = get_last_error_message()
+
+        if message is None:
+            Exception.__init__(self)
+        else:
+            Exception.__init__(self, message)
 
 
 
@@ -736,7 +775,7 @@ cdef class SoundBuffer:
         if p.LoadFromFile(filename):
             return wrap_sound_buffer_instance(p, True)
 
-        raise PySFMLException("Couldn't load sound buffer from " + filename)
+        raise PySFMLException()
 
     @classmethod
     def load_from_memory(cls, char* data):
@@ -745,7 +784,7 @@ cdef class SoundBuffer:
         if p.LoadFromMemory(data, len(data)):
             return wrap_sound_buffer_instance(p, True)
 
-        raise PySFMLException("Couldn't load sound buffer from memory")
+        raise PySFMLException()
 
     @classmethod
     def load_from_samples(cls, list samples, unsigned int channels_count,
@@ -756,7 +795,7 @@ cdef class SoundBuffer:
         cdef decl.Int16 *p_temp = NULL
 
         if p_samples == NULL:
-            raise PySFMLException("Couldn't allocate memory for samples")
+            raise PySFMLException()
         else:
             p_temp = p_samples
 
@@ -770,7 +809,7 @@ cdef class SoundBuffer:
                 return wrap_sound_buffer_instance(p_sb, True)
             else:
                 free(p_samples)
-                raise PySFMLException("Couldn't load samples")
+                raise PySFMLException()
 
     def save_to_file(self, char* filename):
         self.p_this.SaveToFile(filename)
@@ -987,7 +1026,7 @@ cdef class Music:
         if p.OpenFromFile(filename):
             return wrap_music_instance(p)
 
-        raise PySFMLException("Couldn't open music in file " + filename)
+        raise PySFMLException()
 
     @classmethod
     def open_from_memory(cls, bytes data):
@@ -996,7 +1035,7 @@ cdef class Music:
         if p.OpenFromMemory(<char*>data, len(data)):
             return wrap_music_instance(p)
 
-        raise PySFMLException("Couldn't open music from memory")
+        raise PySFMLException()
 
     def pause(self):
         self.p_this.Pause()
@@ -1215,7 +1254,7 @@ cdef class Font:
         if p.LoadFromFile(filename):
             return wrap_font_instance(p, True)
 
-        raise PySFMLException("Couldn't load font from file " + filename)
+        raise PySFMLException()
 
     @classmethod
     def load_from_memory(cls, char* data):
@@ -1224,7 +1263,7 @@ cdef class Font:
         if p.LoadFromMemory(data, len(data)):
             return wrap_font_instance(p, True)
 
-        raise PySFMLException("Couldn't load font from memory")
+        raise PySFMLException()
 
     def get_glyph(self, unsigned int code_point, unsigned int character_size,
                   bint bold):
@@ -1302,7 +1341,7 @@ cdef class Image:
         if p_cpp_instance.LoadFromFile(filename):
             return wrap_image_instance(p_cpp_instance, True)
 
-        raise PySFMLException("Couldn't load file {0}".format(filename))
+        raise PySFMLException()
 
     @classmethod
     def load_from_memory(cls, char* mem):
@@ -1311,7 +1350,7 @@ cdef class Image:
         if p_cpp_instance.LoadFromMemory(mem, len(mem)):
             return wrap_image_instance(p_cpp_instance, True)
 
-        raise PySFMLException("Couldn't create image from memory")
+        raise PySFMLException()
 
     # TODO: maybe this should be moved to the constructor, since the method
     # was renamed from LoadFromPixels() to Create()
@@ -1397,9 +1436,7 @@ cdef class Texture:
 
         if width > 0 and height > 0:
             if self.p_this.Create(width, height) != True:
-                raise PySFMLException("Error while creating texture "
-                                      "(with={0}, height={1})"
-                                      .format(width, height))
+                raise PySFMLException()
 
     def __dealloc__(self):
         if self.delete_this:
@@ -1434,8 +1471,7 @@ cdef class Texture:
             if p_cpp_instance.LoadFromFile(filename, cpp_rect):
                 return wrap_texture_instance(p_cpp_instance, True)
 
-        raise PySFMLException("Couldn't load texture from file {0}"
-                              .format(filename))
+        raise PySFMLException()
 
     @classmethod
     def load_from_image(cls, Image image, object area=None):
@@ -1451,8 +1487,7 @@ cdef class Texture:
             if p_cpp_instance.LoadFromImage(image.p_this[0], cpp_rect):
                 return wrap_texture_instance(p_cpp_instance, True)
 
-        raise PySFMLException("Couldn't load texture from image {0}"
-                              .format(image))
+        raise PySFMLException()
 
     @classmethod
     def load_from_memory(cls, bytes data, area=None):
@@ -1468,7 +1503,7 @@ cdef class Texture:
             if p_cpp_instance.LoadFromMemory(<char*>data, len(data), cpp_rect):
                 return wrap_texture_instance(p_cpp_instance, True)
 
-        raise PySFMLException("Couldn't create texture from memory")
+        raise PySFMLException()
 
     def bind(self):
         self.p_this.Bind()
@@ -2225,7 +2260,7 @@ cdef class Shader:
         if p.LoadFromFile(filename):
             return wrap_shader_instance(p)
         else:
-            raise PySFMLException("Couldn't load shader from file " + filename)
+            raise PySFMLException()
 
     @classmethod
     def load_from_memory(cls, char* shader):
@@ -2234,7 +2269,7 @@ cdef class Shader:
         if p.LoadFromMemory(shader):
             return wrap_shader_instance(p)
         else:
-            raise PySFMLException("Couldn't load shader from memory")
+            raise PySFMLException()
 
     def bind(self):
         self.p_this.Bind()

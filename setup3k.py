@@ -43,11 +43,11 @@ if USE_CYTHON:
 libs = ['sfml-graphics', 'sfml-window', 'sfml-audio', 'sfml-system']
 
 if USE_CYTHON:
-    ext_modules = [Extension('sf', ['sf.pyx'],
+    ext_modules = [Extension('sf', ['sf.pyx', 'hacks.cpp'],
                              language='c++',
                              libraries=libs)]
 else:
-    ext_modules = [Extension('sf', ['sf.cpp'],
+    ext_modules = [Extension('sf', ['sf.cpp', 'hacks.cpp'],
                              libraries=libs)]
 
 

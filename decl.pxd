@@ -45,6 +45,10 @@ cimport declmouse
 
 
 
+cdef extern from "hacks.hpp":
+    void replace_error_handler()
+
+
 # Useful sometimes to print values for debugging
 cdef extern from "stdio.h":
     void printf(char*, ...)
