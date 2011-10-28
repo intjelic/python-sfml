@@ -54,6 +54,8 @@ cdef error_messages = {}
 cdef error_messages_lock = threading.Lock()
 
 
+# TODO: apparently functions should be static in Python modules, see
+# http://docs.python.org/extending/extending.html#providing-a-c-api-for-an-extension-module.
 cdef extern void set_error_message(char* message):
     ident = threading.current_thread().ident
 
