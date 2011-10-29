@@ -38,7 +38,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 
 if USE_CYTHON:
-    from Cython.Distutils import build_ext
+    import Cython.Distutils
 
 libs = ['sfml-graphics', 'sfml-window', 'sfml-audio', 'sfml-system']
 
@@ -51,26 +51,16 @@ else:
                              libraries=libs)]
 
 
+kwargs = dict(name='PySFML 2',
+              ext_modules=ext_modules,
+              version='0.0.1',
+              description='A Python binding for SFML 2',
+              author='Bastien Léonard',
+              author_email='bastien.leonard@gmail.com',
+              url='https://github.com/bastienleonard/pysfml2-cython',
+              license='BSD')
+
 if USE_CYTHON:
-    setup(
-        name = 'PySFML 2',
-        cmdclass = {'build_ext': build_ext},
-        ext_modules = ext_modules,
-        version='0.0.1',
-        description='A Python binding for SFML 2',
-        author='Bastien Léonard',
-        author_email='bastien.leonard@gmail.com',
-        url='https://github.com/bastienleonard/pysfml2-cython',
-        license='BSD'
-        )
-else:
-    setup(
-        name = 'PySFML 2',
-        ext_modules = ext_modules,
-        version='0.0.1',
-        description='A Python binding for SFML 2',
-        author='Bastien Léonard',
-        author_email='bastien.leonard@gmail.com',
-        url='https://github.com/bastienleonard/pysfml2-cython',
-        license='BSD'
-        )
+    kwargs.update(cmdclass={'build_ext': Cython.Distutils.build_ext})
+
+setup(**kwargs)
