@@ -40,6 +40,7 @@ from distutils.extension import Extension
 if USE_CYTHON:
     import Cython.Distutils
 
+
 libs = ['sfml-graphics', 'sfml-window', 'sfml-audio', 'sfml-system']
 
 if USE_CYTHON:
@@ -50,14 +51,28 @@ else:
     ext_modules = [Extension('sf', ['sf.cpp', 'hacks.cpp'],
                              libraries=libs)]
 
+with open('README.txt', 'r') as f:
+    long_description = f.read()
+
 kwargs = dict(name='PySFML 2',
               ext_modules=ext_modules,
               version='0.0.1',
               description='A Python binding for SFML 2',
+              long_description=long_description,
               author=u'Bastien Léonard',
               author_email='bastien.leonard@gmail.com',
               url='https://github.com/bastienleonard/pysfml2-cython',
-              license='BSD')
+              license='BSD',
+              classifiers=[
+                  'Development Status :: 3 - Alpha',
+                  'Intended Audience :: Developers',
+                  'License :: OSI Approved :: BSD License',
+                  'Operating System :: OS Independent',
+                  'Programming Language :: Cython',
+                  'Topic :: Games/Entertainment',
+                  'Topic :: Multimedia',
+                  'Topic :: Software Development :: Libraries :: Python Modules'
+                  ])
 
 if USE_CYTHON:
     kwargs.update(cmdclass={'build_ext': Cython.Distutils.build_ext})
