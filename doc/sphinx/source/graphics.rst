@@ -450,8 +450,11 @@ Windowing
    .. attribute:: viewport
    .. attribute:: width
 
+   .. classmethod:: from_center_and_size(center, size)
+
+      *center* and *size* can be either tuples or :class:`Vector2f`.
+
    .. classmethod:: from_rect(rect)
-   .. classmethod:: from_rect_and_size(rect, (width, height))
 
    .. method:: move
    .. method:: reset
