@@ -19,7 +19,7 @@ be used in the future.
 
       try:
           texture = sf.Texture.load_from_file('texture.png')
-      except sf.PySFMLException e:
+      except sf.PySFMLException as e:
           # Handle error: pring message, log it, ...
 
    In C++::
