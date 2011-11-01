@@ -18,15 +18,15 @@ be used in the future.
    A simple example of error handling::
 
       try:
-          image = sf.Image.load_from_file('image.png')
+          texture = sf.Texture.load_from_file('texture.png')
       except sf.PySFMLException e:
           # Handle error: pring message, log it, ...
 
    In C++::
 
-      sf::Image image;
+      sf::Texture texture;
 
-      if (!image.LoadFromFile("image.png"))
+      if (!texture.LoadFromFile("texture.png"))
       {
           // Handle error
       }
