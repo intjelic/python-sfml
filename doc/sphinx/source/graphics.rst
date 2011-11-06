@@ -376,6 +376,7 @@ Windowing
       your use case so that I can make the API more user-friendly.
 
    .. attribute:: title
+   .. attribute:: vertical_sync_enabled
    .. attribute:: view
    .. attribute:: width
 

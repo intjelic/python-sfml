@@ -2465,6 +2465,10 @@ cdef class RenderWindow:
         def __set__(self, char* value):
             self.p_this.SetTitle(value)
 
+    property vertical_sync_enabled:
+        def __set__(self, bint value):
+            self.p_this.EnableVerticalSync(value)
+
     property view:
         def __get__(self):
             cdef decl.View *p = new decl.View()
