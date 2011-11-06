@@ -759,9 +759,10 @@ cdef class SoundBuffer:
     property samples:
         def __get__(self):
             cdef decl.Int16 *p = <decl.Int16*>self.p_this.GetSamples()
+            cdef unsigned int i
             ret = []
 
-            for i from 0 <= i < self.p_this.GetSamplesCount():
+            for i in range(self.p_this.GetSamplesCount()):
                 ret.append(int(p[i]))
 
             return ret
