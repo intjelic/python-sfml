@@ -1,4 +1,4 @@
-include setup.py setup3k.py *.txt sf.cpp *.pxd
+include setup.py setup3k.py *.txt *.pxd *.cpp *.hpp
 recursive-include examples *.py *.txt *.png *.jpg *.bmp *.sfx *.wav *.ttf 
 include doc/sphinx/source/*.rst
 include doc/sphinx/source/conf.py
