@@ -12,7 +12,7 @@ be used in the future.
 .. exception:: PySFMLException
 
    Raised when any important error is encountered. Typically, file loading
-   methods such as :meth:`sf.Image.load_from_file()` return the new object if
+   methods such as :meth:`sf.Texture.load_from_file()` return the new object if
    everything went well, and raise this exception otherwise.
 
    A simple example of error handling::
