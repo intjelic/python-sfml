@@ -505,7 +505,7 @@ Text
    .. attribute:: position
    .. attribute:: rect
    .. attribute:: rotation
-   .. attribute:: the_scale
+   .. attribute:: scale
    .. attribute:: string
    .. attribute:: x
    .. attribute:: y
