@@ -1348,12 +1348,10 @@ cdef class Image:
         raise PySFMLException()
 
     @classmethod
-    def load_from_memory(cls, bytes py_mem):
+    def load_from_memory(cls, bytes mem):
         cdef decl.Image *p_cpp_instance = new decl.Image()
-        
-        cdef char* mem = PyString_AsString(py_mem)
 
-        if p_cpp_instance.LoadFromMemory(<void*>mem, len(py_mem)):
+        if p_cpp_instance.LoadFromMemory(<char*>mem, len(mem)):
             return wrap_image_instance(p_cpp_instance, True)
 
         raise PySFMLException()
