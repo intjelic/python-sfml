@@ -48,9 +48,6 @@ cimport declkey
 cimport declmouse
 cimport declstyle
 
-cdef extern from "Python.h":
-    char *PyString_AsString(object)
-
 cdef error_messages = {}
 cdef error_messages_lock = threading.Lock()
 
