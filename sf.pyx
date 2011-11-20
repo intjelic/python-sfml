@@ -85,8 +85,8 @@ cdef object get_last_error_message():
 
 
 # Forward declarations
+cdef class RenderTarget
 cdef class RenderWindow
-
 
 
 class PySFMLException(Exception):
@@ -97,7 +97,6 @@ class PySFMLException(Exception):
             Exception.__init__(self)
         else:
             Exception.__init__(self, message)
-
 
 
 cdef class Mouse:
@@ -119,7 +118,7 @@ cdef class Mouse:
         if window is None:
             pos = declmouse.GetPosition()
         else:
-            pos = declmouse.GetPosition(window.p_this[0])
+            pos = declmouse.GetPosition((<decl.RenderWindow*>window.p_this)[0])
 
         return (pos.x, pos.y)
 
@@ -132,8 +131,7 @@ cdef class Mouse:
         if window is None:
             declmouse.SetPosition(cpp_pos)
         else:
-            declmouse.SetPosition(cpp_pos, window.p_this[0])
-
+            declmouse.SetPosition(cpp_pos, (<decl.RenderWindow*>window.p_this)[0])
 
 
 cdef class Joystick:
@@ -1534,9 +1532,9 @@ cdef class Texture:
                 self.p_this.Update((<Image>source).p_this[0], p1, p2)
         elif isinstance(source, RenderWindow):
             if p1 == -1:
-                self.p_this.Update((<RenderWindow>source).p_this[0])
+                self.p_this.Update((<decl.RenderWindow*>(<RenderWindow>source).p_this)[0])
             else:
-                self.p_this.Update((<RenderWindow>source).p_this[0], p1, p2)
+                self.p_this.Update((<decl.RenderWindow*>(<RenderWindow>source).p_this)[0], p1, p2)
         else:
             raise TypeError(
                 "The source argument should be of type str / bytes(py3k), "
@@ -1872,8 +1870,6 @@ cdef class Sprite(Drawable):
         self.texture = texture
         (<decl.Sprite*>self.p_this).SetTexture(texture.p_this[0],
                                                adjust_to_new_size)
-
-
 
 
 cdef class Shape(Drawable):
@@ -2305,9 +2301,6 @@ cdef Shader wrap_shader_instance(decl.Shader *p_cpp_instance):
     return ret
 
 
-
-
-
 cdef class ContextSettings:
     cdef decl.ContextSettings *p_this
 
@@ -2365,38 +2358,24 @@ cdef ContextSettings wrap_context_settings_instance(
     return ret
 
 
+cdef class RenderTarget:
+    cdef decl.RenderTarget *p_this
 
+    def __cinit__(self, *args, **kwargs):
+        pass
 
+    def __init__(self, *args, **kwargs):
+        if self.__class__ == RenderTarget:
+            raise NotImplementedError('RenderTarget is abstact')
 
-cdef class RenderWindow:
-    cdef decl.RenderWindow *p_this
+    property width:
+        def __get__(self):
+            return self.p_this.GetWidth()
 
-    def __init__(self, VideoMode mode, char* title, int style=Style.DEFAULT,
-                  ContextSettings settings=None):
-        if settings is None:
-            self.p_this = new decl.RenderWindow(mode.p_this[0], title, style)
-        else:
-            self.p_this = new decl.RenderWindow(mode.p_this[0], title, style,
-                                                settings.p_this[0])
-
-    def __dealloc__(self):
-        del self.p_this
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        cdef decl.Event p
-
-        if self.p_this.PollEvent(p):
-            return wrap_event_instance(&p)
-
-        raise StopIteration
-
-    property active:
-        def __set__(self, bint value):
-            self.p_this.SetActive(value)
-
+    property height:
+        def __get__(self):
+            return self.p_this.GetHeight()
+    
     property default_view:
         def __get__(self):
             cdef decl.View *p = new decl.View()
@@ -2404,70 +2383,6 @@ cdef class RenderWindow:
             p[0] = self.p_this.GetDefaultView()
 
             return wrap_view_instance(p, None)
-
-    property framerate_limit:
-        def __set__(self, int value):
-            self.p_this.SetFramerateLimit(value)
-
-    property frame_time:
-        def __get__(self):
-            return self.p_this.GetFrameTime()
-
-    property height:
-        def __get__(self):
-            return self.p_this.GetHeight()
-
-        def __set__(self, unsigned int value):
-            self.size = (self.width, value)
-
-    property joystick_threshold:
-        def __set__(self, bint value):
-            self.p_this.SetJoystickThreshold(value)
-
-    property key_repeat_enabled:
-        def __set__(self, bint value):
-            self.p_this.EnableKeyRepeat(value)
-
-    property opened:
-        def __get__(self):
-            return self.p_this.IsOpened()
-
-    property position:
-        def __set__(self, tuple value):
-            x, y = value
-            self.p_this.SetPosition(x, y)
-
-    property settings:
-        def __get__(self):
-            cdef decl.ContextSettings *p = new decl.ContextSettings()
-
-            p[0] = self.p_this.GetSettings()
-
-            return wrap_context_settings_instance(p)
-
-    property show_mouse_cursor:
-        def __set__(self, bint value):
-            self.p_this.ShowMouseCursor(value)
-
-    property size:
-        def __get__(self):
-            return (self.width, self.height)
-
-        def __set__(self, tuple value):
-            x, y = value
-            self.p_this.SetSize(x, y)
-
-    property system_handle:
-        def __get__(self):
-            return <unsigned long>self.p_this.GetSystemHandle()
-
-    property title:
-        def __set__(self, char* value):
-            self.p_this.SetTitle(value)
-
-    property vertical_sync_enabled:
-        def __set__(self, bint value):
-            self.p_this.EnableVerticalSync(value)
 
     property view:
         def __get__(self):
@@ -2480,12 +2395,132 @@ cdef class RenderWindow:
         def __set__(self, View value):
             self.p_this.SetView(value.p_this[0])
 
-    property width:
-        def __get__(self):
-            return self.p_this.GetWidth()
+    def clear(self, Color color=None):
+        if color is None:
+            self.p_this.Clear()
+        else:
+            self.p_this.Clear(color.p_this[0])
 
+    def draw(self, Drawable drawable, Shader shader=None):
+        if shader is None:
+            self.p_this.Draw(drawable.p_this[0])
+        else:
+            self.p_this.Draw(drawable.p_this[0], shader.p_this[0])
+
+    def get_viewport(self, View view):
+        cdef decl.IntRect *p = new decl.IntRect()
+
+        p[0] = self.p_this.GetViewport(view.p_this[0])
+
+        return wrap_int_rect_instance(p)
+
+    def convert_coords(self, unsigned int x, unsigned int y, View view=None):
+        cdef decl.Vector2f res
+
+        if view is None:
+            res = self.p_this.ConvertCoords(x, y)
+        else:
+            res = self.p_this.ConvertCoords(x, y, view.p_this[0])
+
+        return (res.x, res.y)
+
+    def restore_gl_states(self):
+        self.p_this.RestoreGLStates()
+
+    def save_gl_states(self):
+        self.p_this.SaveGLStates()
+
+
+cdef class RenderWindow(RenderTarget):
+    def __init__(self, VideoMode mode, char* title, int style=Style.DEFAULT,
+                  ContextSettings settings=None):
+        if settings is None:
+            self.p_this = <decl.RenderTarget*>new decl.RenderWindow(mode.p_this[0], title, style)
+        else:
+            self.p_this = <decl.RenderTarget*>new decl.RenderWindow(mode.p_this[0], title, style, settings.p_this[0])
+
+    def __dealloc__(self):
+        del self.p_this
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        cdef decl.Event p
+
+        if (<decl.RenderWindow*>self.p_this).PollEvent(p):
+            return wrap_event_instance(&p)
+
+        raise StopIteration
+
+    property active:
+        def __set__(self, bint value):
+            (<decl.RenderWindow*>self.p_this).SetActive(value)
+
+    property framerate_limit:
+        def __set__(self, int value):
+            (<decl.RenderWindow*>self.p_this).SetFramerateLimit(value)
+
+    property frame_time:
+        def __get__(self):
+            return (<decl.RenderWindow*>self.p_this).GetFrameTime()
+
+    property width:
         def __set__(self, unsigned int value):
             self.size = (value, self.height)
+
+    property height:
+        def __set__(self, unsigned int value):
+            self.size = (self.width, value)
+
+    property joystick_threshold:
+        def __set__(self, bint value):
+            (<decl.RenderWindow*>self.p_this).SetJoystickThreshold(value)
+
+    property key_repeat_enabled:
+        def __set__(self, bint value):
+            (<decl.RenderWindow*>self.p_this).EnableKeyRepeat(value)
+
+    property opened:
+        def __get__(self):
+            return (<decl.RenderWindow*>self.p_this).IsOpened()
+
+    property position:
+        def __set__(self, tuple value):
+            x, y = value
+            (<decl.RenderWindow*>self.p_this).SetPosition(x, y)
+
+    property settings:
+        def __get__(self):
+            cdef decl.ContextSettings *p = new decl.ContextSettings()
+
+            p[0] = (<decl.RenderWindow*>self.p_this).GetSettings()
+
+            return wrap_context_settings_instance(p)
+
+    property show_mouse_cursor:
+        def __set__(self, bint value):
+            (<decl.RenderWindow*>self.p_this).ShowMouseCursor(value)
+
+    property size:
+        def __get__(self):
+            return (self.width, self.height)
+
+        def __set__(self, tuple value):
+            x, y = value
+            (<decl.RenderWindow*>self.p_this).SetSize(x, y)
+
+    property system_handle:
+        def __get__(self):
+            return <unsigned long>(<decl.RenderWindow*>self.p_this).GetSystemHandle()
+
+    property title:
+        def __set__(self, char* value):
+            (<decl.RenderWindow*>self.p_this).SetTitle(value)
+
+    property vertical_sync_enabled:
+        def __set__(self, bint value):
+            (<decl.RenderWindow*>self.p_this).EnableVerticalSync(value)
 
     @classmethod
     def from_window_handle(cls, unsigned long window_handle,
@@ -2500,47 +2535,18 @@ cdef class RenderWindow:
 
         return wrap_render_window_instance(p)
 
-    def clear(self, Color color=None):
-        if color is None:
-            self.p_this.Clear()
-        else:
-            self.p_this.Clear(color.p_this[0])
-
     def close(self):
-        self.p_this.Close()
-
-    def convert_coords(self, unsigned int x, unsigned int y, View view=None):
-        cdef decl.Vector2f res
-
-        if view is None:
-            res = self.p_this.ConvertCoords(x, y)
-        else:
-            res = self.p_this.ConvertCoords(x, y, view.p_this[0])
-
-        return (res.x, res.y)
+        (<decl.RenderWindow*>self.p_this).Close()
 
     def create(self, VideoMode mode, char* title, int style=Style.DEFAULT,
                ContextSettings settings=None):
         if settings is None:
-            self.p_this.Create(mode.p_this[0], title, style)
+            (<decl.RenderWindow*>self.p_this).Create(mode.p_this[0], title, style)
         else:
-            self.p_this.Create(mode.p_this[0], title, style, settings.p_this[0])
+            (<decl.RenderWindow*>self.p_this).Create(mode.p_this[0], title, style, settings.p_this[0])
 
     def display(self):
-        self.p_this.Display()
-
-    def draw(self, Drawable drawable, Shader shader=None):
-        if shader is None:
-            self.p_this.Draw(drawable.p_this[0])
-        else:
-            self.p_this.Draw(drawable.p_this[0], shader.p_this[0])
-
-    def get_viewport(self, View view):
-        cdef decl.IntRect *p = new decl.IntRect()
-
-        p[0] = self.p_this.GetViewport(view.p_this[0])
-
-        return wrap_int_rect_instance(p)
+        (<decl.RenderWindow*>self.p_this).Display()
 
     def iter_events(self):
         """Return an iterator which yields the current pending events.
@@ -2556,25 +2562,19 @@ cdef class RenderWindow:
     def poll_event(self):
         cdef decl.Event *p = new decl.Event()
 
-        if self.p_this.PollEvent(p[0]):
+        if (<decl.RenderWindow*>self.p_this).PollEvent(p[0]):
             return wrap_event_instance(p)
 
-    def restore_gl_states(self):
-        self.p_this.RestoreGLStates()
-
-    def save_gl_states(self):
-        self.p_this.SaveGLStates()
-
     def set_icon(self, unsigned int width, unsigned int height, char* pixels):
-        self.p_this.SetIcon(width, height, <decl.Uint8*>pixels)
+        (<decl.RenderWindow*>self.p_this).SetIcon(width, height, <decl.Uint8*>pixels)
 
     def show(self, bint show):
-        self.p_this.Show(show)
+        (<decl.RenderWindow*>self.p_this).Show(show)
 
     def wait_event(self):
         cdef decl.Event *p = new decl.Event()
 
-        if self.p_this.WaitEvent(p[0]):
+        if (<decl.RenderWindow*>self.p_this).WaitEvent(p[0]):
             return wrap_event_instance(p)
 
 
@@ -2582,18 +2582,14 @@ cdef RenderWindow wrap_render_window_instance(
     decl.RenderWindow *p_cpp_instance):
     cdef RenderWindow ret = RenderWindow.__new__(RenderWindow)
 
-    ret.p_this = p_cpp_instance
+    ret.p_this = <decl.RenderTarget*>p_cpp_instance
 
     return ret
 
 
-
-
-cdef class RenderTexture:
-    cdef decl.RenderTexture *p_this
-    
+cdef class RenderTexture(RenderTarget):
     def __cinit__(self):
-        self.p_this = new decl.RenderTexture()
+        self.p_this = <decl.RenderTarget*>new decl.RenderTexture()
     
     def __init__(self, unsigned int width, unsigned int height,
                  bint depth=False):
@@ -2604,84 +2600,22 @@ cdef class RenderTexture:
     
     property active:
         def __set__(self, bint active):
-            self.p_this.SetActive(active)
-    
-    property default_view:
-        def __get__(self):
-            cdef decl.View *p = new decl.View()
+            (<decl.RenderTexture*>self.p_this).SetActive(active)
 
-            p[0] = self.p_this.GetDefaultView()
-
-            return wrap_view_instance(p, None)
-
-    property height:
-        def __get__(self):
-            return self.p_this.GetHeight()
-    
     property texture:
         def __get__(self):
             return wrap_texture_instance(
-                <decl.Texture*>&self.p_this.GetTexture(), False)
+                <decl.Texture*>&(<decl.RenderTexture*>self.p_this).GetTexture(), False)
     
     property smooth:
         def __get__(self):
-            return self.p_this.IsSmooth()
+            return (<decl.RenderTexture*>self.p_this).IsSmooth()
         
         def __set__(self, bint smooth):
-            self.p_this.SetSmooth(smooth)
-    
-    property view:
-        def __get__(self):
-            cdef decl.View *p = new decl.View()
-
-            p[0] = self.p_this.GetView()
-
-            return wrap_view_instance(p, self)
-
-        def __set__(self, View value):
-            self.p_this.SetView(value.p_this[0])
-
-    property width:
-        def __get__(self):
-            return self.p_this.GetWidth()
-    
-    def clear(self, Color color=None):
-        if color is None:
-            self.p_this.Clear()
-        else:
-            self.p_this.Clear(color.p_this[0])
-
-    def convert_coords(self, unsigned int x, unsigned int y, View view=None):
-        cdef decl.Vector2f res
-
-        if view is None:
-            res = self.p_this.ConvertCoords(x, y)
-        else:
-            res = self.p_this.ConvertCoords(x, y, view.p_this[0])
-
-        return (res.x, res.y)
+            (<decl.RenderTexture*>self.p_this).SetSmooth(smooth)
 
     def create(self, unsigned int width, unsigned int height, bint depth=False):
-        self.p_this.Create(width, height, depth)
+        (<decl.RenderTexture*>self.p_this).Create(width, height, depth)
 
     def display(self):
-        self.p_this.Display()
-    
-    def draw(self, Drawable drawable, Shader shader=None):
-        if shader is None:
-            self.p_this.Draw(drawable.p_this[0])
-        else:
-            self.p_this.Draw(drawable.p_this[0], shader.p_this[0])
-
-    def get_viewport(self, View view):
-        cdef decl.IntRect *p = new decl.IntRect()
-
-        p[0] = self.p_this.GetViewport(view.p_this[0])
-
-        return wrap_int_rect_instance(p)
-
-    def restore_gl_states(self):
-        self.p_this.RestoreGLStates()
-
-    def save_gl_states(self):
-        self.p_this.SaveGLStates()
+        (<decl.RenderTexture*>self.p_this).Display()
