@@ -47,6 +47,8 @@ cimport declmouse
 
 cdef extern from "hacks.hpp":
     void replace_error_handler()
+    cdef cppclass PyDrawable:
+        PyDrawable(void*)
 
 
 # Useful sometimes to print values for debugging

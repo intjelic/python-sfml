@@ -1550,11 +1550,9 @@ cdef Texture wrap_texture_instance(decl.Texture *p_cpp_instance,
     return ret
 
 
-
-
-
 cdef class Drawable:
     cdef decl.Drawable *p_this
+    cdef RenderTarget target
 
     def __cinit__(self, *args, **kwargs):
         pass
@@ -1683,6 +1681,23 @@ class ScaleWrapper(tuple):
         self.drawable._scale(x, y)
 
 
+cdef class DerivableDrawable(Drawable):
+
+    def __cinit__(self):
+        self.p_this = <decl.Drawable*>new decl.PyDrawable(<void*>self)
+
+    def __init__(self, *args, **kwargs):
+        if self.__class__ == Drawable:
+            raise NotImplementedError('DerivableDrawable is abstact')
+
+    def __dealloc__(self):
+        del self.p_this
+
+    def _callrender(self):
+        self.render(self.target)
+
+    def render(self, RenderTarget target):
+        raise NotImplementedError("You must override this method!")
 
 
 cdef class Text(Drawable):
@@ -2402,6 +2417,7 @@ cdef class RenderTarget:
             self.p_this.Clear(color.p_this[0])
 
     def draw(self, Drawable drawable, Shader shader=None):
+        drawable.target = self
         if shader is None:
             self.p_this.Draw(drawable.p_this[0])
         else:
