@@ -1,12 +1,8 @@
-#include "Python.h"
+#include "hacks.hpp"
 
 #include <iostream>
-
 #include <cassert>
 
-#include <SFML/Graphics.hpp>
-
-#include "hacks.hpp"
 
 
 // This file contains code that couldn't be written in Cython.
@@ -91,3 +87,21 @@ void replace_error_handler()
     static MyBuff my_buff;
     sf::Err().rdbuf(&my_buff);
 }
+
+
+PyDrawable::PyDrawable(void* obj):
+sf::Drawable (),
+m_obj (obj)
+{
+};
+
+void PyDrawable::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
+{
+    // TODO: Here may be done the same work as _callrender's work by
+    // retrieving args (which are store in the PyObject itself) and 
+    // sending it directly to the render method.
+
+    // _callrender method calls render method with the right args
+    PyObject_CallMethod(static_cast<PyObject*>(m_obj), "_callrender", NULL);
+}
+
