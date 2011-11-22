@@ -48,8 +48,6 @@ cimport declkey
 cimport declmouse
 cimport declstyle
 
-
-
 cdef error_messages = {}
 cdef error_messages_lock = threading.Lock()
 
@@ -1347,10 +1345,10 @@ cdef class Image:
         raise PySFMLException()
 
     @classmethod
-    def load_from_memory(cls, char* mem):
+    def load_from_memory(cls, bytes mem):
         cdef decl.Image *p_cpp_instance = new decl.Image()
 
-        if p_cpp_instance.LoadFromMemory(mem, len(mem)):
+        if p_cpp_instance.LoadFromMemory(<char*>mem, len(mem)):
             return wrap_image_instance(p_cpp_instance, True)
 
         raise PySFMLException()
