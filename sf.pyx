@@ -2383,14 +2383,6 @@ cdef class RenderTarget:
         if self.__class__ == RenderTarget:
             raise NotImplementedError('RenderTarget is abstact')
 
-    property width:
-        def __get__(self):
-            return self.p_this.GetWidth()
-
-    property height:
-        def __get__(self):
-            return self.p_this.GetHeight()
-    
     property default_view:
         def __get__(self):
             cdef decl.View *p = new decl.View()
@@ -2482,12 +2474,26 @@ cdef class RenderWindow(RenderTarget):
             return (<decl.RenderWindow*>self.p_this).GetFrameTime()
 
     property width:
+        #def __get__(self):
+            #return (<decl.RenderWindow*>self.p_this).GetWidth()
+
         def __set__(self, unsigned int value):
             self.size = (value, self.height)
 
     property height:
+        #def __get__(self):
+            #return (<decl.RenderWindow*>self.p_this).GetHeight()
+
         def __set__(self, unsigned int value):
             self.size = (self.width, value)
+
+    property size:
+        def __get__(self):
+            return (self.width, self.height)
+
+        def __set__(self, tuple value):
+            x, y = value
+            (<decl.RenderWindow*>self.p_this).SetSize(x, y)
 
     property joystick_threshold:
         def __set__(self, bint value):
@@ -2517,14 +2523,6 @@ cdef class RenderWindow(RenderTarget):
     property show_mouse_cursor:
         def __set__(self, bint value):
             (<decl.RenderWindow*>self.p_this).ShowMouseCursor(value)
-
-    property size:
-        def __get__(self):
-            return (self.width, self.height)
-
-        def __set__(self, tuple value):
-            x, y = value
-            (<decl.RenderWindow*>self.p_this).SetSize(x, y)
 
     property system_handle:
         def __get__(self):
@@ -2622,7 +2620,29 @@ cdef class RenderTexture(RenderTarget):
         def __get__(self):
             return wrap_texture_instance(
                 <decl.Texture*>&(<decl.RenderTexture*>self.p_this).GetTexture(), False)
-    
+
+    property width:
+        def __get__(self):
+            return self.p_this.GetWidth()
+
+        def __set__(self, unsigned int value):
+            self.size = (value, self.height)
+
+    property height:
+        def __get__(self):
+            return self.p_this.GetHeight()
+        
+        def __set__(self, unsigned int value):
+            self.size = (self.width, value)
+
+    property size:
+        def __get__(self):
+            return (self.width, self.height)
+
+        def __set__(self, tuple value):
+            x, y = value
+            self.create(x, y)
+
     property smooth:
         def __get__(self):
             return (<decl.RenderTexture*>self.p_this).IsSmooth()
