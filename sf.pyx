@@ -2474,15 +2474,15 @@ cdef class RenderWindow(RenderTarget):
             return (<decl.RenderWindow*>self.p_this).GetFrameTime()
 
     property width:
-        #def __get__(self):
-            #return (<decl.RenderWindow*>self.p_this).GetWidth()
+        def __get__(self):
+            return self.p_this.GetWidth()
 
         def __set__(self, unsigned int value):
             self.size = (value, self.height)
 
     property height:
-        #def __get__(self):
-            #return (<decl.RenderWindow*>self.p_this).GetHeight()
+        def __get__(self):
+            return self.p_this.GetHeight()
 
         def __set__(self, unsigned int value):
             self.size = (self.width, value)
