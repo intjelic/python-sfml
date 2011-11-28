@@ -1693,10 +1693,7 @@ cdef class DerivableDrawable(Drawable):
     def __dealloc__(self):
         del self.p_this
 
-    def _callrender(self):
-        self.render(self.target)
-
-    def render(self, RenderTarget target):
+    def render(self, target, renderer):
         raise NotImplementedError("You must override this method!")
 
 
@@ -2439,6 +2436,13 @@ cdef class RenderTarget:
         self.p_this.SaveGLStates()
 
 
+cdef extern RenderTarget wrap_render_target_instance(decl.RenderTarget *p_cpp_instance):
+    cdef RenderTarget ret = RenderTarget.__new__(RenderTarget)
+    ret.p_this = p_cpp_instance
+
+    return ret
+    
+    
 cdef class RenderWindow(RenderTarget):
     def __init__(self, VideoMode mode, char* title, int style=Style.DEFAULT,
                   ContextSettings settings=None):
@@ -2717,5 +2721,9 @@ cdef class Renderer:
         self.p_this.End()
     
 
+cdef extern Renderer wrap_renderer_instance(decl.Renderer *p_cpp_instance):
+    cdef Renderer ret = Renderer.__new__(Renderer)
     
-    
+    ret.p_this = p_cpp_instance
+
+    return ret
