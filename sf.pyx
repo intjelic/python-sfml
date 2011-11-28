@@ -2406,7 +2406,6 @@ cdef class RenderTarget:
             self.p_this.Clear(color.p_this[0])
 
     def draw(self, Drawable drawable, Shader shader=None):
-        drawable.target = self
         if shader is None:
             self.p_this.Draw(drawable.p_this[0])
         else:
