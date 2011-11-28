@@ -42,7 +42,7 @@ cimport declblendmode
 cimport declkey
 cimport decljoy
 cimport declmouse
-
+cimport declprimitive
 
 
 cdef extern from "hacks.hpp":
@@ -464,6 +464,30 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         Texture& GetTexture()
         bint IsAvailable()
     
+    cdef cppclass Renderer:
+        Renderer(RenderTarget&)
+        void Initialize()
+        void SaveGLStates()
+        void RestoreGLStates()
+        void Clear(Color&)
+        void PushStates()
+        void PopStates()
+        void SetModelView(Matrix3&)
+        void ApplyModelView(Matrix3&)
+        void SetProjection(Matrix3&)
+        void SetColor(Color&)
+        void ApplyColor(Color&)
+        void SetViewport(IntRect&)
+        void SetBlendMode(declblendmode.Mode)
+        void SetTexture(Texture*)
+        void SetShader(Shader*)
+        void Begin(int)
+        void End()
+        void AddVertex(float x, float y)
+        void AddVertex(float x, float y, float u, float v)
+        void AddVertex(float x, float y, Color&)
+        void AddVertex(float x, float y, float u, float v, Color&)        
+
     cdef cppclass Shape:
         Shape()
         void AddPoint(float, float)
