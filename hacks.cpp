@@ -89,6 +89,7 @@ void replace_error_handler()
 }
 
 
+
 PyDrawable::PyDrawable(void* obj):
 sf::Drawable (),
 m_obj (obj)
@@ -97,11 +98,9 @@ m_obj (obj)
 
 void PyDrawable::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
 {
-    // TODO: Here may be done the same work as _callrender's work by
-    // retrieving args (which are store in the PyObject itself) and 
-    // sending it directly to the render method.
-
-    // _callrender method calls render method with the right args
-    PyObject_CallMethod(static_cast<PyObject*>(m_obj), "_callrender", NULL);
+    PyObject* pyTarget = (PyObject*)(wrap_render_target_instance(&target));
+    PyObject* pyRenderer = (PyObject*)(wrap_renderer_instance(&renderer));
+    
+    PyObject_CallMethod(static_cast<PyObject*>(m_obj), "render", "(O, O)", pyTarget, pyRenderer);
 }
 
