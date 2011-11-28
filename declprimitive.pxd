@@ -34,6 +34,8 @@
 
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Renderer":
+    cdef cppclass PrimitiveType
+    
     int TriangleList
     int TriangleStrip
     int TriangleFan
