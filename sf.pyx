@@ -47,7 +47,7 @@ cimport decljoy
 cimport declkey
 cimport declmouse
 cimport declstyle
-
+cimport declprimitive
 
 
 cdef error_messages = {}
@@ -2655,3 +2655,67 @@ cdef class RenderTexture(RenderTarget):
 
     def display(self):
         (<decl.RenderTexture*>self.p_this).Display()
+
+
+cdef class Renderer:
+    TRIANGLE_LIST = declprimitive.TriangleList
+    TRIANGLE_STRIP = declprimitive.TriangleStrip
+    TRIANGLE_FAN = declprimitive.TriangleFan
+    QUAD_LIST = declprimitive.QuadList
+    
+    cdef decl.Renderer *p_this
+
+    def initialize(self):
+        self.p_this.Initialize()
+        
+    def save_gl_states(self):
+        self.p_this.SaveGLStates()
+        
+    def restore_gl_states(self):
+        self.p_this.RestoreGLStates()
+        
+    def clear(self, Color color):
+        self.p_this.Clear(color.p_this[0])
+        
+    def push_states(self):
+        self.p_this.PushStates()
+        
+    def pop_states(self):
+        self.p_this.PopStates()
+        
+    def set_model_view(self, Matrix3 matrix):
+        self.p_this.SetModelView(matrix.p_this[0])
+    
+    def apply_model_view(self, Matrix3 matrix):
+        self.p_this.ApplyModelView(matrix.p_this[0])
+        
+    def set_projection(self, Matrix3 matrix):
+        self.p_this.SetProjection(matrix.p_this[0])
+        
+    def set_color(self, Color color):
+        self.p_this.SetColor(color.p_this[0])
+        
+    def apply_color(self, Color color):
+        self.p_this.SetColor(color.p_this[0])
+        
+    def set_viewport(self, IntRect viewport):
+        self.p_this.SetViewport(viewport.p_this[0])
+        
+    def set_blend_mode(self, int value):
+        self.p_this.SetBlendMode(<declblendmode.Mode>value)
+        
+    def set_texture(self, Texture texture):
+        self.p_this.SetTexture(texture.p_this)
+        
+    def set_shader(self, Shader shader):
+        self.p_this.SetShader(shader.p_this)
+        
+    def begin(self, int value):
+        self.p_this.Begin(<declprimitive.PrimitiveType>value)
+        
+    def end(self):
+        self.p_this.End()
+    
+
+    
+    
