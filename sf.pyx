@@ -1552,7 +1552,6 @@ cdef Texture wrap_texture_instance(decl.Texture *p_cpp_instance,
 
 cdef class Drawable:
     cdef decl.Drawable *p_this
-    cdef RenderTarget target
 
     def __cinit__(self, *args, **kwargs):
         pass
