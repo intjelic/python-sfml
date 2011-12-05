@@ -770,10 +770,11 @@ cdef class SoundBuffer:
             return self.p_this.GetSamplesCount()
 
     @classmethod
-    def load_from_file(cls, char* filename):
+    def load_from_file(cls, filename):
         cdef declaudio.SoundBuffer *p = new declaudio.SoundBuffer()
 
-        if p.LoadFromFile(filename):
+        bFilename = filename.encode('UTF-8')
+        if p.LoadFromFile(bFilename):
             return wrap_sound_buffer_instance(p, True)
 
         raise PySFMLException()
@@ -1249,10 +1250,11 @@ cdef class Font:
             del self.p_this
 
     @classmethod
-    def load_from_file(cls, char* filename):
+    def load_from_file(cls, filename):
         cdef decl.Font *p = new decl.Font()
 
-        if p.LoadFromFile(filename):
+        bFilename = filename.encode('UTF-8')
+        if p.LoadFromFile(bFilename):
             return wrap_font_instance(p, True)
 
         raise PySFMLException()
@@ -1336,10 +1338,11 @@ cdef class Image:
             return self.p_this.GetWidth()
 
     @classmethod
-    def load_from_file(cls, char *filename):
+    def load_from_file(cls, filename):
         cdef decl.Image *p_cpp_instance = new decl.Image()
 
-        if p_cpp_instance.LoadFromFile(filename):
+        bFilename = filename.encode('UTF-8')
+        if p_cpp_instance.LoadFromFile(bFilename):
             return wrap_image_instance(p_cpp_instance, True)
 
         raise PySFMLException()
@@ -1347,7 +1350,7 @@ cdef class Image:
     @classmethod
     def load_from_memory(cls, bytes data):
         cdef decl.Image *p_cpp_instance = new decl.Image()
-
+        
         if p_cpp_instance.LoadFromMemory(<char*>data, len(data)):
             return wrap_image_instance(p_cpp_instance, True)
 
@@ -1459,12 +1462,13 @@ cdef class Texture:
             return self.p_this.GetWidth()
 
     @classmethod
-    def load_from_file(cls, char *filename, object area=None):
+    def load_from_file(cls, filename, object area=None):
         cdef decl.IntRect cpp_rect
         cdef decl.Texture *p_cpp_instance = new decl.Texture()
 
         if area is None:
-            if p_cpp_instance.LoadFromFile(filename):
+            bFilename = filename.encode('UTF-8')
+            if p_cpp_instance.LoadFromFile(bFilename):
                 return wrap_texture_instance(p_cpp_instance, True)
         else:
             cpp_rect = convert_to_int_rect(area)
@@ -2264,10 +2268,11 @@ cdef class Shader:
             self.p_this.SetCurrentTexture(value)
 
     @classmethod
-    def load_from_file(cls, char *filename):
+    def load_from_file(cls, filename):
         cdef decl.Shader *p = new decl.Shader()
 
-        if p.LoadFromFile(filename):
+        bFilename = filename.encode('UTF-8')
+        if p.LoadFromFile(bFilename):
             return wrap_shader_instance(p)
         else:
             raise PySFMLException()
