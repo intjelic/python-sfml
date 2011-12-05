@@ -481,7 +481,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetBlendMode(declblendmode.Mode)
         void SetTexture(Texture*)
         void SetShader(Shader*)
-        void Begin(int)
+        void Begin(declprimitive.PrimitiveType)
         void End()
         void AddVertex(float x, float y)
         void AddVertex(float x, float y, float u, float v)

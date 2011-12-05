@@ -47,11 +47,8 @@ cimport decljoy
 cimport declkey
 cimport declmouse
 cimport declstyle
-<<<<<<< HEAD
-=======
 cimport declprimitive
 
->>>>>>> patch-2
 
 cdef error_messages = {}
 cdef error_messages_lock = threading.Lock()
