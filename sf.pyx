@@ -779,10 +779,10 @@ cdef class SoundBuffer:
         raise PySFMLException()
 
     @classmethod
-    def load_from_memory(cls, char* data):
+    def load_from_memory(cls, bytes data):
         cdef declaudio.SoundBuffer *p = new declaudio.SoundBuffer()
 
-        if p.LoadFromMemory(data, len(data)):
+        if p.LoadFromMemory(<char*>data, len(data)):
             return wrap_sound_buffer_instance(p, True)
 
         raise PySFMLException()
@@ -1258,10 +1258,10 @@ cdef class Font:
         raise PySFMLException()
 
     @classmethod
-    def load_from_memory(cls, char* data):
+    def load_from_memory(cls, bytes data):
         cdef decl.Font *p = new decl.Font()
 
-        if p.LoadFromMemory(data, len(data)):
+        if p.LoadFromMemory(<char*>data, len(data)):
             return wrap_font_instance(p, True)
 
         raise PySFMLException()
@@ -1345,10 +1345,10 @@ cdef class Image:
         raise PySFMLException()
 
     @classmethod
-    def load_from_memory(cls, bytes mem):
+    def load_from_memory(cls, bytes data):
         cdef decl.Image *p_cpp_instance = new decl.Image()
 
-        if p_cpp_instance.LoadFromMemory(<char*>mem, len(mem)):
+        if p_cpp_instance.LoadFromMemory(<char*>data, len(data)):
             return wrap_image_instance(p_cpp_instance, True)
 
         raise PySFMLException()
