@@ -1,12 +1,8 @@
-#include "Python.h"
+#include "hacks.hpp"
 
 #include <iostream>
-
 #include <cassert>
 
-#include <SFML/Graphics.hpp>
-
-#include "hacks.hpp"
 
 
 // This file contains code that couldn't be written in Cython.
@@ -91,3 +87,20 @@ void replace_error_handler()
     static MyBuff my_buff;
     sf::Err().rdbuf(&my_buff);
 }
+
+
+
+PyDrawable::PyDrawable(void* obj):
+sf::Drawable (),
+m_obj (obj)
+{
+};
+
+void PyDrawable::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
+{
+    PyObject* pyTarget = (PyObject*)(wrap_render_target_instance(&target));
+    PyObject* pyRenderer = (PyObject*)(wrap_renderer_instance(&renderer));
+    
+    PyObject_CallMethod(static_cast<PyObject*>(m_obj), "render", "(O, O)", pyTarget, pyRenderer);
+}
+

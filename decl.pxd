@@ -42,11 +42,13 @@ cimport declblendmode
 cimport declkey
 cimport decljoy
 cimport declmouse
-
+cimport declprimitive
 
 
 cdef extern from "hacks.hpp":
     void replace_error_handler()
+    cdef cppclass PyDrawable:
+        PyDrawable(void*)
 
 
 # Useful sometimes to print values for debugging
@@ -402,6 +404,22 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
     cdef cppclass WindowHandle:
         pass
 
+    cdef cppclass RenderTarget:
+        void Clear()
+        void Clear(Color&)
+        void Draw(Drawable&)
+        void Draw(Drawable&, Shader&)
+        unsigned int GetHeight()
+        unsigned int GetWidth()
+        void SetView(View&)
+        View& GetView()
+        View& GetDefaultView()
+        IntRect GetViewport(View&)
+        Vector2f ConvertCoords(unsigned int, unsigned int)
+        Vector2f ConvertCoords(unsigned int, unsigned int, View&)
+        void RestoreGLStates()
+        void SaveGLStates()
+
     cdef cppclass RenderWindow:
         RenderWindow()
         RenderWindow(VideoMode, char*)
@@ -409,31 +427,18 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         RenderWindow(VideoMode, char*, unsigned long, ContextSettings&)
         RenderWindow(WindowHandle window_handle)
         RenderWindow(WindowHandle window_handle, ContextSettings&)
-        void Clear()
-        void Clear(Color&)
         void Close()
-        Vector2f ConvertCoords(unsigned int, unsigned int)
-        Vector2f ConvertCoords(unsigned int, unsigned int, View&)
         void Create(VideoMode, char*)
         void Create(VideoMode, char*, unsigned long)
         void Create(VideoMode, char*, unsigned long, ContextSettings&)
         void Display()
-        void Draw(Drawable&)
-        void Draw(Drawable&, Shader&)
         void EnableKeyRepeat(bint)
         void EnableVerticalSync(bint)
-        View& GetDefaultView()
         Uint32 GetFrameTime()
-        unsigned int GetHeight()
         ContextSettings& GetSettings()
         unsigned long GetSystemHandle()
-        View& GetView()
-        IntRect GetViewport(View&)
-        unsigned int GetWidth()
         bint IsOpened()
         bint PollEvent(Event&)
-        void RestoreGLStates()
-        void SaveGLStates()
         void SetActive()
         void SetActive(bint)
         void SetIcon(unsigned int, unsigned int, Uint8*)
@@ -442,12 +447,10 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetPosition(int, int)
         void SetSize(unsigned int, unsigned int)
         void SetTitle(char*)
-        void SetView(View&)
         void Show(bint)
         void ShowMouseCursor(bint)
         void UseVerticalSync(bint)
         bint WaitEvent(Event&)
-
 
     cdef cppclass RenderTexture:
         RenderTexture()
@@ -458,24 +461,33 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         bint SetActive()
         bint SetActive(bint)
         void Display()
-        unsigned int GetWidth()
-        unsigned int GetHeight()
         Texture& GetTexture()
         bint IsAvailable()
-        void Draw(Drawable&)
-        void Draw(Drawable&, Shader&)
-        void Clear()
-        void Clear(Color&)
-        View& GetDefaultView()
-        View& GetView()
-        void SetView(View&)
-        IntRect GetViewport(View&)
-        Vector2f ConvertCoords(unsigned int, unsigned int)
-        Vector2f ConvertCoords(unsigned int, unsigned int, View&)
-        void RestoreGLStates()
+    
+    cdef cppclass Renderer:
+        Renderer(RenderTarget&)
+        void Initialize()
         void SaveGLStates()
-    
-    
+        void RestoreGLStates()
+        void Clear(Color&)
+        void PushStates()
+        void PopStates()
+        void SetModelView(Matrix3&)
+        void ApplyModelView(Matrix3&)
+        void SetProjection(Matrix3&)
+        void SetColor(Color&)
+        void ApplyColor(Color&)
+        void SetViewport(IntRect&)
+        void SetBlendMode(declblendmode.Mode)
+        void SetTexture(Texture*)
+        void SetShader(Shader*)
+        void Begin(int)
+        void End()
+        void AddVertex(float x, float y)
+        void AddVertex(float x, float y, float u, float v)
+        void AddVertex(float x, float y, Color&)
+        void AddVertex(float x, float y, float u, float v, Color&)        
+
     cdef cppclass Shape:
         Shape()
         void AddPoint(float, float)
