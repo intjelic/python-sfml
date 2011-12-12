@@ -5,13 +5,10 @@
 #include <SFML/Graphics.hpp>
 
 
-void replace_error_handler();
-
-
 extern "C"
 {
-    struct __pyx_obj_2sf_RenderTarget* wrap_render_target_instance(sf::RenderTarget*);
-    struct __pyx_obj_2sf_Renderer* wrap_renderer_instance(sf::Renderer*);
+	struct __pyx_obj_4sfml_6cython_8graphics_RenderTarget *wrap_render_target_instance(sf::RenderTarget*);
+	struct __pyx_obj_4sfml_6cython_8graphics_Renderer *wrap_renderer_instance(sf::Renderer*);
 }
 
 // See this class like Shape, Sprite and Text. They have already defined

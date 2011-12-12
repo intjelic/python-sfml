@@ -1,43 +1,44 @@
 # -*- python -*-
 # -*- coding: utf-8 -*-
 
-# Copyright 2011 Bastien Léonard. All rights reserved.
+########################################################################
+# Copyright 2011 Bastien Léonard. All rights reserved.                 #
+#                                                                      #
+# Redistribution and use in source and binary forms, with or without   #
+# modification, are permitted provided that the following conditions   #
+# are met:                                                             #
+#                                                                      #
+#    1. Redistributions of source code must retain the above copyright #
+#    notice, this list of conditions and the following disclaimer.     #
+#                                                                      #
+#    2. Redistributions in binary form must reproduce the above        #
+#    copyright notice, this list of conditions and the following       #
+#    disclaimer in the documentation and/or other materials provided   #
+#    with the distribution.                                            #
+#                                                                      #
+# THIS SOFTWARE IS PROVIDED BY BASTIEN LÉONARD ``AS IS'' AND ANY       #
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE    #
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR   #
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BASTIEN LÉONARD OR         #
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,         #
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT     #
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF     #
+# USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND  #
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,   #
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT   #
+# OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF   #
+# SUCH DAMAGE.                                                         #
+########################################################################
 
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-
-#    1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-
-#    2. Redistributions in binary form must reproduce the above
-#    copyright notice, this list of conditions and the following
-#    disclaimer in the documentation and/or other materials provided
-#    with the distribution.
-
-# THIS SOFTWARE IS PROVIDED BY BASTIEN LÉONARD ``AS IS'' AND ANY
-# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BASTIEN LÉONARD OR
-# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-# USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-# OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-# SUCH DAMAGE.
-
-
-"""Python wrapper for the C++ library SFML 2 (Simple and Fast
-Multimedia Library)."""
+"""Python wrapper for the C++ library SFML 2 (Simple and Fast Multimedia Library)."""
 
 
 from libc.stdlib cimport malloc, free
 from libcpp.vector cimport vector
 from cython.operator cimport preincrement as preinc, dereference as deref
 
-import threading
+import threading, subprocess, tempfile, os
+from sfml.graphics import Position, Size, Rectangle
 
 cimport decl
 cimport declaudio
@@ -82,13 +83,6 @@ cdef object get_last_error_message():
     return None
 
 
-
-
-# Forward declarations
-cdef class RenderTarget
-cdef class RenderWindow
-
-
 class PySFMLException(Exception):
     def __init__(self):
         message = get_last_error_message()
@@ -97,6 +91,18 @@ class PySFMLException(Exception):
             Exception.__init__(self)
         else:
             Exception.__init__(self, message)
+
+
+cdef convert_to_position(decl.Vector2i* pos):
+    return Position(pos.x, pos.y)
+
+cdef convert_to_rectangle(decl.IntRect* rect):
+    return Rectangle(rect.Left, rect.Top, rect.Width, rect.Height)
+
+
+# Forward declarations
+cdef class RenderTarget
+cdef class RenderWindow
 
 
 cdef class Mouse:
@@ -120,13 +126,12 @@ cdef class Mouse:
         else:
             pos = declmouse.GetPosition((<decl.RenderWindow*>window.p_this)[0])
 
-        return (pos.x, pos.y)
+        return convert_to_position(&pos)
 
     @classmethod
-    def set_position(cls, tuple position, RenderWindow window=None):
+    def set_position(cls, position, RenderWindow window=None):
         cdef decl.Vector2i cpp_pos
-
-        cpp_pos.x, cpp_pos.y = position
+        cpp_pos.x, cpp_pos.y = position[0], position[1]
 
         if window is None:
             declmouse.SetPosition(cpp_pos)
@@ -166,8 +171,6 @@ cdef class Joystick:
     @classmethod
     def get_axis_position(cls, unsigned int joystick, int axis):
         return decljoy.GetAxisPosition(joystick, <decljoy.Axis> axis)
-
-    
 
 
 cdef class Keyboard:
@@ -286,7 +289,6 @@ cdef class BlendMode:
     NONE = declblendmode.None
 
 
-
 cdef class Style:
     NONE = declstyle.None
     TITLEBAR = declstyle.Titlebar
@@ -294,7 +296,6 @@ cdef class Style:
     CLOSE = declstyle.Close
     FULLSCREEN = declstyle.Fullscreen
     DEFAULT = declstyle.Default
-
 
 
 cdef class IntRect:
@@ -624,27 +625,6 @@ cdef Matrix3 wrap_matrix_instance(decl.Matrix3 *p_cpp_instance):
     return ret
 
 
-
-
-
-cdef class Clock:
-    cdef decl.Clock *p_this
-
-    def __cinit__(self):
-        self.p_this = new decl.Clock()
-
-    def __dealloc__(self):
-        del self.p_this
-
-    property elapsed_time:
-        def __get__(self):
-            return self.p_this.GetElapsedTime()
-
-    def reset(self):
-        self.p_this.Reset()
-
-
-
 cdef class Color:
     BLACK = Color(0, 0, 0)
     WHITE = Color(255, 255, 255)
@@ -725,336 +705,6 @@ cdef wrap_color_instance(decl.Color *p_cpp_instance):
     ret.p_this = p_cpp_instance
 
     return ret
-
-
-
-
-cdef class SoundBuffer:
-    cdef declaudio.SoundBuffer *p_this
-    cdef bint delete_this
-
-    def __init__(self):
-        # self.delete_this = True
-        raise NotImplementedError("Use static methods like load_from_file "
-                                  "to create SoundBuffer instances")
-
-    def __dealloc__(self):
-        if self.delete_this:
-            del self.p_this
-
-    property channels_count:
-        def __get__(self):
-            return self.p_this.GetChannelsCount()
-
-    property duration:
-        def __get__(self):
-            return self.p_this.GetDuration()
-
-    property sample_rate:
-        def __get__(self):
-            return self.p_this.GetSampleRate()
-
-    property samples:
-        def __get__(self):
-            cdef decl.Int16 *p = <decl.Int16*>self.p_this.GetSamples()
-            cdef unsigned int i
-            ret = []
-
-            for i in range(self.p_this.GetSamplesCount()):
-                ret.append(int(p[i]))
-
-            return ret
-
-    property samples_count:
-        def __get__(self):
-            return self.p_this.GetSamplesCount()
-
-    @classmethod
-    def load_from_file(cls, filename):
-        cdef declaudio.SoundBuffer *p = new declaudio.SoundBuffer()
-
-        bFilename = filename.encode('UTF-8')
-        if p.LoadFromFile(bFilename):
-            return wrap_sound_buffer_instance(p, True)
-
-        raise PySFMLException()
-
-    @classmethod
-    def load_from_memory(cls, bytes data):
-        cdef declaudio.SoundBuffer *p = new declaudio.SoundBuffer()
-
-        if p.LoadFromMemory(<char*>data, len(data)):
-            return wrap_sound_buffer_instance(p, True)
-
-        raise PySFMLException()
-
-    @classmethod
-    def load_from_samples(cls, list samples, unsigned int channels_count,
-                          unsigned int sample_rate):
-        cdef declaudio.SoundBuffer *p_sb = new declaudio.SoundBuffer()
-        cdef decl.Int16 *p_samples = <decl.Int16*>malloc(
-            len(samples) * sizeof(decl.Int16))
-        cdef decl.Int16 *p_temp = NULL
-
-        if p_samples == NULL:
-            raise PySFMLException()
-        else:
-            p_temp = p_samples
-
-            for sample in samples:
-                p_temp[0] = <int>sample
-                preinc(p_temp)
-
-            if p_sb.LoadFromSamples(p_samples, len(samples), channels_count,
-                                    sample_rate):
-                free(p_samples)
-                return wrap_sound_buffer_instance(p_sb, True)
-            else:
-                free(p_samples)
-                raise PySFMLException()
-
-    def save_to_file(self, char* filename):
-        self.p_this.SaveToFile(filename)
-
-
-cdef SoundBuffer wrap_sound_buffer_instance(
-    declaudio.SoundBuffer *p_cpp_instance, bint delete_this):
-    cdef SoundBuffer ret = SoundBuffer.__new__(SoundBuffer)
-
-    ret.p_this = p_cpp_instance
-    ret.delete_this = delete_this
-
-    return ret
-
-
-
-
-cdef class Sound:
-    cdef SoundBuffer buffer
-    cdef declaudio.Sound *p_this
-
-    STOPPED = declaudio.Stopped
-    PAUSED = declaudio.Paused
-    PLAYING = declaudio.Playing
-
-    def __cinit__(self, SoundBuffer buffer=None):
-        if buffer is None:
-            self.p_this = new declaudio.Sound()
-            self.buffer = None
-        else:
-            self.buffer = buffer
-            self.p_this = new declaudio.Sound(buffer.p_this[0])
-
-    def __dealloc__(self):
-        del self.p_this
-
-    property attenuation:
-        def __get__(self):
-            return self.p_this.GetAttenuation()
-
-        def __set__(self, float value):
-            self.p_this.SetAttenuation(value)
-
-    property buffer:
-        def __get__(self):
-            return self.buffer
-
-        def __set__(self, SoundBuffer value):
-            self.buffer = value
-            self.p_this.SetBuffer(value.p_this[0])
-
-    property loop:
-        def __get__(self):
-            return self.p_this.GetLoop()
-
-        def __set__(self, bint value):
-            self.p_this.SetLoop(value)
-
-    property min_distance:
-        def __get__(self):
-            return self.p_this.GetMinDistance()
-
-        def __set__(self, float value):
-            self.p_this.SetMinDistance(value)
-
-    property pitch:
-        def __get__(self):
-            return self.p_this.GetPitch()
-
-        def __set__(self, float value):
-            self.p_this.SetPitch(value)
-
-    property playing_offset:
-        def __get__(self):
-            return self.p_this.GetPlayingOffset()
-
-        def __set__(self, int value):
-            self.p_this.SetPlayingOffset(value)
-
-    property position:
-        def __get__(self):
-            cdef decl.Vector3f pos = self.p_this.GetPosition()
-
-            return (pos.x, pos.y, pos.z)
-
-        def __set__(self, tuple value):
-            x, y, z = value
-            self.p_this.SetPosition(x, y, z)
-
-    property relative_to_listener:
-        def __get__(self):
-            return self.p_this.IsRelativeToListener()
-
-        def __set__(self, bint value):
-            self.p_this.SetRelativeToListener(value)
-
-    property status:
-        def __get__(self):
-            return <int>self.p_this.GetStatus()
-
-    property volume:
-        def __get__(self):
-            return self.p_this.GetVolume()
-
-        def __set__(self, float value):
-            self.p_this.SetVolume(value)
-
-    def pause(self):
-        self.p_this.Pause()
-
-    def play(self):
-        self.p_this.Play()
-
-    def stop(self):
-        self.p_this.Stop()
-
-
-
-
-cdef class Music:
-    cdef declaudio.Music *p_this
-
-    STOPPED = declaudio.Stopped
-    PAUSED = declaudio.Paused
-    PLAYING = declaudio.Playing
-
-    def __init__(self):
-        raise NotImplementedError(
-            "Use class methods like open_from_file() or open_from_memory() "
-            "to create Music objects")
-
-    def __dealloc__(self):
-        del self.p_this
-
-    property attenuation:
-        def __get__(self):
-            return self.p_this.GetAttenuation()
-
-        def __set__(self, float value):
-            self.p_this.SetAttenuation(value)
-
-    property channels_count:
-        def __get__(self):
-            return self.p_this.GetChannelsCount()
-
-    property duration:
-        def __get__(self):
-            return self.p_this.GetDuration()
-
-    property loop:
-        def __get__(self):
-            return self.p_this.GetLoop()
-
-        def __set__(self, bint value):
-            self.p_this.SetLoop(value)
-
-    property min_distance:
-        def __get__(self):
-            return self.p_this.GetMinDistance()
-
-        def __set__(self, float value):
-            self.p_this.SetMinDistance(value)
-
-    property pitch:
-        def __get__(self):
-            return self.p_this.GetPitch()
-
-        def __set__(self, float value):
-            self.p_this.SetPitch(value)
-
-    property playing_offset:
-        def __get__(self):
-            return self.p_this.GetPlayingOffset()
-
-        def __set__(self, float value):
-            self.p_this.SetPlayingOffset(value)
-
-    property position:
-        def __get__(self):
-            cdef decl.Vector3f pos = self.p_this.GetPosition()
-
-            return (pos.x, pos.y, pos.z)
-
-        def __set__(self, tuple value):
-            x, y, z = value
-            self.p_this.SetPosition(x, y, z)
-
-    property relative_to_listener:
-        def __get__(self):
-            return self.p_this.IsRelativeToListener()
-
-        def __set__(self, bint value):
-            self.p_this.SetRelativeToListener(value)
-
-    property sample_rate:
-        def __get__(self):
-            return self.p_this.GetSampleRate()
-
-    property status:
-        def __get__(self):
-            return <int>self.p_this.GetStatus()
-
-    property volume:
-        def __get__(self):
-            return self.p_this.GetVolume()
-
-        def __set__(self, float value):
-            self.p_this.SetVolume(value)
-
-    @classmethod
-    def open_from_file(cls, char* filename):
-        cdef declaudio.Music *p = new declaudio.Music()
-
-        if p.OpenFromFile(filename):
-            return wrap_music_instance(p)
-
-        raise PySFMLException()
-
-    @classmethod
-    def open_from_memory(cls, bytes data):
-        cdef declaudio.Music *p = new declaudio.Music()
-
-        if p.OpenFromMemory(<char*>data, len(data)):
-            return wrap_music_instance(p)
-
-        raise PySFMLException()
-
-    def pause(self):
-        self.p_this.Pause()
-
-    def play(self):
-        self.p_this.Play()
-
-    def stop(self):
-        self.p_this.Stop()
-
-cdef Music wrap_music_instance(declaudio.Music *p_cpp_instance):
-    cdef Music ret = Music.__new__(Music)
-
-    ret.p_this = p_cpp_instance
-
-    return ret
-
 
 
 class Event:
@@ -1193,7 +843,6 @@ cdef wrap_event_instance(decl.Event *p_cpp_instance):
     return ret
 
 
-
 cdef class Glyph:
     cdef decl.Glyph *p_this
 
@@ -1209,11 +858,7 @@ cdef class Glyph:
 
     property bounds:
         def __get__(self):
-            cdef decl.IntRect *p = new decl.IntRect()
-
-            p[0] = self.p_this.Bounds
-
-            return wrap_int_rect_instance(p)
+            return convert_to_rectangle(&(self.p_this.Bounds))
 
     property sub_rect:
         def __get__(self):
@@ -1299,9 +944,6 @@ cdef Font wrap_font_instance(decl.Font *p_cpp_instance, bint delete_this):
     return ret
 
 
-
-
-
 cdef class Image:
     cdef decl.Image *p_this
     cdef bint delete_this
@@ -1319,23 +961,23 @@ cdef class Image:
         if self.delete_this:
             del self.p_this
 
-    def __getitem__(self, coords):
-        cdef decl.Vector2f v = convert_to_vector2f(coords)
+    def __getitem__(self, tuple key):
+        return self.get_pixel(key[0], key[1])
 
-        return self.get_pixel(v.x, v.y)
+    def __setitem__(self, tuple key, Color value):
+        self.set_pixel(key[0], key[1], value)
 
-    def __setitem__(self, coords, Color color):
-        cdef decl.Vector2f v = convert_to_vector2f(coords)
-
-        self.set_pixel(v.x, v.y, color)
-
-    property height:
+    property size:
         def __get__(self):
-            return self.p_this.GetHeight()
+            return Size(self.width, self.height)
 
     property width:
         def __get__(self):
             return self.p_this.GetWidth()
+            
+    property height:
+        def __get__(self):
+            return self.p_this.GetHeight()
 
     @classmethod
     def load_from_file(cls, filename):
@@ -1392,7 +1034,10 @@ cdef class Image:
 
     def create_mask_from_color(self, Color color, int alpha=0):
         self.p_this.CreateMaskFromColor(color.p_this[0], alpha)
-
+        
+    def set_pixel(self, int x, int y, Color color):
+        self.p_this.SetPixel(x, y, color.p_this[0])
+        
     def get_pixel(self, int x, int y):
         cdef decl.Color *p_color = new decl.Color()
         cdef decl.Color temp = self.p_this.GetPixel(x, y)
@@ -1410,22 +1055,25 @@ cdef class Image:
 
         return ret
 
-    def save_to_file(self, char* filename):
-        self.p_this.SaveToFile(filename)
+    def save_to_file(self, filename):
+        filenameb = filename.encode('UTF-32')
+        if self.p_this.SaveToFile(<char*>filenameb) is False:
+            print("saveToFile return False")
+            raise PySFMLException()
 
-    def set_pixel(self, int x, int y, Color color):
-        self.p_this.SetPixel(x, y, color.p_this[0])
-
-
+    def show(self):
+        tf = tempfile.NamedTemporaryFile()
+        image_filename = tf.name
+        script_filename = os.path.dirname(__file__) + "/show.py"
+        self.save_to_file(image_filename)
+        subprocess.Popen(['/usr/bin/python3', script_filename, image_filename])
+        
 cdef Image wrap_image_instance(decl.Image *p_cpp_instance, bint delete_this):
     cdef Image ret = Image.__new__(Image)
     ret.p_this = p_cpp_instance
     ret.delete_this = delete_this
 
     return ret
-
-
-
 
 
 cdef class Texture:
@@ -1446,6 +1094,9 @@ cdef class Texture:
         if self.delete_this:
             del self.p_this
 
+    property width:
+        def __get__(self):
+            return self.p_this.GetWidth()
     property height:
         def __get__(self):
             return self.p_this.GetHeight()
@@ -1456,10 +1107,6 @@ cdef class Texture:
 
         def __set__(self, bint value):
             self.p_this.SetSmooth(value)
-
-    property width:
-        def __get__(self):
-            return self.p_this.GetWidth()
 
     @classmethod
     def load_from_file(cls, filename, object area=None):
@@ -2447,12 +2094,13 @@ cdef extern RenderTarget wrap_render_target_instance(decl.RenderTarget *p_cpp_in
     
     
 cdef class RenderWindow(RenderTarget):
-    def __init__(self, VideoMode mode, char* title, int style=Style.DEFAULT,
+    def __init__(self, VideoMode mode, title, int style=Style.DEFAULT,
                   ContextSettings settings=None):
+        bTitle = title.encode('UTF-32')
         if settings is None:
-            self.p_this = <decl.RenderTarget*>new decl.RenderWindow(mode.p_this[0], title, style)
+            self.p_this = <decl.RenderTarget*>new decl.RenderWindow(mode.p_this[0], bTitle, style)
         else:
-            self.p_this = <decl.RenderTarget*>new decl.RenderWindow(mode.p_this[0], title, style, settings.p_this[0])
+            self.p_this = <decl.RenderTarget*>new decl.RenderWindow(mode.p_this[0], bTitle, style, settings.p_this[0])
 
     def __dealloc__(self):
         del self.p_this
@@ -2536,8 +2184,9 @@ cdef class RenderWindow(RenderTarget):
             return <unsigned long>(<decl.RenderWindow*>self.p_this).GetSystemHandle()
 
     property title:
-        def __set__(self, char* value):
-            (<decl.RenderWindow*>self.p_this).SetTitle(value)
+        def __set__(self, value):
+            bValue = value.encode('UTF-32')
+            (<decl.RenderWindow*>self.p_this).SetTitle(bValue)
 
     property vertical_sync_enabled:
         def __set__(self, bint value):

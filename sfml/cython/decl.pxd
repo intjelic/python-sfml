@@ -45,8 +45,10 @@ cimport declmouse
 cimport declprimitive
 
 
-cdef extern from "hacks.hpp":
+cdef extern from "error.hpp":
     void replace_error_handler()
+
+cdef extern from "hacks.hpp":
     cdef cppclass PyDrawable:
         PyDrawable(void*)
 
@@ -542,3 +544,4 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Shape":
     cdef Shape Circle(float, float, float, Color&, float)
     cdef Shape Circle(float, float, float, Color&, float, Color&)
     cdef Shape Circle(Vector2f&, float, Color&, float, Color&)
+
