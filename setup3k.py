@@ -41,20 +41,22 @@ if USE_CYTHON:
     import Cython.Distutils
 
 
+
 libs = ['sfml-graphics', 'sfml-window', 'sfml-audio', 'sfml-system']
 
 if USE_CYTHON:
     ext_modules = [Extension('sf', ['sf.pyx', 'hacks.cpp'],
                              language='c++',
-                             libraries=libs)]
+                             libraries=libs),]
 else:
-    ext_modules = [Extension('sf', ['sf.cpp', 'hacks.cpp'],
-                             libraries=libs)]
+    ext_modules = [Extension('sfml.cython.graphics', ['sfml/cython/graphics.cpp', 'sfml/cython/hacks.cpp', 'sfml/cython/error.cpp'], libraries=libs),
+					Extension('sfml.cython.audio', ['sfml/cython/audio.cpp', 'sfml/cython/error.cpp'], libraries=libs)]
 
 with open('README.txt', 'r') as f:
     long_description = f.read()
 
 kwargs = dict(name='PySFML 2',
+              packages=['sfml', 'sfml.cython', 'sfml.graphics', 'sfml.audio'],
               ext_modules=ext_modules,
               version='0.0.1',
               description='A Python binding for SFML 2',
