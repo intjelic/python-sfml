@@ -1199,18 +1199,18 @@ cdef Texture wrap_texture_instance(decl.Texture *p_cpp_instance,
     ret.delete_this = delete_this
 
     return ret
-
+    
 
 cdef class Drawable:
     cdef decl.Drawable *p_this
 
     def __cinit__(self, *args, **kwargs):
-        pass
-
-    def __init__(self, *args, **kwargs):
         if self.__class__ == Drawable:
             raise NotImplementedError('Drawable is abstact')
-    
+        elif self.__class__ not in [Shape, Sprite, Text]:
+            # custom drawable instantiated
+            self.p_this = <decl.Drawable*>new decl.PyDrawable(<void*>self)
+
     property blend_mode:
         def __get__(self):
             return <int>self.p_this.GetBlendMode()
@@ -1242,14 +1242,21 @@ cdef class Drawable:
 
     property position:
         def __get__(self):
-            cdef decl.Vector2f pos = self.p_this.GetPosition()
-
-            return (pos.x, pos.y)
+            return self._position
+            
+            #cdef decl.Vector2f pos = self.p_this.GetPosition()
+            #return (pos.x, pos.y)
 
         def __set__(self, value):
-            cdef decl.Vector2f v = convert_to_vector2f(value)
-
-            self.p_this.SetPosition(v.x, v.y)
+            # value may be either a tuple or a Position, thus instead of
+            # writing value.x and value.y which would go wrong if this 
+            # was a tuple, we write value[0] and value[1] which work for
+            # both cases
+            self._position.x = value[0]
+            self._position.y = value[1]
+            self.p_this.SetPosition(value[0], value[1])
+            
+            #cdef decl.Vector2f v = convert_to_vector2f(value)
 
     property rotation:
         def __get__(self):
@@ -1283,6 +1290,9 @@ cdef class Drawable:
         def __set__(self, float value):
             self.p_this.SetY(value)
 
+    def render(self, target, renderer):
+        raise NotImplementedError("You must override this method!")
+        
     def transform_to_local(self, float x, float y):
         cdef decl.Vector2f cpp_point
         cdef decl.Vector2f res
@@ -1329,22 +1339,6 @@ class ScaleWrapper(tuple):
 
     def __call__(self, float x, float y):
         self.drawable._scale(x, y)
-
-
-cdef class DerivableDrawable(Drawable):
-
-    def __cinit__(self):
-        self.p_this = <decl.Drawable*>new decl.PyDrawable(<void*>self)
-
-    def __init__(self, *args, **kwargs):
-        if self.__class__ == Drawable:
-            raise NotImplementedError('DerivableDrawable is abstact')
-
-    def __dealloc__(self):
-        del self.p_this
-
-    def render(self, target, renderer):
-        raise NotImplementedError("You must override this method!")
 
 
 cdef class Text(Drawable):
