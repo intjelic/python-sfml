@@ -1,13 +1,25 @@
 System
 ======
 
+.. py:function:: sleep(time)
 
-.. class:: Clock
+   Make the current thread sleep for a given duration.
+   
+.. py:class:: Clock
 
-   .. attribute:: elapsed_time
-
-   .. method:: reset()
-
+      Utility class for manipulating time.
+      
+      sf::Clock is a lightweight class for measuring time.
+      
+      Its resolution depends on the underlying OS, but you can generally expect a 1 ms resolution.
+      
+   .. py:method:: reset()
+   
+         Get the time elapsed.
+         
+   .. py:attribute:: elapsed_time
+   
+         Restart the timer.
 
 
 .. class:: Vector2f(float x=0.0; float y=0.0)
@@ -27,3 +39,4 @@ System
 
       Return a new :class:`Vector2f` with ``x`` and ``y`` set to the
       value of ``self``.
+
