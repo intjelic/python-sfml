@@ -367,9 +367,6 @@ cdef decl.IntRect convert_to_int_rect(value):
     raise TypeError("Expected IntRect or tuple, found {0}".format(type(value)))
 
 
-
-
-
 cdef class FloatRect:
     cdef decl.FloatRect *p_this
 
@@ -428,8 +425,6 @@ cdef FloatRect wrap_float_rect_instance(decl.FloatRect *p_cpp_instance):
     ret.p_this = p_cpp_instance
 
     return ret
-
-
 
 
 cdef class Vector2f:
@@ -536,10 +531,6 @@ cdef decl.Vector2f convert_to_vector2f(value):
         return decl.Vector2f(value[0], value[1])
     
     raise TypeError("Expected Vector2f or tuple, found {0}".format(type(value)))
-
-
-
-
 
 
 cdef class Matrix3:
@@ -877,9 +868,6 @@ cdef Glyph wrap_glyph_instance(decl.Glyph *p_cpp_instance):
     return ret
 
 
-
-
-
 cdef class Font:
     cdef decl.Font *p_this
     cdef bint delete_this
@@ -1097,9 +1085,15 @@ cdef class Texture:
     property width:
         def __get__(self):
             return self.p_this.GetWidth()
+            
     property height:
         def __get__(self):
             return self.p_this.GetHeight()
+
+    property size:
+        def __get__(self):
+            return (self.width, self.height)
+
 
     property smooth:
         def __get__(self):
@@ -1203,14 +1197,18 @@ cdef Texture wrap_texture_instance(decl.Texture *p_cpp_instance,
 
 cdef class Drawable:
     cdef decl.Drawable *p_this
-
+    cdef object _position
+    
     def __cinit__(self, *args, **kwargs):
         if self.__class__ == Drawable:
             raise NotImplementedError('Drawable is abstact')
         elif self.__class__ not in [Shape, Sprite, Text]:
             # custom drawable instantiated
             self.p_this = <decl.Drawable*>new decl.PyDrawable(<void*>self)
-
+            
+    def __init__(self, *args, **kwargs):
+        self._position = Position(0, 0)
+        
     property blend_mode:
         def __get__(self):
             return <int>self.p_this.GetBlendMode()
@@ -1461,9 +1459,6 @@ cdef class Text(Drawable):
         return (res.x, res.y)
 
 
-
-
-
 cdef class Sprite(Drawable):
     cdef Texture texture
 
@@ -1642,8 +1637,6 @@ cdef Shape wrap_shape_instance(decl.Shape *p_cpp_instance):
     ret.p_this = <decl.Drawable*>p_cpp_instance
     
     return ret
-
-
 
 
 cdef class VideoMode:
@@ -1888,9 +1881,6 @@ cdef View wrap_view_instance(decl.View *p_cpp_view, object window):
     return ret
 
 
-
-
-
 cdef class Shader:
     cdef decl.Shader *p_this
 
@@ -2086,11 +2076,162 @@ cdef extern RenderTarget wrap_render_target_instance(decl.RenderTarget *p_cpp_in
 
     return ret
     
+# sfml/cython/graphics.pyx:2235:30: C class may only have one base class
+# no other choice than making nearly two same class instead of 
+# subclassing
+cdef class Window:
+    cdef decl.Window *p_this
     
+    def __init__(self, VideoMode mode, title, int style=Style.DEFAULT,
+                  ContextSettings settings=None):
+        bTitle = title.encode('UTF-8')
+        if settings is None:
+            self.p_this = new decl.Window(mode.p_this[0], bTitle, style)
+        else:
+            self.p_this = new decl.Window(mode.p_this[0], bTitle, style, settings.p_this[0])
+
+    def __dealloc__(self):
+        del self.p_this
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        cdef decl.Event p
+
+        if self.p_this.PollEvent(p):
+            return wrap_event_instance(&p)
+
+        raise StopIteration
+
+    property events:
+        def __get__(self):
+            return self
+            
+    property active:
+        def __set__(self, bint value):
+            self.p_this.SetActive(value)
+
+    property framerate_limit:
+        def __set__(self, int value):
+            self.p_this.SetFramerateLimit(value)
+
+    property frame_time:
+        def __get__(self):
+            return self.p_this.GetFrameTime()
+
+    property width:
+        def __get__(self):
+            return self.p_this.GetWidth()
+
+        def __set__(self, unsigned int value):
+            self.size = (value, self.height)
+
+    property height:
+        def __get__(self):
+            return self.p_this.GetHeight()
+
+        def __set__(self, unsigned int value):
+            self.size = (self.width, value)
+
+    property size:
+        def __get__(self):
+            return (self.width, self.height)
+
+        def __set__(self, tuple value):
+            x, y = value
+            self.p_this.SetSize(x, y)
+
+    property joystick_threshold:
+        def __set__(self, bint value):
+            self.p_this.SetJoystickThreshold(value)
+
+    property key_repeat_enabled:
+        def __set__(self, bint value):
+            self.p_this.EnableKeyRepeat(value)
+
+    property opened:
+        def __get__(self):
+            return self.p_this.IsOpened()
+
+    property position:
+        def __set__(self, tuple value):
+            x, y = value
+            self.p_this.SetPosition(x, y)
+
+    property settings:
+        def __get__(self):
+            cdef decl.ContextSettings *p = new decl.ContextSettings()
+
+            p[0] = self.p_this.GetSettings()
+
+            return wrap_context_settings_instance(p)
+
+    property show_mouse_cursor:
+        def __set__(self, bint value):
+            self.p_this.ShowMouseCursor(value)
+
+    property system_handle:
+        def __get__(self):
+            return <unsigned long>self.p_this.GetSystemHandle()
+
+    property title:
+        def __set__(self, value):
+            bValue = value.encode('UTF-32')
+            self.p_this.SetTitle(bValue)
+
+    property vertical_sync_enabled:
+        def __set__(self, bint value):
+            self.p_this.EnableVerticalSync(value)
+
+    @classmethod
+    def from_window_handle(cls, unsigned long window_handle, ContextSettings settings=None):
+        cdef decl.RenderWindow *p = NULL
+
+        if settings is None:
+            p = new decl.RenderWindow(<decl.WindowHandle>window_handle)
+        else:
+            p = new decl.RenderWindow(<decl.WindowHandle>window_handle, settings.p_this[0])
+
+        return wrap_render_window_instance(p)
+
+    def close(self):
+        self.p_this.Close()
+
+    def create(self, VideoMode mode, char* title, int style=Style.DEFAULT, ContextSettings settings=None):
+        if settings is None:
+            self.p_this.Create(mode.p_this[0], title, style)
+        else:
+            self.p_this.Create(mode.p_this[0], title, style, settings.p_this[0])
+
+    def display(self):
+        self.p_this.Display()
+
+    def poll_event(self):
+        cdef decl.Event *p = new decl.Event()
+
+        if self.p_this.PollEvent(p[0]):
+            return wrap_event_instance(p)
+            
+    def wait_event(self):
+        cdef decl.Event *p = new decl.Event()
+
+        if self.p_this.WaitEvent(p[0]):
+            return wrap_event_instance(p)
+            
+    def set_icon(self, unsigned int width, unsigned int height, char* pixels):
+        self.p_this.SetIcon(width, height, <decl.Uint8*>pixels)
+
+    def show(self, bint show):
+        self.p_this.Show(show)
+
+
+            
+            
 cdef class RenderWindow(RenderTarget):
     def __init__(self, VideoMode mode, title, int style=Style.DEFAULT,
                   ContextSettings settings=None):
-        bTitle = title.encode('UTF-32')
+        bTitle = title.encode('UTF-8')
         if settings is None:
             self.p_this = <decl.RenderTarget*>new decl.RenderWindow(mode.p_this[0], bTitle, style)
         else:
@@ -2110,6 +2251,10 @@ cdef class RenderWindow(RenderTarget):
 
         raise StopIteration
 
+    property events:
+        def __get__(self):
+            return self
+            
     property active:
         def __set__(self, bint value):
             (<decl.RenderWindow*>self.p_this).SetActive(value)
@@ -2212,34 +2357,23 @@ cdef class RenderWindow(RenderTarget):
     def display(self):
         (<decl.RenderWindow*>self.p_this).Display()
 
-    def iter_events(self):
-        """Return an iterator which yields the current pending events.
-
-        Example::
-        
-            for event in window.iter_events():
-                if event.type == sf.Event.CLOSED:
-                    # ..."""
-
-        return self
-
     def poll_event(self):
         cdef decl.Event *p = new decl.Event()
 
         if (<decl.RenderWindow*>self.p_this).PollEvent(p[0]):
             return wrap_event_instance(p)
 
-    def set_icon(self, unsigned int width, unsigned int height, char* pixels):
-        (<decl.RenderWindow*>self.p_this).SetIcon(width, height, <decl.Uint8*>pixels)
-
-    def show(self, bint show):
-        (<decl.RenderWindow*>self.p_this).Show(show)
-
     def wait_event(self):
         cdef decl.Event *p = new decl.Event()
 
         if (<decl.RenderWindow*>self.p_this).WaitEvent(p[0]):
             return wrap_event_instance(p)
+            
+    def set_icon(self, unsigned int width, unsigned int height, char* pixels):
+        (<decl.RenderWindow*>self.p_this).SetIcon(width, height, <decl.Uint8*>pixels)
+
+    def show(self, bint show):
+        (<decl.RenderWindow*>self.p_this).Show(show)
 
 
 cdef RenderWindow wrap_render_window_instance(
