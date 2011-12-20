@@ -13,23 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from http cimport request, response
-#cimport http.request
-#cimport http.response
 
-cdef extern from "SFML/Network.hpp" namespace "sf::Http":
-    cdef cppclass Request:
-        Request(char* &uri, request.Method method, char* &body)
-        void SetField(char* &field, char* &value)
-        void SetMethod(request.Method method)
-        void SetUri(char* &uri)
-        void SetHttpVersion(unsigned int major, unsigned int minor)
-        void SetBody(char* &body)
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Http::Request":
+    cdef cppclass Method:
+        pass
         
-    cdef cppclass Response:
-        Response()
-        char* & GetField(char* &field)
-        response.Status GetStatus()
-        unsigned int GetMajorHttpVersion()
-        unsigned int GetMinorHttpVersion()
-        char* & GetBody()
+cdef extern from "SFML/Network.hpp" namespace "sf::Http::Request":
+    int Get
+    int Post
+    int Head

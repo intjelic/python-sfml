@@ -1,52 +1,66 @@
-# -*- python -*-
-# -*- coding: utf-8 -*-
-
-# Copyright 2010, 2011 Bastien Léonard. All rights reserved.
-
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-
-#    1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-
-#    2. Redistributions in binary form must reproduce the above
-#    copyright notice, this list of conditions and the following
-#    disclaimer in the documentation and/or other materials provided
-#    with the distribution.
-
-# THIS SOFTWARE IS PROVIDED BY BASTIEN LÉONARD ``AS IS'' AND ANY
-# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BASTIEN LÉONARD OR
-# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-# USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-# OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-# SUCH DAMAGE.
+########################################################################
+# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>   #
+#                                                                      #
+# This program is free software: you can redistribute it and/or modify #
+# it under the terms of the GNU General Public License as published by #
+# the Free Software Foundation, either version 3 of the License, or    #
+# (at your option) any later version.                                  #
+#                                                                      #
+# This program is distributed in the hope that it will be useful,      #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of       #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        #
+# GNU General Public License for more details.                         #
+#                                                                      #
+# You should have received a copy of the GNU General Public License    #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.#
+########################################################################
 
 
-from libcpp.vector cimport vector
+########################################################################
+# Copyright 2011 Bastien Léonard. All rights reserved.                 #
+#                                                                      #
+# Redistribution and use in source and binary forms, with or without   #
+# modification, are permitted provided that the following conditions   #
+# are met:                                                             #
+#                                                                      #
+#    1. Redistributions of source code must retain the above copyright #
+#    notice, this list of conditions and the following disclaimer.     #
+#                                                                      #
+#    2. Redistributions in binary form must reproduce the above        #
+#    copyright notice, this list of conditions and the following       #
+#    disclaimer in the documentation and/or other materials provided   #
+#    with the distribution.                                            #
+#                                                                      #
+# THIS SOFTWARE IS PROVIDED BY BASTIEN LÉONARD ``AS IS'' AND ANY       #
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE    #
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR   #
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BASTIEN LÉONARD OR         #
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,         #
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT     #
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF     #
+# USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND  #
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,   #
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT   #
+# OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF   #
+# SUCH DAMAGE.                                                         #
+########################################################################
 
-# Forward declarations, to avoid some circular import errors when
-# these declarations are imported elsewhere (e.g. from declmouse.pxd)
-cdef extern from "SFML/Graphics.hpp" namespace "sf":
-    cppclass RenderWindow
-    cppclass Vector2i
 
+#from declsystem cimport Int16, Uint8, Uint32
+#from declsystem cimport Vector2f, Vector2i, Vector3f
+from declsystem cimport *
+from declwindow cimport *
 
-cimport declblendmode
-cimport declkey
-cimport decljoy
-cimport declmouse
-cimport declprimitive
+cimport declwindow
 
+cimport blendmode
+cimport text
+cimport primitive
 
+        
 cdef extern from "error.hpp":
     void replace_error_handler()
+
 
 cdef extern from "hacks.hpp":
     cdef cppclass PyDrawable:
@@ -56,7 +70,6 @@ cdef extern from "hacks.hpp":
 # Useful sometimes to print values for debugging
 cdef extern from "stdio.h":
     void printf(char*, ...)
-
 
 
 # Declaration of the standard std::string class.  This is useful
@@ -69,100 +82,10 @@ cdef extern from "<string>" namespace "std":
         char* c_str()
 
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Event":
-    cdef struct SizeEvent:
-        unsigned int Width
-        unsigned int Height
-
-    cdef struct KeyEvent:
-        int Code
-        bint Alt
-        bint Control
-        bint Shift
-        bint System
-
-    cdef struct MouseMoveEvent:
-        int X
-        int Y
-
-    cdef struct MouseButtonEvent:
-        int Button
-        int X
-        int Y
-
-    cdef struct TextEvent:
-        int Unicode
-
-    cdef struct MouseWheelEvent:
-        int Delta
-        int X
-        int Y
-
-    cdef struct JoystickMoveEvent:
-        unsigned int JoystickId
-        int Axis
-        float Position
-
-    cdef struct JoystickButtonEvent:
-        unsigned int JoystickId
-        unsigned int Button
-
-    cdef struct JoystickConnectEvent:
-        unsigned int JoystickId
-
-
-
-cdef extern from "SFML/System.hpp" namespace "sf":
-    ctypedef short Int16
-    ctypedef unsigned char Uint8
-    ctypedef unsigned int Uint32
-
-
-
 cdef extern from "SFML/Graphics.hpp" namespace "sf":
     # Forward declarations
     cdef cppclass RenderWindow
 
-    cdef cppclass Vector2f:
-        Vector2f()
-        Vector2f(float, float)
-        float x
-        float y
-
-    cdef cppclass Vector2i:
-        Vector2i()
-        Vector2i(int, int)
-        int x
-        int y
-
-    cdef cppclass Vector3f:
-        Vector3f()
-        Vector3f(float, float, float)
-        float x
-        float y
-        float z
-
-    cdef cppclass IntRect:
-        IntRect()
-        IntRect(int, int, int, int)
-        bint Contains(int, int)
-        bint Intersects(IntRect&)
-        bint Intersects(IntRect&, IntRect&)
-        int Left
-        int Top
-        int Width
-        int Height
-
-    cdef cppclass FloatRect:
-        FloatRect()
-        FloatRect(float, float, float, float)
-        bint Contains(int, int)
-        bint Intersects(FloatRect&)
-        bint Intersects(FloatRect&, FloatRect&)
-        float Left
-        float Top
-        float Width
-        float Height
 
     cdef cppclass Matrix3:
         Matrix3()
@@ -175,11 +98,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
         Matrix3 operator*(Matrix3&)
 
-    cdef cppclass Clock:
-        Clock()
-        Uint32 GetElapsedTime()
-        void Reset()
-
     cdef cppclass Color:
         Color()
         Color(unsigned int r, unsigned int g, unsigned b)
@@ -188,31 +106,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         unsigned int g
         unsigned int b
         unsigned int a
-
-    cdef cppclass Event:
-        Event()
-        int Type
-        SizeEvent Size
-        KeyEvent Key
-        MouseMoveEvent MouseMove
-        MouseButtonEvent MouseButton
-        TextEvent Text
-        MouseWheelEvent MouseWheel
-        JoystickMoveEvent JoystickMove
-        JoystickButtonEvent JoystickButton
-        JoystickConnectEvent JoystickConnect
-
-    cdef cppclass VideoMode:
-        VideoMode()
-        VideoMode(unsigned int width, unsigned int height)
-        VideoMode(unsigned int width, unsigned int height,
-                  unsigned int bits_per_pixel)
-        bint IsValid()
-        unsigned int Width
-        unsigned int Height
-        unsigned int BitsPerPixel
-
-
+        
     cdef cppclass Image:
         Image()
         Image(Image&)
@@ -258,15 +152,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
                     unsigned int)
         void Update(Image&)
         void Update(Image&, unsigned int, unsigned int)
-        void Update(RenderWindow&)
-        void Update(RenderWindow&, unsigned int, unsigned int)
-
-    cdef cppclass String:
-        String()
-        String(Uint32*)
-        Uint32* GetData()
-        size_t GetSize()
-        string ToAnsiString()
+        void Update(Window&)
+        void Update(Window&, unsigned int, unsigned int)
 
     cdef cppclass Glyph:
         Glyph()
@@ -286,7 +173,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass Drawable:
         Drawable()
-        declblendmode.Mode GetBlendMode()
+        blendmode.Mode GetBlendMode()
         Color& GetColor()
         Vector2f& GetOrigin()
         Vector2f& GetPosition()
@@ -297,7 +184,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void Rotate(float)
         void Scale(float, float)
         void Scale(Vector2f&)
-        void SetBlendMode(declblendmode.Mode)
+        void SetBlendMode(blendmode.Mode)
         void SetColor(Color&)
         void SetOrigin(float, float)
         void SetOrigin(Vector2f&)
@@ -389,22 +276,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetTexture(char*, Texture&)
         void Unbind()
 
-    cdef cppclass ContextSettings:
-        ContextSettings()
-        ContextSettings(unsigned int)
-        ContextSettings(unsigned int, unsigned int)
-        ContextSettings(unsigned int, unsigned int, unsigned int)
-        ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int)
-        ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int,
-                        unsigned int)
-        unsigned int AntialiasingLevel
-        unsigned int DepthBits
-        unsigned int MajorVersion
-        unsigned int MinorVersion
-        unsigned int StencilBits
-
-    cdef cppclass WindowHandle:
-        pass
 
     cdef cppclass RenderTarget:
         void Clear()
@@ -422,25 +293,26 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void RestoreGLStates()
         void SaveGLStates()
 
+        
     cdef cppclass RenderWindow:
         RenderWindow()
-        RenderWindow(VideoMode, char*)
-        RenderWindow(VideoMode, char*, unsigned long)
-        RenderWindow(VideoMode, char*, unsigned long, ContextSettings&)
-        RenderWindow(WindowHandle window_handle)
-        RenderWindow(WindowHandle window_handle, ContextSettings&)
+        RenderWindow(declwindow.VideoMode, char*)
+        RenderWindow(declwindow.VideoMode, char*, unsigned long)
+        RenderWindow(declwindow.VideoMode, char*, unsigned long, declwindow.ContextSettings&)
+        RenderWindow(declwindow.WindowHandle window_handle)
+        RenderWindow(declwindow.WindowHandle window_handle, declwindow.ContextSettings&)
         void Close()
-        void Create(VideoMode, char*)
-        void Create(VideoMode, char*, unsigned long)
-        void Create(VideoMode, char*, unsigned long, ContextSettings&)
+        void Create(declwindow.VideoMode, char*)
+        void Create(declwindow.VideoMode, char*, unsigned long)
+        void Create(declwindow.VideoMode, char*, unsigned long, declwindow.ContextSettings&)
         void Display()
         void EnableKeyRepeat(bint)
         void EnableVerticalSync(bint)
         Uint32 GetFrameTime()
-        ContextSettings& GetSettings()
+        declwindow.ContextSettings& GetSettings()
         unsigned long GetSystemHandle()
         bint IsOpened()
-        bint PollEvent(Event&)
+        bint PollEvent(declwindow.Event&)
         void SetActive()
         void SetActive(bint)
         void SetIcon(unsigned int, unsigned int, Uint8*)
@@ -452,7 +324,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void Show(bint)
         void ShowMouseCursor(bint)
         void UseVerticalSync(bint)
-        bint WaitEvent(Event&)
+        bint WaitEvent(declwindow.Event&)
 
     cdef cppclass RenderTexture:
         RenderTexture()
@@ -480,10 +352,10 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetColor(Color&)
         void ApplyColor(Color&)
         void SetViewport(IntRect&)
-        void SetBlendMode(declblendmode.Mode)
+        void SetBlendMode(blendmode.Mode)
         void SetTexture(Texture*)
         void SetShader(Shader*)
-        void Begin(declprimitive.PrimitiveType)
+        void Begin(primitive.PrimitiveType)
         void End()
         void AddVertex(float x, float y)
         void AddVertex(float x, float y, float u, float v)
@@ -513,35 +385,12 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void SetPointPosition(unsigned int, float, float)
         void SetPointColor(unsigned int, Color&)
         void SetPointOutlineColor(unsigned int, Color&)
-
-
-# Hacks for static methods
-cdef extern from "SFML/Graphics.hpp" namespace "sf::VideoMode":
-    cdef VideoMode& GetDesktopMode()
-    cdef vector[VideoMode]& GetFullscreenModes()
-
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Matrix3":
-    cdef Matrix3 Transformation(Vector2f&, Vector2f&, float, Vector2f&)
-    cdef Matrix3 Projection(Vector2f&, Vector2f&, float)
-    cdef Matrix3 Identity
-
-cdef extern from "SFML/Graphics.hpp":
-    cdef unsigned int Texture_GetMaximumSize "sf::Texture::GetMaximumSize"()
-
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Font":
-    cdef Font& GetDefaultFont()
-
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
-    cdef bint IsAvailable()
-
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Shape":
-    cdef Shape Line(float, float, float, float, float, Color&, float)
-    cdef Shape Line(float, float, float, float, float, Color&, float, Color&)
-    cdef Shape Line(Vector2f&, Vector2f&, float, Color&, float, Color&)
-    cdef Shape Rectangle(float, float, float, float, Color&, float)
-    cdef Shape Rectangle(float, float, float, float, Color&, float, Color&)
-    cdef Shape Rectangle(FloatRect&, Color&, float, Color&)
-    cdef Shape Circle(float, float, float, Color&, float)
-    cdef Shape Circle(float, float, float, Color&, float, Color&)
-    cdef Shape Circle(Vector2f&, float, Color&, float, Color&)
+        
+        
+# import static methods and attributes
+cimport shape
+cimport texture
+cimport font
+cimport shader
+cimport matrix3
 

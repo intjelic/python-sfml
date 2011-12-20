@@ -3,13 +3,8 @@
 
 #include "Python.h"
 #include <SFML/Graphics.hpp>
+#include "graphics_api.h"
 
-
-extern "C"
-{
-	struct __pyx_obj_4sfml_6cython_8graphics_RenderTarget *wrap_render_target_instance(sf::RenderTarget*);
-	struct __pyx_obj_4sfml_6cython_8graphics_Renderer *wrap_renderer_instance(sf::Renderer*);
-}
 
 // See this class like Shape, Sprite and Text. They have already defined
 // their Render method and if we want to make Drawable derivable with 

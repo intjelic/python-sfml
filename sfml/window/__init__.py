@@ -1,2 +1,5 @@
-from sfml.cython.graphics import ContextSettings, Event, Joystick,\
-Keyboard, Mouse, VideoMode, RenderWindow
+__all__ = ['ContextSettings', 'Event', 'Joystick', 'Keyboard', 'Mouse', 'VideoMode', 'Window']
+
+from sfml.system import *
+from sfml.graphics.graphics import ContextSettings, Event, Joystick, Keyboard, Mouse, VideoMode, Window
+

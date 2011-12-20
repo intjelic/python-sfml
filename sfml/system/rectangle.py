@@ -1,4 +1,6 @@
-from sfml.graphics import Position, Size
+#from sfml.system import Position, Size
+from sfml.system.position import Position
+from sfml.system.size import Size
 
 
 class Rectangle:
@@ -32,7 +34,10 @@ class Rectangle:
 
 	def __str__(self):
 		return "({0}, {1}, {2}, {3})".format(self.x, self.y, self.width, self.height)
-		
+
+	def __iter__(self):
+		return iter((self.x, self.y, self.width, self.height))
+
 	def contains(self, point):
 		"""
 		Check if a point is inside the rectangle's area.

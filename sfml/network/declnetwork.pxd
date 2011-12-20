@@ -25,10 +25,7 @@ cdef extern from "<string>" namespace "std":
         char* c_str()
         
         
-cdef extern from "SFML/System.hpp" namespace "sf":
-    ctypedef short Int16
-    ctypedef unsigned char Uint8
-    ctypedef unsigned int Uint32
+from declsystem cimport Int16,  Uint8, Uint32
 
 
 cdef extern from "SFML/Network.hpp" namespace "sf::IpAddress":

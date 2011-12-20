@@ -1,1 +1,1 @@
-from sfml.sf.audio import *
+from sfml.audio.audio import *

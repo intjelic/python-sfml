@@ -1,1 +1,1 @@
-from sfml.cython.network import *
+from sfml.network.network import *

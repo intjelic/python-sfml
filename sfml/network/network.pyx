@@ -228,10 +228,10 @@ cdef class FtpDirectoryResponse(FtpResponse):
        
         
 cdef class ListingResponse(FtpResponse):
-    def __cinit__(self, FtpResponse response, ):
-        self.thisptr = <declnetwork.ftp.Response*>new declnetwork.ftp.ListingResponse()
+    #def __cinit__(self, FtpResponse response):
+        #self.thisptr = <declnetwork.ftp.Response*>new declnetwork.ftp.ListingResponse()
     
-    def get_filenames:
+    def get_filenames(self):
         pass
 
 
@@ -280,14 +280,14 @@ cdef class Ftp:
 
 
 cdef class HttpRequest:
-    GET = declnetwork.http.http_request.Get
-    POST = declnetwork.http.http_request.Post
-    HEAD = declnetwork.http.http_request.Head
+    GET = declnetwork.http.request.Get
+    POST = declnetwork.http.request.Post
+    HEAD = declnetwork.http.request.Head
     
     cdef declnetwork.http.Request *thisptr
     
-    def __cinit__(self, bytes uri=b"/", int method=declnetwork.http.http_request.Get, bytes body=b""):
-        self.thisptr = new declnetwork.http.Request(<char*>uri, <declnetwork.http.http_request.Method>method, <char*>body)
+    def __cinit__(self, bytes uri=b"/", int method=declnetwork.http.request.Get, bytes body=b""):
+        self.thisptr = new declnetwork.http.Request(<char*>uri, <declnetwork.http.request.Method>method, <char*>body)
 
     property field:
         def __set__(self, tuple v):
@@ -297,7 +297,7 @@ cdef class HttpRequest:
             
     property method:
         def __set__(self, int method):
-            self.thisptr.SetMethod(<declnetwork.http.http_request.Method>method)
+            self.thisptr.SetMethod(<declnetwork.http.request.Method>method)
             
     property uri:
         def __set__(self, bytes uri):
@@ -340,8 +340,8 @@ cdef class HttpResponse:
     
     cdef declnetwork.http.Response *thisptr
     
-    #def __cinit__(self, bytes uri=b"/", int method=declnetwork.http_request.Get, bytes body=b""):
-        #self.thisptr = new declnetwork.Request(<char*>uri, <declnetwork.http_request.Method>method, <char*>body)
+    #def __cinit__(self, bytes uri=b"/", int method=declnetwork.request.Get, bytes body=b""):
+        #self.thisptr = new declnetwork.Request(<char*>uri, <declnetwork.request.Method>method, <char*>body)
 
     property field:
         def __get__(self):
@@ -351,7 +351,7 @@ cdef class HttpResponse:
             
     property status:
         def __get__(self):
-            <declnetwork.http.http_response.Status>self.thisptr.GetStatus()
+            <declnetwork.http.response.Status>self.thisptr.GetStatus()
             
     property major_http_version:
         def __get__(self):

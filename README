@@ -1,3 +1,18 @@
+This is an non-official python 3 binding for SFML 2.
+
+It was forked from the official python binding created by 
+Bastien Léonard the 16th of November 2011 to suit my own needs.
+
+It has since then widely improved and I decided to share my work under
+a new license: GPLv3
+
+I'm going to complete this README...
+
+
+
+
+
+/*
 This is a pythonic binding for SFML 2, which supports Python 2 and 3.
 This library allows you to write multimedia applications or games with
 a simple Python API.
@@ -9,3 +24,4 @@ https://github.com/bastienleonard/pysfml2-cython
 Please read doc/sphinx/source/introduction.rst for more information.
 You can also read the generated HTML documentation at
 http://pysfml2-cython.readthedocs.org/
+*/

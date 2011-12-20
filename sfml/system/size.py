@@ -9,6 +9,9 @@ class Size:
 	def __str__(self):
 		return "({0}, {1})".format(self.width, self.height)
 
+	def __iter__(self):
+		return iter((self.width, self.height))
+        
 	def _get_width(self):
 		return self._width
 
