@@ -1,6 +1,8 @@
 System
 ======
 
+.. module:: sf.system
+
 .. py:function:: sleep(time)
 
    Make the current thread sleep for a given duration.
@@ -22,21 +24,46 @@ System
          Restart the timer.
 
 
-.. class:: Vector2f(float x=0.0; float y=0.0)
-
-   You don't have to use this class; everywhere you can pass a
-   :class:`Vector2f`, you should be able to pass a tuple as well. However, it
-   can be more practical to use it, as it overrides arithmetic and comparison
-   operators, is mutable and requires that you use ``x`` and ``y`` members
-   instead of indexing.
+.. class:: Position(x=0, y=0)
 
    .. attribute:: x
    .. attribute:: y
 
-   .. classmethod:: from_tuple(t)
+.. class:: Size(width=0, height=0)
 
-   .. method:: copy()
+   .. attribute:: width
+   .. attribute:: height
+   
+.. class:: Rectangle(width=0, =height0)
 
-      Return a new :class:`Vector2f` with ``x`` and ``y`` set to the
-      value of ``self``.
+   .. attribute:: position
+   .. attribute:: size
+   
+   .. attribute:: x
+   .. attribute:: y
+   .. attribute:: width
+   .. attribute:: height
+   
+   .. attribute:: left
+   .. attribute:: top
+   .. attribute:: rigth
+   .. attribute:: bottom
+   
+   .. py:classmethod:: contains(point)
+
+      Check if a point is inside the rectangle's area. 
+      
+      :param sf.Position point: Point to test
+      :rtype: bool
+      
+   .. py:classmethod:: intersects(rectangle)
+
+      Check the intersection between two rectangles.
+
+      This overload returns the overlapped rectangle if an intersection is found.
+      
+      :param sf.Rectangle rectangle: Rectangle to test 
+      :return: Rectangle filled with the intersection or None
+      :rtype: sf.Rectangle or None
+
 

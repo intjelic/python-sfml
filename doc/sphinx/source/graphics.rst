@@ -1,12 +1,7 @@
 Graphics
 ========
 
-.. module:: sf
-
-
-
-Misc
-----
+.. module:: sf.graphics
 
 
 .. py:class:: Color(int r, int g, int b[, int a=255])
@@ -54,40 +49,6 @@ Misc
          cyan    = sf.Color.CYAN
    
 
-.. class:: IntRect(int left=0, int top=0, int width=0, int height=0)
-
-   You don't have to use this class; everywhere you can pass a
-   :class:`IntRect`, you should be able to pass a tuple as
-   well. However, it can be more practical to use it, as it provides
-   useful methods and is mutable.
-
-   .. attribute:: left
-   .. attribute:: top
-   .. attribute:: width
-   .. attribute:: height
-
-   .. method:: contains(int x, int y)
-   .. method:: intersects(IntRect rect[, IntRect intersection])
-
-
-
-.. py:class:: FloatRect(float left=0, float top=0, float width=0, float height=0)
-
-   You don't have to use this class; everywhere you can pass a
-   :class:`FloatRect`, you should be able to pass a tuple as
-   well. However, it can be more practical to use it, as it provides
-   useful methods and is mutable.
-
-   .. attribute:: left
-   .. attribute:: top
-   .. attribute:: width
-   .. attribute:: height
-
-   .. method:: contains(int x, int y)
-   .. method:: intersects(FloatRect rect[, FloatRect intersection])
-
-
-
 .. py:class:: Matrix3(float a00, float a01, float a02,\
                    float a10, float a11, float a12,\
                    float a20, float a21, float a22)
@@ -108,36 +69,6 @@ Misc
    .. method:: get_inverse()
    .. method:: transform()
 
-
-
-
-
-
-void 	Create (unsigned int width, unsigned int height, const Color &color=Color(0, 0, 0))
- 	Create the image and fill it with a unique color.
-void 	Create (unsigned int width, unsigned int height, const Uint8 *pixels)
- 	Create the image from an arry of pixels.
-
-
-
-void 	CreateMaskFromColor (const Color &color, Uint8 alpha=0)
- 	Create a transparency mask from a specified color-key.
-   
-void 	Copy (const Image &source, unsigned int destX, unsigned int destY, const IntRect &sourceRect=IntRect(0, 0, 0, 0), bool applyAlpha=false)
- 	Copy pixels from another image onto this one.
-void 	SetPixel (unsigned int x, unsigned int y, const Color &color)
- 	Change the color of a pixel.
-Color 	GetPixel (unsigned int x, unsigned int y) const
- 	Get the color of a pixel.
-const Uint8 * 	GetPixelsPtr () const
- 	Get a read-only pointer to the array of pixels.
-void 	FlipHorizontally ()
- 	Flip the image horizontally (left <-> right)
-void 	FlipVertically ()
- 	Flip the image vertically (top <-> bottom) 
-
-Image display and effects
--------------------------
 
 .. py:class:: Image(int width, int height[, color])
 
@@ -429,12 +360,18 @@ Image display and effects
 
       # display static shapes
       window.draw(sf.Shape.line((0, 0), (10, 20), sf.Color.RED))
-      window.draw(sf.Shape.rectangle(100, 1000, 50, 20, sf.Color.GREEN))
-      window.draw(sf.Shape.circle(500, 500, 20, sf.Color.BLUE, 5, sf.Color.BLACK))
+      window.draw(sf.Shape.rectangle((100, 1000, 50, 20), sf.Color.GREEN))
+      window.draw(sf.Shape.circle((500, 500), 20, sf.Color.BLUE, 5, sf.Color.BLACK))
 
-   .. py:method:: add_point(float x, float y[, color[, outline_color]])
+   .. py:method:: add_point(position[, color[, outline_color]])
    
       Add a new point to the shape. 
+      
+      The new point is inserted at the end of the shape.
+      
+      :param sf.Position position: 	Position of the point 
+      :param sf.Color color: Color of the point 
+      :param sf.Color outline_color: Outline color of the point 
       
    .. py:attribute:: points_count
    
@@ -459,27 +396,48 @@ Image display and effects
    .. py:method:: get_point_position(int index)
 
       Get the position of a point.
-      
+
    .. py:method:: get_point_color(int index)
-   
+
       Get the color of a point.
-      
+
    .. py:method:: get_point_outline_color(int index)
 
       Get the outline color of a point.
 
-   .. py:classmethod:: line(float p1x, float p1y, float p2x, float p2y, float thickness, color[, float outline=0.0[, outline_color]])
-   
+   .. py:classmethod:: line(start, end, thickness, color[, outline=0[, outline_color=sf.Color.BLACK]])
+
       Create a new line.
-
-   .. py:classmethod:: rectangle(float left, float top, float width, float height, color[, float outline=0.0[, outline_color]])
-   
-   	Create a new rectangular shape.
       
-   .. py:classmethod:: circle(float x, float y, float radius, color[, float outline=0.0[, outline_color]])
+      :param sf.Position start: Start point
+      :param sf.Position end: End point
+      :param integer thickness: 	Thickness of the line
+      :param sf.Color color: Color of the shape's points
+      :param integer outline: Outline thickness
+      :param sf.Color outline_color: Outline color of the shape's points
+      :rtype: sf.Shape
    
-      Create a new circular shape. 
+   .. py:classmethod:: rectangle(rectangle, color[, float outline=0[, outline_color=sf.Color.BLACK]])
+   
+      Create a new rectangular shape.
 
+      :param sf.Rectangle rectangle: Rectangle defining the shape
+      :param sf.Color color: Color of the shape's points
+      :param integer outline: Outline thickness 
+      :param sf.Color outline_color: Outline color of the shape's points
+      :rtype: sf.Shape
+      
+   .. py:classmethod:: circle(center, radius, color[, outline=0[, outline_color=sf.Color.BLACK]])
+
+      Create a new circular shape.
+      
+      :param sf.Position center: Center of the circle 
+      :param integer radius: Radius of the circle 
+      :param sf.Color color: 	Color of the shape's points 
+      :param integer outline: Outline thickness 
+      :param sf.Color outline_color: Outline color of the shape's points
+      :rtype: sf.Shape
+      
 
 .. class:: Sprite([texture])
 
@@ -543,10 +501,7 @@ Image display and effects
    .. method:: set_texture(str name)
    .. method:: set_current_texture(str name)
    .. method:: unbind()
-
-
-Windowing
----------
+   
 
 .. py:class:: RenderTarget()
 
@@ -845,8 +800,6 @@ Windowing
    .. attribute:: height
    
 
-Text
-----
 .. class:: Font()
 
    .. attribute:: DEFAULT_FONT

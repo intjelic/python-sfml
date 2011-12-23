@@ -1,7 +1,7 @@
 Audio
 =====
 
-.. currentmodule:: sf
+.. module:: sf.audio
 
 
 .. class:: SoundBuffer
@@ -17,11 +17,9 @@ Audio
 
    .. classmethod:: load_from_file(filename)
    .. classmethod:: load_from_memory(str data)
-   .. classmethod:: load_from_samples(list samples, int channels_count,\
-                                      int sample_rate)
+   .. classmethod:: load_from_samples(list samples, int channels_count, int sample_rate)
 
    .. method:: save_to_file(filename)
-
 
 
 .. class:: Sound([SoundBuffer buffer])
@@ -47,8 +45,6 @@ Audio
    .. method:: pause()
    .. method:: play()
    .. method:: stop()
-
-
 
 
 .. class:: Music
