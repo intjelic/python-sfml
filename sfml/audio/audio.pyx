@@ -1,9 +1,27 @@
+########################################################################
+# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>   #
+#                                                                      #
+# This program is free software: you can redistribute it and/or modify #
+# it under the terms of the GNU General Public License as published by #
+# the Free Software Foundation, either version 3 of the License, or    #
+# (at your option) any later version.                                  #
+#                                                                      #
+# This program is distributed in the hope that it will be useful,      #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of       #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        #
+# GNU General Public License for more details.                         #
+#                                                                      #
+# You should have received a copy of the GNU General Public License    #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.#
+########################################################################
+
+
 from libc.stdlib cimport malloc, free
 from cython.operator cimport preincrement as preinc, dereference as deref
 cimport declaudio
 
 
-class PySFMLException(Exception): pass
+class SFMLException(Exception): pass
 
 
 cdef class Listener:
@@ -19,12 +37,12 @@ cdef class Listener:
     def set_global_volume(cls, float volume):
         declaudio.listener.SetGlobalVolume(volume)
     
-    ##@classmethod
-    ##def get_position(cls, filename): pass
+    #@classmethod
+    #def get_position(cls, filename): pass
     
-    ##@classmethod
-    ##def set_position(cls, filename):
-        ##declaudio.listener.Position(volume)
+    @classmethod
+    def set_position(cls, x, y, z):
+        declaudio.listener.SetPosition(x, y, z)
     
     ##@classmethod
     ##def set_direction(cls, filename): pass
@@ -34,11 +52,11 @@ cdef class Listener:
     
     
 cdef class SoundBuffer:
-    cdef declaudio.SoundBuffer *p_this
+    cdef declaudio.const_SoundBuffer *p_this
     cdef bint delete_this
-
+    
     def __init__(self):
-        # self.delete_this = True
+        self.delete_this = True
         raise NotImplementedError("Use static methods like load_from_file to create SoundBuffer instances")
 
     def __dealloc__(self):
@@ -80,7 +98,7 @@ cdef class SoundBuffer:
         if p.LoadFromFile(bFilename):
             return wrap_sound_buffer_instance(p, True)
 
-        raise PySFMLException()
+        raise SFMLException()
 
     @classmethod
     def load_from_memory(cls, bytes data):
@@ -89,7 +107,7 @@ cdef class SoundBuffer:
         if p.LoadFromMemory(<char*>data, len(data)):
             return wrap_sound_buffer_instance(p, True)
 
-        raise PySFMLException()
+        raise SFMLException()
 
     @classmethod
     def load_from_samples(cls, list samples, unsigned int channels_count,
@@ -100,7 +118,7 @@ cdef class SoundBuffer:
         cdef declaudio.Int16 *p_temp = NULL
 
         if p_samples == NULL:
-            raise PySFMLException()
+            raise SFMLException()
         else:
             p_temp = p_samples
 
@@ -114,22 +132,26 @@ cdef class SoundBuffer:
                 return wrap_sound_buffer_instance(p_sb, True)
             else:
                 free(p_samples)
-                raise PySFMLException()
+                raise SFMLException()
 
     def save_to_file(self, char* filename):
         self.p_this.SaveToFile(filename)
 
 
-cdef SoundBuffer wrap_sound_buffer_instance(declaudio.SoundBuffer *p_cpp_instance, bint delete_this):
+cdef SoundBuffer wrap_sound_buffer_instance(declaudio.SoundBuffer *instance, bint delete_this):
     cdef SoundBuffer ret = SoundBuffer.__new__(SoundBuffer)
 
-    ret.p_this = p_cpp_instance
+    ret.p_this = instance
     ret.delete_this = delete_this
 
     return ret
 
 
 cdef class SoundSource:
+    STOPPED = declaudio.sound_source.Stopped
+    PAUSED = declaudio.sound_source.Paused
+    PLAYING = declaudio.sound_source.Playing
+    
     cdef declaudio.SoundSource *thisptr
     
     property pitch:
@@ -146,15 +168,16 @@ cdef class SoundSource:
         def __set__(self, float value):
             self.thisptr.SetVolume(value)
             
-    #property position:
-        #def __get__(self):
+    property position:
+        def __get__(self):
+            return NotImplemented
             #cdef declaudio.Vector3f pos = self.thisptr.GetPosition()
 
             #return (pos.x, pos.y, pos.z)
 
-        #def __set__(self, tuple value):
-            #x, y, z = value
-            #self.thisptr.SetPosition(x, y, z)
+        def __set__(self, tuple value):
+            x, y, z = value
+            self.thisptr.SetPosition(x, y, z)
         
     property relative_to_listener:
         def __get__(self):
@@ -181,10 +204,6 @@ cdef class SoundSource:
 cdef class Sound(SoundSource):
     cdef SoundBuffer buffer
     
-    STOPPED = declaudio.sound_source.Stopped
-    PAUSED = declaudio.sound_source.Paused
-    PLAYING = declaudio.sound_source.Playing
-
     def __cinit__(self, SoundBuffer buffer=None):
         if buffer is None:
             self.thisptr = <declaudio.SoundSource*>new declaudio.Sound()
@@ -273,10 +292,6 @@ cdef class SoundStream(SoundSource):
         
         
 cdef class Music(SoundStream):
-    #STOPPED = declaudio.Stopped
-    #PAUSED = declaudio.Paused
-    #PLAYING = declaudio.Playing
-
     def __init__(self):
         raise NotImplementedError("Use class methods like open_from_file() or open_from_memory() to create Music objects")
 
@@ -285,7 +300,7 @@ cdef class Music(SoundStream):
 
     property duration:
         def __get__(self):
-            return self.p_this.GetDuration()
+            return (<declaudio.Music*>self.thisptr).GetDuration()
 
     @classmethod
     def open_from_file(cls, char* filename):
@@ -294,7 +309,7 @@ cdef class Music(SoundStream):
         if p.OpenFromFile(filename):
             return wrap_music_instance(p)
 
-        raise PySFMLException()
+        raise SFMLException()
 
     @classmethod
     def open_from_memory(cls, bytes data):
@@ -303,7 +318,7 @@ cdef class Music(SoundStream):
         if p.OpenFromMemory(<char*>data, len(data)):
             return wrap_music_instance(p)
 
-        raise PySFMLException()
+        raise SFMLException()
 
 
 cdef Music wrap_music_instance(declaudio.Music *p_cpp_instance):
@@ -321,11 +336,17 @@ cdef class SoundRecorder:
         if self.__class__ == SoundRecorder:
             raise NotImplementedError("SoundRecorder is abstract")
     
+    def __dealloc__(self):
+        del self.thisptr
     def start(self, unsigned int sampleRate=44100):
         self.thisptr.Start(sampleRate)
         
     def stop(self):
         self.thisptr.Stop()
+        
+    @classmethod
+    def is_available(cls):
+        return declaudio.sound_recorder.IsAvailable()
         
     property sample_rate:
         def __get__(self):
@@ -336,9 +357,13 @@ cdef class SoundBufferRecorder(SoundRecorder):
     def __cinit__(self, *args, **kwargs):
         self.thisptr = <declaudio.SoundRecorder*>new declaudio.SoundBufferRecorder()
         
-    def __dealloc__(self):
-        del self.thisptr
+    def get_buffer(self):
+        cdef declaudio.const_SoundBuffer* sb
+        sb = &(<declaudio.SoundBufferRecorder*>self.thisptr).GetBuffer()
         
-    #def get_buffer(self):
-        #return wrap_sound_buffer_instance(&(<declaudio.SoundBufferRecorder*>self.thisptr).GetBuffer(), True)
-        
+        cdef SoundBuffer ret = SoundBuffer.__new__(SoundBuffer)
+
+        ret.p_this = sb
+        ret.delete_this = False
+
+        return ret
