@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+
 ########################################################################
 # Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>   #
 #                                                                      #
@@ -16,7 +19,7 @@
 ########################################################################
 
 
-USE_CYTHON = True
+USE_CYTHON = False
 
 
 from distutils.core import setup
@@ -29,7 +32,7 @@ if USE_CYTHON:
 if USE_CYTHON:
     graphics_dir = ['sfml/system', 'sfml/window']
     graphics_libs = ['sfml-system', 'sfml-window', 'sfml-graphics']
-    graphics_mod = Extension('sfml.graphics.graphics', ['sfml/graphics/graphics.pyx', 'sfml/graphics/hacks.cpp'], language='c++', libraries=graphics_libs)
+    graphics_mod = Extension('sfml.graphics.graphics', ['sfml/graphics/graphics.pyx', 'sfml/graphics/hacks.cpp', 'sfml/graphics/error.cpp'], language='c++', libraries=graphics_libs)
 
     audio_libs = ['sfml-audio']
     audio_mod = Extension('sfml.audio.audio', ['sfml/audio/audio.pyx'], language='c++', libraries=audio_libs)
@@ -47,9 +50,9 @@ else:
     network_libs = ['sfml-network']
     network_mod = Extension('sfml.network.network', ['sfml/network/network.cpp'], libraries=network_libs)
     
-ext_modules = [graphics_mod, audio_mod]
+ext_modules = [graphics_mod, audio_mod, network_mod]
 
-with open('README.txt', 'r') as f:
+with open('README', 'r') as f:
     long_description = f.read()
 
 kwargs = dict(name='SFML2',
