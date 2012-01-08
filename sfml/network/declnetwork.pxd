@@ -24,7 +24,7 @@ cdef extern from "<string>" namespace "std":
     cdef cppclass string:
         char* c_str()
         
-        
+
 from declsystem cimport Int16,  Uint8, Uint32
 
 
@@ -34,15 +34,12 @@ cdef extern from "SFML/Network.hpp" namespace "sf::IpAddress":
 
     #IpAddress 	None
     #IpAddress 	LocalHost
-    
-    
-cdef extern from "SFML/Network.hpp" namespace "sf::Socket":
-    int Done
-    int NotReady
-    int Disconnected
-    int Error
-    
-    
+
+
+cimport socket
+cimport udpsocket
+
+
 cdef extern from "SFML/Network.hpp" namespace "sf":
     cdef cppclass IpAddress:
         IpAddress()
@@ -65,7 +62,7 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
         void Disconnect()
         int Send(char *data, int size)
         int Receive(char *data, size_t size, size_t &received)
-        
+
     cdef cppclass UdpSocket:
         UdpSocket()
         unsigned short GetLocalPort()        
@@ -97,22 +94,21 @@ cimport ftp
 cdef extern from "SFML/Network.hpp" namespace "sf":
     cdef cppclass Ftp:
         Ftp()
-        #~Ftp()
-        #ftp.Response Connect(IpAddress &server, unsigned short port=21, Uint32 timeout=0)
+        ftp.Response Connect(IpAddress &server, unsigned short port, Uint32 timeout)
         ftp.Response Disconnect()
         ftp.Response Login()
         ftp.Response Login(char* &name, char* &password)
         ftp.Response KeepAlive()
         ftp.DirectoryResponse GetWorkingDirectory()
-        #ftp.ListingResponse	GetDirectoryListing(const std::string &directory="")
+        ftp.ListingResponse	GetDirectoryListing(char* &directory)
         ftp.Response ChangeDirectory(char* &directory)
         ftp.Response ParentDirectory()
         ftp.Response CreateDirectory(char* &name)
         ftp.Response DeleteDirectory(char* &name)
         ftp.Response RenameFile(char* &file, char* &newName)
         ftp.Response DeleteFile(char* &name)
-        #ftp.Response Download(char* &remoteFile, char* &localPath, ftp.TransferMode mode=Binary)
-        #ftp.Response Upload(const std::string &localFile, const std::string &remotePath, TransferMode mode=Binary)
+        ftp.Response Download(char* &remoteFile, char* &localPath, ftp.TransferMode)
+        ftp.Response Upload(char* &localFile, char* &remotePath, ftp.TransferMode)
 
 cimport http
 

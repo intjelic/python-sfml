@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from cython.operator cimport preincrement as preinc, dereference as deref
+from libcpp.vector cimport vector
 
 cimport declnetwork
 
@@ -68,17 +70,19 @@ cdef wrap_ipaddress_instance(declnetwork.IpAddress* instance):
     return ret
     
 cdef class Socket:
-    DONE = declnetwork.Done
-    NOT_READY = declnetwork.NotReady
-    DISCONNECTED = declnetwork.Disconnected
-    ERROR = declnetwork.Error
+    DONE = declnetwork.socket.Done
+    NOT_READY = declnetwork.socket.NotReady
+    DISCONNECTED = declnetwork.socket.Disconnected
+    ERROR = declnetwork.socket.Error
+    
+    ANY_PORT = declnetwork.socket.AnyPort
     
     cdef declnetwork.Socket *thisptr
     
     def __cinit__(self, *args, **kwargs):
         if self.__class__ == Socket:
             raise NotImplementedError('Socket is abstact')
-            
+        
     property blocking:
         def __get__(self):
             return self.thisptr.IsBlocking()
@@ -90,6 +94,9 @@ cdef class Socket:
 cdef class TcpSocket(Socket):
     def __cinit__(self, *args, **kwargs):
         self.thisptr = <declnetwork.Socket*>new declnetwork.TcpSocket()
+        
+    def __dealloc__(self):
+        del self.thisptr
         
     def __str__(self):
         return "TcpSocket()"
@@ -103,11 +110,11 @@ cdef class TcpSocket(Socket):
     def send(self, bytes data):
         return (<declnetwork.TcpSocket*>self.thisptr).Send(<char*>data, len(data))
         
-    def recieve(self, size_t length):
+    def receive(self, size_t length):
         cdef char* c_data = <char*>declnetwork.malloc(length * sizeof(char))
-        cdef size_t recieved = 0
+        cdef size_t received = 0
         
-        cdef int status = (<declnetwork.TcpSocket*>self.thisptr).Receive(c_data, length, recieved)
+        cdef int status = (<declnetwork.TcpSocket*>self.thisptr).Receive(c_data, length, received)
         cdef bytes data = c_data
         return (status, data)
         
@@ -129,8 +136,13 @@ cdef wrap_tcpsocket_instance(declnetwork.TcpSocket* instance):
     return ret
     
 cdef class UdpSocket(Socket):
+    MAX_DATAGRAM_SIZE = declnetwork.udpsocket.MaxDatagramSize
+    
     def __cinit__(self, *args, **kwargs):
         self.thisptr = <declnetwork.Socket*>new declnetwork.UdpSocket()
+        
+    def __dealloc__(self):
+        del self.thisptr
         
     def bind(self, unsigned short port):
         (<declnetwork.UdpSocket*>self.thisptr).Bind(port)
@@ -157,6 +169,9 @@ cdef class UdpSocket(Socket):
 cdef class TcpListener(Socket):
     def __cinit__(self, *args, **kwargs):
         self.thisptr = <declnetwork.Socket*>new declnetwork.TcpListener()
+
+    def __dealloc__(self):
+        del self.thisptr
         
     def __str__(self):
         pass
@@ -184,6 +199,9 @@ cdef class SocketSelector:
     def __cinit__(self, *args, **kwargs):
         self.thisptr = new declnetwork.SocketSelector()
     
+    def __dealloc__(self):
+        del self.thisptr
+        
     def add(self, Socket socket):
         self.thisptr.Add(socket.thisptr[0])
         
@@ -200,84 +218,222 @@ cdef class SocketSelector:
         return self.thisptr.IsReady(socket.thisptr[0])
 
 
+    
 cdef class FtpResponse:
+    RESTART_MARKER_REPLY = declnetwork.ftp.response.RestartMarkerReply
+    SERVICE_READY_SOON = declnetwork.ftp.response.ServiceReadySoon
+    DATA_CONNECTION_ALREADY_OPENED = declnetwork.ftp.response.DataConnectionAlreadyOpened
+    OPENING_DATA_CONNECTION = declnetwork.ftp.response.OpeningDataConnection
+    OK = declnetwork.ftp.response.Ok
+    POINTLESS_COMMAND = declnetwork.ftp.response.PointlessCommand
+    SYSTEM_STATUS = declnetwork.ftp.response.SystemStatus
+    DIRECTORY_STATUS = declnetwork.ftp.response.DirectoryStatus
+    FILE_STATUS = declnetwork.ftp.response.FileStatus
+    HELP_MESSAGE = declnetwork.ftp.response.HelpMessage
+    SYSTEM_TYPE = declnetwork.ftp.response.SystemType
+    SERVICE_READY = declnetwork.ftp.response.ServiceReady
+    CLOSING_CONNECTION = declnetwork.ftp.response.ClosingConnection
+    DATA_CONNECTION_OPENED = declnetwork.ftp.response.DataConnectionOpened
+    CLOSING_DATA_CONNECTION = declnetwork.ftp.response.ClosingDataConnection
+    ENTERING_PASSIVE_MODE = declnetwork.ftp.response.EnteringPassiveMode
+    LOGGED_IN = declnetwork.ftp.response.LoggedIn
+    FILE_ACTION_OK = declnetwork.ftp.response.FileActionOk
+    DIRECTORY_OK = declnetwork.ftp.response.DirectoryOk
+    NEED_PASSWORD = declnetwork.ftp.response.NeedPassword
+    NEED_ACCOUNT_TO_LOG_IN = declnetwork.ftp.response.NeedAccountToLogIn
+    NEED_INFORMATION = declnetwork.ftp.response.NeedInformation
+    SERVICE_UNAVAILABLE = declnetwork.ftp.response.ServiceUnavailable
+    DATA_CONNECTION_UNAVAILABLE = declnetwork.ftp.response.DataConnectionUnavailable
+    TRANSFER_ABORTED = declnetwork.ftp.response.TransferAborted
+    FILE_ACTION_ABORTED = declnetwork.ftp.response.FileActionAborted
+    LOCAL_ERROR = declnetwork.ftp.response.LocalError
+    INSUFFICIENT_STORAGE_SPACE = declnetwork.ftp.response.InsufficientStorageSpace
+    COMMAND_UNKNOWN = declnetwork.ftp.response.CommandUnknown
+    PARAMETERS_UNKNOWN = declnetwork.ftp.response.ParametersUnknown
+    COMMAND_NOT_IMPLEMENTED = declnetwork.ftp.response.CommandNotImplemented
+    BAD_COMMAND_SEQUENCE = declnetwork.ftp.response.BadCommandSequence
+    PARAMETER_NOT_IMPLEMENTED = declnetwork.ftp.response.ParameterNotImplemented
+    NOT_LOGGED_IN = declnetwork.ftp.response.NotLoggedIn
+    NEED_ACCOUNT_TO_STORE = declnetwork.ftp.response.NeedAccountToStore
+    FILE_UNAVAILABLE = declnetwork.ftp.response.FileUnavailable
+    PAGE_TYPE_UNKNOWN = declnetwork.ftp.response.PageTypeUnknown
+    NOT_ENOUGH_MEMORY = declnetwork.ftp.response.NotEnoughMemory
+    FILENAME_NOT_ALLOWED = declnetwork.ftp.response.FilenameNotAllowed
+    INVALID_RESPONSE = declnetwork.ftp.response.InvalidResponse
+    CONNECTION_FAILED = declnetwork.ftp.response.ConnectionFailed
+    CONNECTION_CLOSED = declnetwork.ftp.response.ConnectionClosed
+    INVALID_FILE = declnetwork.ftp.response.InvalidFile
+
     cdef declnetwork.ftp.Response *thisptr
     
-    def __cinit__(self, int code=declnetwork.ftp.ftp_response.InvalidResponse, bytes message=b""):
-        self.thisptr = new declnetwork.ftp.Response(<declnetwork.ftp.Status>code, <char*>message)
-        
+    def __dealloc__(self):
+        del self.thisptr
+
     property ok:
         def __get__(self):
             return self.thisptr.IsOk()
-            
-    #property status:
-        #def __get__(self):
-            #return <declnetwork.ftp.ftp_response.Status>self.thisptr.GetStatus()
-            
-    #property message:
-        #def __get__(self):
-            #return self.thisptr.GetMessage()
 
-
+    property status:
+        def __get__(self):
+            return <int>self.thisptr.GetStatus()
+            
+    property message:
+        def __get__(self):
+            return self.thisptr.GetMessage().c_str()
+    
 cdef class FtpDirectoryResponse(FtpResponse):
-    def __cinit__(self, FtpResponse response):
-        self.thisptr = <declnetwork.ftp.Response*>new declnetwork.ftp.DirectoryResponse(response.thisptr[0])
+    cdef declnetwork.ftp.Response* deletethis
     
-    def get_directory(self):
-        pass
-       
+    def __dealloc__(self):
+        del self.deletethis
         
-cdef class ListingResponse(FtpResponse):
-    #def __cinit__(self, FtpResponse response):
-        #self.thisptr = <declnetwork.ftp.Response*>new declnetwork.ftp.ListingResponse()
+    def get_directory(self):
+        return (<declnetwork.ftp.DirectoryResponse*>self.thisptr).GetDirectory().c_str()
+       
     
+cdef class FtpListingResponse(FtpResponse):
+    cdef declnetwork.ftp.Response* deletethis
+    
+    def __dealloc__(self):
+        del self.deletethis
+        
     def get_filenames(self):
-        pass
+        return NotImplemented
+        #cdef list ret = []
+        #cdef vector[declnetwork.string]& v = (<declnetwork.ftp.ListingResponse>self.thisptr).GetFilenames()
+        #cdef vector[declnetwork.string].iterator it = v.begin()
+        #cdef declnetwork.string current
+        #cdef declnetwork.string *p_temp
 
+        #while it != v.end():
+            #current = deref(it)
+            ##a = current.c_str()
+            #ret.append(current.c_str())
+            #p_temp = new
+            #new declwindow.VideoMode(current.Width, current.Height,
+                                        ##current.BitsPerPixel)
+            ##ret.append(wrap_video_mode_instance(p_temp, True))
+            ##preinc(it)
 
+        #return ret
+
+cdef wrap_ftpresponse_instance(declnetwork.ftp.Response* instance):
+    cdef FtpResponse ret = FtpResponse.__new__(FtpResponse)
+    ret.thisptr = instance
+    return ret
+    
+    
+cdef wrap_ftpdirectoryresponse_instance(declnetwork.ftp.DirectoryResponse* instance, declnetwork.ftp.Response* response):
+    cdef FtpDirectoryResponse ret = FtpDirectoryResponse.__new__(FtpDirectoryResponse)
+    ret.thisptr = <declnetwork.ftp.Response*>instance
+    ret.deletethis = response
+    return ret
+    
+
+cdef wrap_ftplistingresponse_instance(declnetwork.ftp.ListingResponse* instance, declnetwork.ftp.Response* response):
+    cdef FtpListingResponse ret = FtpListingResponse.__new__(FtpListingResponse)
+    ret.thisptr = <declnetwork.ftp.Response*>instance
+    ret.deletethis = response
+    return ret
+    
+    
 cdef class Ftp:
-    def connect(self):
-        pass
+    BINARY = declnetwork.ftp.Binary
+    ASCII = declnetwork.ftp.Ascii
+    EBCDIC = declnetwork.ftp.Ebcdic
+    
+    cdef declnetwork.Ftp *thisptr
+    
+    def __cinit__(self, *args, **kwargs):
+        self.thisptr = new declnetwork.Ftp()
+        
+    def __dealloc__(self):
+        del self.thisptr
+        
+    def connect(self, IpAddress server, unsigned short port=21, declnetwork.Uint32 timeout=0):
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.Connect(server.thisptr[0], port, timeout)
+        return wrap_ftpresponse_instance(response)
         
     def disconnect(self):
-        pass
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.Disconnect()
+        return wrap_ftpresponse_instance(response)
         
-    def login(self):
-        pass
+    def login(self, bytes name=None, bytes message=b""):
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        if name:
+            response[0]= self.thisptr.Login(name, message)
+        else:
+            response[0]= self.thisptr.Login()
+        return wrap_ftpresponse_instance(response)
         
     def keep_alive(self):
-        pass
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.KeepAlive()
+        return wrap_ftpresponse_instance(response)
         
     def get_working_directory(self):
-        pass
+        # here Ftp::DirectoryResponse's constructors prevent us from
+        # creating an empty object. We must cheat by passing an empty
+        # Ftp::Reponse that we must destruct when the DirectoryResponse
+        # is destroyed.
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        cdef declnetwork.ftp.DirectoryResponse* directory_response = new declnetwork.ftp.DirectoryResponse(response[0])
+        directory_response[0] = self.thisptr.GetWorkingDirectory()
+        return wrap_ftpdirectoryresponse_instance(directory_response, response)
+    
+    def get_directory_listing(self, bytes directory=b""):
+        # here Ftp::ListingResponse's constructors prevent us from
+        # creating an empty object. We must cheat by passing an empty
+        # Ftp::Reponse and a false vector of char*. We must destruct
+        # what we had allocated to cheat on when the ListingResponse
+        # is destroyed.
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        cdef vector[char] falseList
+        cdef declnetwork.ftp.ListingResponse* listing_response = new declnetwork.ftp.ListingResponse(response[0], falseList)
+        listing_response[0] = self.thisptr.GetDirectoryListing(directory)
+        return wrap_ftplistingresponse_instance(listing_response, response)
         
-    def get_directory_listing(self):
-        pass
-        
-    def change_directory(self):
-        pass
+    def change_directory(self, bytes directory):
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.ChangeDirectory(directory)
+        return wrap_ftpresponse_instance(response)
  
     def parent_directory(self):
-        pass
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.ParentDirectory()
+        return wrap_ftpresponse_instance(response)
         
-    def create_directory(self):
-        pass
+    def create_directory(self, bytes name):
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.CreateDirectory(name)
+        return wrap_ftpresponse_instance(response)
         
-    def delete_directory(self):
-        pass
+    def delete_directory(self, bytes name):
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.DeleteDirectory(name)
+        return wrap_ftpresponse_instance(response)
         
-    def rename_file(self):
-        pass
+    def rename_file(self, bytes file_name, bytes new_name):
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.RenameFile(file_name, new_name)
+        return wrap_ftpresponse_instance(response)
         
-    def delete_file(self):
-        pass
+    def delete_file(self, bytes name):
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.DeleteFile(name)
+        return wrap_ftpresponse_instance(response)
         
-    def download(self):
-        pass
+    def download(self, bytes remote_file, bytes local_path, int mode=declnetwork.ftp.Binary):
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.Download(remote_file, local_path, <declnetwork.ftp.TransferMode>mode)
+        return wrap_ftpresponse_instance(response)
         
-    def upload(self):
-        pass
-
+    def upload(self, bytes local_file, bytes remote_path, int mode=declnetwork.ftp.Binary):
+        cdef declnetwork.ftp.Response* response = new declnetwork.ftp.Response()
+        response[0] = self.thisptr.Upload(local_file, remote_path, <declnetwork.ftp.TransferMode>mode)
+        return wrap_ftpresponse_instance(response)
 
 cdef class HttpRequest:
     GET = declnetwork.http.request.Get
@@ -314,29 +470,29 @@ cdef class HttpRequest:
             self.thisptr.SetBody(<char*>body)
 
 cdef class HttpResponse:
-    OK = declnetwork.http.http_response.Ok
-    CREATED = declnetwork.http.http_response.Created
-    ACCEPTED = declnetwork.http.http_response.Accepted
-    NO_CONTENT = declnetwork.http.http_response.NoContent
-    RESET_CONTENT = declnetwork.http.http_response.ResetContent
-    PARTIAL_CONTENT = declnetwork.http.http_response.PartialContent
-    MULTIPLE_CHOICES = declnetwork.http.http_response.MultipleChoices
-    MOVED_PERMANENTLY = declnetwork.http.http_response.MovedPermanently
-    MOVED_TEMPORARILY = declnetwork.http.http_response.MovedTemporarily
-    NOT_MODIFIED = declnetwork.http.http_response.NotModified
-    BAD_REQUEST = declnetwork.http.http_response.BadRequest
-    UNAUTHORIZED = declnetwork.http.http_response.Unauthorized
-    FORBIDDEN = declnetwork.http.http_response.Forbidden
-    NOT_FOUND = declnetwork.http.http_response.NotFound
-    RANGE_NOT_SATISFIABLE = declnetwork.http.http_response.RangeNotSatisfiable
-    INTERNAL_SERVER_ERROR = declnetwork.http.http_response.InternalServerError
-    NOT_IMPLEMENTED = declnetwork.http.http_response.NotImplemented
-    BAD_GATEWAY = declnetwork.http.http_response.BadGateway
-    SERVICE_NOT_AVAILABLE = declnetwork.http.http_response.ServiceNotAvailable
-    GATEWAY_TIMEOUT = declnetwork.http.http_response.GatewayTimeout
-    VERSION_NOT_SUPPORTED = declnetwork.http.http_response.VersionNotSupported
-    INVALID_RESPONSE = declnetwork.http.http_response.InvalidResponse
-    CONNECTION_FAILED = declnetwork.http.http_response.ConnectionFailed
+    OK = declnetwork.http.response.Ok
+    CREATED = declnetwork.http.response.Created
+    ACCEPTED = declnetwork.http.response.Accepted
+    NO_CONTENT = declnetwork.http.response.NoContent
+    RESET_CONTENT = declnetwork.http.response.ResetContent
+    PARTIAL_CONTENT = declnetwork.http.response.PartialContent
+    MULTIPLE_CHOICES = declnetwork.http.response.MultipleChoices
+    MOVED_PERMANENTLY = declnetwork.http.response.MovedPermanently
+    MOVED_TEMPORARILY = declnetwork.http.response.MovedTemporarily
+    NOT_MODIFIED = declnetwork.http.response.NotModified
+    BAD_REQUEST = declnetwork.http.response.BadRequest
+    UNAUTHORIZED = declnetwork.http.response.Unauthorized
+    FORBIDDEN = declnetwork.http.response.Forbidden
+    NOT_FOUND = declnetwork.http.response.NotFound
+    RANGE_NOT_SATISFIABLE = declnetwork.http.response.RangeNotSatisfiable
+    INTERNAL_SERVER_ERROR = declnetwork.http.response.InternalServerError
+    NOT_IMPLEMENTED = declnetwork.http.response.NotImplemented
+    BAD_GATEWAY = declnetwork.http.response.BadGateway
+    SERVICE_NOT_AVAILABLE = declnetwork.http.response.ServiceNotAvailable
+    GATEWAY_TIMEOUT = declnetwork.http.response.GatewayTimeout
+    VERSION_NOT_SUPPORTED = declnetwork.http.response.VersionNotSupported
+    INVALID_RESPONSE = declnetwork.http.response.InvalidResponse
+    CONNECTION_FAILED = declnetwork.http.response.ConnectionFailed
     
     cdef declnetwork.http.Response *thisptr
     
