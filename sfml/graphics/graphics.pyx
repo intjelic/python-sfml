@@ -49,7 +49,7 @@
 """Python wrapper for the C++ library SFML 2 (Simple and Fast Multimedia Library)."""
 
 
-import threading, subprocess, tempfile, os
+import threading, subprocess, tempfile, os, time
 
 from sfml.system.position import Position
 from sfml.system.size import Size
@@ -70,9 +70,48 @@ cimport declgraphics
 ########################################################################
  
 
-class PySFMLException(Exception): pass
- 
- 
+cdef error_messages = {}
+cdef error_messages_lock = threading.Lock()
+
+
+# TODO: apparently functions should be static in Python modules, see
+# http://docs.python.org/extending/extending.html#providing-a-c-api-for-an-extension-module.
+cdef extern void set_error_message(char* message):
+    ident = threading.current_thread().ident
+
+    with error_messages_lock:
+        error_messages[ident] = message
+
+
+declgraphics.replace_error_handler()
+
+
+# Return the last error message for the current thread, or None.  Will
+# return None after you consumed the latest message, until a new
+# message is added. The goal is to avoid showing the same message
+# twice.
+cdef object get_last_error_message():
+    ident = threading.current_thread().ident
+
+    with error_messages_lock:
+        if ident in error_messages:
+            message = error_messages[ident]
+            del error_messages[ident]
+            return message
+
+    return None
+
+
+class SFMLException(Exception):
+    def __init__(self):
+        message = get_last_error_message()
+
+        if message is None:
+            Exception.__init__(self)
+        else:
+            Exception.__init__(self, message.decode('UTF-8'))
+
+
 def sleep(Uint32 duration):
     declsystem.Sleep(duration)
 
@@ -299,6 +338,10 @@ cdef declsystem.Vector2f Position_to_Vector2f(object value):
 
 cdef declsystem.IntRect Rectangle_to_IntRect(object value):
     return declsystem.IntRect(value[0], value[1], value[2], value[3])
+    
+cdef declsystem.FloatRect Rectangle_to_FloatRect(object value):
+    x, y, w, h = value
+    return declsystem.FloatRect(float(x), float(y), float(w), float(h))
 
 cdef object IntRect_to_Rectangle(declsystem.IntRect* value):
     return Rectangle(value.Left, value.Top, value.Width, value.Height)
@@ -309,6 +352,7 @@ cdef object FloatRect_to_Rectangle(declsystem.FloatRect* value):
 ########################################################################
 #                           Window Module                              #
 ########################################################################
+
 
 cdef class Style:
     NONE = declwindow.style.None
@@ -634,77 +678,58 @@ cdef class Mouse:
 cdef class VideoMode:
     cdef declwindow.VideoMode *p_this
     cdef bint delete_this
-
-    def __init__(self, width=None, height=None, bits_per_pixel=32):
-        if width is None or height is None:
-            self.p_this = new declwindow.VideoMode()
-        else:
-            self.p_this = new declwindow.VideoMode(width, height, bits_per_pixel)
-
+    cdef object _size
+    
+    def __cinit__(self, unsigned int width, unsigned int height, bpp=32):
+        self._size = Size(width, height)
+        self.p_this = new declwindow.VideoMode(width, height, bpp)
         self.delete_this = True
-
+        print("videomode::alloc")
+        
     def __dealloc__(self):
         if self.delete_this:
             del self.p_this
-
+        
     def __str__(self):
-        """Return a string about the mode in this format: WIDTHxHEIGHTxBPP.
-
-        For example, '1024x768x32'."""
-
-        return '{0.width}x{0.height}x{0.bits_per_pixel}'.format(self)
+        return "{0.size.width}x{0.size.height}x{0.bpp}".format(self)
 
     def __repr__(self):
-        return ('VideoMode({0.width}, {0.height}, {0.bits_per_pixel})'
-                .format(self))
+        return ("VideoMode({0.size.width}, {0.size.height}, {0.bpp})".format(self))
 
-    def __richcmp__(VideoMode x, VideoMode y, int op):
-        # ==
-        if op == 2:
-            return (x.width == y.width and
-                    x.height == y.height and
-                    x.bits_per_pixel == y.bits_per_pixel)
-        # !=
-        elif op == 3:
-            return not x == y
-
-        # <
-        elif op == 0:
-            if x.bits_per_pixel == y.bits_per_pixel:
-                if x.width == y.width:
-                    return x.height < y.height
-                else:
-                    return x.width < y.width
+    def __richcmp__(self, VideoMode other, int op):
+        if op == 0: # <
+            if self.x == other.x:
+                return self.size < other.size
             else:
-                return x.bits_per_pixel < y.bits_per_pixel
-        # >
-        elif op == 4:
-            return y < x
+                return self.bpp < other.bpp 
+                           
+        elif op == 1: # <=
+            return not other < self
+            
+        elif op == 2: # ==
+            return self.size == other.size and self.bpp == other.bpp        
+        
+        elif op == 3: # !=
+            return self.size != other or self.bpp != other.bpp        
+        
+        elif op == 4: # >
+            return other < self        
+        
+        elif op == 5: # >=
+            return not self < other
 
-        # <=
-        elif op == 1:
-            return not y < x
-        # >=
-        elif op == 5:
-            return not x < y
-
-        return NotImplemented
-
-    property width:
+    property size:
         def __get__(self):
-            return self.p_this.Width
+            return self._size
 
-        def __set__(self, unsigned int value):
-            self.p_this.Width = value
+        def __set__(self, value):
+            self._size = value
+            
+            width, height = value
+            self.p_this.Width = width
+            self.p_this.Height = height
 
-    property height:
-        def __get__(self):
-            return self.p_this.Height
-
-        def __set__(self, unsigned value):
-            self.p_this.Height = value
-
-    property bits_per_pixel:
+    property bpp:
         def __get__(self):
             return self.p_this.BitsPerPixel
 
@@ -715,9 +740,9 @@ cdef class VideoMode:
     def get_desktop_mode(cls):
         cdef declwindow.VideoMode *p = new declwindow.VideoMode()
         p[0] = declwindow.videomode.GetDesktopMode()
-
+        
         return wrap_video_mode_instance(p, True)
-
+        
     @classmethod
     def get_fullscreen_modes(cls):
         cdef list ret = []
@@ -728,8 +753,7 @@ cdef class VideoMode:
 
         while it != v.end():
             current = deref(it)
-            p_temp = new declwindow.VideoMode(current.Width, current.Height,
-                                        current.BitsPerPixel)
+            p_temp = new declwindow.VideoMode(current.Width, current.Height, current.BitsPerPixel)
             ret.append(wrap_video_mode_instance(p_temp, True))
             preinc(it)
 
@@ -738,15 +762,17 @@ cdef class VideoMode:
     def is_valid(self):
         return self.p_this.IsValid()
 
-
-cdef VideoMode wrap_video_mode_instance(declwindow.VideoMode *p_cpp_instance, bint delete_this):
-    cdef VideoMode ret = VideoMode.__new__(VideoMode)
-    ret.p_this = p_cpp_instance
+cdef VideoMode wrap_video_mode_instance(declwindow.VideoMode *p, bint delete_this):
+    cdef VideoMode ret = VideoMode.__new__(VideoMode, p.Width, p.Height, p.BitsPerPixel)
+    del ret.p_this
+    
+    ret.p_this = p
     ret.delete_this = delete_this
+    ret._size = Size(p.Width, p.Height)
 
     return ret
-    
-    
+
+
 cdef class ContextSettings:
     cdef declwindow.ContextSettings *p_this
 
@@ -1192,7 +1218,7 @@ cdef class Font:
         if p.LoadFromFile(bFilename):
             return wrap_font_instance(p, True)
 
-        raise PySFMLException()
+        raise SFMLException()
 
     @classmethod
     def load_from_memory(cls, bytes data):
@@ -1201,7 +1227,7 @@ cdef class Font:
         if p.LoadFromMemory(<char*>data, len(data)):
             return wrap_font_instance(p, True)
 
-        raise PySFMLException()
+        raise SFMLException()
 
     def get_glyph(self, unsigned int code_point, unsigned int character_size,
                   bint bold):
@@ -1277,7 +1303,7 @@ cdef class Image:
         if p_cpp_instance.LoadFromFile(bFilename):
             return wrap_image_instance(p_cpp_instance, True)
 
-        raise PySFMLException()
+        raise SFMLException()
 
     @classmethod
     def load_from_memory(cls, bytes data):
@@ -1286,7 +1312,7 @@ cdef class Image:
         if p_cpp_instance.LoadFromMemory(<char*>data, len(data)):
             return wrap_image_instance(p_cpp_instance, True)
 
-        raise PySFMLException()
+        raise SFMLException()
 
     # TODO: maybe this should be moved to the constructor, since the method
     # was renamed from LoadFromPixels() to Create()
@@ -1298,29 +1324,15 @@ cdef class Image:
 
         return wrap_image_instance(p_cpp_instance, True)
 
-    #def copy(self, Image source, int dest_x, int dest_y,
-             #source_rect=None, bint apply_alpha=None):
-        #cdef declgraphics.IntRect cpp_source_rect
-
-        #if source_rect is None:
-            #self.p_this.Copy(source.p_this[0], dest_x, dest_y)
-        #else:
-            #if isinstance(source_rect, tuple):
-                #cpp_source_rect = declgraphics.IntRect(source_rect[0],
-                                               #source_rect[1],
-                                               #source_rect[2],
-                                               #source_rect[3])
-            #elif isinstance(source_rect, IntRect):
-                #cpp_source_rect = (<IntRect>source_rect).p_this[0]
-            #else:
-                #raise TypeError('source_rect must be tuple or IntRect')
-
-            #if apply_alpha is None:
-                #self.p_this.Copy(source.p_this[0], dest_x, dest_y,
-                                 #cpp_source_rect)
-            #else:
-                #self.p_this.Copy(source.p_this[0], dest_x, dest_y,
-                                 #cpp_source_rect, apply_alpha)
+    def copy(self, Image source, object destination, object rect=None, bint apply_alpha=False):
+        cdef declgraphics.IntRect cpp_rect
+        x, y = destination
+        
+        if rect is None:
+            self.p_this.Copy(source.p_this[0], x, y)
+        else:
+            cpp_rect = Rectangle_to_IntRect(rect)
+            self.p_this.Copy(source.p_this[0], x, y, cpp_rect, apply_alpha)
 
     def create_mask_from_color(self, Color color, int alpha=0):
         self.p_this.CreateMaskFromColor(color.p_this[0], alpha)
@@ -1346,17 +1358,22 @@ cdef class Image:
         return ret
 
     def save_to_file(self, filename):
-        filenameb = filename.encode('UTF-32')
+        filenameb = filename.encode('UTF-8')
         if self.p_this.SaveToFile(<char*>filenameb) is False:
-            print("saveToFile return False")
-            raise PySFMLException()
+            print("Image::save_to_filed has failed!")
+            raise SFMLException()
 
     def show(self):
-        tf = tempfile.NamedTemporaryFile()
-        image_filename = tf.name
+        image_filename = "/tmp/sfml.png"
         script_filename = os.path.dirname(__file__) + "/show.py"
-        self.save_to_file(image_filename)
+        try:
+            self.save_to_file(image_filename)
+        except SFMLException:
+            print("Image::show() -> Couln't create a temporary image")
+            return
+
         subprocess.Popen(['/usr/bin/python3', script_filename, image_filename])
+        time.sleep(0.150)     
         
 cdef Image wrap_image_instance(declgraphics.Image *p_cpp_instance, bint delete_this):
     cdef Image ret = Image.__new__(Image)
@@ -1378,7 +1395,7 @@ cdef class Texture:
 
         if width > 0 and height > 0:
             if self.p_this.Create(width, height) != True:
-                raise PySFMLException()
+                raise SFMLException()
 
     def __dealloc__(self):
         if self.delete_this:
@@ -1415,7 +1432,7 @@ cdef class Texture:
             if p_cpp_instance.LoadFromFile(filename, Rectangle_to_IntRect(area)):
                 return wrap_texture_instance(p_cpp_instance, True)
 
-        raise PySFMLException()
+        raise SFMLException()
 
     @classmethod
     def load_from_image(cls, Image image, object area=None):
@@ -1428,7 +1445,7 @@ cdef class Texture:
             if p_cpp_instance.LoadFromImage(image.p_this[0], Rectangle_to_IntRect(area)):
                 return wrap_texture_instance(p_cpp_instance, True)
 
-        raise PySFMLException()
+        raise SFMLException()
 
     @classmethod
     def load_from_memory(cls, bytes data, area=None):
@@ -1441,7 +1458,7 @@ cdef class Texture:
             if p_cpp_instance.LoadFromMemory(<char*>data, len(data), Rectangle_to_IntRect(area)):
                 return wrap_texture_instance(p_cpp_instance, True)
 
-        raise PySFMLException()
+        raise SFMLException()
 
     def bind(self):
         self.p_this.Bind()
@@ -1497,8 +1514,6 @@ cdef class Drawable:
         elif self.__class__ not in [Shape, Sprite, Text]:
             # custom drawable instantiated
             self.p_this = <declgraphics.Drawable*>new declgraphics.PyDrawable(<void*>self)
-            
-    def __init__(self, *args, **kwargs):
         self._position = Position(0, 0)
         
     property blend_mode:
@@ -1533,21 +1548,12 @@ cdef class Drawable:
     property position:
         def __get__(self):
             return self._position
-            
-            #cdef declgraphics.Vector2f pos = self.p_this.GetPosition()
-            #return (pos.x, pos.y)
 
-        def __set__(self, value):
-            # value may be either a tuple or a Position, thus instead of
-            # writing value.x and value.y which would go wrong if this 
-            # was a tuple, we write value[0] and value[1] which work for
-            # both cases
-            self._position.x = value[0]
-            self._position.y = value[1]
-            self.p_this.SetPosition(value[0], value[1])
+        def __set__(self, object value):
+            x, y = value
+            self._position.x, self._position.y = x, y
+            self.p_this.SetPosition(x, y)
             
-            #cdef declgraphics.Vector2f v = Position_to_Vector2f(value)
-
     property rotation:
         def __get__(self):
             return self.p_this.GetRotation()
@@ -1568,16 +1574,18 @@ cdef class Drawable:
 
     property x:
         def __get__(self):
-            return self.position[0]
+            return self._position.x
 
         def __set__(self, float value):
+            self.position.x = value
             self.p_this.SetX(value)
 
     property y:
         def __get__(self):
-            return self.position[1]
+            return self._position.y
 
         def __set__(self, float value):
+            self._position.y = value
             self.p_this.SetY(value)
 
     def render(self, target, renderer):
@@ -1810,25 +1818,79 @@ cdef class Sprite(Drawable):
 
     def set_texture(self, Texture texture, bint adjust_to_new_size=False):
         self.texture = texture
-        (<declgraphics.Sprite*>self.p_this).SetTexture(texture.p_this[0],
-                                               adjust_to_new_size)
+        (<declgraphics.Sprite*>self.p_this).SetTexture(texture.p_this[0], adjust_to_new_size)
 
+
+cdef class Shape
+cdef class Point:
+    cdef declgraphics.Shape* tshape
+    cdef unsigned int pindex
+    
+    def __cinit__(self, Shape tshape, unsigned int pindex):
+        self.tshape = <declgraphics.Shape*>tshape.p_this
+        self.pindex = pindex
+        
+    property position:
+        def __get__(self):
+            cdef declgraphics.Vector2f pos
+            pos = self.tshape.GetPointPosition(self.pindex)
+            return Position(pos.x, pos.y)
+            
+        def __set__(self, object position):
+            x, y = position
+            self.tshape.SetPointPosition(self.pindex, x, y)
+            
+    property color:
+        def __get__(self):
+            cdef declgraphics.Color *p = new declgraphics.Color()
+            p[0] = self.tshape.GetPointColor(self.pindex)
+            return wrap_color_instance(p)
+
+        def __set__(self, Color color):
+            self.tshape.SetPointColor(self.pindex, color.p_this[0])
+            
+    property outline_color:
+        def __get__(self):
+            cdef declgraphics.Color *p = new declgraphics.Color()
+            p[0] = self.tshape.GetPointOutlineColor(self.pindex)
+            return wrap_color_instance(p)
+                       
+        def __set__(self, Color color):
+            self.tshape.SetPointOutlineColor(self.pindex, color.p_this[0])
+    
 
 cdef class Shape(Drawable):
-    def __init__(self):
-        self.p_this = <declgraphics.Drawable*>new declgraphics.Shape()
+    cdef object _points
+    cdef bint _fill_enabled
+    cdef bint _outline_enabled
     
+    def __cinit__(self):
+        self.p_this = <declgraphics.Drawable*>new declgraphics.Shape()
+        self._points = []   
+             
+    def __init__(self):
+        self._fill_enabled = True
+        self._outline_enabled = True
+        
     def __dealloc__(self):
         del self.p_this
     
     property fill_enabled:
+        def __get__(self):
+            return self._fill_enabled
+            
         def __set__(self, bint value):
             (<declgraphics.Shape*>self.p_this).EnableFill(value)
+            self._fill_enabled = value
 
     property outline_enabled:
+        def __get__(self):
+            return self._outline_enabled
+            
         def __set__(self, bint value):
             (<declgraphics.Shape*>self.p_this).EnableOutline(value)
-
+            self._outline_enabled = value
+            
     property outline_thickness:
         def __get__(self):
             return (<declgraphics.Shape*>self.p_this).GetOutlineThickness()
@@ -1836,103 +1898,75 @@ cdef class Shape(Drawable):
         def __set__(self, float value):
             (<declgraphics.Shape*>self.p_this).SetOutlineThickness(value)
 
-    property points_count:
+    property points:
         def __get__(self):
-            return (<declgraphics.Shape*>self.p_this).GetPointsCount()
+            return self._points
 
     @classmethod
-    def line(cls, float p1x, float p1y, float p2x, float p2y, float thickness,
-             Color color, float outline=0.0, Color outline_color=None):
+    def line(cls, object start, object end, float thickness, Color color, float outline=0.0, Color outline_color=None):
         cdef declgraphics.Shape *p = new declgraphics.Shape()
+        p1x, p1y = start
+        p2x, p2y = end
 
         if outline_color is None:
-            p[0] = declgraphics.shape.Line(p1x, p1y, p2x, p2y, thickness, color.p_this[0],
-                             outline)
+            p[0] = declgraphics.shape.Line(<float>p1x, <float>p1y, <float>p2x, <float>p2y, thickness, color.p_this[0], outline)
         else:
-            p[0] = declgraphics.shape.Line(p1x, p1y, p2x, p2y, thickness, color.p_this[0],
-                             outline, outline_color.p_this[0])
+            p[0] = declgraphics.shape.Line(<float>p1x, <float>p1y, <float>p2x, <float>p2y, thickness, color.p_this[0], outline, outline_color.p_this[0])
 
         return wrap_shape_instance(p)
 
     @classmethod
-    def rectangle(cls, float left, float top, float width, float height,
-                  Color color, float outline=0.0, Color outline_color=None):
+    def rectangle(cls, object rect, Color color, float outline=0.0, Color outline_color=None):
         cdef declgraphics.Shape *p = new declgraphics.Shape()
-
+        left, top, width, height = rect
+        
         if outline_color is None:
-            p[0] = declgraphics.shape.Rectangle(left, top, width, height, color.p_this[0],
-                                  outline)
+            p[0] = declgraphics.shape.Rectangle(<float>left, <float>top, <float>width, <float>height, color.p_this[0], outline)
         else:
-            p[0] = declgraphics.shape.Rectangle(left, top, width, height, color.p_this[0],
-                                  outline, outline_color.p_this[0])
+            p[0] = declgraphics.shape.Rectangle(<float>left, <float>top, <float>width, <float>height, color.p_this[0], outline, outline_color.p_this[0])
 
         return wrap_shape_instance(p)
 
     @classmethod
-    def circle(cls, float x, float y, float radius, Color color,
-               float outline=0.0, Color outline_color=None):
+    def circle(cls, object center, float radius, Color color, float outline=0.0, Color outline_color=None):
         cdef declgraphics.Shape *p = new declgraphics.Shape()
-
+        x, y = center
+        
         if outline_color is None:
-            p[0] = declgraphics.shape.Circle(x, y, radius, color.p_this[0], outline)
+            p[0] = declgraphics.shape.Circle(<float>x, <float>y, radius, color.p_this[0], outline)
         else:
-            p[0] = declgraphics.shape.Circle(x, y, radius, color.p_this[0], outline,
-                               outline_color.p_this[0])
+            p[0] = declgraphics.shape.Circle(<float>x, <float>y, radius, color.p_this[0], outline, outline_color.p_this[0])
 
         return wrap_shape_instance(p)
 
-    def add_point(self, float x, float y, Color color=None,
-                  Color outline_color=None):
+    def add_point(self, object position, Color color=None, Color outline_color=None):
+        x, y = position
+        
+        self._points.append(Point(self, (<declgraphics.Shape*>self.p_this).GetPointsCount()))
+        
         if color is None:
-            (<declgraphics.Shape*>self.p_this).AddPoint(x, y)
+            (<declgraphics.Shape*>self.p_this).AddPoint(<float>x, <float>y)
         elif outline_color is None:
-            (<declgraphics.Shape*>self.p_this).AddPoint(x, y, color.p_this[0])
+            (<declgraphics.Shape*>self.p_this).AddPoint(<float>x, <float>y, color.p_this[0])
         else:
-            (<declgraphics.Shape*>self.p_this).AddPoint(x, y, color.p_this[0],
-                                                outline_color.p_this[0])
+            (<declgraphics.Shape*>self.p_this).AddPoint(<float>x, <float>y, color.p_this[0], outline_color.p_this[0])
 
-    def get_point_color(self, unsigned int index):
-        cdef declgraphics.Color *p = new declgraphics.Color()
 
-        p[0] = (<declgraphics.Shape*>self.p_this).GetPointColor(index)
 
-        return wrap_color_instance(p)
-
-    def get_point_outline_color(self, unsigned int index):
-        cdef declgraphics.Color *p = new declgraphics.Color()
-
-        p[0] = (<declgraphics.Shape*>self.p_this).GetPointOutlineColor(index)
-
-        return wrap_color_instance(p)
-
-    def get_point_position(self, unsigned int index):
-        cdef declgraphics.Vector2f pos
-
-        pos = (<declgraphics.Shape*>self.p_this).GetPointPosition(index)
-
-        return (pos.x, pos.y)
-
-    def set_point_color(self, unsigned int index, Color color):
-        (<declgraphics.Shape*>self.p_this).SetPointColor(index, color.p_this[0])
-
-    def set_point_outline_color(self, unsigned int index, Color color):
-        (<declgraphics.Shape*>self.p_this).SetPointOutlineColor(index, color.p_this[0])
-
-    def set_point_position(self, unsigned int index, float x, float y):
-        (<declgraphics.Shape*>self.p_this).SetPointPosition(index, x, y)
-    
-
-cdef Shape wrap_shape_instance(declgraphics.Shape *p_cpp_instance):
+cdef Shape wrap_shape_instance(declgraphics.Shape *p):
     cdef Shape ret = Shape.__new__(Shape)
-
-    ret.p_this = <declgraphics.Drawable*>p_cpp_instance
+    ret.p_this = <declgraphics.Drawable*>p
+    
+    for i in range(p.GetPointsCount()):
+        ret.points.append(Point(ret, i))
+        
     
     return ret
 
 
 cdef class View:
     cdef declgraphics.View *p_this
-    # A RenderTarget (e.g., a RenderWindow or a RenderImage) can be
+    # A RenderTarget (e.g., a RenderWindow or a RenderTexture) can be
     # bound to the view. Every time the view is changed, the target
     # will be automatically updated. The target object must have a
     # view property.  This is used so that code like
@@ -1946,6 +1980,30 @@ cdef class View:
     def __dealloc__(self):
         del self.p_this
 
+    property rotation:
+        def __get__(self):
+            return self.p_this.GetRotation()
+
+        def __set__(self, float value):
+            self.p_this.SetRotation(value)
+            self._update_target()
+            
+    #property width:
+        #def __get__(self):
+            #return self.size[0]
+
+        #def __set__(self, float value):
+            #self.size = (value, self.height)
+            #self._update_target()
+            
+    #property height:
+        #def __get__(self):
+            #return self.size[1]
+
+        #def __set__(self, float value):
+            #self.size = (self.width, value)
+            #self._update_target()
+         
     property center:
         def __get__(self):
             cdef declgraphics.Vector2f center = self.p_this.GetCenter()
@@ -1956,22 +2014,6 @@ cdef class View:
             cdef declgraphics.Vector2f v = Position_to_Vector2f(value)
 
             self.p_this.SetCenter(v.x, v.y)
-            self._update_target()
-
-    property height:
-        def __get__(self):
-            return self.size[1]
-
-        def __set__(self, float value):
-            self.size = (self.width, value)
-            self._update_target()
-
-    property rotation:
-        def __get__(self):
-            return self.p_this.GetRotation()
-
-        def __set__(self, float value):
-            self.p_this.SetRotation(value)
             self._update_target()
 
     property size:
@@ -1989,36 +2031,28 @@ cdef class View:
     property viewport:
         def __get__(self):
             cdef declgraphics.FloatRect *p = new declgraphics.FloatRect()
-
             p[0] = self.p_this.GetViewport()
 
             return FloatRect_to_Rectangle(p)
 
-        def __set__(self, FloatRect value):
-            self.p_this.SetViewport(value.p_this[0])
-            self._update_target()
-
-    property width:
-        def __get__(self):
-            return self.size[0]
-
-        def __set__(self, float value):
-            self.size = (value, self.height)
+        def __set__(self, viewport):
+            self.p_this.SetViewport(Rectangle_to_FloatRect(viewport))
             self._update_target()
 
     @classmethod
     def from_center_and_size(cls, center, size):
         cdef declgraphics.Vector2f cpp_center = Position_to_Vector2f(center)
         cdef declgraphics.Vector2f cpp_size = Position_to_Vector2f(size)
+        
         cdef declgraphics.View *p
-
         p = new declgraphics.View(cpp_center, cpp_size)
 
         return wrap_view_instance(p, None)
         
     @classmethod
-    def from_rect(cls, FloatRect rect):
-        cdef declgraphics.View *p = new declgraphics.View(rect.p_this[0])
+    def from_rectangle(cls, rectangle):
+        cdef declsystem.FloatRect cpp_rectangle = Rectangle_to_FloatRect(rectangle)
+        cdef declgraphics.View *p = new declgraphics.View(cpp_rectangle)
 
         return wrap_view_instance(p, None)
 
@@ -2030,8 +2064,8 @@ cdef class View:
         self.p_this.Move(x, y)
         self._update_target()
 
-    def reset(self, FloatRect rect):
-        self.p_this.Reset(rect.p_this[0])
+    def reset(self, rectangle):
+        self.p_this.Reset(Rectangle_to_FloatRect(rectangle))
         self._update_target()
 
     def rotate(self, float angle):
@@ -2077,7 +2111,7 @@ cdef class Shader:
         if p.LoadFromFile(bFilename):
             return wrap_shader_instance(p)
         else:
-            raise PySFMLException()
+            raise SFMLException()
 
     @classmethod
     def load_from_memory(cls, char* shader):
@@ -2086,7 +2120,7 @@ cdef class Shader:
         if p.LoadFromMemory(shader):
             return wrap_shader_instance(p)
         else:
-            raise PySFMLException()
+            raise SFMLException()
 
     def bind(self):
         self.p_this.Bind()
@@ -2195,8 +2229,7 @@ cdef api RenderTarget wrap_render_target_instance(declgraphics.RenderTarget *p_c
 #no other choice than making nearly two same class instead of 
 #subclassing
 cdef class RenderWindow(RenderTarget):
-    def __init__(self, VideoMode mode, title, int style=Style.DEFAULT,
-                  ContextSettings settings=None):
+    def __init__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
         bTitle = title.encode('UTF-8')
         if settings is None:
             self.p_this = <declgraphics.RenderTarget*>new declgraphics.RenderWindow(mode.p_this[0], bTitle, style)
@@ -2298,27 +2331,18 @@ cdef class RenderWindow(RenderTarget):
             (<declgraphics.RenderWindow*>self.p_this).EnableVerticalSync(value)
 
     @classmethod
-    def from_window_handle(cls, unsigned long window_handle,
-                           ContextSettings settings=None):
+    def from_window_handle(cls, unsigned long window_handle, ContextSettings settings=None):
         cdef declgraphics.RenderWindow *p = NULL
 
         if settings is None:
             p = new declgraphics.RenderWindow(<declwindow.WindowHandle>window_handle)
         else:
-            p = new declgraphics.RenderWindow(<declwindow.WindowHandle>window_handle,
-                                      settings.p_this[0])
+            p = new declgraphics.RenderWindow(<declwindow.WindowHandle>window_handle, settings.p_this[0])
 
         return wrap_render_window_instance(p)
 
     def close(self):
         (<declgraphics.RenderWindow*>self.p_this).Close()
-
-    def create(self, VideoMode mode, char* title, int style=Style.DEFAULT,
-               ContextSettings settings=None):
-        if settings is None:
-            (<declgraphics.RenderWindow*>self.p_this).Create(mode.p_this[0], title, style)
-        else:
-            (<declgraphics.RenderWindow*>self.p_this).Create(mode.p_this[0], title, style, settings.p_this[0])
 
     def display(self):
         (<declgraphics.RenderWindow*>self.p_this).Display()
@@ -2334,6 +2358,117 @@ cdef class RenderWindow(RenderTarget):
 
         #if (<declgraphics.RenderWindow*>self.p_this).WaitEvent(p[0]):
             #return <object>wrap_event_instance(p)
+            
+    def set_icon(self, unsigned int width, unsigned int height, char* pixels):
+        (<declgraphics.RenderWindow*>self.p_this).SetIcon(width, height, <declgraphics.Uint8*>pixels)
+
+    def show(self, bint show):
+        (<declgraphics.RenderWindow*>self.p_this).Show(show)
+
+
+cdef class HandledWindow(RenderTarget):
+    def __init__(self, unsigned long window_handle, ContextSettings settings=None):
+        if settings is None:
+            self.p_this = <declgraphics.RenderTarget*>new declgraphics.RenderWindow(<declwindow.WindowHandle>window_handle)
+        else:
+            self.p_this = <declgraphics.RenderTarget*>new declgraphics.RenderWindow(<declwindow.WindowHandle>window_handle, settings.p_this[0])
+
+    def __dealloc__(self):
+        del self.p_this
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        cdef declwindow.Event p
+        
+        if (<declgraphics.RenderWindow*>self.p_this).PollEvent(p):
+            return <object>wrap_event_instance(&p)
+
+        raise StopIteration
+
+    property events:
+        def __get__(self):
+            return self
+            
+    property active:
+        def __set__(self, bint value):
+            (<declgraphics.RenderWindow*>self.p_this).SetActive(value)
+
+    property framerate_limit:
+        def __set__(self, int value):
+            (<declgraphics.RenderWindow*>self.p_this).SetFramerateLimit(value)
+
+    property frame_time:
+        def __get__(self):
+            return (<declgraphics.RenderWindow*>self.p_this).GetFrameTime()
+
+    property width:
+        def __get__(self):
+            return self.p_this.GetWidth()
+
+        def __set__(self, unsigned int value):
+            self.size = (value, self.height)
+
+    property height:
+        def __get__(self):
+            return self.p_this.GetHeight()
+
+        def __set__(self, unsigned int value):
+            self.size = (self.width, value)
+
+    property size:
+        def __get__(self):
+            return (self.width, self.height)
+
+        def __set__(self, tuple value):
+            x, y = value
+            (<declgraphics.RenderWindow*>self.p_this).SetSize(x, y)
+
+    property joystick_threshold:
+        def __set__(self, bint value):
+            (<declgraphics.RenderWindow*>self.p_this).SetJoystickThreshold(value)
+
+    property key_repeat_enabled:
+        def __set__(self, bint value):
+            (<declgraphics.RenderWindow*>self.p_this).EnableKeyRepeat(value)
+
+    property opened:
+        def __get__(self):
+            return (<declgraphics.RenderWindow*>self.p_this).IsOpened()
+
+    property position:
+        def __set__(self, tuple value):
+            x, y = value
+            (<declgraphics.RenderWindow*>self.p_this).SetPosition(x, y)
+
+    property settings:
+        def __get__(self):
+            cdef declwindow.ContextSettings *p = new declwindow.ContextSettings()
+
+            p[0] = (<declgraphics.RenderWindow*>self.p_this).GetSettings()
+
+            return wrap_context_settings_instance(p)
+
+    property show_mouse_cursor:
+        def __set__(self, bint value):
+            (<declgraphics.RenderWindow*>self.p_this).ShowMouseCursor(value)
+
+    property system_handle:
+        def __get__(self):
+            return <unsigned long>(<declgraphics.RenderWindow*>self.p_this).GetSystemHandle()
+
+    property title:
+        def __set__(self, value):
+            bValue = value.encode('UTF-32')
+            (<declgraphics.RenderWindow*>self.p_this).SetTitle(bValue)
+
+    property vertical_sync_enabled:
+        def __set__(self, bint value):
+            (<declgraphics.RenderWindow*>self.p_this).EnableVerticalSync(value)
+
+    def display(self):
+        (<declgraphics.RenderWindow*>self.p_this).Display()
             
     def set_icon(self, unsigned int width, unsigned int height, char* pixels):
         (<declgraphics.RenderWindow*>self.p_this).SetIcon(width, height, <declgraphics.Uint8*>pixels)
