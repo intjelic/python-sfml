@@ -12,6 +12,14 @@ class Position:
     def __iter__(self):
         return iter((self.x, self.y))
 
+    def __getitem__(self, key):
+        if key == 0: return self.x
+        else: return self.y
+        
+    def __setitem__(self, key, value):
+        if key == 0: self.x = value
+        else: self.y = value
+        
     def __add__(self, other):
         x, y = other
         return Position(self.x + x, self.y + y)
