@@ -886,7 +886,7 @@ cdef class Window:
 
     property size:
         def __get__(self):
-            return (self.width, self.height)
+            return sf.Size(self.width, self.height)
 
         def __set__(self, tuple value):
             x, y = value
@@ -2282,7 +2282,7 @@ cdef class RenderWindow(RenderTarget):
 
     property size:
         def __get__(self):
-            return (self.width, self.height)
+            return sf.Size(self.width, self.height)
 
         def __set__(self, tuple value):
             x, y = value
