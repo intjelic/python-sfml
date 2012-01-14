@@ -833,15 +833,13 @@ cdef ContextSettings wrap_context_settings_instance(
 cdef class Window:
     cdef declwindow.Window *p_this
     
-    def __init__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
-        bTitle = title.encode('UTF-8')
-        if settings is None:
-            self.p_this = new declwindow.Window(mode.p_this[0], bTitle, style)
-        else:
-            self.p_this = new declwindow.Window(mode.p_this[0], bTitle, style, settings.p_this[0])
-
-    def __dealloc__(self):
-        del self.p_this
+    def __cinit__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
+        if self.__class__ != RenderWindow: # sf.RenderWindow has its own constructor 
+            bTitle = title.encode('UTF-8')
+            if settings is None:
+                self.p_this = new declwindow.Window(mode.p_this[0], bTitle, style)
+            else:
+                self.p_this = new declwindow.Window(mode.p_this[0], bTitle, style, settings.p_this[0])
 
     def __iter__(self):
         return self
@@ -886,7 +884,7 @@ cdef class Window:
 
     property size:
         def __get__(self):
-            return sf.Size(self.width, self.height)
+            return Size(self.width, self.height)
 
         def __set__(self, tuple value):
             x, y = value
@@ -934,17 +932,6 @@ cdef class Window:
         def __set__(self, bint value):
             self.p_this.EnableVerticalSync(value)
 
-    @classmethod
-    def from_window_handle(cls, unsigned long window_handle, ContextSettings settings=None):
-        cdef declwindow.Window *p = NULL
-
-        if settings is None:
-            p = new declwindow.Window(<declwindow.WindowHandle>window_handle)
-        else:
-            p = new declwindow.Window(<declwindow.WindowHandle>window_handle, settings.p_this[0])
-
-        return wrap_window_instance(p)
-
     def close(self):
         self.p_this.Close()
 
@@ -957,17 +944,17 @@ cdef class Window:
     def display(self):
         self.p_this.Display()
 
-    def poll_event(self):
-        cdef declwindow.Event *p = new declwindow.Event()
+    #def poll_event(self):
+        #cdef declwindow.Event *p = new declwindow.Event()
 
-        if self.p_this.PollEvent(p[0]):
-            return wrap_event_instance(p)
+        #if self.p_this.PollEvent(p[0]):
+            #return wrap_event_instance(p)
             
-    def wait_event(self):
-        cdef declwindow.Event *p = new declwindow.Event()
+    #def wait_event(self):
+        #cdef declwindow.Event *p = new declwindow.Event()
 
-        if self.p_this.WaitEvent(p[0]):
-            return wrap_event_instance(p)
+        #if self.p_this.WaitEvent(p[0]):
+            #return wrap_event_instance(p)
             
     def set_icon(self, unsigned int width, unsigned int height, char* pixels):
         self.p_this.SetIcon(width, height, <Uint8*>pixels)
@@ -2228,107 +2215,70 @@ cdef api RenderTarget wrap_render_target_instance(declgraphics.RenderTarget *p_c
 #sfml/cython/graphics.pyx:2235:30: C class may only have one base class
 #no other choice than making nearly two same class instead of 
 #subclassing
-cdef class RenderWindow(RenderTarget):
-    def __init__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
+cdef class RenderWindow(Window):
+    def __cinit__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
         bTitle = title.encode('UTF-8')
         if settings is None:
-            self.p_this = <declgraphics.RenderTarget*>new declgraphics.RenderWindow(mode.p_this[0], bTitle, style)
+            self.p_this = <declgraphics.Window*>new declgraphics.RenderWindow(mode.p_this[0], bTitle, style)
         else:
-            self.p_this = <declgraphics.RenderTarget*>new declgraphics.RenderWindow(mode.p_this[0], bTitle, style, settings.p_this[0])
-
+            self.p_this = <declgraphics.Window*>new declgraphics.RenderWindow(mode.p_this[0], bTitle, style, settings.p_this[0])
+            
     def __dealloc__(self):
         del self.p_this
 
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        cdef declwindow.Event p
-        
-        if (<declgraphics.RenderWindow*>self.p_this).PollEvent(p):
-            return <object>wrap_event_instance(&p)
-
-        raise StopIteration
-
-    property events:
+    property default_view:
         def __get__(self):
-            return self
-            
-    property active:
-        def __set__(self, bint value):
-            (<declgraphics.RenderWindow*>self.p_this).SetActive(value)
+            cdef declgraphics.View *p = new declgraphics.View()
 
-    property framerate_limit:
-        def __set__(self, int value):
-            (<declgraphics.RenderWindow*>self.p_this).SetFramerateLimit(value)
+            p[0] = (<declgraphics.RenderWindow*>self.p_this).GetDefaultView()
 
-    property frame_time:
+            return wrap_view_instance(p, None)
+
+    property view:
         def __get__(self):
-            return (<declgraphics.RenderWindow*>self.p_this).GetFrameTime()
+            cdef declgraphics.View *p = new declgraphics.View()
 
-    property width:
-        def __get__(self):
-            return self.p_this.GetWidth()
+            p[0] = (<declgraphics.RenderWindow*>self.p_this).GetView()
 
-        def __set__(self, unsigned int value):
-            self.size = (value, self.height)
+            return wrap_view_instance(p, self)
 
-    property height:
-        def __get__(self):
-            return self.p_this.GetHeight()
+        def __set__(self, View value):
+            (<declgraphics.RenderWindow*>self.p_this).SetView(value.p_this[0])
 
-        def __set__(self, unsigned int value):
-            self.size = (self.width, value)
+    def clear(self, Color color=None):
+        if color is None:
+            (<declgraphics.RenderWindow*>self.p_this).Clear()
+        else:
+            (<declgraphics.RenderWindow*>self.p_this).Clear(color.p_this[0])
 
-    property size:
-        def __get__(self):
-            return sf.Size(self.width, self.height)
+    def draw(self, Drawable drawable, Shader shader=None):
+        if shader is None:
+            (<declgraphics.RenderWindow*>self.p_this).Draw(drawable.p_this[0])
+        else:
+            (<declgraphics.RenderWindow*>self.p_this).Draw(drawable.p_this[0], shader.p_this[0])
 
-        def __set__(self, tuple value):
-            x, y = value
-            (<declgraphics.RenderWindow*>self.p_this).SetSize(x, y)
+    def get_viewport(self, View view):
+        cdef declgraphics.IntRect *p = new declgraphics.IntRect()
 
-    property joystick_threshold:
-        def __set__(self, bint value):
-            (<declgraphics.RenderWindow*>self.p_this).SetJoystickThreshold(value)
+        p[0] = (<declgraphics.RenderWindow*>self.p_this).GetViewport(view.p_this[0])
 
-    property key_repeat_enabled:
-        def __set__(self, bint value):
-            (<declgraphics.RenderWindow*>self.p_this).EnableKeyRepeat(value)
+        return IntRect_to_Rectangle(p)
 
-    property opened:
-        def __get__(self):
-            return (<declgraphics.RenderWindow*>self.p_this).IsOpened()
+    def convert_coords(self, unsigned int x, unsigned int y, View view=None):
+        cdef declgraphics.Vector2f res
 
-    property position:
-        def __set__(self, tuple value):
-            x, y = value
-            (<declgraphics.RenderWindow*>self.p_this).SetPosition(x, y)
+        if view is None:
+            res = (<declgraphics.RenderWindow*>self.p_this).ConvertCoords(x, y)
+        else:
+            res = (<declgraphics.RenderWindow*>self.p_this).ConvertCoords(x, y, view.p_this[0])
 
-    property settings:
-        def __get__(self):
-            cdef declwindow.ContextSettings *p = new declwindow.ContextSettings()
+        return (res.x, res.y)
 
-            p[0] = (<declgraphics.RenderWindow*>self.p_this).GetSettings()
+    def restore_gl_states(self):
+        (<declgraphics.RenderWindow*>self.p_this).RestoreGLStates()
 
-            return wrap_context_settings_instance(p)
-
-    property show_mouse_cursor:
-        def __set__(self, bint value):
-            (<declgraphics.RenderWindow*>self.p_this).ShowMouseCursor(value)
-
-    property system_handle:
-        def __get__(self):
-            return <unsigned long>(<declgraphics.RenderWindow*>self.p_this).GetSystemHandle()
-
-    property title:
-        def __set__(self, value):
-            bValue = value.encode('UTF-32')
-            (<declgraphics.RenderWindow*>self.p_this).SetTitle(bValue)
-
-    property vertical_sync_enabled:
-        def __set__(self, bint value):
-            (<declgraphics.RenderWindow*>self.p_this).EnableVerticalSync(value)
+    def save_gl_states(self):
+        (<declgraphics.RenderWindow*>self.p_this).SaveGLStates()
 
     @classmethod
     def from_window_handle(cls, unsigned long window_handle, ContextSettings settings=None):
@@ -2340,30 +2290,6 @@ cdef class RenderWindow(RenderTarget):
             p = new declgraphics.RenderWindow(<declwindow.WindowHandle>window_handle, settings.p_this[0])
 
         return wrap_render_window_instance(p)
-
-    def close(self):
-        (<declgraphics.RenderWindow*>self.p_this).Close()
-
-    def display(self):
-        (<declgraphics.RenderWindow*>self.p_this).Display()
-
-    #def poll_event(self):
-        #cdef declwindow.Event *p = new declwindow.Event()
-
-        #if (<declgraphics.RenderWindow*>self.p_this).PollEvent(p[0]):
-            #return <object>wrap_event_instance(p)
-
-    #def wait_event(self):
-        #cdef declwindow.Event *p = new declwindow.Event()
-
-        #if (<declgraphics.RenderWindow*>self.p_this).WaitEvent(p[0]):
-            #return <object>wrap_event_instance(p)
-            
-    def set_icon(self, unsigned int width, unsigned int height, char* pixels):
-        (<declgraphics.RenderWindow*>self.p_this).SetIcon(width, height, <declgraphics.Uint8*>pixels)
-
-    def show(self, bint show):
-        (<declgraphics.RenderWindow*>self.p_this).Show(show)
 
 
 cdef class HandledWindow(RenderTarget):
@@ -2480,7 +2406,7 @@ cdef class HandledWindow(RenderTarget):
 cdef RenderWindow wrap_render_window_instance(declgraphics.RenderWindow *p_cpp_instance):
     cdef RenderWindow ret = RenderWindow.__new__(RenderWindow)
 
-    ret.p_this = <declgraphics.RenderTarget*>p_cpp_instance
+    ret.p_this = <declgraphics.Window*>p_cpp_instance
 
     return ret
 
