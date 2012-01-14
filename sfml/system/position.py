@@ -28,6 +28,14 @@ class Position:
         x, y = other
         return Position(self.x - x, self.y - y)
 
+    def __truediv__(self, other):
+        x, y = other
+        return Position(self.x / x, self.y / y)
+        
+    def __floordiv__(self, other):
+        x, y = other
+        return Position(self.x // x, self.y // y)
+
     def __radd__(self, other):
         x, y = other
         return Position(x + self.x, y + self.y)
@@ -36,6 +44,14 @@ class Position:
         x, y = other
         return Position(x - self.x, y - self.y)
 
+    def __rtruediv__(self, other):
+        x, y = other
+        return Position(x / self.x, y / self.y)
+        
+    def __rfloordiv__(self, other):
+        x, y = other
+        return Position(x // self.x, y // self.y)
+        
     def __iadd__(self, other):
         x, y = other
         self.x += x
@@ -48,6 +64,18 @@ class Position:
         self.y -= y
         return self
 
+    def __itruediv__(self, other):
+        x, y = other
+        self.x /= x
+        self.y /= y
+        return self
+        
+    def __ifloordiv__(self, other):
+        x, y = other
+        self.x //= x
+        self.y //= y
+        return self
+        
     def _get_x(self):
         return self._x
 
