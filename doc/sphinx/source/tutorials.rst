@@ -2,15 +2,34 @@ Tutorials
 =========
 
 
-Integrating to Qt
------------------
-There are two main implementations of Qt in Python: PyQt4 and PySide.
- - PyQt4 is produced by RiverBank
- - PySide is from Qt Trolltech.
-The two are complete and well-maintained and worth it to try.
+Window
+------
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   
+   tutorials/window/*
 
-Integrating to GTK
-------------------
-
-Integrating to X11
-------------------
+Graphics
+--------
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   
+   tutorials/graphics/*
+   
+Audio
+-----
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   
+   tutorials/audio/*
+   
+Network
+-------
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   
+   tutorials/network/*
