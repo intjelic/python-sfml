@@ -8,8 +8,8 @@ It's mainly a translation from the original SFML2's documentation.
 .. toctree::
    :maxdepth: 1
    
-   system
-   window
-   graphics
-   audio
-   network
+   documentation/system
+   documentation/window
+   documentation/graphics
+   documentation/audio
+   documentation/network
