@@ -14,12 +14,13 @@
 class PyDrawable : public sf::Drawable
 {
 public :
-  PyDrawable(void* obj);
+  PyDrawable(void* pyThis);
 
 private :
 	virtual void Render(sf::RenderTarget& target, sf::Renderer& renderer) const;
 
-	void* m_obj; // this is a PyObject pointer
+	PyObject* m_pyThis; // the python object pointer
 };
+
 
 #endif
