@@ -27,7 +27,11 @@ class Position:
     def __sub__(self, other):
         x, y = other
         return Position(self.x - x, self.y - y)
-
+        
+    def __mul__(self, other):
+        x, y = other
+        return Position(self.x * x, self.y * y)
+        
     def __truediv__(self, other):
         x, y = other
         return Position(self.x / x, self.y / y)
@@ -36,6 +40,10 @@ class Position:
         x, y = other
         return Position(self.x // x, self.y // y)
 
+    def __mod__(self, other):
+        x, y = other
+        return Position(self.x % x, self.y % y)
+        
     def __radd__(self, other):
         x, y = other
         return Position(x + self.x, y + self.y)
@@ -44,6 +52,10 @@ class Position:
         x, y = other
         return Position(x - self.x, y - self.y)
 
+    def __rmul__(self, other):
+        x, y = other
+        return Position(x * self.x, y * self.y)
+        
     def __rtruediv__(self, other):
         x, y = other
         return Position(x / self.x, y / self.y)
@@ -51,6 +63,10 @@ class Position:
     def __rfloordiv__(self, other):
         x, y = other
         return Position(x // self.x, y // self.y)
+        
+    def __rmod__(self, other):
+        x, y = other
+        return Position(x % self.x, y % self.y)
         
     def __iadd__(self, other):
         x, y = other
@@ -63,7 +79,13 @@ class Position:
         self.x -= x
         self.y -= y
         return self
-
+        
+    def __imul__(self, other):
+        x, y = other
+        self.x *= x
+        self.y *= y
+        return self
+        
     def __itruediv__(self, other):
         x, y = other
         self.x /= x
@@ -74,6 +96,12 @@ class Position:
         x, y = other
         self.x //= x
         self.y //= y
+        return self
+        
+    def __imod__(self, other):
+        x, y = other
+        self.x %= x
+        self.y %= y
         return self
         
     def _get_x(self):
