@@ -928,7 +928,7 @@ cdef class Window:
             bValue = value.encode('UTF-32')
             self.p_this.SetTitle(bValue)
 
-    property vertical_sync_enabled:
+    property vertical_synchronization:
         def __set__(self, bint value):
             self.p_this.EnableVerticalSync(value)
 
@@ -2079,9 +2079,7 @@ cdef class Shader:
     IS_AVAILABLE = declgraphics.shader.IsAvailable()
 
     def __init__(self):
-        raise NotImplementedError(
-            "Use class methods like Shader.load_from_file() "
-            "to create Shader objects")
+        raise NotImplementedError("Use class methods like Shader.load_from_file() to create Shader objects")
 
     def __dealloc__(self):
         del self.p_this
@@ -2222,7 +2220,7 @@ cdef class RenderWindow(Window):
             self.p_this = <declgraphics.Window*>new declgraphics.RenderWindow(mode.p_this[0], bTitle, style)
         else:
             self.p_this = <declgraphics.Window*>new declgraphics.RenderWindow(mode.p_this[0], bTitle, style, settings.p_this[0])
-            
+
     def __dealloc__(self):
         del self.p_this
 
@@ -2389,7 +2387,7 @@ cdef class HandledWindow(RenderTarget):
             bValue = value.encode('UTF-32')
             (<declgraphics.RenderWindow*>self.p_this).SetTitle(bValue)
 
-    property vertical_sync_enabled:
+    property vertical_synchronization:
         def __set__(self, bint value):
             (<declgraphics.RenderWindow*>self.p_this).EnableVerticalSync(value)
 
@@ -2428,8 +2426,7 @@ cdef class RenderTexture(RenderTarget):
 
     property texture:
         def __get__(self):
-            return wrap_texture_instance(
-                <declgraphics.Texture*>&(<declgraphics.RenderTexture*>self.p_this).GetTexture(), False)
+            return wrap_texture_instance(<declgraphics.Texture*>&(<declgraphics.RenderTexture*>self.p_this).GetTexture(), False)
 
     property width:
         def __get__(self):
