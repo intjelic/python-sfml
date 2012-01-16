@@ -2203,10 +2203,10 @@ cdef class RenderTarget:
         self.p_this.SaveGLStates()
 
 
-cdef api RenderTarget wrap_render_target_instance(declgraphics.RenderTarget *p_cpp_instance):
+cdef api RenderTarget wrap_render_target_instance(declgraphics.RenderTarget *p):
     cdef RenderTarget ret = RenderTarget.__new__(RenderTarget)
-    ret.p_this = p_cpp_instance
-
+    ret.p_this = p
+    
     return ret
     
    

@@ -1,10 +1,11 @@
 #include "hacks.hpp"
-
+#include <iostream>
 
 PyDrawable::PyDrawable(void* obj):
 sf::Drawable (),
 m_obj (obj)
 {
+    import_sfml__graphics__graphics(); // make sure the graphics module imported
 };
 
 void PyDrawable::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
