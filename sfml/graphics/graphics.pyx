@@ -1995,7 +1995,7 @@ cdef class View:
         def __get__(self):
             cdef declgraphics.Vector2f center = self.p_this.GetCenter()
 
-            return (center.x, center.y)
+            return Position(center.x, center.y)
 
         def __set__(self, value):
             cdef declgraphics.Vector2f v = Position_to_Vector2f(value)
@@ -2007,7 +2007,7 @@ cdef class View:
         def __get__(self):
             cdef declgraphics.Vector2f size = self.p_this.GetSize()
 
-            return (size.x, size.y)
+            return Size(size.x, size.y)
 
         def __set__(self, value):
             cdef declgraphics.Vector2f v = Position_to_Vector2f(value)
