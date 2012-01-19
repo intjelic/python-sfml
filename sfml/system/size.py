@@ -20,6 +20,123 @@ class Size:
         if key == 0: self.width = value
         else: self.height = value
         
+    def __add__(self, other):
+        x, y = other
+        return Size(max(self.width + x, 0), max(self.height + y, 0))
+
+    def __sub__(self, other):
+        x, y = other
+        return Size(max(self.width - x, 0), max(self.height - y, 0))
+        
+    def __mul__(self, other):
+        x, y = other
+        return Size(max(self.width * x, 0), max(self.height * y, 0))
+        
+    def __truediv__(self, other):
+        x, y = other
+        return Size(max(self.width / x, 0), max(self.height / y, 0))
+        
+    def __floordiv__(self, other):
+        x, y = other
+        return Size(max(self.width // x, 0), max(self.height // y, 0))
+
+    def __mod__(self, other):
+        x, y = other
+        return Size(max(self.width % x, 0), max(self.height % y, 0))
+
+    def __divmod__(self, other):
+        return self // other, self % other
+
+    def __radd__(self, other):
+        x, y = other
+        return Size(max(x + self.width, 0), max(y + self.height, 0))
+
+    def __rsub__(self, other):
+        x, y = other
+        return Size(max(x - self.width, 0), max(y - self.height, 0))
+
+    def __rmul__(self, other):
+        x, y = other
+        return Size(max(x * self.width, 0), max(y * self.height, 0))
+        
+    def __rtruediv__(self, other):
+        x, y = other
+        return Size(max(x / self.width, 0), max(y / self.height, 0))
+        
+    def __rfloordiv__(self, other):
+        x, y = other
+        return Size(max(x // self.width, 0), max(y // self.height, 0))
+        
+    def __rmod__(self, other):
+        x, y = other
+        return Size(max(x % self.width, 0), max(y % self.height, 0))
+        
+    def __iadd__(self, other):
+        x, y = other
+        
+        self.width += x
+        self.height += y
+        
+        if self.width < 0: self.width = 0
+        if self.height < 0: self.height = 0
+        
+        return self
+        
+    def __isub__(self, other):
+        x, y = other
+        
+        self.width -= x
+        self.height -= y
+        
+        if self.width < 0: self.width = 0
+        if self.height < 0: self.height = 0
+        
+        return self
+        
+    def __imul__(self, other):
+        x, y = other
+        
+        self.width *= x
+        self.height *= y
+        
+        if self.width < 0: self.width = 0
+        if self.height < 0: self.height = 0
+        
+        return self
+        
+    def __itruediv__(self, other):
+        x, y = other
+        
+        self.width /= x
+        self.height /= y
+        
+        if self.width < 0: self.width = 0
+        if self.height < 0: self.height = 0
+        
+        return self
+        
+    def __ifloordiv__(self, other):
+        x, y = other
+        
+        self.width //= x
+        self.height //= y
+        
+        if self.width < 0: self.width = 0
+        if self.height < 0: self.height = 0
+        
+        return self
+        
+    def __imod__(self, other):
+        x, y = other
+        
+        self.width %= x
+        self.height %= y
+        
+        if self.width < 0: self.width = 0
+        if self.height < 0: self.height = 0
+        
+        return self
+        
     def __lt__(self, other):
         x, y = other
         return self.width < x or self.height < y
