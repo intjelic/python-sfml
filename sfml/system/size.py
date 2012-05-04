@@ -1,5 +1,5 @@
 class Size:
-    def __init__(self, width, height):
+    def __init__(self, width=0, height=0):
         self._width = width
         self._height = height
 
