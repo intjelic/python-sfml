@@ -5,7 +5,7 @@ PyDrawable::PyDrawable(void* pyThis):
 sf::Drawable (),
 m_pyThis     (static_cast<PyObject*>(pyThis))
 {
-    import_sfml__graphics__graphics(); // make sure the graphics module imported
+    import_sfml__graphics__graphics(); // make sure the graphics module is imported
 };
 
 

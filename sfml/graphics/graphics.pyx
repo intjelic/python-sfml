@@ -68,48 +68,48 @@ cimport declgraphics
 ########################################################################
 #                           System Module                              #
 ########################################################################
- 
-
-cdef error_messages = {}
-cdef error_messages_lock = threading.Lock()
 
 
-# TODO: apparently functions should be static in Python modules, see
-# http://docs.python.org/extending/extending.html#providing-a-c-api-for-an-extension-module.
-cdef extern void set_error_message(char* message):
-    ident = threading.current_thread().ident
-
-    with error_messages_lock:
-        error_messages[ident] = message
+#cdef error_messages = {}
+#cdef error_messages_lock = threading.Lock()
 
 
-declgraphics.replace_error_handler()
+## TODO: apparently functions should be static in Python modules, see
+## http://docs.python.org/extending/extending.html#providing-a-c-api-for-an-extension-module.
+#cdef extern void set_error_message(char* message):
+#    ident = threading.current_thread().ident
+
+#    with error_messages_lock:
+#        error_messages[ident] = message
 
 
-# Return the last error message for the current thread, or None.  Will
-# return None after you consumed the latest message, until a new
-# message is added. The goal is to avoid showing the same message
-# twice.
-cdef object get_last_error_message():
-    ident = threading.current_thread().ident
-
-    with error_messages_lock:
-        if ident in error_messages:
-            message = error_messages[ident]
-            del error_messages[ident]
-            return message
-
-    return None
+#declgraphics.replace_error_handler()
 
 
-class SFMLException(Exception):
-    def __init__(self):
-        message = get_last_error_message()
+## Return the last error message for the current thread, or None.  Will
+## return None after you consumed the latest message, until a new
+## message is added. The goal is to avoid showing the same message
+## twice.
+#cdef object get_last_error_message():
+#    ident = threading.current_thread().ident
 
-        if message is None:
-            Exception.__init__(self)
-        else:
-            Exception.__init__(self, message.decode('UTF-8'))
+#    with error_messages_lock:
+#        if ident in error_messages:
+#            message = error_messages[ident]
+#            del error_messages[ident]
+#            return message
+
+#    return None
+
+class SFMLException(Exception): pass
+#class SFMLException(Exception):
+#    def __init__(self):
+#        message = get_last_error_message()
+
+#        if message is None:
+#            Exception.__init__(self)
+#        else:
+#            Exception.__init__(self, message.decode('UTF-8'))
 
 
 def sleep(Uint32 duration):
@@ -348,6 +348,7 @@ cdef object IntRect_to_Rectangle(declsystem.IntRect* value):
     
 cdef object FloatRect_to_Rectangle(declsystem.FloatRect* value):
     return Rectangle(value.Left, value.Top, value.Width, value.Height)
+
 
 ########################################################################
 #                           Window Module                              #
@@ -834,7 +835,7 @@ cdef class Window:
     cdef declwindow.Window *p_this
     
     def __cinit__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
-        if self.__class__ != RenderWindow: # sf.RenderWindow has its own constructor 
+        if self.__class__ not in [RenderWindow, HandledWindow]: # sf.RenderWindow has its own constructor 
             bTitle = title.encode('UTF-8')
             if settings is None:
                 self.p_this = new declwindow.Window(mode.p_this[0], bTitle, style)
@@ -924,9 +925,9 @@ cdef class Window:
             return <unsigned long>self.p_this.GetSystemHandle()
 
     property title:
-        def __set__(self, value):
-            bValue = value.encode('UTF-32')
-            self.p_this.SetTitle(bValue)
+        def __set__(self, title):
+            encoded_title = title.encode(u"ISO-8859-1")
+            self.p_this.SetTitle(encoded_title)
 
     property vertical_synchronization:
         def __set__(self, bint value):
@@ -1950,7 +1951,6 @@ cdef Shape wrap_shape_instance(declgraphics.Shape *p):
     
     return ret
 
-
 cdef class View:
     cdef declgraphics.View *p_this
     # A RenderTarget (e.g., a RenderWindow or a RenderTexture) can be
@@ -1959,11 +1959,16 @@ cdef class View:
     # view property.  This is used so that code like
     # declwindow.view.move(10, 10) works as expected.
     cdef object render_target
-
+    cdef object _size
+    
     def __init__(self):
         self.p_this = new declgraphics.View()
         self.render_target = None
 
+        #self._size = Size()
+        #self._size._set_height = method1
+        #self._size._set_width = method1
+        
     def __dealloc__(self):
         del self.p_this
 
@@ -1974,23 +1979,23 @@ cdef class View:
         def __set__(self, float value):
             self.p_this.SetRotation(value)
             self._update_target()
-            
-    #property width:
-        #def __get__(self):
-            #return self.size[0]
+#
+    property width:
+        def __get__(self):
+            return self.size[0]
 
-        #def __set__(self, float value):
-            #self.size = (value, self.height)
-            #self._update_target()
+        def __set__(self, float value):
+            self.size = (value, self.height)
+            self._update_target()
             
-    #property height:
-        #def __get__(self):
-            #return self.size[1]
+    property height:
+        def __get__(self):
+            return self.size[1]
 
-        #def __set__(self, float value):
-            #self.size = (self.width, value)
-            #self._update_target()
-         
+        def __set__(self, float value):
+            self.size = (self.width, value)
+            self._update_target()
+#
     property center:
         def __get__(self):
             cdef declgraphics.Vector2f center = self.p_this.GetCenter()
@@ -2203,7 +2208,7 @@ cdef class RenderTarget:
         self.p_this.SaveGLStates()
 
 
-cdef api RenderTarget wrap_render_target_instance(declgraphics.RenderTarget *p):
+cdef api object wrap_render_target_instance(declgraphics.RenderTarget *p):
     cdef RenderTarget ret = RenderTarget.__new__(RenderTarget)
     ret.p_this = p
     
@@ -2291,12 +2296,9 @@ cdef class RenderWindow(Window):
 
 
 cdef class HandledWindow(RenderTarget):
-    def __init__(self, unsigned long window_handle, ContextSettings settings=None):
-        if settings is None:
-            self.p_this = <declgraphics.RenderTarget*>new declgraphics.RenderWindow(<declwindow.WindowHandle>window_handle)
-        else:
-            self.p_this = <declgraphics.RenderTarget*>new declgraphics.RenderWindow(<declwindow.WindowHandle>window_handle, settings.p_this[0])
-
+    def __cinit__(self):
+        self.p_this = <declgraphics.RenderTarget*>new declgraphics.RenderWindow()
+        
     def __dealloc__(self):
         del self.p_this
 
@@ -2399,6 +2401,12 @@ cdef class HandledWindow(RenderTarget):
 
     def show(self, bint show):
         (<declgraphics.RenderWindow*>self.p_this).Show(show)
+
+    def create(self, unsigned long window_handle, ContextSettings settings=None):
+            if settings is None:
+                (<declgraphics.RenderWindow*>self.p_this).Create(<declwindow.WindowHandle>window_handle)
+            else:
+                (<declgraphics.RenderWindow*>self.p_this).Create(<declwindow.WindowHandle>window_handle, settings.p_this[0])
 
 
 cdef RenderWindow wrap_render_window_instance(declgraphics.RenderWindow *p_cpp_instance):
@@ -2524,7 +2532,7 @@ cdef class Renderer:
         self.p_this.End()
     
 
-cdef api Renderer wrap_renderer_instance(declgraphics.Renderer *p_cpp_instance):
+cdef api object wrap_renderer_instance(declgraphics.Renderer *p_cpp_instance):
     cdef Renderer ret = Renderer.__new__(Renderer)
     
     ret.p_this = p_cpp_instance

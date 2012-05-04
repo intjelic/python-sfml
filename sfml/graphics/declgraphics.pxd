@@ -319,6 +319,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void Create(declwindow.VideoMode, char*)
         void Create(declwindow.VideoMode, char*, unsigned long)
         void Create(declwindow.VideoMode, char*, unsigned long, declwindow.ContextSettings&)
+        void Create(declwindow.WindowHandle window_handle)
+        void Create(declwindow.WindowHandle window_handle, declwindow.ContextSettings&)
         void Display()
         void EnableKeyRepeat(bint)
         void EnableVerticalSync(bint)
