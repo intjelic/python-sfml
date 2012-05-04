@@ -1,5 +1,5 @@
 class Position:
-    def __init__(self, x, y):
+    def __init__(self, x=0, y=0):
         self._x = x
         self._y = y
 
@@ -44,6 +44,9 @@ class Position:
         x, y = other
         return Position(self.x % x, self.y % y)
         
+    def __divmod__(self, other):
+        return self // other, self % other
+        
     def __radd__(self, other):
         x, y = other
         return Position(x + self.x, y + self.y)
@@ -67,7 +70,7 @@ class Position:
     def __rmod__(self, other):
         x, y = other
         return Position(x % self.x, y % self.y)
-        
+
     def __iadd__(self, other):
         x, y = other
         self.x += x
