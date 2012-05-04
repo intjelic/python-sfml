@@ -161,6 +161,11 @@ class Size:
         x, y = other
         return self.width >= x or self.height >= y
             
+    @classmethod
+    def from_tuple(cls, value):
+        x, y = value
+        return cls(max(x, 0), max(y, 0))
+        
     def _get_width(self):
         return self._width
 
