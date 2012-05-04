@@ -107,6 +107,11 @@ class Position:
         self.y %= y
         return self
         
+    @classmethod
+    def from_tuple(cls, value):
+        x, y = value
+        return cls(x, y)
+        
     def _get_x(self):
         return self._x
 
