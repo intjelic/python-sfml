@@ -758,6 +758,7 @@ cdef class VideoMode:
     def is_valid(self):
         return self.p_this.IsValid()
 
+
 cdef VideoMode wrap_video_mode_instance(declwindow.VideoMode *p, bint delete_this):
     cdef VideoMode ret = VideoMode.__new__(VideoMode, p.Width, p.Height, p.BitsPerPixel)
     del ret.p_this
@@ -1490,15 +1491,13 @@ cdef Texture wrap_texture_instance(declgraphics.Texture *p_cpp_instance,
 
 cdef class Drawable:
     cdef declgraphics.Drawable *p_this
-    cdef object _position
-    
+
     def __cinit__(self, *args, **kwargs):
         if self.__class__ == Drawable:
             raise NotImplementedError('Drawable is abstact')
         elif self.__class__ not in [Shape, Sprite, Text]:
             # custom drawable instantiated
             self.p_this = <declgraphics.Drawable*>new declgraphics.PyDrawable(<void*>self)
-        self._position = Position(0, 0)
         
     property blend_mode:
         def __get__(self):
@@ -1531,12 +1530,10 @@ cdef class Drawable:
 
     property position:
         def __get__(self):
-            return self._position
+            return Position(self.p_this.GetPosition().x, self.p_this.GetPosition().y)
 
-        def __set__(self, object value):
-            x, y = value
-            self._position.x, self._position.y = x, y
-            self.p_this.SetPosition(x, y)
+        def __set__(self, value):
+            self.p_this.SetPosition(Position_to_Vector2f(value))
             
     property rotation:
         def __get__(self):
@@ -1558,18 +1555,16 @@ cdef class Drawable:
 
     property x:
         def __get__(self):
-            return self._position.x
+            return self.position.x
 
         def __set__(self, float value):
-            self.position.x = value
             self.p_this.SetX(value)
 
     property y:
         def __get__(self):
-            return self._position.y
+            return self.position.y
 
         def __set__(self, float value):
-            self._position.y = value
             self.p_this.SetY(value)
 
     def render(self, target, renderer):
@@ -1603,7 +1598,6 @@ cdef class Drawable:
 
     def _scale(self, float x, float y):
         self.p_this.Scale(x, y)
-
 
 
 # This class allows the user to use the Drawable.scale attribute both
@@ -1690,7 +1684,6 @@ cdef class Text(Drawable):
         def __get__(self):
             cdef declgraphics.FloatRect *p = new declgraphics.FloatRect()
             p[0] = (<declgraphics.Text*>self.p_this).GetRect()
-            #return wrap_float_rect_instance(p)
             return FloatRect_to_Rectangle(p)
 
     property string:
