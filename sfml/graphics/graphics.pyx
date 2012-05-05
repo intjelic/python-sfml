@@ -679,13 +679,10 @@ cdef class Mouse:
 cdef class VideoMode:
     cdef declwindow.VideoMode *p_this
     cdef bint delete_this
-    cdef object _size
     
     def __cinit__(self, unsigned int width, unsigned int height, bpp=32):
-        self._size = Size(width, height)
         self.p_this = new declwindow.VideoMode(width, height, bpp)
         self.delete_this = True
-        print("videomode::alloc")
         
     def __dealloc__(self):
         if self.delete_this:
@@ -699,7 +696,7 @@ cdef class VideoMode:
 
     def __richcmp__(self, VideoMode other, int op):
         if op == 0: # <
-            if self.x == other.x:
+            if self.bpp == other.bpp:
                 return self.size < other.size
             else:
                 return self.bpp < other.bpp 
@@ -721,11 +718,9 @@ cdef class VideoMode:
 
     property size:
         def __get__(self):
-            return self._size
-
-        def __set__(self, value):
-            self._size = value
+            return Size(self.p_this.Width, self.p_this.Height)
             
+        def __set__(self, value):
             width, height = value
             self.p_this.Width = width
             self.p_this.Height = height
@@ -769,7 +764,6 @@ cdef VideoMode wrap_video_mode_instance(declwindow.VideoMode *p, bint delete_thi
     
     ret.p_this = p
     ret.delete_this = delete_this
-    ret._size = Size(p.Width, p.Height)
 
     return ret
 
@@ -836,11 +830,11 @@ cdef class Window:
     
     def __cinit__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
         if self.__class__ not in [RenderWindow, HandledWindow]: # sf.RenderWindow has its own constructor 
-            bTitle = title.encode('UTF-8')
+            encoded_title = title.encode(u"ISO-8859-1")
             if settings is None:
-                self.p_this = new declwindow.Window(mode.p_this[0], bTitle, style)
+                self.p_this = new declwindow.Window(mode.p_this[0], encoded_title, style)
             else:
-                self.p_this = new declwindow.Window(mode.p_this[0], bTitle, style, settings.p_this[0])
+                self.p_this = new declwindow.Window(mode.p_this[0], encoded_title, style, settings.p_this[0])
 
     def __iter__(self):
         return self
@@ -936,11 +930,12 @@ cdef class Window:
     def close(self):
         self.p_this.Close()
 
-    def create(self, VideoMode mode, char* title, int style=Style.DEFAULT, ContextSettings settings=None):
+    def create(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
+        encoded_title = title.encode(u"ISO-8859-1")
         if settings is None:
-            self.p_this.Create(mode.p_this[0], title, style)
+            self.p_this.Create(mode.p_this[0], encoded_title, style)
         else:
-            self.p_this.Create(mode.p_this[0], title, style, settings.p_this[0])
+            self.p_this.Create(mode.p_this[0], encoded_title, style, settings.p_this[0])
 
     def display(self):
         self.p_this.Display()
@@ -1287,8 +1282,8 @@ cdef class Image:
     def load_from_file(cls, filename):
         cdef declgraphics.Image *p_cpp_instance = new declgraphics.Image()
 
-        bFilename = filename.encode('UTF-8')
-        if p_cpp_instance.LoadFromFile(bFilename):
+        encoded_filename = filename.encode('UTF-8')
+        if p_cpp_instance.LoadFromFile(encoded_filename):
             return wrap_image_instance(p_cpp_instance, True)
 
         raise SFMLException()
@@ -1411,13 +1406,14 @@ cdef class Texture:
     @classmethod
     def load_from_file(cls, filename, object area=None):
         cdef declgraphics.Texture *p_cpp_instance = new declgraphics.Texture()
-
+        
+        encoded_filename = filename.encode('UTF-8')
+        
         if area is None:
-            bFilename = filename.encode('UTF-8')
-            if p_cpp_instance.LoadFromFile(bFilename):
+            if p_cpp_instance.LoadFromFile(encoded_filename):
                 return wrap_texture_instance(p_cpp_instance, True)
         else:
-            if p_cpp_instance.LoadFromFile(filename, Rectangle_to_IntRect(area)):
+            if p_cpp_instance.LoadFromFile(encoded_filename, Rectangle_to_IntRect(area)):
                 return wrap_texture_instance(p_cpp_instance, True)
 
         raise SFMLException()
