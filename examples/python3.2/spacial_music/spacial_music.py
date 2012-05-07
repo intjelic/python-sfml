@@ -92,7 +92,6 @@ def main():
         window.clear(sf.Color.WHITE)
         window.draw(speaker)
         window.draw(hears)
-        print(music.playing_offset)
         window.display()
         
     window.close()
