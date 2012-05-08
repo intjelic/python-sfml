@@ -1,4 +1,4 @@
-Integrating to a Qt interface
+Integrating to a Qt interface [not completed]
 =============================
 
 There are two main implementations of Qt in Python: PyQt4 and PySide.

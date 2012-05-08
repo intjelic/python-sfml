@@ -4,38 +4,44 @@ Graphics
 .. module:: sf.graphics
 
 
-.. py:class:: Color(int r, int g, int b[, int a=255])
+.. py:class:: Color(r, g, b[, a=255])
 
       Utility class for manpulating RGBA colors.
 
-      sf.Color is a simple color class composed of 4 components: Red, Green, Blue, Alpha (opacity)
+      sf.Color is a simple color class composed of 4 components: Red, 
+      Green, Blue, Alpha (opacity)
 
-      Each component is a property, an unsigned integer in the range [0, 255]. Thus, colors can be constructed and manipulated very easily::
+      Each component is a property, an unsigned integer in the range 
+      [0, 255]. Thus, colors can be constructed and manipulated very 
+      easily::
 
-         c1 = sf.Color(255, 0, 0); # red
-         c1.red = 0;               # make it black
-         c1.blue = 128;            # make it dark blue
+         c1 = sf.Color(255, 0, 0) # red
+         c1.r = 0;                # make it black
+         c1.b = 128;              # make it dark blue
 
-      The fourth component of colors, named "alpha", represents the opacity of the color. A color with an alpha value of 255 will be fully opaque, while an alpha value of 0 will make a color fully transparent, whatever the value of the other components.
+      The fourth component of colors, named "alpha", represents the 
+      opacity of the color. A color with an alpha value of 255 will be 
+      fully opaque, while an alpha value of 0 will make a color fully 
+      transparent, whatever the value of the other components.
 
-      Colors can also be added and modulated (multiplied) using the overloaded operators + and *. 
+      Colors can also be added and modulated (multiplied) using the 
+      overloaded operators + and *. 
 
-   .. py:attribute:: red
+   .. py:attribute:: r
    
       Red component.
 
-   .. py:attribute:: green
+   .. py:attribute:: g
    
       Green component.
       
-   .. py:attribute:: blue
+   .. py:attribute:: b
    
       Blue component.
       
-   .. py:attribute:: alpha
+   .. py:attribute:: a
    
       Alpha (opacity) component.
-      
       
       The most common colors are already defined as static variables::
 
@@ -72,7 +78,6 @@ Graphics
 
 .. py:class:: Image(int width, int height[, color])
 
-
    Class for loading, manipulating and saving images.
 
    sf.Image is an abstraction to manipulate images as bidimensional arrays of pixels.
@@ -87,7 +92,8 @@ Graphics
 
       # load an image file from a file
       try: background = sf.Image.load_from_file("background.jpg")
-
+      except sf.Exception: exit(1)
+      
       # create a 20x20 image filled with black color
       image = sf.Image()
       image.create(20, 20, sf.Color.BLACK)
@@ -528,18 +534,6 @@ Graphics
 
 .. py:class:: RenderWindow(VideoMode mode, title[, style[, ContextSettings settings]])
 
-   *style* can be one of:
-
-   ======================= ===========
-   Name                    Description
-   ======================= ===========
-   ``sf.Style.NONE``
-   ``sf.Style.TITLEEBAR``
-   ``sf.Style.RESIZE``
-   ``sf.Style.CLOSE``
-   ``sf.Style.FULLSCREEN``
-   ======================= ===========
-
    .. attribute:: active
    .. attribute:: cursor_position
    .. attribute:: default_view
@@ -565,8 +559,7 @@ Graphics
    .. attribute:: view
    .. attribute:: width
 
-   .. classmethod:: from_window_handle(long window_handle\
-                                       [, ContextSettings settings])
+   .. classmethod:: from_window_handle(long window_handle[, ContextSettings settings])
 
       Equivalent to this C++ constructor::
 
@@ -575,20 +568,11 @@ Graphics
    .. method:: clear([color])
    .. method:: close()
    .. method:: convert_coords(x, y[, view])
-   .. method:: create(VideoMode mode, title\
-                      [, int style[, ContextSettings settings]])
+   .. method:: create(VideoMode mode, title[, int style[, ContextSettings settings]])
    .. method:: display()
    .. method:: draw()
    .. method:: get_input()
    .. method:: get_viewport(view)
-   .. method:: iter_events()
-
-      Return an iterator which yields the current pending events. Example::
-        
-         for event in window.iter_events():
-             if event.type == sf.Event.CLOSED:
-                 # ...
-
    .. method:: poll_event()
    .. method:: restore_gl_states()
    .. method:: save_gl_states()
