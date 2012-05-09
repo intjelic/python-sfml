@@ -17,8 +17,9 @@ USE_CYTHON = True
 if USE_CYTHON:
     import Cython.Distutils
   
+    x11_dir = ['src/sfml/x11']
     x11_libs = ['X11']
-    x11_mod = Extension('sfml.x11', ['src/sfml/x11/x11.pyx'], libraries=x11_libs)
+    x11_mod = Extension('sfml.x11', ['src/sfml/x11/x11.pyx'], x11_dir, libraries=x11_libs)
 
     graphics_dir = ['src/sfml/system', 'src/sfml/window']
     graphics_libs = ['sfml-system', 'sfml-window', 'sfml-graphics']
