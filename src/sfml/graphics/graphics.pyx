@@ -451,6 +451,153 @@ class Event:
 
 #    return ret
 
+
+cdef class VideoMode:
+	cdef dwindow.VideoMode *this
+	cdef bint dthis
+
+	def __cinit__(self, unsigned int width, unsigned int height, bpp=32):
+		self.this = new dwindow.VideoMode(width, height, bpp)
+		self.dthis = True
+
+	def __dealloc__(self):
+		if self.dthis:
+			del self.this
+
+	#def __str__(self):
+		#return "{0.size.width}x{0.size.height}x{0.bpp}".format(self)
+
+	#def __repr__(self):
+		#return ("VideoMode({0.size.width}, {0.size.height}, {0.bpp})".format(self))
+
+	#def __richcmp__(self, VideoMode other, int op):
+		#if op == 0: # <
+			#if self.bpp == other.bpp:
+				#return self.size < other.size
+			#else:
+				#return self.bpp < other.bpp 
+						   
+		#elif op == 1: # <=
+			#return not other < self
+			
+		#elif op == 2: # ==
+			#return self.size == other.size and self.bpp == other.bpp        
+		
+		#elif op == 3: # !=
+			#return self.size != other or self.bpp != other.bpp        
+		
+		#elif op == 4: # >
+			#return other < self        
+		
+		#elif op == 5: # >=
+			#return not self < other
+
+	property size:
+		def __get__(self):
+			return Size(self.this.width, self.this.height)
+			
+		def __set__(self, value):
+			width, height = value
+			self.this.width = width
+			self.this.height = height
+
+	property bpp:
+		def __get__(self):
+			return self.this.bitsPerPixel
+
+		def __set__(self, unsigned int value):
+			self.this.bitsPerPixel = value
+
+	#@classmethod
+	#def get_desktop_mode(cls):
+		#cdef declwindow.VideoMode *p = new declwindow.VideoMode()
+		#p[0] = declwindow.videomode.GetDesktopMode()
+		
+		#return wrap_video_mode_instance(p, True)
+		
+	#@classmethod
+	#def get_fullscreen_modes(cls):
+		#cdef list ret = []
+		#cdef vector[declwindow.VideoMode] v = declwindow.videomode.GetFullscreenModes()
+		#cdef vector[declwindow.VideoMode].iterator it = v.begin()
+		#cdef declwindow.VideoMode current
+		#cdef declwindow.VideoMode *p_temp
+
+		#while it != v.end():
+			#current = deref(it)
+			#p_temp = new declwindow.VideoMode(current.Width, current.Height, current.BitsPerPixel)
+			#ret.append(wrap_video_mode_instance(p_temp, True))
+			#preinc(it)
+
+		#return ret
+
+	def is_valid(self):
+		return self.this.isValid()
+
+
+#cdef VideoMode wrap_video_mode_instance(declwindow.VideoMode *p, bint delete_this):
+#    cdef VideoMode ret = VideoMode.__new__(VideoMode, p.Width, p.Height, p.BitsPerPixel)
+#    del ret.p_this
+    
+#    ret.p_this = p
+#    ret.delete_this = delete_this
+
+#    return ret
+
+
+cdef class ContextSettings:
+	cdef dwindow.ContextSettings *this
+
+	def __cinit__(self, unsigned int depth=0, unsigned int stencil=0, unsigned int antialiasing=0, unsigned int major=2, unsigned int minor=0):
+		self.this = new dwindow.ContextSettings(depth, stencil, antialiasing, major, minor)
+
+	def __dealloc__(self):
+		del self.this
+		
+	property depth_bits:
+		def __get__(self):
+			return self.this.depthBits
+
+		def __set__(self, unsigned int value):
+			self.this.depthBits = value
+
+	property stencil_bits:
+		def __get__(self):
+			return self.this.stencilBits
+
+		def __set__(self, unsigned int value):
+			self.this.stencilBits = value
+
+	property antialiasing_level:
+		def __get__(self):
+			return self.this.antialiasingLevel
+
+		def __set__(self, unsigned int value):
+			self.this.antialiasingLevel = value
+
+	property major_version:
+		def __get__(self):
+			return self.this.majorVersion
+
+		def __set__(self, unsigned int value):
+			self.this.majorVersion = value
+
+	property minor_version:
+		def __get__(self):
+			return self.this.minorVersion
+
+		def __set__(self, unsigned int value):
+			self.this.minorVersion = value
+
+
+#cdef ContextSettings wrap_context_settings_instance(
+#    declwindow.ContextSettings *p_cpp_instance):
+#    cdef ContextSettings ret = ContextSettings.__new__(ContextSettings)
+
+#    ret.p_this = p_cpp_instance
+
+#    return ret
+
 cdef class Window:
 	cdef dwindow.Window *this
 
@@ -769,158 +916,6 @@ cdef class Mouse:
 
 		if window is None: dwindow.mouse.setPosition(p)
 		else: dwindow.mouse.setPosition(p, window.this[0])
-
-
-#cdef class VideoMode:
-#    cdef declwindow.VideoMode *p_this
-#    cdef bint delete_this
-    
-#    def __cinit__(self, unsigned int width, unsigned int height, bpp=32):
-#        self.p_this = new declwindow.VideoMode(width, height, bpp)
-#        self.delete_this = True
-        
-#    def __dealloc__(self):
-#        if self.delete_this:
-#            del self.p_this
-        
-#    def __str__(self):
-#        return "{0.size.width}x{0.size.height}x{0.bpp}".format(self)
-
-#    def __repr__(self):
-#        return ("VideoMode({0.size.width}, {0.size.height}, {0.bpp})".format(self))
-
-#    def __richcmp__(self, VideoMode other, int op):
-#        if op == 0: # <
-#            if self.bpp == other.bpp:
-#                return self.size < other.size
-#            else:
-#                return self.bpp < other.bpp 
-                           
-#        elif op == 1: # <=
-#            return not other < self
-            
-#        elif op == 2: # ==
-#            return self.size == other.size and self.bpp == other.bpp        
-        
-#        elif op == 3: # !=
-#            return self.size != other or self.bpp != other.bpp        
-        
-#        elif op == 4: # >
-#            return other < self        
-        
-#        elif op == 5: # >=
-#            return not self < other
-
-#    property size:
-#        def __get__(self):
-#            return Size(self.p_this.Width, self.p_this.Height)
-            
-#        def __set__(self, value):
-#            width, height = value
-#            self.p_this.Width = width
-#            self.p_this.Height = height
-
-#    property bpp:
-#        def __get__(self):
-#            return self.p_this.BitsPerPixel
-
-#        def __set__(self, unsigned int value):
-#            self.p_this.BitsPerPixel = value
-
-#    @classmethod
-#    def get_desktop_mode(cls):
-#        cdef declwindow.VideoMode *p = new declwindow.VideoMode()
-#        p[0] = declwindow.videomode.GetDesktopMode()
-        
-#        return wrap_video_mode_instance(p, True)
-        
-#    @classmethod
-#    def get_fullscreen_modes(cls):
-#        cdef list ret = []
-#        cdef vector[declwindow.VideoMode] v = declwindow.videomode.GetFullscreenModes()
-#        cdef vector[declwindow.VideoMode].iterator it = v.begin()
-#        cdef declwindow.VideoMode current
-#        cdef declwindow.VideoMode *p_temp
-
-#        while it != v.end():
-#            current = deref(it)
-#            p_temp = new declwindow.VideoMode(current.Width, current.Height, current.BitsPerPixel)
-#            ret.append(wrap_video_mode_instance(p_temp, True))
-#            preinc(it)
-
-#        return ret
-
-#    def is_valid(self):
-#        return self.p_this.IsValid()
-
-
-#cdef VideoMode wrap_video_mode_instance(declwindow.VideoMode *p, bint delete_this):
-#    cdef VideoMode ret = VideoMode.__new__(VideoMode, p.Width, p.Height, p.BitsPerPixel)
-#    del ret.p_this
-    
-#    ret.p_this = p
-#    ret.delete_this = delete_this
-
-#    return ret
-
-
-#cdef class ContextSettings:
-#    cdef declwindow.ContextSettings *p_this
-
-#    def __init__(self, unsigned int depth=24, unsigned int stencil=8,
-#                 unsigned int antialiasing=0, unsigned int major=2,
-#                 unsigned int minor=0):
-#        self.p_this = new declwindow.ContextSettings(depth, stencil, antialiasing,
-#                                               major, minor)
-
-#    def __dealloc__(self):
-#        del self.p_this
-
-#    property antialiasing_level:
-#        def __get__(self):
-#            return self.p_this.AntialiasingLevel
-
-#        def __set__(self, unsigned int value):
-#            self.p_this.AntialiasingLevel = value
-
-#    property depth_bits:
-#        def __get__(self):
-#            return self.p_this.DepthBits
-
-#        def __set__(self, unsigned int value):
-#            self.p_this.DepthBits = value
-
-#    property major_version:
-#        def __get__(self):
-#            return self.p_this.MajorVersion
-
-#        def __set__(self, unsigned int value):
-#            self.p_this.MajorVersion = value
-
-#    property minor_version:
-#        def __get__(self):
-#            return self.p_this.MinorVersion
-
-#        def __set__(self, unsigned int value):
-#            self.p_this.MinorVersion = value
-
-#    property stencil_bits:
-#        def __get__(self):
-#            return self.p_this.StencilBits
-
-#        def __set__(self, unsigned int value):
-#            self.p_this.StencilBits = value
-
-
-#cdef ContextSettings wrap_context_settings_instance(
-#    declwindow.ContextSettings *p_cpp_instance):
-#    cdef ContextSettings ret = ContextSettings.__new__(ContextSettings)
-
-#    ret.p_this = p_cpp_instance
-
-#    return ret
-
-
 
 
 #########################################################################

@@ -82,29 +82,27 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
         #JoystickConnectEvent JoystickConnect
         
         
-    #cdef cppclass ContextSettings:
-        #ContextSettings()
-        #ContextSettings(unsigned int)
-        #ContextSettings(unsigned int, unsigned int)
-        #ContextSettings(unsigned int, unsigned int, unsigned int)
-        #ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int)
-        #ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
-        #unsigned int AntialiasingLevel
-        #unsigned int DepthBits
-        #unsigned int MajorVersion
-        #unsigned int MinorVersion
-        #unsigned int StencilBits
+    cdef cppclass ContextSettings:
+        ContextSettings()
+        ContextSettings(unsigned int)
+        ContextSettings(unsigned int, unsigned int)
+        ContextSettings(unsigned int, unsigned int, unsigned int)
+        ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int)
+        ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
+        unsigned int depthBits   
+        unsigned int stencilBits            
+        unsigned int antialiasingLevel
+        unsigned int majorVersion
+        unsigned int minorVersion
 
-
-    #cdef cppclass VideoMode:
-        #VideoMode()
-        #VideoMode(unsigned int width, unsigned int height)
-        #VideoMode(unsigned int width, unsigned int height,
-                  #unsigned int bits_per_pixel)
-        #bint IsValid()
-        #unsigned int Width
-        #unsigned int Height
-        #unsigned int BitsPerPixel
+    cdef cppclass VideoMode:
+        VideoMode()
+        VideoMode(unsigned int width, unsigned int height)
+        VideoMode(unsigned int width, unsigned int height, unsigned int bits_per_pixel)
+        bint isValid()
+        unsigned int width
+        unsigned int height
+        unsigned int bitsPerPixel
         
         
     #cdef cppclass WindowHandle:
