@@ -35,12 +35,12 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		Int32 asMilliseconds()
 		Int64 asMicroseconds()
 
-	#cdef void sleep(Time)
+	cdef void sleep(Time)
 
-	#cdef cppclass Clock:
-		#Clock()
-		#Time getElapsedTime()
-		#Time restart()
+	cdef cppclass Clock:
+		Clock()
+		Time getElapsedTime()
+		Time restart()
 
 #	cdef cppclass String:
 #		String()

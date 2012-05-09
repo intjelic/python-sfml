@@ -33,47 +33,56 @@ cimport dsystem
 #                           System Module                              #
 ########################################################################
 
-
 class SFMLException(Exception): pass
 
+
 cdef class Time:
-    cdef dsystem.Time *this
-    
-    def __cinit__(self):
-        self.this = new dsystem.Time()
-        
-    def __dealloc__(self):
-        del self.this
-        
-    def as_seconds(self):
-        return self.this.asSeconds()
-        
-    def as_milliseconds(self):
-        return self.this.asMilliseconds()
-        
-    def as_microseconds(self):
-        return self.this.asMicroseconds()
-        
-#def sleep(Uint32 duration):
-#    declsystem.Sleep(duration)
+	cdef dsystem.Time *this
+
+	def __cinit__(self):
+		self.this = new dsystem.Time()
+
+	def __dealloc__(self):
+		del self.this
+
+	def as_seconds(self):
+		return self.this.asSeconds()
+
+	def as_milliseconds(self):
+		return self.this.asMilliseconds()
+
+	def as_microseconds(self):
+		return self.this.asMicroseconds()
 
 
-#cdef class Clock:
-#    cdef declsystem.Clock *p_this
+cdef void sleep(Time duration):
+	dsystem.sleep(duration.this[0])
 
-#    def __cinit__(self):
-#        self.p_this = new declsystem.Clock()
 
-#    def __dealloc__(self):
-#        del self.p_this
+cdef class Clock:
+	cdef dsystem.Clock *this
 
-#    property elapsed_time:
-#        def __get__(self):
-#            return self.p_this.GetElapsedTime()
+	def __cinit__(self):
+		self.this = new dsystem.Clock()
 
-#    def reset(self):
-#        self.p_this.Reset()
+	def __dealloc__(self):
+		del self.this
 
+	property elapsed_time:
+		def __get__(self):
+			cdef dsystem.Time* p = new dsystem.Time()
+			p[0] = self.this.getElapsedTime()
+			return wrap_time(p)
+
+	def restart(self):
+		cdef dsystem.Time* p = new dsystem.Time()
+		p[0] = self.this.restart()
+		return wrap_time(p)
+
+cdef Time wrap_time(dsystem.Time* v):
+	cdef Time r = Time.__new__(Time)
+	r.this = v
+	return r
 
 #cdef class Vector2f:
 #    cdef declsystem.Vector2f *p_this
