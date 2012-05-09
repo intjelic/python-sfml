@@ -24,7 +24,8 @@ from cython.operator cimport preincrement as preinc, dereference as deref
 
 from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
-cimport dsystem
+
+cimport dsystem, dwindow
 
 #cimport declwindow
 #cimport declgraphics
@@ -79,10 +80,12 @@ cdef class Clock:
 		p[0] = self.this.restart()
 		return wrap_time(p)
 
+
 cdef Time wrap_time(dsystem.Time* v):
 	cdef Time r = Time.__new__(Time)
 	r.this = v
 	return r
+
 
 #cdef class Vector2f:
 #    cdef declsystem.Vector2f *p_this
@@ -305,36 +308,35 @@ cdef Time wrap_time(dsystem.Time* v):
 #                           Window Module                              #
 ########################################################################
 
+cdef class Style:
+	NONE = dwindow.style.None
+	TITLEBAR = dwindow.style.Titlebar
+	RESIZE = dwindow.style.Resize
+	CLOSE = dwindow.style.Close
+	FULLSCREEN = dwindow.style.Fullscreen
+	DEFAULT = dwindow.style.Default
 
-#cdef class Style:
-#    NONE = declwindow.style.None
-#    TITLEBAR = declwindow.style.Titlebar
-#    RESIZE = declwindow.style.Resize
-#    CLOSE = declwindow.style.Close
-#    FULLSCREEN = declwindow.style.Fullscreen
-#    DEFAULT = declwindow.style.Default
 
-
-#class Event:
-#    CLOSED = declwindow.event.Closed
-#    RESIZED = declwindow.event.Resized
-#    LOST_FOCUS = declwindow.event.LostFocus
-#    GAINED_FOCUS = declwindow.event.GainedFocus
-#    TEXT_ENTERED = declwindow.event.TextEntered
-#    KEY_PRESSED = declwindow.event.KeyPressed
-#    KEY_RELEASED = declwindow.event.KeyReleased
-#    MOUSE_WHEEL_MOVED = declwindow.event.MouseWheelMoved
-#    MOUSE_BUTTON_PRESSED = declwindow.event.MouseButtonPressed
-#    MOUSE_BUTTON_RELEASED = declwindow.event.MouseButtonReleased
-#    MOUSE_MOVED = declwindow.event.MouseMoved
-#    MOUSE_ENTERED = declwindow.event.MouseEntered
-#    MOUSE_LEFT = declwindow.event.MouseLeft
-#    JOYSTICK_BUTTON_PRESSED = declwindow.event.JoystickButtonPressed
-#    JOYSTICK_BUTTON_RELEASED = declwindow.event.JoystickButtonReleased
-#    JOYSTICK_MOVED = declwindow.event.JoystickMoved
-#    JOYSTICK_CONNECTED = declwindow.event.JoystickConnected
-#    JOYSTICK_DISCONNECTED = declwindow.event.JoystickDisconnected
-#    COUNT = declwindow.event.Count
+class Event:
+	CLOSED = dwindow.event.Closed
+	RESIZED = dwindow.event.Resized
+	LOST_FOCUS = dwindow.event.LostFocus
+	GAINED_FOCUS = dwindow.event.GainedFocus
+	TEXT_ENTERED = dwindow.event.TextEntered
+	KEY_PRESSED = dwindow.event.KeyPressed
+	KEY_RELEASED = dwindow.event.KeyReleased
+	MOUSE_WHEEL_MOVED = dwindow.event.MouseWheelMoved
+	MOUSE_BUTTON_PRESSED = dwindow.event.MouseButtonPressed
+	MOUSE_BUTTON_RELEASED = dwindow.event.MouseButtonReleased
+	MOUSE_MOVED = dwindow.event.MouseMoved
+	MOUSE_ENTERED = dwindow.event.MouseEntered
+	MOUSE_LEFT = dwindow.event.MouseLeft
+	JOYSTICK_BUTTON_PRESSED = dwindow.event.JoystickButtonPressed
+	JOYSTICK_BUTTON_RELEASED = dwindow.event.JoystickButtonReleased
+	JOYSTICK_MOVED = dwindow.event.JoystickMoved
+	JOYSTICK_CONNECTED = dwindow.event.JoystickConnected
+	JOYSTICK_DISCONNECTED = dwindow.event.JoystickDisconnected
+	COUNT = dwindow.event.Count
 
 #    NAMES = {
 #        CLOSED: 'Closed',
@@ -356,10 +358,10 @@ cdef Time wrap_time(dsystem.Time* v):
 #        JOYSTICK_CONNECTED: 'Joystick connected',
 #        JOYSTICK_DISCONNECTED: 'Joystick disconnected'
 #        }
-
+#
 #    def __str__(self):
 #        """Return a short description of the event."""
-
+#
 #        return self.NAMES[self.type]
 
 
@@ -449,182 +451,324 @@ cdef Time wrap_time(dsystem.Time* v):
 
 #    return ret
 
+cdef class Window:
+	cdef dwindow.Window *this
 
-#cdef class Keyboard:
-#    A = declwindow.keyboard.A
-#    B = declwindow.keyboard.B
-#    C = declwindow.keyboard.C
-#    D = declwindow.keyboard.D
-#    E = declwindow.keyboard.E
-#    F = declwindow.keyboard.F
-#    G = declwindow.keyboard.G
-#    H = declwindow.keyboard.H
-#    I = declwindow.keyboard.I
-#    J = declwindow.keyboard.J
-#    K = declwindow.keyboard.K
-#    L = declwindow.keyboard.L
-#    M = declwindow.keyboard.M
-#    N = declwindow.keyboard.N
-#    O = declwindow.keyboard.O
-#    P = declwindow.keyboard.P
-#    Q = declwindow.keyboard.Q
-#    R = declwindow.keyboard.R
-#    S = declwindow.keyboard.S
-#    T = declwindow.keyboard.T
-#    U = declwindow.keyboard.U
-#    V = declwindow.keyboard.V
-#    W = declwindow.keyboard.W
-#    X = declwindow.keyboard.X
-#    Y = declwindow.keyboard.Y
-#    Z = declwindow.keyboard.Z
-#    NUM0 = declwindow.keyboard.Num0
-#    NUM1 = declwindow.keyboard.Num1
-#    NUM2 = declwindow.keyboard.Num2
-#    NUM3 = declwindow.keyboard.Num3
-#    NUM4 = declwindow.keyboard.Num4
-#    NUM5 = declwindow.keyboard.Num5
-#    NUM6 = declwindow.keyboard.Num6
-#    NUM7 = declwindow.keyboard.Num7
-#    NUM8 = declwindow.keyboard.Num8
-#    NUM9 = declwindow.keyboard.Num9
-#    ESCAPE = declwindow.keyboard.Escape
-#    L_CONTROL = declwindow.keyboard.LControl
-#    L_SHIFT = declwindow.keyboard.LShift
-#    L_ALT = declwindow.keyboard.LAlt
-#    L_SYSTEM = declwindow.keyboard.LSystem
-#    R_CONTROL = declwindow.keyboard.RControl
-#    R_SHIFT = declwindow.keyboard.RShift
-#    R_ALT = declwindow.keyboard.RAlt
-#    R_SYSTEM = declwindow.keyboard.RSystem
-#    MENU = declwindow.keyboard.Menu
-#    L_BRACKET = declwindow.keyboard.LBracket
-#    R_BRACKET = declwindow.keyboard.RBracket
-#    SEMI_COLON = declwindow.keyboard.SemiColon
-#    COMMA = declwindow.keyboard.Comma
-#    PERIOD = declwindow.keyboard.Period
-#    QUOTE = declwindow.keyboard.Quote
-#    SLASH = declwindow.keyboard.Slash
-#    BACK_SLASH = declwindow.keyboard.BackSlash
-#    TILDE = declwindow.keyboard.Tilde
-#    EQUAL = declwindow.keyboard.Equal
-#    DASH = declwindow.keyboard.Dash
-#    SPACE = declwindow.keyboard.Space
-#    RETURN = declwindow.keyboard.Return
-#    BACK = declwindow.keyboard.Back
-#    TAB = declwindow.keyboard.Tab
-#    PAGE_UP = declwindow.keyboard.PageUp
-#    PAGE_DOWN = declwindow.keyboard.PageDown
-#    END = declwindow.keyboard.End
-#    HOME = declwindow.keyboard.Home
-#    INSERT = declwindow.keyboard.Insert
-#    DELETE = declwindow.keyboard.Delete
-#    ADD = declwindow.keyboard.Add
-#    SUBTRACT = declwindow.keyboard.Subtract
-#    MULTIPLY = declwindow.keyboard.Multiply
-#    DIVIDE = declwindow.keyboard.Divide
-#    LEFT = declwindow.keyboard.Left
-#    RIGHT = declwindow.keyboard.Right
-#    UP = declwindow.keyboard.Up
-#    DOWN = declwindow.keyboard.Down
-#    NUMPAD0 = declwindow.keyboard.Numpad0
-#    NUMPAD1 = declwindow.keyboard.Numpad1
-#    NUMPAD2 = declwindow.keyboard.Numpad2
-#    NUMPAD3 = declwindow.keyboard.Numpad3
-#    NUMPAD4 = declwindow.keyboard.Numpad4
-#    NUMPAD5 = declwindow.keyboard.Numpad5
-#    NUMPAD6 = declwindow.keyboard.Numpad6
-#    NUMPAD7 = declwindow.keyboard.Numpad7
-#    NUMPAD8 = declwindow.keyboard.Numpad8
-#    NUMPAD9 = declwindow.keyboard.Numpad9
-#    F1 = declwindow.keyboard.F1
-#    F2 = declwindow.keyboard.F2
-#    F3 = declwindow.keyboard.F3
-#    F4 = declwindow.keyboard.F4
-#    F5 = declwindow.keyboard.F5
-#    F6 = declwindow.keyboard.F6
-#    F7 = declwindow.keyboard.F7
-#    F8 = declwindow.keyboard.F8
-#    F9 = declwindow.keyboard.F9
-#    F10 = declwindow.keyboard.F10
-#    F11 = declwindow.keyboard.F11
-#    F12 = declwindow.keyboard.F12
-#    F13 = declwindow.keyboard.F13
-#    F14 = declwindow.keyboard.F14
-#    F15 = declwindow.keyboard.F15
-#    PAUSE = declwindow.keyboard.Pause
-#    KEY_COUNT = declwindow.keyboard.KeyCount
+#    def __cinit__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
+#        if self.__class__ not in [RenderWindow, HandledWindow]: # sf.RenderWindow has its own constructor 
+#            encoded_title = title.encode(u"ISO-8859-1")
+#            if settings is None:
+#                self.p_this = new declwindow.Window(mode.p_this[0], encoded_title, style)
+#            else:
+#                self.p_this = new declwindow.Window(mode.p_this[0], encoded_title, style, settings.p_this[0])
 
-#    @classmethod
-#    def is_key_pressed(cls, int key):
-#        return declwindow.keyboard.IsKeyPressed(<declwindow.keyboard.Key>key)
+#    def __iter__(self):
+#        return self
 
+#    def __next__(self):
+#        cdef declwindow.Event p
 
-#cdef class Joystick:
-#    COUNT = declwindow.joystick.Count
-#    BUTTON_COUNT = declwindow.joystick.ButtonCount
-#    AXIS_COUNT = declwindow.joystick.AxisCount
-#    X = declwindow.joystick.X
-#    Y = declwindow.joystick.Y
-#    Z = declwindow.joystick.Z
-#    R = declwindow.joystick.R
-#    U = declwindow.joystick.U
-#    V = declwindow.joystick.V
-#    POV_X = declwindow.joystick.PovX
-#    POV_Y = declwindow.joystick.PovY
+#        if self.p_this.PollEvent(p):
+#            return wrap_event_instance(&p)
 
-#    @classmethod
-#    def is_connected(cls, unsigned int joystick):
-#        return declwindow.joystick.IsConnected(joystick)
+#        raise StopIteration
 
-#    @classmethod
-#    def get_button_count(cls, unsigned int joystick):
-#        return declwindow.joystick.GetButtonCount(joystick)
+#    property events:
+#        def __get__(self):
+#            return self
+            
+#    property active:
+#        def __set__(self, bint value):
+#            self.p_this.SetActive(value)
 
-#    @classmethod
-#    def has_axis(cls, unsigned int joystick, int axis):
-#        return declwindow.joystick.HasAxis(joystick, <declwindow.joystick.Axis>axis)
+#    property framerate_limit:
+#        def __set__(self, int value):
+#            self.p_this.SetFramerateLimit(value)
 
-#    @classmethod
-#    def is_button_pressed(cls, unsigned int joystick, unsigned int button):
-#        return declwindow.joystick.IsButtonPressed(joystick, button)
+#    property frame_time:
+#        def __get__(self):
+#            return self.p_this.GetFrameTime()
 
-#    @classmethod
-#    def get_axis_position(cls, unsigned int joystick, int axis):
-#        return declwindow.joystick.GetAxisPosition(joystick, <declwindow.joystick.Axis> axis)
+#    property width:
+#        def __get__(self):
+#            return self.p_this.GetWidth()
 
+#        def __set__(self, unsigned int value):
+#            self.size = (value, self.height)
 
-#cdef class Mouse:
-#    LEFT = declwindow.mouse.Left
-#    RIGHT = declwindow.mouse.Right
-#    MIDDLE = declwindow.mouse.Middle
-#    X_BUTTON1 = declwindow.mouse.XButton1
-#    X_BUTTON2 = declwindow.mouse.XButton2
-#    BUTTON_COUNT = declwindow.mouse.ButtonCount
+#    property height:
+#        def __get__(self):
+#            return self.p_this.GetHeight()
 
-#    @classmethod
-#    def is_button_pressed(cls, int button):
-#        return declwindow.mouse.IsButtonPressed(<declwindow.mouse.Button>button)
+#        def __set__(self, unsigned int value):
+#            self.size = (self.width, value)
 
-#    @classmethod
-#    def get_position(cls, Window window=None):
-#        cdef declsystem.Vector2i pos
+#    property size:
+#        def __get__(self):
+#            return Size(self.width, self.height)
 
-#        if window is None:
-#            pos = declwindow.mouse.GetPosition()
+#        def __set__(self, tuple value):
+#            x, y = value
+#            self.p_this.SetSize(x, y)
+
+#    property joystick_threshold:
+#        def __set__(self, bint value):
+#            self.p_this.SetJoystickThreshold(value)
+
+#    property key_repeat_enabled:
+#        def __set__(self, bint value):
+#            self.p_this.EnableKeyRepeat(value)
+
+#    property opened:
+#        def __get__(self):
+#            return self.p_this.IsOpened()
+
+#    property position:
+#        def __set__(self, tuple value):
+#            x, y = value
+#            self.p_this.SetPosition(x, y)
+
+#    property settings:
+#        def __get__(self):
+#            cdef declwindow.ContextSettings *p = new declwindow.ContextSettings()
+
+#            p[0] = self.p_this.GetSettings()
+
+#            return wrap_context_settings_instance(p)
+
+#    property show_mouse_cursor:
+#        def __set__(self, bint value):
+#            self.p_this.ShowMouseCursor(value)
+
+#    property system_handle:
+#        def __get__(self):
+#            return <unsigned long>self.p_this.GetSystemHandle()
+
+#    property title:
+#        def __set__(self, title):
+#            encoded_title = title.encode(u"ISO-8859-1")
+#            self.p_this.SetTitle(encoded_title)
+
+#    property vertical_synchronization:
+#        def __set__(self, bint value):
+#            self.p_this.EnableVerticalSync(value)
+
+#    def close(self):
+#        self.p_this.Close()
+
+#    def create(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
+#        encoded_title = title.encode(u"ISO-8859-1")
+#        if settings is None:
+#            self.p_this.Create(mode.p_this[0], encoded_title, style)
 #        else:
-#            pos = declwindow.mouse.GetPosition(window.p_this[0])
+#            self.p_this.Create(mode.p_this[0], encoded_title, style, settings.p_this[0])
 
-#        return Position(pos.x, pos.y)
+#    def display(self):
+#        self.p_this.Display()
 
-#    @classmethod
-#    def set_position(cls, position, Window window=None):
-#        cdef declsystem.Vector2i cpp_pos
-#        cpp_pos.x, cpp_pos.y = position[0], position[1]
+#    #def poll_event(self):
+#        #cdef declwindow.Event *p = new declwindow.Event()
 
-#        if window is None:
-#            declwindow.mouse.SetPosition(cpp_pos)
-#        else:
-#            declwindow.mouse.SetPosition(cpp_pos, window.p_this[0])
+#        #if self.p_this.PollEvent(p[0]):
+#            #return wrap_event_instance(p)
+            
+#    #def wait_event(self):
+#        #cdef declwindow.Event *p = new declwindow.Event()
+
+#        #if self.p_this.WaitEvent(p[0]):
+#            #return wrap_event_instance(p)
+            
+#    def set_icon(self, unsigned int width, unsigned int height, char* pixels):
+#        self.p_this.SetIcon(width, height, <Uint8*>pixels)
+
+#    def show(self, bint show):
+#        self.p_this.Show(show)
+
+
+#cdef Window wrap_window_instance(declwindow.Window *p_cpp_instance):
+#    cdef Window ret = Window.__new__(Window)
+
+#    ret.p_this = p_cpp_instance
+
+#    return ret
+
+
+cdef class Keyboard:
+	A = dwindow.keyboard.A
+	B = dwindow.keyboard.B
+	C = dwindow.keyboard.C
+	D = dwindow.keyboard.D
+	E = dwindow.keyboard.E
+	F = dwindow.keyboard.F
+	G = dwindow.keyboard.G
+	H = dwindow.keyboard.H
+	I = dwindow.keyboard.I
+	J = dwindow.keyboard.J
+	K = dwindow.keyboard.K
+	L = dwindow.keyboard.L
+	M = dwindow.keyboard.M
+	N = dwindow.keyboard.N
+	O = dwindow.keyboard.O
+	P = dwindow.keyboard.P
+	Q = dwindow.keyboard.Q
+	R = dwindow.keyboard.R
+	S = dwindow.keyboard.S
+	T = dwindow.keyboard.T
+	U = dwindow.keyboard.U
+	V = dwindow.keyboard.V
+	W = dwindow.keyboard.W
+	X = dwindow.keyboard.X
+	Y = dwindow.keyboard.Y
+	Z = dwindow.keyboard.Z
+	NUM0 = dwindow.keyboard.Num0
+	NUM1 = dwindow.keyboard.Num1
+	NUM2 = dwindow.keyboard.Num2
+	NUM3 = dwindow.keyboard.Num3
+	NUM4 = dwindow.keyboard.Num4
+	NUM5 = dwindow.keyboard.Num5
+	NUM6 = dwindow.keyboard.Num6
+	NUM7 = dwindow.keyboard.Num7
+	NUM8 = dwindow.keyboard.Num8
+	NUM9 = dwindow.keyboard.Num9
+	ESCAPE = dwindow.keyboard.Escape
+	L_CONTROL = dwindow.keyboard.LControl
+	L_SHIFT = dwindow.keyboard.LShift
+	L_ALT = dwindow.keyboard.LAlt
+	L_SYSTEM = dwindow.keyboard.LSystem
+	R_CONTROL = dwindow.keyboard.RControl
+	R_SHIFT = dwindow.keyboard.RShift
+	R_ALT = dwindow.keyboard.RAlt
+	R_SYSTEM = dwindow.keyboard.RSystem
+	MENU = dwindow.keyboard.Menu
+	L_BRACKET = dwindow.keyboard.LBracket
+	R_BRACKET = dwindow.keyboard.RBracket
+	SEMI_COLON = dwindow.keyboard.SemiColon
+	COMMA = dwindow.keyboard.Comma
+	PERIOD = dwindow.keyboard.Period
+	QUOTE = dwindow.keyboard.Quote
+	SLASH = dwindow.keyboard.Slash
+	BACK_SLASH = dwindow.keyboard.BackSlash
+	TILDE = dwindow.keyboard.Tilde
+	EQUAL = dwindow.keyboard.Equal
+	DASH = dwindow.keyboard.Dash
+	SPACE = dwindow.keyboard.Space
+	RETURN = dwindow.keyboard.Return
+	BACK = dwindow.keyboard.Back
+	TAB = dwindow.keyboard.Tab
+	PAGE_UP = dwindow.keyboard.PageUp
+	PAGE_DOWN = dwindow.keyboard.PageDown
+	END = dwindow.keyboard.End
+	HOME = dwindow.keyboard.Home
+	INSERT = dwindow.keyboard.Insert
+	DELETE = dwindow.keyboard.Delete
+	ADD = dwindow.keyboard.Add
+	SUBTRACT = dwindow.keyboard.Subtract
+	MULTIPLY = dwindow.keyboard.Multiply
+	DIVIDE = dwindow.keyboard.Divide
+	LEFT = dwindow.keyboard.Left
+	RIGHT = dwindow.keyboard.Right
+	UP = dwindow.keyboard.Up
+	DOWN = dwindow.keyboard.Down
+	NUMPAD0 = dwindow.keyboard.Numpad0
+	NUMPAD1 = dwindow.keyboard.Numpad1
+	NUMPAD2 = dwindow.keyboard.Numpad2
+	NUMPAD3 = dwindow.keyboard.Numpad3
+	NUMPAD4 = dwindow.keyboard.Numpad4
+	NUMPAD5 = dwindow.keyboard.Numpad5
+	NUMPAD6 = dwindow.keyboard.Numpad6
+	NUMPAD7 = dwindow.keyboard.Numpad7
+	NUMPAD8 = dwindow.keyboard.Numpad8
+	NUMPAD9 = dwindow.keyboard.Numpad9
+	F1 = dwindow.keyboard.F1
+	F2 = dwindow.keyboard.F2
+	F3 = dwindow.keyboard.F3
+	F4 = dwindow.keyboard.F4
+	F5 = dwindow.keyboard.F5
+	F6 = dwindow.keyboard.F6
+	F7 = dwindow.keyboard.F7
+	F8 = dwindow.keyboard.F8
+	F9 = dwindow.keyboard.F9
+	F10 = dwindow.keyboard.F10
+	F11 = dwindow.keyboard.F11
+	F12 = dwindow.keyboard.F12
+	F13 = dwindow.keyboard.F13
+	F14 = dwindow.keyboard.F14
+	F15 = dwindow.keyboard.F15
+	PAUSE = dwindow.keyboard.Pause
+	KEY_COUNT = dwindow.keyboard.KeyCount
+
+	@classmethod
+	def is_key_pressed(cls, int key):
+		return dwindow.keyboard.IsKeyPressed(<dwindow.keyboard.Key>key)
+
+
+cdef class Joystick:
+	COUNT = dwindow.joystick.Count
+	BUTTON_COUNT = dwindow.joystick.ButtonCount
+	AXIS_COUNT = dwindow.joystick.AxisCount
+
+	X = dwindow.joystick.X
+	Y = dwindow.joystick.Y
+	Z = dwindow.joystick.Z
+	R = dwindow.joystick.R
+	U = dwindow.joystick.U
+	V = dwindow.joystick.V
+	POV_X = dwindow.joystick.PovX
+	POV_Y = dwindow.joystick.PovY
+
+	@classmethod
+	def is_connected(cls, unsigned int joystick):
+		return dwindow.joystick.isConnected(joystick)
+
+	@classmethod
+	def get_button_count(cls, unsigned int joystick):
+		return dwindow.joystick.getButtonCount(joystick)
+
+	@classmethod
+	def has_axis(cls, unsigned int joystick, int axis):
+		return dwindow.joystick.hasAxis(joystick, <dwindow.joystick.Axis>axis)
+
+	@classmethod
+	def is_button_pressed(cls, unsigned int joystick, unsigned int button):
+		return dwindow.joystick.isButtonPressed(joystick, button)
+
+	@classmethod
+	def get_axis_position(cls, unsigned int joystick, int axis):
+		return dwindow.joystick.getAxisPosition(joystick, <dwindow.joystick.Axis> axis)
+
+	@classmethod
+	def update(cls):
+		dwindow.joystick.update()
+
+
+cdef class Mouse:
+	LEFT = dwindow.mouse.Left
+	RIGHT = dwindow.mouse.Right
+	MIDDLE = dwindow.mouse.Middle
+	X_BUTTON1 = dwindow.mouse.XButton1
+	X_BUTTON2 = dwindow.mouse.XButton2
+	BUTTON_COUNT = dwindow.mouse.ButtonCount
+
+	@classmethod
+	def is_button_pressed(cls, int button):
+		return dwindow.mouse.isButtonPressed(<dwindow.mouse.Button>button)
+
+	@classmethod
+	def get_position(cls, Window window=None):
+		cdef dsystem.Vector2i p
+
+		if window is None: p = dwindow.mouse.getPosition()
+		else: p = dwindow.mouse.getPosition(window.this[0])
+
+		return Position(p.x, p.y)
+
+	@classmethod
+	def set_position(cls, position, Window window=None):
+		cdef dsystem.Vector2i p
+		p.x, p.y = position
+
+		if window is None: dwindow.mouse.setPosition(p)
+		else: dwindow.mouse.setPosition(p, window.this[0])
 
 
 #cdef class VideoMode:
@@ -777,146 +921,6 @@ cdef Time wrap_time(dsystem.Time* v):
 #    return ret
 
 
-#cdef class Window:
-#    cdef declwindow.Window *p_this
-    
-#    def __cinit__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
-#        if self.__class__ not in [RenderWindow, HandledWindow]: # sf.RenderWindow has its own constructor 
-#            encoded_title = title.encode(u"ISO-8859-1")
-#            if settings is None:
-#                self.p_this = new declwindow.Window(mode.p_this[0], encoded_title, style)
-#            else:
-#                self.p_this = new declwindow.Window(mode.p_this[0], encoded_title, style, settings.p_this[0])
-
-#    def __iter__(self):
-#        return self
-
-#    def __next__(self):
-#        cdef declwindow.Event p
-
-#        if self.p_this.PollEvent(p):
-#            return wrap_event_instance(&p)
-
-#        raise StopIteration
-
-#    property events:
-#        def __get__(self):
-#            return self
-            
-#    property active:
-#        def __set__(self, bint value):
-#            self.p_this.SetActive(value)
-
-#    property framerate_limit:
-#        def __set__(self, int value):
-#            self.p_this.SetFramerateLimit(value)
-
-#    property frame_time:
-#        def __get__(self):
-#            return self.p_this.GetFrameTime()
-
-#    property width:
-#        def __get__(self):
-#            return self.p_this.GetWidth()
-
-#        def __set__(self, unsigned int value):
-#            self.size = (value, self.height)
-
-#    property height:
-#        def __get__(self):
-#            return self.p_this.GetHeight()
-
-#        def __set__(self, unsigned int value):
-#            self.size = (self.width, value)
-
-#    property size:
-#        def __get__(self):
-#            return Size(self.width, self.height)
-
-#        def __set__(self, tuple value):
-#            x, y = value
-#            self.p_this.SetSize(x, y)
-
-#    property joystick_threshold:
-#        def __set__(self, bint value):
-#            self.p_this.SetJoystickThreshold(value)
-
-#    property key_repeat_enabled:
-#        def __set__(self, bint value):
-#            self.p_this.EnableKeyRepeat(value)
-
-#    property opened:
-#        def __get__(self):
-#            return self.p_this.IsOpened()
-
-#    property position:
-#        def __set__(self, tuple value):
-#            x, y = value
-#            self.p_this.SetPosition(x, y)
-
-#    property settings:
-#        def __get__(self):
-#            cdef declwindow.ContextSettings *p = new declwindow.ContextSettings()
-
-#            p[0] = self.p_this.GetSettings()
-
-#            return wrap_context_settings_instance(p)
-
-#    property show_mouse_cursor:
-#        def __set__(self, bint value):
-#            self.p_this.ShowMouseCursor(value)
-
-#    property system_handle:
-#        def __get__(self):
-#            return <unsigned long>self.p_this.GetSystemHandle()
-
-#    property title:
-#        def __set__(self, title):
-#            encoded_title = title.encode(u"ISO-8859-1")
-#            self.p_this.SetTitle(encoded_title)
-
-#    property vertical_synchronization:
-#        def __set__(self, bint value):
-#            self.p_this.EnableVerticalSync(value)
-
-#    def close(self):
-#        self.p_this.Close()
-
-#    def create(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
-#        encoded_title = title.encode(u"ISO-8859-1")
-#        if settings is None:
-#            self.p_this.Create(mode.p_this[0], encoded_title, style)
-#        else:
-#            self.p_this.Create(mode.p_this[0], encoded_title, style, settings.p_this[0])
-
-#    def display(self):
-#        self.p_this.Display()
-
-#    #def poll_event(self):
-#        #cdef declwindow.Event *p = new declwindow.Event()
-
-#        #if self.p_this.PollEvent(p[0]):
-#            #return wrap_event_instance(p)
-            
-#    #def wait_event(self):
-#        #cdef declwindow.Event *p = new declwindow.Event()
-
-#        #if self.p_this.WaitEvent(p[0]):
-#            #return wrap_event_instance(p)
-            
-#    def set_icon(self, unsigned int width, unsigned int height, char* pixels):
-#        self.p_this.SetIcon(width, height, <Uint8*>pixels)
-
-#    def show(self, bint show):
-#        self.p_this.Show(show)
-
-
-#cdef Window wrap_window_instance(declwindow.Window *p_cpp_instance):
-#    cdef Window ret = Window.__new__(Window)
-
-#    ret.p_this = p_cpp_instance
-
-#    return ret
 
 
 #########################################################################

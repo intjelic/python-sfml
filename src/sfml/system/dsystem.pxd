@@ -55,11 +55,11 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 #        float x
 #        float y
 
-#    cdef cppclass Vector2i:
-#        Vector2i()
-#        Vector2i(int, int)
-#        int x
-#        int y
+	cdef cppclass Vector2i:
+		Vector2i()
+		Vector2i(int, int)
+		int x
+		int y
 
 #    cdef cppclass Vector3f:
 #        Vector3f()
