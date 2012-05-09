@@ -61,6 +61,12 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		int x
 		int y
 
+	cdef cppclass Vector2u:
+		Vector2u()
+		Vector2u(unsigned int, unsigned int)
+		unsigned int x
+		unsigned int y
+
 #    cdef cppclass Vector3f:
 #        Vector3f()
 #        Vector3f(float, float, float)

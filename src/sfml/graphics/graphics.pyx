@@ -27,7 +27,6 @@ from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 cimport dsystem, dwindow
 
-#cimport declwindow
 #cimport declgraphics
 
 ########################################################################
@@ -317,7 +316,7 @@ cdef class Style:
 	DEFAULT = dwindow.style.Default
 
 
-class Event:
+cdef class Event:
 	CLOSED = dwindow.event.Closed
 	RESIZED = dwindow.event.Resized
 	LOST_FOCUS = dwindow.event.LostFocus
@@ -364,92 +363,6 @@ class Event:
 #
 #        return self.NAMES[self.type]
 
-
-## Create an Python Event object that matches the C++ object
-## by dynamically setting the corresponding attributes.
-#cdef wrap_event_instance(declwindow.Event *p_cpp_instance):
-#    cdef object ret = Event()
-#    cdef Uint32 code
-
-#    # Set the type
-#    if p_cpp_instance.Type == declwindow.event.Closed:
-#        ret.type = Event.CLOSED
-#    elif p_cpp_instance.Type == declwindow.event.KeyPressed:
-#        ret.type = Event.KEY_PRESSED
-#    elif p_cpp_instance.Type == declwindow.event.KeyReleased:
-#        ret.type = Event.KEY_RELEASED
-#    elif p_cpp_instance.Type == declwindow.event.Resized:
-#        ret.type = Event.RESIZED
-#    elif p_cpp_instance.Type == declwindow.event.TextEntered:
-#        ret.type = Event.TEXT_ENTERED
-#    elif p_cpp_instance.Type == declwindow.event.MouseButtonPressed:
-#        ret.type = Event.MOUSE_BUTTON_PRESSED
-#    elif p_cpp_instance.Type == declwindow.event.MouseButtonReleased:
-#        ret.type = Event.MOUSE_BUTTON_RELEASED
-#    elif p_cpp_instance.Type == declwindow.event.MouseMoved:
-#        ret.type = Event.MOUSE_MOVED
-#    elif p_cpp_instance.Type == declwindow.event.LostFocus:
-#        ret.type = Event.LOST_FOCUS
-#    elif p_cpp_instance.Type == declwindow.event.GainedFocus:
-#        ret.type = Event.GAINED_FOCUS
-#    elif p_cpp_instance.Type == declwindow.event.MouseWheelMoved:
-#        ret.type = Event.MOUSE_WHEEL_MOVED
-#    elif p_cpp_instance.Type == declwindow.event.MouseMoved:
-#        ret.type = Event.MOUSE_MOVED
-#    elif p_cpp_instance.Type == declwindow.event.MouseEntered:
-#        ret.type = Event.MOUSE_ENTERED
-#    elif p_cpp_instance.Type == declwindow.event.MouseLeft:
-#        ret.type = Event.MOUSE_LEFT
-#    elif p_cpp_instance.Type == declwindow.event.JoystickButtonPressed:
-#        ret.type = Event.JOYSTICK_BUTTON_PRESSED
-#    elif p_cpp_instance.Type == declwindow.event.JoystickButtonReleased:
-#        ret.type = Event.JOYSTICK_BUTTON_RELEASED
-#    elif p_cpp_instance.Type == declwindow.event.JoystickMoved:
-#        ret.type = Event.JOYSTICK_MOVED
-#    elif p_cpp_instance.Type == declwindow.event.JoystickConnected:
-#        ret.type = Event.JOYSTICK_CONNECTED
-#    elif p_cpp_instance.Type == declwindow.event.JoystickDisconnected:
-#        ret.type = Event.JOYSTICK_DISCONNECTED
-
-#    # Set other attributes if needed
-#    if p_cpp_instance.Type == declwindow.event.Resized:
-#        ret.width = p_cpp_instance.Size.Width
-#        ret.height = p_cpp_instance.Size.Height
-#    elif p_cpp_instance.Type == declwindow.event.TextEntered:
-#        code = p_cpp_instance.Text.Unicode
-#        ret.unicode = ((<char*>&code)[:4]).decode('utf-32-le')
-#    elif (p_cpp_instance.Type == declwindow.event.KeyPressed or
-#          p_cpp_instance.Type == declwindow.event.KeyReleased):
-#        ret.code = p_cpp_instance.Key.Code
-#        ret.alt = p_cpp_instance.Key.Alt
-#        ret.control = p_cpp_instance.Key.Control
-#        ret.shift = p_cpp_instance.Key.Shift
-#        ret.system = p_cpp_instance.Key.System
-#    elif (p_cpp_instance.Type == declwindow.event.MouseButtonPressed or
-#          p_cpp_instance.Type == declwindow.event.MouseButtonReleased):
-#        ret.button = p_cpp_instance.MouseButton.Button
-#        ret.x = p_cpp_instance.MouseButton.X
-#        ret.y = p_cpp_instance.MouseButton.Y
-#    elif p_cpp_instance.Type == declwindow.event.MouseMoved:
-#        ret.position = Position(p_cpp_instance.MouseMove.X, p_cpp_instance.MouseMove.Y)
-#    elif p_cpp_instance.Type == declwindow.event.MouseWheelMoved:
-#        ret.delta = p_cpp_instance.MouseWheel.Delta
-#        ret.x = p_cpp_instance.MouseWheel.X
-#        ret.y = p_cpp_instance.MouseWheel.Y
-#    elif (p_cpp_instance.Type == declwindow.event.JoystickButtonPressed or
-#          p_cpp_instance.Type == declwindow.event.JoystickButtonReleased):
-#        ret.joystick_id = p_cpp_instance.JoystickButton.JoystickId
-#        ret.button = p_cpp_instance.JoystickButton.Button
-#    elif p_cpp_instance.Type == declwindow.event.JoystickMoved:
-#        ret.joystick_id = p_cpp_instance.JoystickMove.JoystickId
-#        ret.axis = p_cpp_instance.JoystickMove.Axis
-#        ret.position = p_cpp_instance.JoystickMove.Position
-#    elif p_cpp_instance.Type == declwindow.event.JoystickConnected:
-#        ret.joystick_id = p_cpp_instance.JoystickConnect.JoystickId
-#    elif p_cpp_instance.Type == declwindow.event.JoystickDisconnected:
-#        ret.joystick_id = p_cpp_instance.JoystickConnect.JoystickId
-
-#    return ret
 
 
 cdef class VideoMode:
@@ -590,24 +503,15 @@ cdef class ContextSettings:
 			self.this.minorVersion = value
 
 
-#cdef ContextSettings wrap_context_settings_instance(
-#    declwindow.ContextSettings *p_cpp_instance):
-#    cdef ContextSettings ret = ContextSettings.__new__(ContextSettings)
-
-#    ret.p_this = p_cpp_instance
-
-#    return ret
-
 cdef class Window:
 	cdef dwindow.Window *this
 
-#    def __cinit__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
-#        if self.__class__ not in [RenderWindow, HandledWindow]: # sf.RenderWindow has its own constructor 
-#            encoded_title = title.encode(u"ISO-8859-1")
-#            if settings is None:
-#                self.p_this = new declwindow.Window(mode.p_this[0], encoded_title, style)
-#            else:
-#                self.p_this = new declwindow.Window(mode.p_this[0], encoded_title, style, settings.p_this[0])
+	def __cinit__(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
+		if self.__class__ not in [RenderWindow, HandledWindow]: # sf.RenderWindow has its own constructor 
+			encoded_title = title.encode(u"ISO-8859-1")
+			
+			if not settings: self.this = new dwindow.Window(mode.this[0], encoded_title, style)
+			else: self.this = new dwindow.Window(mode.this[0], encoded_title, style, settings.this[0])
 
 #    def __iter__(self):
 #        return self
@@ -624,85 +528,6 @@ cdef class Window:
 #        def __get__(self):
 #            return self
             
-#    property active:
-#        def __set__(self, bint value):
-#            self.p_this.SetActive(value)
-
-#    property framerate_limit:
-#        def __set__(self, int value):
-#            self.p_this.SetFramerateLimit(value)
-
-#    property frame_time:
-#        def __get__(self):
-#            return self.p_this.GetFrameTime()
-
-#    property width:
-#        def __get__(self):
-#            return self.p_this.GetWidth()
-
-#        def __set__(self, unsigned int value):
-#            self.size = (value, self.height)
-
-#    property height:
-#        def __get__(self):
-#            return self.p_this.GetHeight()
-
-#        def __set__(self, unsigned int value):
-#            self.size = (self.width, value)
-
-#    property size:
-#        def __get__(self):
-#            return Size(self.width, self.height)
-
-#        def __set__(self, tuple value):
-#            x, y = value
-#            self.p_this.SetSize(x, y)
-
-#    property joystick_threshold:
-#        def __set__(self, bint value):
-#            self.p_this.SetJoystickThreshold(value)
-
-#    property key_repeat_enabled:
-#        def __set__(self, bint value):
-#            self.p_this.EnableKeyRepeat(value)
-
-#    property opened:
-#        def __get__(self):
-#            return self.p_this.IsOpened()
-
-#    property position:
-#        def __set__(self, tuple value):
-#            x, y = value
-#            self.p_this.SetPosition(x, y)
-
-#    property settings:
-#        def __get__(self):
-#            cdef declwindow.ContextSettings *p = new declwindow.ContextSettings()
-
-#            p[0] = self.p_this.GetSettings()
-
-#            return wrap_context_settings_instance(p)
-
-#    property show_mouse_cursor:
-#        def __set__(self, bint value):
-#            self.p_this.ShowMouseCursor(value)
-
-#    property system_handle:
-#        def __get__(self):
-#            return <unsigned long>self.p_this.GetSystemHandle()
-
-#    property title:
-#        def __set__(self, title):
-#            encoded_title = title.encode(u"ISO-8859-1")
-#            self.p_this.SetTitle(encoded_title)
-
-#    property vertical_synchronization:
-#        def __set__(self, bint value):
-#            self.p_this.EnableVerticalSync(value)
-
-#    def close(self):
-#        self.p_this.Close()
-
 #    def create(self, VideoMode mode, title, int style=Style.DEFAULT, ContextSettings settings=None):
 #        encoded_title = title.encode(u"ISO-8859-1")
 #        if settings is None:
@@ -710,35 +535,124 @@ cdef class Window:
 #        else:
 #            self.p_this.Create(mode.p_this[0], encoded_title, style, settings.p_this[0])
 
-#    def display(self):
-#        self.p_this.Display()
 
-#    #def poll_event(self):
-#        #cdef declwindow.Event *p = new declwindow.Event()
+	def close(self):
+		self.this.close()
 
-#        #if self.p_this.PollEvent(p[0]):
-#            #return wrap_event_instance(p)
-            
-#    #def wait_event(self):
-#        #cdef declwindow.Event *p = new declwindow.Event()
+	property opened:
+		def __get__(self):
+			return self.this.isOpen()
+			
+	property settings:
+		def __get__(self):
+			cdef dwindow.ContextSettings *p = new dwindow.ContextSettings()
+			p[0] = self.this.getSettings()
+			return wrap_contextsettings(p)
 
-#        #if self.p_this.WaitEvent(p[0]):
-#            #return wrap_event_instance(p)
-            
+	def poll_event(self):
+		cdef dwindow.Event *p = new dwindow.Event()
+
+		if self.this.pollEvent(p[0]):
+			return wrap_event(p)
+			
+	def wait_event(self):
+		cdef dwindow.Event *p = new dwindow.Event()
+
+		if self.this.waitEvent(p[0]):
+			return wrap_event(p)
+
+	property position:
+		def __get__(self):
+			return Position(self.this.getPosition().x, self.this.getPosition().y)
+
+		def __set__(self, position):
+			self.this.setPosition(position_to_vector2i(position))
+
+	property size:
+		def __get__(self):
+			return Size(self.this.getSize().x, self.this.getSize().y)
+
+		def __set__(self, size):
+			self.this.setSize(size_to_vector2u(size))
+			
+	property title:
+		def __set__(self, title):
+			encoded_title = title.encode(u"ISO-8859-1")
+			self.this.setTitle(encoded_title)
+			
 #    def set_icon(self, unsigned int width, unsigned int height, char* pixels):
 #        self.p_this.SetIcon(width, height, <Uint8*>pixels)
 
-#    def show(self, bint show):
-#        self.p_this.Show(show)
+	#property visible:
+		#def __get__(self): pass
+		#def __set__(self, visible): pass
+	
+	#def hide(self): pass
+	#def show(self): pass
+
+	property vertical_synchronization:
+		def __set__(self, bint value):
+			self.p_this.EnableVerticalSync(value)
+
+	property mouse_cursor_visible:
+		def __get__(self):
+			return NotImplemented
+
+		def __set__(self, bint mouse_cursor_visible):
+			self.this.setMouseCursorVisible(mouse_cursor_visible)
+
+	property key_repeat_enabled:
+		def __get__(self):
+			return NotImplemented
+			
+		def __set__(self, bint key_repeat_enabled):
+			self.this.setKeyRepeatEnabled(key_repeat_enabled)
+
+	property framerate_limit:
+		def __get__(self):
+			return NotImplemented
+			
+		def __set__(self, unsigned int framerate_limit):
+			self.this.setFramerateLimit(framerate_limit)
+			
+	property joystick_threshold:
+		def __get__(self):
+			return NotImplemented
+
+		def __set__(self, float joystick_threshold):
+			self.this.setJoystickThreshold(joystick_threshold)
+
+	property active:
+		def __get__(self):
+			return NotImplemented
+			
+		def __set__(self, bint active):
+			self.this.setActive(active)
+			
+	def display(self):
+		self.this.display()
+
+	property system_handle:
+		def __get__(self):
+			return <unsigned long>self.this.getSystemHandle()
+
+
+cdef dsystem.Vector2i position_to_vector2i(position):
+	x, y = position
+	return dsystem.Vector2i(x, y)
+
+cdef dsystem.Vector2u size_to_vector2u(size):
+	w, h = size
+	return dsystem.Vector2u(w, h)
 
 
 #cdef Window wrap_window_instance(declwindow.Window *p_cpp_instance):
 #    cdef Window ret = Window.__new__(Window)
-
 #    ret.p_this = p_cpp_instance
-
 #    return ret
 
+cdef class HandledWindow: pass
+cdef class RenderWindow: pass
 
 cdef class Keyboard:
 	A = dwindow.keyboard.A
@@ -916,6 +830,61 @@ cdef class Mouse:
 
 		if window is None: dwindow.mouse.setPosition(p)
 		else: dwindow.mouse.setPosition(p, window.this[0])
+
+
+# Create an Python Event object that matches the C++ object
+# by dynamically setting the corresponding attributes.
+cdef wrap_event(dwindow.Event *cpp_event):
+	cdef Event event = Event.__new__(Event)
+	cdef Uint32 code
+		
+	event.type = <int>cpp_event.Type
+
+	# Set other attributes if needed
+	if cpp_event.Type == dwindow.event.Resized:
+		event.width = cpp_event.size.width
+		event.height = cpp_event.size.height
+		
+	elif cpp_event.Type == dwindow.event.TextEntered:
+		code = cpp_event.text.unicode
+		event.unicode = ((<char*>&code)[:4]).decode('utf-32-le')
+		
+	elif cpp_event.Type == dwindow.event.KeyPressed or cpp_event.Type == dwindow.event.KeyReleased:
+		event.code = cpp_event.key.code
+		event.alt = cpp_event.key.alt
+		event.control = cpp_event.key.control
+		event.shift = cpp_event.key.shift
+		event.system = cpp_event.key.system
+		
+	elif cpp_event.Type == dwindow.event.MouseButtonPressed or cpp_event.Type == dwindow.event.MouseButtonReleased:
+		event.button = cpp_event.mouseButton.button
+		event.position = Position(cpp_event.mouseButton.x, cpp_event.mouseButton.y)
+
+	elif cpp_event.Type == dwindow.event.MouseMoved:
+		event.position = Position(cpp_event.mouseMove.x, cpp_event.mouseMove.y)
+		
+	elif cpp_event.Type == dwindow.event.MouseWheelMoved:
+		event.delta = cpp_event.mouseWheel.delta
+		event.position = Position(cpp_event.mouseWheel.x, cpp_event.mouseWheel.y)
+		
+	elif cpp_event.Type == dwindow.event.JoystickButtonPressed or cpp_event.Type == dwindow.event.JoystickButtonReleased:
+		event.joystick_id = cpp_event.joystickButton.joystickId
+		event.button = cpp_event.joystickButton.button
+		
+	elif cpp_event.Type == dwindow.event.JoystickMoved:
+		event.joystick_id = cpp_event.joystickMove.joystickId
+		event.axis = cpp_event.joystickMove.axis
+		event.position = cpp_event.joystickMove.position
+		
+	elif cpp_event.Type == dwindow.event.JoystickConnected or  cpp_event.Type == dwindow.event.JoystickDisconnected:
+		event.joystick_id = cpp_event.joystickConnect.joystickId
+
+	return event
+
+cdef ContextSettings wrap_contextsettings(dwindow.ContextSettings *v):
+	cdef ContextSettings r = ContextSettings.__new__(ContextSettings)
+	r.this = v
+	return r
 
 
 #########################################################################
