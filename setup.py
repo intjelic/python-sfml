@@ -12,7 +12,7 @@ import sys
 from distutils.core import setup
 from distutils.extension import Extension
 
-USE_CYTHON = True
+USE_CYTHON = False
 
 if USE_CYTHON:
     import Cython.Distutils
@@ -34,76 +34,53 @@ if USE_CYTHON:
     network_mod = Extension('sfml.network.network', ['src/sfml/network/network.pyx'], network_dir, language='c++', libraries=network_libs)
     
 else:
-    input()
     x11_libs = ['X11']
-    x11_mod = Extension('sfml.sfml.x11', ['src/x11/x11.cpp'], libraries=x11_libs)
+    x11_mod = Extension('sfml.sfml.x11', ['src/sfml/x11/x11.c'], libraries=x11_libs)
 
     graphics_libs = ['sfml-system', 'sfml-window', 'sfml-graphics']
-    graphics_mod = Extension('sfml.graphics.graphics', ['src/graphics/graphics.cpp', 'src/graphics/hacks.cpp'], libraries=graphics_libs)
+    graphics_mod = Extension('sfml.graphics.graphics', ['src/sfml/graphics/graphics.cpp', 'src/sfml/graphics/hacks.cpp'], libraries=graphics_libs)
 
     audio_libs = ['sfml-audio']
-    audio_mod = Extension('sfml.audio.audio', ['src/audio/audio.cpp'], libraries=audio_libs)
+    audio_mod = Extension('sfml.audio.audio', ['src/sfml/audio/audio.cpp'], libraries=audio_libs)
 
     network_libs = ['sfml-network']
-    network_mod = Extension('sfml.network.network', ['src/network/network.cpp'], libraries=network_libs)
+    network_mod = Extension('sfml.network.network', ['src/sfml/network/network.cpp'], libraries=network_libs)
     
 ext_modules = [x11_mod, graphics_mod, audio_mod, network_mod]
 
 with open('README', 'r') as f:
     long_description = f.read()
-    
+
 major, minor, micro, releaselevel, serial = sys.version_info
     
-if major == 2:      
-  kwargs = dict(name='SFML2',
-                ext_modules=ext_modules,
-                package_dir={'': 'src'},
-                packages=['sfml', 'sfml.x11', 'sfml.system', 'sfml.window', 'sfml.graphics', 'sfml.audio', 'sfml.network'],
-                version='0.9.0',
-                description='A non-official Python binding for SFML 2',
-                long_description=long_description,
-                author='Jonathan De Wachter'.decode(),
-                author_email='dewachter.jonathan@gmail.com',
-                url='http://dewachterjonathan.be/python-sfml2',
-                license='GPLv3',
-                classifiers=[
-                    'Development Status :: 3 - Alpha',
-                    'Intended Audience :: Developers',
-                    'Operating System :: OS Independent',
-                    'Programming Language :: Cython',
-                    'Topic :: Games/Entertainment',
-                    'Topic :: Multimedia',
-                    'Topic :: Software Development :: Libraries :: Python Modules'
-                    ])
-
-  if USE_CYTHON:
-      kwargs.update(cmdclass={'build_ext': Cython.Distutils.build_ext})
-
-  setup(**kwargs)
-
+if major == 2: 
+    author='Jonathan De Wachter'.decode()
 else:
-  kwargs = dict(name='SFML2',
-                ext_modules=ext_modules,
-                package_dir={'': 'src'},
-                packages=['sfml', 'sfml.x11', 'sfml.system', 'sfml.window', 'sfml.graphics', 'sfml.audio', 'sfml.network'],
-                version='0.9.0',
-                description='A non-official Python binding for SFML 2',
-                long_description=long_description,
-                author='Jonathan De Wachter',
-                author_email='dewachter.jonathan@gmail.com',
-                url='https://dewachterjonathan.be/python3-sfml2',
-                license='GPLv3',
-                classifiers=[
-                    'Development Status :: 3 - Alpha',
-                    'Intended Audience :: Developers',
-                    'Operating System :: OS Independent',
-                    'Programming Language :: Cython',
-                    'Topic :: Games/Entertainment',
-                    'Topic :: Multimedia',
-                    'Topic :: Software Development :: Libraries :: Python Modules'
-                    ])
+    author='Jonathan De Wachter'
 
-  if USE_CYTHON:
-      kwargs.update(cmdclass={'build_ext': Cython.Distutils.build_ext})
+kwargs = dict(name='pySFML2',
+            ext_modules=ext_modules,
+            package_dir={'': 'src'},
+            packages=['sfml', 'sfml.x11', 'sfml.system', 'sfml.window', 'sfml.graphics', 'sfml.audio', 'sfml.network'],
+            version='0.9.0',
+            description='A non-official Python binding for SFML2',
+            long_description=long_description,
+            author=author,
+            author_email='dewachter.jonathan@gmail.com',
+            url='http://openhelbreath.be/python-sfml2',
+            license='GPLv3',
+            classifiers=[
+                'Development Status :: 5 - Production/Stable',
+                'Intended Audience :: Developers',
+                'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',                   
+                'Operating System :: OS Independent',
+                'Programming Language :: Cython',
+                'Topic :: Games/Entertainment',
+                'Topic :: Multimedia',
+                'Topic :: Software Development :: Libraries :: Python Modules'
+                ])
 
-  setup(**kwargs)
+if USE_CYTHON:
+  kwargs.update(cmdclass={'build_ext': Cython.Distutils.build_ext})
+
+setup(**kwargs)
