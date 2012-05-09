@@ -22,59 +22,38 @@ from libc.stdlib cimport malloc, free
 from libcpp.vector cimport vector
 from cython.operator cimport preincrement as preinc, dereference as deref
 
-#from declsystem cimport Int16, Uint8, Uint32
-#cimport declsystem
+from dsystem cimport Int8, Int16, Int32, Int64
+from dsystem cimport Uint8, Uint16, Uint32, Uint64
+cimport dsystem
+
 #cimport declwindow
 #cimport declgraphics
-
 
 ########################################################################
 #                           System Module                              #
 ########################################################################
 
 
-#cdef error_messages = {}
-#cdef error_messages_lock = threading.Lock()
-
-
-## TODO: apparently functions should be static in Python modules, see
-## http://docs.python.org/extending/extending.html#providing-a-c-api-for-an-extension-module.
-#cdef extern void set_error_message(char* message):
-#    ident = threading.current_thread().ident
-
-#    with error_messages_lock:
-#        error_messages[ident] = message
-
-
-#declgraphics.replace_error_handler()
-
-
-## Return the last error message for the current thread, or None.  Will
-## return None after you consumed the latest message, until a new
-## message is added. The goal is to avoid showing the same message
-## twice.
-#cdef object get_last_error_message():
-#    ident = threading.current_thread().ident
-
-#    with error_messages_lock:
-#        if ident in error_messages:
-#            message = error_messages[ident]
-#            del error_messages[ident]
-#            return message
-
-#    return None
-
 class SFMLException(Exception): pass
-#class SFMLException(Exception):
-#    def __init__(self):
-#        message = get_last_error_message()
 
-#        if message is None:
-#            Exception.__init__(self)
-#        else:
-#            Exception.__init__(self, message.decode('UTF-8'))
-
-
+cdef class Time:
+    cdef dsystem.Time *this
+    
+    def __cinit__(self):
+        self.this = new dsystem.Time()
+        
+    def __dealloc__(self):
+        del self.this
+        
+    def as_seconds(self):
+        return self.this.asSeconds()
+        
+    def as_milliseconds(self):
+        return self.this.asMilliseconds()
+        
+    def as_microseconds(self):
+        return self.this.asMicroseconds()
+        
 #def sleep(Uint32 duration):
 #    declsystem.Sleep(duration)
 
