@@ -18,7 +18,6 @@ except ImportError(e):
         print("Install PyQt4 and sip from Riverbank.The package name is python-pyqt4 and python-sip")
         
 import sfml as sf
-import sfml.x11.x11 as x11
 
 class QSFMLCanvas(QWidget):
 	def __init__(self, parent, position, size, frameTime=0):
@@ -70,7 +69,7 @@ class QSFMLCanvas(QWidget):
 			# under X11, we need to flush the commands sent to the server 
 			# to ensure that SFML will get an updated view of the windows
 			# create the SFML window with the widget handle
-			import sfml.x11 as x11
+			import sfml.x11.x11 as x11
 			display = sip.unwrapinstance(QX11Info.display())
 			x11.flush_screen(display)
 			

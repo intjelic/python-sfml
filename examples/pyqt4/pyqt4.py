@@ -28,12 +28,12 @@ class MyCanvas(QSFMLCanvas):
         self.image = sf.Image.load_from_file("data/head_kid.png")
         self.texture = sf.Texture.load_from_image(self.image)
         self.sprite = sf.Sprite(self.texture)
-        self.sprite.position = self.texture.size // (2, 2)
+        self.sprite.position = self.texture.size // sf.Size(2, 2)
         
     def onUpdate(self):
         self.clear(sf.Color.CYAN)
         self.sprite.rotate(0.5)
-        self.sprite.origin = self.texture.size // (2, 2)
+        self.sprite.origin = self.texture.size // sf.Size(2, 2)
         self.draw(self.sprite)
             
 app = QApplication(sys.argv)

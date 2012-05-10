@@ -6,7 +6,7 @@ released under the license GPLv3.
 A python binding is really the perfect way to sketch a software using SFML.
 
 By combining the strength of SFML with the ease of the python language,
-we can provide an amazing tool to build game quickly.
+we can provide an amazing tool to build multimedia software.
 
 Contents:
 ---------

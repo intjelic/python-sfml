@@ -64,8 +64,8 @@ may pass a tuple as well.
 
 Whatever it happens, sf.Vector2f or sf.Vector2i are still available but
 they are strongly depreciated and should be use only when it's about a part
-of the binding which is in under developement or maybe when a "position" 
-strickly-speaking makes no sens.
+of the binding which is in under developement (or maybe when a "position" 
+strickly-speaking makes no sens).
 
 The second thing is about a new class named sf.Size. This class which 
 doesn't exist in SFML acts nearly like sf.Position but it can't have 
@@ -81,21 +81,5 @@ These classes put typeness and easiness together.
 
 Next version
 ------------
-I planned to set-up a non-official debian repository where people can
-get the lastest version of SFML2 in C++ and this project with regularly
-update of theese. It allows to synchronize all projects (user's projects
-and this binding which can't be updated everytime a chagne is made in the
-SFML2 branch).
-
-
-I invite you to have a look at the bug tracker of this project located
-here: http://www.dewachterjonathan.be/flyspray/ (you have to choose the
-right project which is "python-sfml2".
-
-Last updates
-------------
-Here i'm going to write what i'm currently working on.
-
-Next version
-------------
-
+I hope to provide for the next version (v1.0) a more stable binding which
+supports SFML2.0 with a full documentation and all tutorials translated.
