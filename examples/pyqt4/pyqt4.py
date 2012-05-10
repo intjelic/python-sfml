@@ -20,7 +20,7 @@ import sfml as sf
 from qsfml_canvas import QSFMLCanvas
 
 
-class MyCyanCanvas(QSFMLCanvas):
+class MyCanvas(QSFMLCanvas):
     def __init__(self, parent, position, size):
         QSFMLCanvas.__init__(self, parent, position, size)
      
@@ -29,6 +29,7 @@ class MyCyanCanvas(QSFMLCanvas):
         self.texture = sf.Texture.load_from_image(self.image)
         self.sprite = sf.Sprite(self.texture)
         self.sprite.position = self.texture.size // (2, 2)
+        
     def onUpdate(self):
         self.clear(sf.Color.CYAN)
         self.sprite.rotate(0.5)
@@ -44,7 +45,7 @@ mainFrame.resize(400, 400)
 mainFrame.show()
 
 # create a SFML view inside the main frame
-SFMLView = MyCyanCanvas(mainFrame, QPoint(20, 20), QSize(360, 360))
+SFMLView = MyCanvas(mainFrame, QPoint(20, 20), QSize(360, 360))
 SFMLView.show()
 
 app.exec_()

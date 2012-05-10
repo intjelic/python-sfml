@@ -19,7 +19,7 @@ if USE_CYTHON:
   
     x11_dir = ['src/sfml/x11']
     x11_libs = ['X11']
-    x11_mod = Extension('sfml.x11', ['src/sfml/x11/x11.pyx'], x11_dir, libraries=x11_libs)
+    x11_mod = Extension('sfml.x11.x11', ['src/sfml/x11/x11.pyx'], x11_dir, libraries=x11_libs)
 
     graphics_dir = ['src/sfml/system', 'src/sfml/window']
     graphics_libs = ['sfml-system', 'sfml-window', 'sfml-graphics']
@@ -35,7 +35,7 @@ if USE_CYTHON:
     
 else:
     x11_libs = ['X11']
-    x11_mod = Extension('sfml.sfml.x11', ['src/sfml/x11/x11.c'], libraries=x11_libs)
+    x11_mod = Extension('sfml.x11.x11', ['src/sfml/x11/x11.c'], libraries=x11_libs)
 
     graphics_libs = ['sfml-system', 'sfml-window', 'sfml-graphics']
     graphics_mod = Extension('sfml.graphics.graphics', ['src/sfml/graphics/graphics.cpp', 'src/sfml/graphics/hacks.cpp'], libraries=graphics_libs)

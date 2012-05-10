@@ -18,6 +18,7 @@ except ImportError(e):
         print("Install PyQt4 and sip from Riverbank.The package name is python-pyqt4 and python-sip")
         
 import sfml as sf
+import sfml.x11.x11 as x11
 
 class QSFMLCanvas(QWidget):
 	def __init__(self, parent, position, size, frameTime=0):
