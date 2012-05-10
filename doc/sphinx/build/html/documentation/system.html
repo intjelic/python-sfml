@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>System &mdash; pySFML 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pySFML 0.9 documentation" href="../index.html" />
+    <link rel="up" title="Documentation" href="../documentation.html" />
+    <link rel="next" title="Window" href="window.html" />
+    <link rel="prev" title="Documentation" href="../documentation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="window.html" title="Window"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../documentation.html" title="Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pySFML 0.9 documentation</a> &raquo;</li>
+          <li><a href="../documentation.html" accesskey="U">Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-sf.system">
+<span id="system"></span><h1>System<a class="headerlink" href="#module-sf.system" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="sf.system.sleep">
+<tt class="descclassname">sf.system.</tt><tt class="descname">sleep</tt><big>(</big><em>time</em><big>)</big><a class="headerlink" href="#sf.system.sleep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the current thread sleep for a given duration.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.system.Clock">
+<em class="property">class </em><tt class="descclassname">sf.system.</tt><tt class="descname">Clock</tt><a class="headerlink" href="#sf.system.Clock" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Utility class for manipulating time.</p>
+<p>sf::Clock is a lightweight class for measuring time.</p>
+<p>Its resolution depends on the underlying OS, but you can generally expect a 1 ms resolution.</p>
+</div></blockquote>
+<dl class="method">
+<dt id="sf.system.Clock.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.system.Clock.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the time elapsed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Clock.elapsed_time">
+<tt class="descname">elapsed_time</tt><a class="headerlink" href="#sf.system.Clock.elapsed_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restart the timer.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.system.Position">
+<em class="property">class </em><tt class="descclassname">sf.system.</tt><tt class="descname">Position</tt><big>(</big><em>x=0</em>, <em>y=0</em><big>)</big><a class="headerlink" href="#sf.system.Position" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.system.Position.x">
+<tt class="descname">x</tt><a class="headerlink" href="#sf.system.Position.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Position.y">
+<tt class="descname">y</tt><a class="headerlink" href="#sf.system.Position.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.system.Size">
+<em class="property">class </em><tt class="descclassname">sf.system.</tt><tt class="descname">Size</tt><big>(</big><em>width=0</em>, <em>height=0</em><big>)</big><a class="headerlink" href="#sf.system.Size" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.system.Size.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.system.Size.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Size.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.system.Size.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.system.Rectangle">
+<em class="property">class </em><tt class="descclassname">sf.system.</tt><tt class="descname">Rectangle</tt><big>(</big><em>width=0</em>, <em>=height0</em><big>)</big><a class="headerlink" href="#sf.system.Rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.system.Rectangle.position">
+<tt class="descname">position</tt><a class="headerlink" href="#sf.system.Rectangle.position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Rectangle.size">
+<tt class="descname">size</tt><a class="headerlink" href="#sf.system.Rectangle.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Rectangle.x">
+<tt class="descname">x</tt><a class="headerlink" href="#sf.system.Rectangle.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Rectangle.y">
+<tt class="descname">y</tt><a class="headerlink" href="#sf.system.Rectangle.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Rectangle.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.system.Rectangle.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Rectangle.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.system.Rectangle.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Rectangle.left">
+<tt class="descname">left</tt><a class="headerlink" href="#sf.system.Rectangle.left" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Rectangle.top">
+<tt class="descname">top</tt><a class="headerlink" href="#sf.system.Rectangle.top" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Rectangle.rigth">
+<tt class="descname">rigth</tt><a class="headerlink" href="#sf.system.Rectangle.rigth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.system.Rectangle.bottom">
+<tt class="descname">bottom</tt><a class="headerlink" href="#sf.system.Rectangle.bottom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.system.Rectangle.contains">
+<em class="property">classmethod </em><tt class="descname">contains</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#sf.system.Rectangle.contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a point is inside the rectangle&#8217;s area.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>point</strong> (<em>sf.Position</em>) &#8211; Point to test</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.system.Rectangle.intersects">
+<em class="property">classmethod </em><tt class="descname">intersects</tt><big>(</big><em>rectangle</em><big>)</big><a class="headerlink" href="#sf.system.Rectangle.intersects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the intersection between two rectangles.</p>
+<p>This overload returns the overlapped rectangle if an intersection is found.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rectangle</strong> (<em>sf.Rectangle</em>) &#8211; Rectangle to test</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Rectangle filled with the intersection or None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">sf.Rectangle or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../documentation.html"
+                        title="previous chapter">Documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="window.html"
+                        title="next chapter">Window</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/documentation/system.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="window.html" title="Window"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../documentation.html" title="Documentation"
+             >previous</a> |</li>
+        <li><a href="../index.html">pySFML 0.9 documentation</a> &raquo;</li>
+          <li><a href="../documentation.html" >Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

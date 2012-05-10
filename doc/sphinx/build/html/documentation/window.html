@@ -1,0 +1,870 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Window &mdash; pySFML 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pySFML 0.9 documentation" href="../index.html" />
+    <link rel="up" title="Documentation" href="../documentation.html" />
+    <link rel="next" title="Graphics" href="graphics.html" />
+    <link rel="prev" title="System" href="system.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="graphics.html" title="Graphics"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="system.html" title="System"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pySFML 0.9 documentation</a> &raquo;</li>
+          <li><a href="../documentation.html" accesskey="U">Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-sf.window">
+<span id="window"></span><h1>Window<a class="headerlink" href="#module-sf.window" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="sf.window.Style">
+<em class="property">class </em><tt class="descclassname">sf.window.</tt><tt class="descname">Style</tt><a class="headerlink" href="#sf.window.Style" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class define the following constantes:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Style</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>NONE</td>
+<td>No border / title bar (this flag and all others are mutually exclusive).</td>
+</tr>
+<tr class="row-odd"><td>TITLEEBAR</td>
+<td>Title bar + fixed border.</td>
+</tr>
+<tr class="row-even"><td>RESIZE</td>
+<td>Titlebar + close button.</td>
+</tr>
+<tr class="row-odd"><td>CLOSE</td>
+<td>Request a page&#8217;s header only.</td>
+</tr>
+<tr class="row-even"><td>FULLSCREEN</td>
+<td>Fullscreen mode (this flag and all others are mutually exclusive)</td>
+</tr>
+<tr class="row-odd"><td>DEFAULT</td>
+<td>Default window style.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.window.Event">
+<em class="property">class </em><tt class="descclassname">sf.window.</tt><tt class="descname">Event</tt><a class="headerlink" href="#sf.window.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines a system event and its parameters.</p>
+<p>sf.Event holds all the informations about a system event that just
+happened.</p>
+<p>Events are retrieved using the sf.Window.poll_event() and
+sf.Window.wait_event() functions.</p>
+<p>A sf.Event instance contains the type of the event (mouse moved, key
+pressed, window closed, ...) as well as the details about this
+particular event.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+   <span class="c"># request for closing the window</span>
+   <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">CLOSED</span><span class="p">:</span>
+      <span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+   <span class="c"># the escape key was pressed</span>
+   <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">KEY_PRESSED</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Keyboard</span><span class="o">.</span><span class="n">ESCAPE</span><span class="p">:</span>
+      <span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+   <span class="c"># the window was resized</span>
+   <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">RESIZED</span><span class="p">:</span>
+      <span class="n">do_something_with_the_new_size</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
+   <span class="c"># etc ...</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="sf.window.Event.NAMES">
+<tt class="descname">NAMES</tt><a class="headerlink" href="#sf.window.Event.NAMES" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class attribute that maps event codes to a short description:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">NAMES</span><span class="p">[</span><span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">CLOSED</span><span class="p">]</span>
+<span class="go">&#39;Closed&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">NAMES</span><span class="p">[</span><span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">KEY_PRESSED</span><span class="p">]</span>
+<span class="go">&#39;Key pressed&#39;</span>
+</pre></div>
+</div>
+<p>If you want to print this information about a specific object,
+you can simply use <tt class="docutils literal"><span class="pre">print</span></tt>; <tt class="docutils literal"><span class="pre">Event.__str__()</span></tt> will look up
+the description for you.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.window.Joystick">
+<em class="property">class </em><tt class="descclassname">sf.window.</tt><tt class="descname">Joystick</tt><a class="headerlink" href="#sf.window.Joystick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give access to the real-time state of the joysticks.</p>
+<p>sf.Joystick provides an interface to the state of the joysticks.</p>
+<p>It only contains static functions, so it&#8217;s not meant to be
+instanciated. Instead, each joystick is identified by an index that
+is passed to the functions of this class.</p>
+<p>This class allows users to query the state of joysticks at any time
+and directly, without having to deal with a window and its events.
+Compared to the JOYSTICK_MOVED, JOYSTICK_BUTTON_PRESSED and
+JOYSTICK_BUTTON_RELEASED events, sf.Joystick can retrieve the state
+of axes and buttons of joysticks at any time (you don&#8217;t need to store
+and update a boolean on your side in order to know if a button is
+pressed or released), and you always get the real state of
+joysticks, even if they are moved, pressed or released when your
+window is out of focus and no event is triggered.</p>
+<p>SFML supports:</p>
+<blockquote>
+<div><ul class="simple">
+<li>8 joysticks (sf.Joystick.COUNT)</li>
+<li>32 buttons per joystick (sf.Joystick.BUTTON_COUNT)</li>
+<li>8 axes per joystick (sf.Joystick.AXIS_COUNT)</li>
+</ul>
+</div></blockquote>
+<p>Unlike the keyboard or mouse, the state of joysticks is sometimes
+not directly available (depending on the OS), therefore an update()
+function must be called in order to update the current state of
+joysticks. When you have a window with event handling, this is done
+automatically, you don&#8217;t need to call anything. But if you have no
+window, or if you want to check joysticks state before creating
+one, you must call sf.Joystick.update() explicitely.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># is joystick #0 connected ?</span>
+<span class="n">connected</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c"># how many button does joystick #0 support ?</span>
+<span class="n">buttons</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">get_button_count</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c"># does joystick # define a X axis ?</span>
+<span class="n">has_X</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">has_axis</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c"># is button #2 pressed on joystick #0 ?</span>
+<span class="n">pressed</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">is_button_pressed</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c"># what&#39;s the current position of the Y axis on joystick #0?</span>
+<span class="n">position</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">get_axis_position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">Y</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="sf.window.Joystick.COUNT">
+<tt class="descname">COUNT</tt><a class="headerlink" href="#sf.window.Joystick.COUNT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Joystick.BUTTON_COUNT">
+<tt class="descname">BUTTON_COUNT</tt><a class="headerlink" href="#sf.window.Joystick.BUTTON_COUNT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Joystick.AXIS_COUNT">
+<tt class="descname">AXIS_COUNT</tt><a class="headerlink" href="#sf.window.Joystick.AXIS_COUNT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Joystick.X">
+<tt class="descname">X</tt><a class="headerlink" href="#sf.window.Joystick.X" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Joystick.Y">
+<tt class="descname">Y</tt><a class="headerlink" href="#sf.window.Joystick.Y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Joystick.Z">
+<tt class="descname">Z</tt><a class="headerlink" href="#sf.window.Joystick.Z" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Joystick.R">
+<tt class="descname">R</tt><a class="headerlink" href="#sf.window.Joystick.R" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Joystick.U">
+<tt class="descname">U</tt><a class="headerlink" href="#sf.window.Joystick.U" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Joystick.V">
+<tt class="descname">V</tt><a class="headerlink" href="#sf.window.Joystick.V" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Joystick.POV_X">
+<tt class="descname">POV_X</tt><a class="headerlink" href="#sf.window.Joystick.POV_X" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Joystick.POV_Y">
+<tt class="descname">POV_Y</tt><a class="headerlink" href="#sf.window.Joystick.POV_Y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.window.Joystick.is_connected">
+<em class="property">classmethod </em><tt class="descname">is_connected</tt><big>(</big><em>joystick</em><big>)</big><a class="headerlink" href="#sf.window.Joystick.is_connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a joystick is connected.</p>
+<p>If the joystick is not connected, this function returns false.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joystick</strong> (<em>integer</em>) &#8211; Index of the joystick to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">booléan</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.window.Joystick.get_button_count">
+<em class="property">classmethod </em><tt class="descname">get_button_count</tt><big>(</big><em>joystick</em><big>)</big><a class="headerlink" href="#sf.window.Joystick.get_button_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of buttons supported by a joystick.</p>
+<p>If the joystick is not connected, this function returns 0.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joystick</strong> (<em>integer</em>) &#8211; Index of the joystick</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.window.Joystick.has_axis">
+<em class="property">classmethod </em><tt class="descname">has_axis</tt><big>(</big><em>joystick</em>, <em>axis</em><big>)</big><a class="headerlink" href="#sf.window.Joystick.has_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a joystick supports a given axis.</p>
+<p>If the joystick is not connected, this function returns false.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>joystick</strong> (<em>integer</em>) &#8211; Index of the joystick</li>
+<li><strong>axis</strong> (<em>integer</em>) &#8211; Axis to check</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">booléan</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.window.Joystick.is_button_pressed">
+<em class="property">classmethod </em><tt class="descname">is_button_pressed</tt><big>(</big><em>joystick</em>, <em>button</em><big>)</big><a class="headerlink" href="#sf.window.Joystick.is_button_pressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a joystick button is pressed.</p>
+<p>If the joystick is not connected, this function returns false.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>joystick</strong> (<em>integer</em>) &#8211; Index of the joystick</li>
+<li><strong>axis</strong> (<em>integer</em>) &#8211; Button to check</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">booléan</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.window.Joystick.get_axis_position">
+<em class="property">classmethod </em><tt class="descname">get_axis_position</tt><big>(</big><em>joystick</em>, <em>axis</em><big>)</big><a class="headerlink" href="#sf.window.Joystick.get_axis_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current position of a joystick axis.</p>
+<p>If the joystick is not connected, this function returns 0.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>joystick</strong> (<em>integer</em>) &#8211; Index of the joystick</li>
+<li><strong>axis</strong> (<em>integer</em>) &#8211; Axis to check</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">booléan</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.window.Joystick.update">
+<em class="property">classmethod </em><tt class="descname">update</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.window.Joystick.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the states of all joysticks.</p>
+<p>This function is used internally by SFML, so you normally don&#8217;t
+have to call it explicitely. However, you may need to call it if
+you have no window yet (or no window at all): in this case the
+joysticks states are not updated automatically.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.window.Keyboard">
+<em class="property">class </em><tt class="descclassname">sf.window.</tt><tt class="descname">Keyboard</tt><a class="headerlink" href="#sf.window.Keyboard" title="Permalink to this definition">¶</a></dt>
+<dd><table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>A</td>
+<td>The A key.</td>
+</tr>
+<tr class="row-odd"><td>B</td>
+<td>The B key.</td>
+</tr>
+<tr class="row-even"><td>C</td>
+<td>The C key.</td>
+</tr>
+<tr class="row-odd"><td>D</td>
+<td>The D key.</td>
+</tr>
+<tr class="row-even"><td>E</td>
+<td>The E key.</td>
+</tr>
+<tr class="row-odd"><td>F</td>
+<td>The F key.</td>
+</tr>
+<tr class="row-even"><td>G</td>
+<td>The G key.</td>
+</tr>
+<tr class="row-odd"><td>H</td>
+<td>The H key.</td>
+</tr>
+<tr class="row-even"><td>I</td>
+<td>The I key.</td>
+</tr>
+<tr class="row-odd"><td>J</td>
+<td>The J key.</td>
+</tr>
+<tr class="row-even"><td>K</td>
+<td>The K key.</td>
+</tr>
+<tr class="row-odd"><td>L</td>
+<td>The L key.</td>
+</tr>
+<tr class="row-even"><td>M</td>
+<td>The M key.</td>
+</tr>
+<tr class="row-odd"><td>N</td>
+<td>The N key.</td>
+</tr>
+<tr class="row-even"><td>O</td>
+<td>The O key.</td>
+</tr>
+<tr class="row-odd"><td>P</td>
+<td>The P key.</td>
+</tr>
+<tr class="row-even"><td>Q</td>
+<td>The Q key.</td>
+</tr>
+<tr class="row-odd"><td>R</td>
+<td>The R key.</td>
+</tr>
+<tr class="row-even"><td>S</td>
+<td>The S key.</td>
+</tr>
+<tr class="row-odd"><td>T</td>
+<td>The T key.</td>
+</tr>
+<tr class="row-even"><td>U</td>
+<td>The U key.</td>
+</tr>
+<tr class="row-odd"><td>V</td>
+<td>The V key.</td>
+</tr>
+<tr class="row-even"><td>W</td>
+<td>The W key.</td>
+</tr>
+<tr class="row-odd"><td>X</td>
+<td>The X key.</td>
+</tr>
+<tr class="row-even"><td>Y</td>
+<td>The Y key.</td>
+</tr>
+<tr class="row-odd"><td>Z</td>
+<td>The Z key.</td>
+</tr>
+<tr class="row-even"><td>NUM0</td>
+<td>The 0 key.</td>
+</tr>
+<tr class="row-odd"><td>NUM1</td>
+<td>The 1 key.</td>
+</tr>
+<tr class="row-even"><td>NUM2</td>
+<td>The 2 key.</td>
+</tr>
+<tr class="row-odd"><td>NUM3</td>
+<td>The 3 key.</td>
+</tr>
+<tr class="row-even"><td>NUM4</td>
+<td>The 4 key.</td>
+</tr>
+<tr class="row-odd"><td>NUM5</td>
+<td>The 5 key.</td>
+</tr>
+<tr class="row-even"><td>NUM6</td>
+<td>The 6 key.</td>
+</tr>
+<tr class="row-odd"><td>NUM7</td>
+<td>The 7 key.</td>
+</tr>
+<tr class="row-even"><td>NUM8</td>
+<td>The 8 key.</td>
+</tr>
+<tr class="row-odd"><td>NUM9</td>
+<td>The 9 key.</td>
+</tr>
+<tr class="row-even"><td>ESCAPE</td>
+<td>The Escape key.</td>
+</tr>
+<tr class="row-odd"><td>L_CONTROL</td>
+<td>The left Control key.</td>
+</tr>
+<tr class="row-even"><td>L_SHIFT</td>
+<td>The left Shift key.</td>
+</tr>
+<tr class="row-odd"><td>L_ALT</td>
+<td>The left Alt key.</td>
+</tr>
+<tr class="row-even"><td>L_SYSTEM</td>
+<td>The left OS specific key: window (Windows and Linux), apple (MacOS X), ...</td>
+</tr>
+<tr class="row-odd"><td>R_CONTROL</td>
+<td>The right Control key.</td>
+</tr>
+<tr class="row-even"><td>R_SHIFT</td>
+<td>The right Shift key.</td>
+</tr>
+<tr class="row-odd"><td>R_ALT</td>
+<td>The right Alt key.</td>
+</tr>
+<tr class="row-even"><td>R_SYSTEM</td>
+<td>The right OS specific key: window (Windows and Linux), apple (MacOS X), ...</td>
+</tr>
+<tr class="row-odd"><td>MENU</td>
+<td>The Menu key.</td>
+</tr>
+<tr class="row-even"><td>L_BRACKET</td>
+<td>The [ key.</td>
+</tr>
+<tr class="row-odd"><td>R_BRACKET</td>
+<td>The ] key.</td>
+</tr>
+<tr class="row-even"><td>SEMI_COLON</td>
+<td>The ; key.</td>
+</tr>
+<tr class="row-odd"><td>COMMA</td>
+<td>The , key.</td>
+</tr>
+<tr class="row-even"><td>PERIOD</td>
+<td>The . key.</td>
+</tr>
+<tr class="row-odd"><td>QUOTE</td>
+<td>The &#8216; key.</td>
+</tr>
+<tr class="row-even"><td>SLASH</td>
+<td>The / key.</td>
+</tr>
+<tr class="row-odd"><td>BACK_SLASH</td>
+<td>The key.</td>
+</tr>
+<tr class="row-even"><td>TILDE</td>
+<td>The ~ key.</td>
+</tr>
+<tr class="row-odd"><td>EQUAL</td>
+<td>The = key.</td>
+</tr>
+<tr class="row-even"><td>DASH</td>
+<td>The - key.</td>
+</tr>
+<tr class="row-odd"><td>SPACE</td>
+<td>The Space key.</td>
+</tr>
+<tr class="row-even"><td>RETURN</td>
+<td>The Return key.</td>
+</tr>
+<tr class="row-odd"><td>BACK</td>
+<td>The Backspace key.</td>
+</tr>
+<tr class="row-even"><td>TAB</td>
+<td>The Tabulation key.</td>
+</tr>
+<tr class="row-odd"><td>PAGE_UP</td>
+<td>The Page up key.</td>
+</tr>
+<tr class="row-even"><td>PAGE_DOWN</td>
+<td>The Page down key.</td>
+</tr>
+<tr class="row-odd"><td>END</td>
+<td>The End key.</td>
+</tr>
+<tr class="row-even"><td>HOME</td>
+<td>The Home key.</td>
+</tr>
+<tr class="row-odd"><td>INSERT</td>
+<td>The Insert key.</td>
+</tr>
+<tr class="row-even"><td>DELETE</td>
+<td>The Delete key.</td>
+</tr>
+<tr class="row-odd"><td>ADD</td>
+<td>+</td>
+</tr>
+<tr class="row-even"><td>SUBTRACT</td>
+<td>-</td>
+</tr>
+<tr class="row-odd"><td>MULTIPLY</td>
+<td>*</td>
+</tr>
+<tr class="row-even"><td>DIVIDE</td>
+<td>/</td>
+</tr>
+<tr class="row-odd"><td>LEFT</td>
+<td>Left arrow.</td>
+</tr>
+<tr class="row-even"><td>RIGHT</td>
+<td>Right arrow.</td>
+</tr>
+<tr class="row-odd"><td>UP</td>
+<td>Up arrow.</td>
+</tr>
+<tr class="row-even"><td>DOWN</td>
+<td>Down arrow.</td>
+</tr>
+<tr class="row-odd"><td>NUMPAD0</td>
+<td>The numpad 0 key.</td>
+</tr>
+<tr class="row-even"><td>NUMPAD1</td>
+<td>The numpad 1 key.</td>
+</tr>
+<tr class="row-odd"><td>NUMPAD2</td>
+<td>The numpad 2 key.</td>
+</tr>
+<tr class="row-even"><td>NUMPAD3</td>
+<td>The numpad 3 key.</td>
+</tr>
+<tr class="row-odd"><td>NUMPAD4</td>
+<td>The numpad 4 key.</td>
+</tr>
+<tr class="row-even"><td>NUMPAD5</td>
+<td>The numpad 5 key.</td>
+</tr>
+<tr class="row-odd"><td>NUMPAD6</td>
+<td>The numpad 6 key.</td>
+</tr>
+<tr class="row-even"><td>NUMPAD7</td>
+<td>The numpad 7 key.</td>
+</tr>
+<tr class="row-odd"><td>NUMPAD8</td>
+<td>The numpad 8 key.</td>
+</tr>
+<tr class="row-even"><td>NUMPAD9</td>
+<td>The numpad 9 key.</td>
+</tr>
+<tr class="row-odd"><td>F1</td>
+<td>The F1 key.</td>
+</tr>
+<tr class="row-even"><td>F2</td>
+<td>The F2 key.</td>
+</tr>
+<tr class="row-odd"><td>F3</td>
+<td>The F3 key.</td>
+</tr>
+<tr class="row-even"><td>F4</td>
+<td>The F4 key.</td>
+</tr>
+<tr class="row-odd"><td>F5</td>
+<td>The F5 key.</td>
+</tr>
+<tr class="row-even"><td>F6</td>
+<td>The F6 key.</td>
+</tr>
+<tr class="row-odd"><td>F7</td>
+<td>The F7 key.</td>
+</tr>
+<tr class="row-even"><td>F8</td>
+<td>The F8 key.</td>
+</tr>
+<tr class="row-odd"><td>F9</td>
+<td>The F9 key.</td>
+</tr>
+<tr class="row-even"><td>F10</td>
+<td>The F10 key.</td>
+</tr>
+<tr class="row-odd"><td>F11</td>
+<td>The F11 key.</td>
+</tr>
+<tr class="row-even"><td>F12</td>
+<td>The F12 key.</td>
+</tr>
+<tr class="row-odd"><td>F13</td>
+<td>The F13 key.</td>
+</tr>
+<tr class="row-even"><td>F14</td>
+<td>The F14 key.</td>
+</tr>
+<tr class="row-odd"><td>F15</td>
+<td>The F15 key.</td>
+</tr>
+<tr class="row-even"><td>PAUSE</td>
+<td>The Pause key.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="sf.window.Keyboard.KEY_COUNT">
+<tt class="descname">KEY_COUNT</tt><a class="headerlink" href="#sf.window.Keyboard.KEY_COUNT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.window.Keyboard.is_key_pressed">
+<em class="property">classmethod </em><tt class="descname">is_key_pressed</tt><big>(</big><em>int key</em><big>)</big><a class="headerlink" href="#sf.window.Keyboard.is_key_pressed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.window.Mouse">
+<em class="property">class </em><tt class="descclassname">sf.window.</tt><tt class="descname">Mouse</tt><a class="headerlink" href="#sf.window.Mouse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give access to the real-time state of the mouse.</p>
+<p>sf.Mouse provides an interface to the state of the mouse.</p>
+<p>It only contains static functions (a single mouse is assumed), so
+it&#8217;s not meant to be instanciated.</p>
+<p>This class allows users to query the mouse state at any time and
+directly, without having to deal with a window and its events.
+Compared to the MOUSE_MOVED, MOUSE_BUTTON_PRESSED and
+MOUSE_BUTTON_RELEASED events, sf.Mouse can retrieve the state of the
+cursor and the buttons at any time (you don&#8217;t need to store and
+update a boolean on your side in order to know if a button is
+pressed or released), and you always get the real state of the
+mouse, even if it is moved, pressed or released when your window is
+out of focus and no event is triggered.</p>
+<p>The set_position() and get_position() functions can be used to
+change or retrieve the current position of the mouse pointer. There
+are two versions: one that operates in global coordinates (relative
+to the desktop) and one that operates in window coordinates
+(relative to a specific window).</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">sf</span><span class="o">.</span><span class="n">Mouse</span><span class="o">.</span><span class="n">is_button_pressed</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Mouse</span><span class="o">.</span><span class="n">LEFT</span><span class="p">):</span>
+   <span class="k">pass</span> <span class="c"># left click ...</span>
+
+<span class="c"># get global mouse position</span>
+<span class="n">position</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Mouse</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+
+<span class="c"># set mouse position relative to a window</span>
+<span class="n">sf</span><span class="o">.</span><span class="n">Mouse</span><span class="o">.</span><span class="n">set_position</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">window</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="sf.window.Mouse.LEFT">
+<tt class="descname">LEFT</tt><a class="headerlink" href="#sf.window.Mouse.LEFT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Mouse.RIGHT">
+<tt class="descname">RIGHT</tt><a class="headerlink" href="#sf.window.Mouse.RIGHT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Mouse.MIDDLE">
+<tt class="descname">MIDDLE</tt><a class="headerlink" href="#sf.window.Mouse.MIDDLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Mouse.X_BUTTON1">
+<tt class="descname">X_BUTTON1</tt><a class="headerlink" href="#sf.window.Mouse.X_BUTTON1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Mouse.X_BUTTON2">
+<tt class="descname">X_BUTTON2</tt><a class="headerlink" href="#sf.window.Mouse.X_BUTTON2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.window.Mouse.BUTTON_COUNT">
+<tt class="descname">BUTTON_COUNT</tt><a class="headerlink" href="#sf.window.Mouse.BUTTON_COUNT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.window.Mouse.is_button_pressed">
+<em class="property">classmethod </em><tt class="descname">is_button_pressed</tt><big>(</big><em>int button</em><big>)</big><a class="headerlink" href="#sf.window.Mouse.is_button_pressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a mouse button is pressed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>button</strong> (<em>integer</em>) &#8211; Button to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">booléan</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.window.Mouse.get_position">
+<em class="property">classmethod </em><tt class="descname">get_position</tt><big>(</big><span class="optional">[</span><em>window</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.window.Mouse.get_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current position of the mouse in window coordinates.</p>
+<p>This function returns the current position of the mouse cursor, relative to the given window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>window</strong> (<em>sf.window.Window</em>) &#8211; Reference window</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">booléan</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.window.Mouse.set_position">
+<em class="property">classmethod </em><tt class="descname">set_position</tt><big>(</big><em>position</em><span class="optional">[</span>, <em>window</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.window.Mouse.set_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the current position of the mouse in window coordinates.</p>
+<p>This function sets the current position of the mouse cursor,
+relative to the given window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>position</strong> (<a class="reference internal" href="system.html#sf.system.Position" title="sf.system.Position"><em>sf.system.Position</em></a>) &#8211; New position of the mouse</li>
+<li><strong>window</strong> (<em>sf.window.Window</em>) &#8211; Reference window</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="system.html"
+                        title="previous chapter">System</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="graphics.html"
+                        title="next chapter">Graphics</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/documentation/window.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="graphics.html" title="Graphics"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="system.html" title="System"
+             >previous</a> |</li>
+        <li><a href="../index.html">pySFML 0.9 documentation</a> &raquo;</li>
+          <li><a href="../documentation.html" >Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

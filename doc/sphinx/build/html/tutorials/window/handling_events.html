@@ -1,0 +1,376 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Handling events &mdash; pySFML 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pySFML 0.9 documentation" href="../../index.html" />
+    <link rel="up" title="Tutorials" href="../../tutorials.html" />
+    <link rel="next" title="Handling time" href="handling_time.html" />
+    <link rel="prev" title="Tutorials" href="../../tutorials.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="handling_time.html" title="Handling time"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../../tutorials.html" title="Tutorials"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">pySFML 0.9 documentation</a> &raquo;</li>
+          <li><a href="../../tutorials.html" accesskey="U">Tutorials</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="handling-events">
+<h1>Handling events<a class="headerlink" href="#handling-events" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>In the previous tutorial, we learned how to open a window but we had no
+way to stop the application. Here, we&#8217;ll learn how to catch window
+events and handle them properly.</p>
+</div>
+<div class="section" id="getting-events">
+<h2>Getting events<a class="headerlink" href="#getting-events" title="Permalink to this headline">¶</a></h2>
+<p>Basically, there are two ways of receiving events in a windowing
+system:</p>
+<blockquote>
+<div><ul class="simple">
+<li>You can ask the window for waiting events at each loop ; this is called &#8220;polling&#8221;</li>
+<li>You can give to the window a &#8220;pointer&#8221; to a function and then wait for the window to call it when it receives an event ; this is called, hum... &#8220;using callback functions&#8221;</li>
+</ul>
+</div></blockquote>
+<p>SFML uses a polling system for getting events. That is, you must ask
+events to the window at each loop. The function to use is
+<cite>poll_event()</cite>, which returns an instance of sf.Event if there was an
+event waiting, or returns None if events stack was empty.</p>
+<div class="highlight-python"><pre># 'window' is an instance of sf.Window
+event = window.poll_event()
+if event:
+   # process event</pre>
+</div>
+<p>But there can be more than one event to get at each frame (events are
+stored in a stack at each frame, and getting an event pops the top of
+this stack), and if you only get one, events may accumulate and never
+get processed.</p>
+<p>The proper way to get all waiting events at each frame is to loop until
+we have all of them. The stack can be accessed via the property
+<cite>events</cite> and you can iterate over it using a simple <cite>for ... in</cite></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+   <span class="k">pass</span> <span class="c"># process event</span>
+</pre></div>
+</div>
+<p>&#8220;Hey, but wait a minute... where should I put this piece of code, by
+the way ?&#8221;.</p>
+<p>As events should be processed at each frame, you should put event
+handling on top of the main loop</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">while</span> <span class="n">running</span><span class="p">:</span>
+   <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+      <span class="k">pass</span> <span class="c"># process event</span>
+
+   <span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="processing-events">
+<h2>Processing events<a class="headerlink" href="#processing-events" title="Permalink to this headline">¶</a></h2>
+<p>The first thing to do when you get an event is to check its type, in
+its <cite>type</cite> member. SFML defines the following types of events, all in
+the scope of the sf.Event structure :</p>
+<blockquote>
+<div><ul class="simple">
+<li>CLOSED</li>
+<li>RESIZED</li>
+<li>LOST_FOCUS</li>
+<li>GAINED_FOCUS</li>
+<li>TEXT_ENTERED</li>
+<li>KEY_PRESSED</li>
+<li>KEY_RELEASED</li>
+<li>MOUSE_WHEEL_MOVED</li>
+<li>MOUSE_BUTTON_PRESSED</li>
+<li>MOUSE_BUTTON_RELEASED</li>
+<li>MOUSE_MOVED</li>
+<li>MOUSE_ENTERED</li>
+<li>MOUSE_LEFT</li>
+<li>JOYSTICK_BUTTON_PRESSED</li>
+<li>JOYSTICK_BUTTON_RELEASED</li>
+<li>JOYSTICK_MOVED</li>
+<li>JOYSTICK_CONNECTED</li>
+<li>JOYSTICK_DISCONNECTED</li>
+</ul>
+</div></blockquote>
+<p>Depending on the type of event, the event instance will be filled with
+different parameters:</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>Size events (RESIZED)</dt>
+<dd><p class="first last"><cite>event.size.width</cite> contains the new window width, in pixels
+<cite>event.size.height</cite> contains the new window height, in pixels</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Text events (TEXT_ENTERED)</dt>
+<dd><p class="first last"><cite>Event.Text.Unicode</cite> contains the UTF-32 code of the character
+that has been entered</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Key events (KEY_PRESSED, KEY_RELEASED)</dt>
+<dd><p class="first last">Event.Key.Code contains the code of the key that was pressed / released
+Event.Key.Alt tells whether or not Alt key is pressed
+Event.Key.Control tells whether or not Control key is pressed
+Event.Key.Shift tells whether or not Shift key is pressed</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Mouse buttons events (MouseButtonPressed, MouseButtonReleased)</dt>
+<dd><p class="first last">Event.MouseButton.Button contains the buttons that is pressed / released
+Event.MouseButton.X contains the current X position of the mouse cursor, in local coordinates
+Event.MouseButton.Y contains the current Y position of the mouse cursor, in local coordinates</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Mouse move events (MouseMoved)</dt>
+<dd><p class="first last">Event.MouseMove.X contains the new X position of the mouse cursor, in local coordinates
+Event.MouseMove.Y contains the new Y position of the mouse cursor, in local coordinates</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Mouse wheel events (MouseWheelMoved)</dt>
+<dd><p class="first last">Event.MouseWheel.Delta contains the mouse wheel move (positive if forward, negative if backward)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Joystick buttons events (JoyButtonPressed, JoyButtonReleased)</dt>
+<dd><p class="first last">Event.JoyButton.JoystickId contains the index of the joystick (can be 0 or 1)
+Event.JoyButton.Button contains the index of the button that is pressed / released, in the range [0, 15]</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Joystick move events (JoyMoved)</dt>
+<dd><p class="first last">Event.JoyMove.JoystickId contains the index of the joystick (can be 0 or 1)
+Event.JoyMove.Axis contains the moved axis
+Event.JoyMove.Position contains the current position on the axis, in the range [-100, 100] (except POV which is in [0, 360])</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>Key codes are specific to SFML. Every keyboard key is associated to a
+constant. For example, key F5 is defined by the sf.Keyboard.F5
+constant. For characters and numbers, the constant match the ASCII
+code, this means that both &#8216;a&#8217; and sf.Key.A map to the &#8216;A&#8217; key.</p>
+<p>The mouse buttons codes follow the same rule. Five constants are
+defined: sf.Mouse.LEFT, sf.Mouse.RIGHT, sf.Mouse.MIDDLE
+(the wheel button), sf.Mouse.X_BUTTON1 and sf.Mouse.X_BUTTON2.</p>
+<dl class="docutils">
+<dt>cdef class Joystick:</dt>
+<dd>COUNT = declwindow.joystick.Count
+BUTTON_COUNT = declwindow.joystick.ButtonCount
+AXIS_COUNT = declwindow.joystick.AxisCount
+X = declwindow.joystick.X
+Y = declwindow.joystick.Y
+Z = declwindow.joystick.Z
+R = declwindow.joystick.R
+U = declwindow.joystick.U
+V = declwindow.joystick.V
+POV_X = declwindow.joystick.PovX
+POV_Y = declwindow.joystick.PovY</dd>
+</dl>
+<p>Finally, joystick axes are defined as follows: sf.Joystick.X,
+sf.Joystick.Y, sf.Joystick.Z, sf.Joystick.R, sf.Joystick.U,
+sf.Joystick.V, sf.Joystick.POV_X and sf.Joystick.POV_Y.</p>
+<p>So... let&#8217;s go back to our application, and add some code to handle
+events. We will add something to stop the application when the user
+closes the window, or when he presses the escape key</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+   <span class="c"># window closed</span>
+   <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">CLOSED</span><span class="p">:</span>
+      <span class="n">running</span> <span class="o">==</span> <span class="bp">False</span>
+
+   <span class="c"># escape key pressed</span>
+   <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">KEY_PRESSED</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Keyboard</span><span class="o">.</span><span class="n">ESCAPE</span><span class="p">:</span>
+      <span class="n">running</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="closing-a-window">
+<h2>Closing a window<a class="headerlink" href="#closing-a-window" title="Permalink to this headline">¶</a></h2>
+<p>If you have played around a bit with SFML windows, you have probably
+noticed that clicking the close box will generate a <cite>CLOSED</cite> event, but
+won&#8217;t destroy the window. This is to allow users to add custom code
+before doing it (asking for save, etc.), or cancel it. To actually
+close a window, you must either destroy the sf.Window instance or call
+its <cite>close()</cite> function.</p>
+<p>To know if a window is opened (ie. has been created), you can call the
+<cite>is_opened()</cite> function.</p>
+<p>Now, our main loop can look much better</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">running</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="k">while</span> <span class="n">running</span><span class="p">:</span>
+   <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+      <span class="c"># window closed</span>
+      <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">CLOSED</span><span class="p">:</span>
+         <span class="n">running</span> <span class="o">==</span> <span class="bp">False</span>
+
+      <span class="c"># escape key pressed</span>
+      <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">KEY_PRESSED</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Keyboard</span><span class="o">.</span><span class="n">ESCAPE</span><span class="p">:</span>
+         <span class="n">running</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-real-time-inputs">
+<h2>Getting real-time inputs<a class="headerlink" href="#getting-real-time-inputs" title="Permalink to this headline">¶</a></h2>
+<p>This event system is good enough for reacting to events like window
+closing, or a single key press. But if you want to handle, for example,
+the continous motion of a character when you press an arrow key, then
+you will soon see that there is a problem : there will be a delay
+between each movement, the delay defined by the operating system when
+you keep on pressing a key.</p>
+<p>A better strategy for this is to set a boolean variable to true when t
+he key is pressed, and clear it when the key is released. Then at each
+loop, if the boolean is set, you move your character. However it can
+become annoying to use extra variables for this, especially when you
+have a lot of them. That&#8217;s why SFML provides easy access to real-time
+input.</p>
+<div class="highlight-python"><pre># keyboard
+isLeftKeyPressed = sf.Keyboard.is_key_pressed(sf.Keyboard.LEFT)
+
+# mouse
+isRightButtonPressed = sf.Mouse.is_button_pressed(sf.Mouse.RIGHT)
+mousePosition = sf.Mouse.GetPosition()
+
+# joystick
+isJoystick0Button1Down = sf.Joystick.is_button_pressed(0, 1)
+joystickX = sf.Joystick.get_axis_position(1, sf.Joystick.X
+joystickY = sf.Joystick.get_axis_position(1, sf.Joystick.Y)
+joystickPOV = sf.Joystick.get_axis_position(1, sf.Joystick.POV)</pre>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>In this tutorial you have learned how to handle windows inputs, and how
+to get real-time keyboard and mouse state. But to build a real-time
+application, you need to handle properly something else : time. So
+let&#8217;s have a look at a quick tutorial about time handling with SFML !</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Handling events</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#getting-events">Getting events</a></li>
+<li><a class="reference internal" href="#processing-events">Processing events</a></li>
+<li><a class="reference internal" href="#closing-a-window">Closing a window</a></li>
+<li><a class="reference internal" href="#getting-real-time-inputs">Getting real-time inputs</a></li>
+<li><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../../tutorials.html"
+                        title="previous chapter">Tutorials</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="handling_time.html"
+                        title="next chapter">Handling time</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorials/window/handling_events.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="handling_time.html" title="Handling time"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../../tutorials.html" title="Tutorials"
+             >previous</a> |</li>
+        <li><a href="../../index.html">pySFML 0.9 documentation</a> &raquo;</li>
+          <li><a href="../../tutorials.html" >Tutorials</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

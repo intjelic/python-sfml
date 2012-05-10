@@ -1,0 +1,205 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; pySFML 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pySFML 0.9 documentation" href="index.html" />
+    <link rel="next" title="Getting started" href="gettingstarted.html" />
+    <link rel="prev" title="SFML2 for Python" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gettingstarted.html" title="Getting started"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="SFML2 for Python"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pySFML 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>This binding is the version 0.9 and is based on a particular snapshot of
+SFML2. This snapshot was the one available on the 20th November 2011 and
+I worked with it since then and I used to call it SFML1.9.</p>
+<p>At the time of writing these lines, a candidate release of SFML2 has
+already been out and I&#8217;m planning to focus the update of this binding
+rather than providing a stable one base on the snapshot. That&#8217;s why
+you may find some bugs or some illogical things in my code. However,
+it is stable enought for production, you can check the examples. The
+version 1.0 of this project will be based on the release candidate if
+the final release is not yet available.</p>
+<p>You&#8217;ll find on this page a detailed description of the project.</p>
+<p>People from SFML2 in C++ should be familiar with this binding.</p>
+<div class="section" id="history">
+<h2>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h2>
+<p>This binding was forked from the official python binding created by Bastien
+Léonard the 16th of November 2011.</p>
+<p>I decided to fork because his project was a work-in-progress and I needed
+some features at once to write my current C++ projects in Python. I
+also needed some extra-features to suit my own needs.</p>
+<p>It has since then widely improved and I decided to share my work under
+a new license: GPLv3.</p>
+<p>Those &#8220;extra-features&#8221; may be depreciated by people because those don&#8217;t
+follow the original SFML design but it shouldn&#8217;t be since the
+differences are very small. You&#8217;ll find an explaination for each
+differences about why they have been implemented that way.</p>
+</div>
+<div class="section" id="major-improvements">
+<h2>Major improvements<a class="headerlink" href="#major-improvements" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>network module implemented.</li>
+<li>sound module rewrited.</li>
+<li>some current limitation of the module have been fixed such the derivability of sf.Drawable.</li>
+<li>modules are implemented separatly; you can import each module independantly.</li>
+<li>support cython 0.16 (faster).</li>
+<li>many official examples are available and new examples have been added.</li>
+<li>an extra-layer to the sfml has been added to avoid dealing with type and to provide more flexibility</li>
+<li>available trought depot in launchpad for ease of installation.</li>
+</ol>
+</div>
+<div class="section" id="a-design-slightly-modified-to-fit-python-principles">
+<h2>A design slightly modified to fit Python principles<a class="headerlink" href="#a-design-slightly-modified-to-fit-python-principles" title="Permalink to this headline">¶</a></h2>
+<p>As I previously said, a few minor changes in the design have been made.
+Actually this subject matches the 7th bullet in Major improvements.</p>
+<p>A first problem comes in when we compile a python module written in C:
+variable type. It&#8217;s extremely annoying to care about that; should I use
+a Vector2i, a Vector2f, and going from one to another with methods like
+to_Vector2f(), to_Vector2i() makes the code dirty and less readable. Also
+people&#8217;d like to use a simple tuple when we have to pass a precise type
+which is Vector2i. That&#8217;s why pySFML2 provides an extra-layer written
+in pure Python to avoid those things.</p>
+<p>The first thing is about sf::Vector2&lt;T&gt;; templates make no sens in Python.
+I renamed this class to sf.Position for a matter of beauty and it supports
+float and integer attributes. Everywhere you can use a sf.Position, you
+may pass a tuple as well.</p>
+<p>Whatever it happens, sf.Vector2f or sf.Vector2i are still available but
+they are strongly depreciated and should be use only when it&#8217;s about a part
+of the binding which is in under developement (or maybe when a &#8220;position&#8221;
+strickly-speaking makes no sens).</p>
+<p>The second thing is about a new class named sf.Size. This class which
+doesn&#8217;t exist in SFML acts nearly like sf.Position but it can&#8217;t have
+negative values which is a great utility is some case. Can you imagine
+a screen size with negative values? This wouldn&#8217;t make sens thus use
+sf.Size instead of sf.Position.</p>
+<p>The third thing is about sf.Rectangle. This class therefore use a
+sf.Position and a sf.Size in its intenal attributes instead of 4
+integers or float.</p>
+<p>These classes put typeness and easiness together.</p>
+</div>
+<div class="section" id="next-version">
+<h2>Next version<a class="headerlink" href="#next-version" title="Permalink to this headline">¶</a></h2>
+<p>I hope to provide for the next version (v1.0) a more stable binding which
+supports SFML2.0 with a full documentation and all tutorials translated.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#history">History</a></li>
+<li><a class="reference internal" href="#major-improvements">Major improvements</a></li>
+<li><a class="reference internal" href="#a-design-slightly-modified-to-fit-python-principles">A design slightly modified to fit Python principles</a></li>
+<li><a class="reference internal" href="#next-version">Next version</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">SFML2 for Python</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gettingstarted.html"
+                        title="next chapter">Getting started</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/introduction.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gettingstarted.html" title="Getting started"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="SFML2 for Python"
+             >previous</a> |</li>
+        <li><a href="index.html">pySFML 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

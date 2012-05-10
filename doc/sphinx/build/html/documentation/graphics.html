@@ -1,0 +1,1566 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Graphics &mdash; pySFML 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pySFML 0.9 documentation" href="../index.html" />
+    <link rel="up" title="Documentation" href="../documentation.html" />
+    <link rel="next" title="Audio" href="audio.html" />
+    <link rel="prev" title="Window" href="window.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="audio.html" title="Audio"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="window.html" title="Window"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pySFML 0.9 documentation</a> &raquo;</li>
+          <li><a href="../documentation.html" accesskey="U">Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-sf.graphics">
+<span id="graphics"></span><h1>Graphics<a class="headerlink" href="#module-sf.graphics" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="sf.graphics.Color">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Color</tt><big>(</big><em>r</em>, <em>g</em>, <em>b</em><span class="optional">[</span>, <em>a=255</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Color" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Utility class for manpulating RGBA colors.</p>
+<p>sf.Color is a simple color class composed of 4 components: Red,
+Green, Blue, Alpha (opacity)</p>
+<p>Each component is a property, an unsigned integer in the range
+[0, 255]. Thus, colors can be constructed and manipulated very
+easily:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c1</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c"># red</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>                <span class="c"># make it black</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="mi">128</span><span class="p">;</span>              <span class="c"># make it dark blue</span>
+</pre></div>
+</div>
+<p>The fourth component of colors, named &#8220;alpha&#8221;, represents the
+opacity of the color. A color with an alpha value of 255 will be
+fully opaque, while an alpha value of 0 will make a color fully
+transparent, whatever the value of the other components.</p>
+<p>Colors can also be added and modulated (multiplied) using the
+overloaded operators + and <a href="#id1"><span class="problematic" id="id2">*</span></a>.</p>
+</div></blockquote>
+<dl class="attribute">
+<dt id="sf.graphics.Color.r">
+<tt class="descname">r</tt><a class="headerlink" href="#sf.graphics.Color.r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Red component.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Color.g">
+<tt class="descname">g</tt><a class="headerlink" href="#sf.graphics.Color.g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Green component.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Color.b">
+<tt class="descname">b</tt><a class="headerlink" href="#sf.graphics.Color.b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blue component.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Color.a">
+<tt class="descname">a</tt><a class="headerlink" href="#sf.graphics.Color.a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alpha (opacity) component.</p>
+<p>The most common colors are already defined as static variables:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">black</span>   <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">BLACK</span>
+<span class="n">white</span>   <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">WHITE</span>
+<span class="n">red</span>     <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span>
+<span class="n">green</span>   <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span>
+<span class="n">blue</span>    <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">BLUE</span>
+<span class="n">yellow</span>  <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span>
+<span class="n">magenta</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">MAGENTA</span>
+<span class="n">cyan</span>    <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.Matrix3">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Matrix3</tt><big>(</big><em>float a00</em>, <em>float a01</em>, <em>float a02</em>, <em>float a10</em>, <em>float a11</em>, <em>float a12</em>, <em>float a20</em>, <em>float a21</em>, <em>float a22</em><big>)</big><a class="headerlink" href="#sf.graphics.Matrix3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Note: this class overrides the multiplication operator.</p>
+<dl class="attribute">
+<dt id="sf.graphics.Matrix3.IDENTITY">
+<tt class="descname">IDENTITY</tt><a class="headerlink" href="#sf.graphics.Matrix3.IDENTITY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class attribute containing the identity matrix.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Matrix3.projection">
+<em class="property">classmethod </em><tt class="descname">projection</tt><big>(</big><em>center</em>, <em>size</em>, <em>float rotation</em><big>)</big><a class="headerlink" href="#sf.graphics.Matrix3.projection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Matrix3.transformation">
+<em class="property">classmethod </em><tt class="descname">transformation</tt><big>(</big><em>origin</em>, <em>translation</em>, <em>float rotation</em>, <em>scale</em><big>)</big><a class="headerlink" href="#sf.graphics.Matrix3.transformation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Matrix3.__str__">
+<tt class="descname">__str__</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Matrix3.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the content of the matrix in a human-readable format.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Matrix3.get_inverse">
+<tt class="descname">get_inverse</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Matrix3.get_inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Matrix3.transform">
+<tt class="descname">transform</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Matrix3.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.Image">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Image</tt><big>(</big><em>int width</em>, <em>int height</em><span class="optional">[</span>, <em>color</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for loading, manipulating and saving images.</p>
+<p>sf.Image is an abstraction to manipulate images as bidimensional arrays of pixels.</p>
+<p>The class provides functions to load, read, write and save pixels, as well as many other useful functions.</p>
+<p>sf.Image can handle a unique internal representation of pixels, which is RGBA 32 bits. This means that a pixel must be composed of 8 bits red, green, blue and alpha channels &#8211; just like a sf.Color. All the functions that return an array of pixels follow this rule, and all parameters that you pass to sf.Image functions (such as <a class="reference internal" href="#sf.graphics.Image.load_from_pixels" title="sf.graphics.Image.load_from_pixels"><tt class="xref py py-meth docutils literal"><span class="pre">load_from_pixels()</span></tt></a>) must use this representation as well.</p>
+<p>A sf.Image can be copied, but it is a heavy resource and if possible you should always use references to pass or return them to avoid useless copies.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><pre># load an image file from a file
+try: background = sf.Image.load_from_file("background.jpg")
+except sf.Exception: exit(1)
+
+# create a 20x20 image filled with black color
+image = sf.Image()
+image.create(20, 20, sf.Color.BLACK)
+
+
+# copy image1 on image2 at position (10, 10)
+image.copy(background, 10, 10)
+
+# make the top-left pixel transparent
+sf.Color color = image[0, 0]
+color.alpha = 0
+image[0, 0] = color
+
+# save the image to a file
+try: image.save_to_file("result.png")</pre>
+</div>
+<dl class="classmethod">
+<dt id="sf.graphics.Image.load_from_file">
+<em class="property">classmethod </em><tt class="descname">load_from_file</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#sf.graphics.Image.load_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the image from a file on disk.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Image.load_from_memory">
+<em class="property">classmethod </em><tt class="descname">load_from_memory</tt><big>(</big><em>str mem</em><big>)</big><a class="headerlink" href="#sf.graphics.Image.load_from_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the image from a file in memory.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Image.load_from_pixels">
+<em class="property">classmethod </em><tt class="descname">load_from_pixels</tt><big>(</big><em>int width</em>, <em>int height</em>, <em>str pixels</em><big>)</big><a class="headerlink" href="#sf.graphics.Image.load_from_pixels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the image from an arry of pixels.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Image.save_to_file">
+<tt class="descname">save_to_file</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#sf.graphics.Image.save_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the image to a file on disk.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Image.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.graphics.Image.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>The width of the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Image.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.graphics.Image.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>The height of the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Image.size">
+<tt class="descname">size</tt><a class="headerlink" href="#sf.graphics.Image.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The size of the image.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Image.create_mask_from_color">
+<tt class="descname">create_mask_from_color</tt><big>(</big><em>color</em>, <em>int alpha</em><big>)</big><a class="headerlink" href="#sf.graphics.Image.create_mask_from_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a transparency mask from a specified color-key.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Image.copy">
+<tt class="descname">copy</tt><big>(</big><em>Image source</em>, <em>int dest_x</em>, <em>int dest_y</em><span class="optional">[</span>, <em>source_rect</em>, <em>apply_alpha</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Image.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy pixels from another image onto this one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Image.__getitem__">
+<tt class="descname">__getitem__</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Image.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a pixel from the image. Equivalent to <a class="reference internal" href="#sf.graphics.Image.get_pixel" title="sf.graphics.Image.get_pixel"><tt class="xref py py-meth docutils literal"><span class="pre">get_pixel()</span></tt></a>. Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">image</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># Create tuple implicitly</span>
+<span class="k">print</span> <span class="n">image</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)]</span>  <span class="c"># Create tuple explicitly</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Image.__setitem__">
+<tt class="descname">__setitem__</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Image.__setitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a pixel of the image. Equivalent to <a class="reference internal" href="#sf.graphics.Image.set_pixel" title="sf.graphics.Image.set_pixel"><tt class="xref py py-meth docutils literal"><span class="pre">set_pixel()</span></tt></a>. Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">image</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>  <span class="c"># Create tuple implicitly</span>
+<span class="n">image</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>  <span class="c"># Create tuple explicitly</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Image.get_pixel">
+<tt class="descname">get_pixel</tt><big>(</big><em>int x</em>, <em>int y</em><big>)</big><a class="headerlink" href="#sf.graphics.Image.get_pixel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Image.get_pixels">
+<tt class="descname">get_pixels</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Image.get_pixels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Image.set_pixel">
+<tt class="descname">set_pixel</tt><big>(</big><em>int x</em>, <em>int y</em>, <em>color</em><big>)</big><a class="headerlink" href="#sf.graphics.Image.set_pixel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Image.update_pixels">
+<tt class="descname">update_pixels</tt><big>(</big><em>str pixels</em><span class="optional">[</span>, <em>rect</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Image.update_pixels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.Texture">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Texture</tt><big>(</big><span class="optional">[</span><em>int width</em><span class="optional">[</span>, <em>int height</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Texture" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class has been recently introduced in SFML 2. It basically
+replaces the <a class="reference internal" href="#sf.graphics.Image" title="sf.graphics.Image"><tt class="xref py py-class docutils literal"><span class="pre">Image</span></tt></a> class, except when you need to access
+or set pixels, which is only possible with Images.</p>
+<dl class="attribute">
+<dt id="sf.graphics.Texture.MAXIMUM_SIZE">
+<tt class="descname">MAXIMUM_SIZE</tt><a class="headerlink" href="#sf.graphics.Texture.MAXIMUM_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Texture.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.graphics.Texture.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Texture.smooth">
+<tt class="descname">smooth</tt><a class="headerlink" href="#sf.graphics.Texture.smooth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Texture.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.graphics.Texture.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Texture.load_from_file">
+<em class="property">classmethod </em><tt class="descname">load_from_file</tt><big>(</big><em>filename</em><span class="optional">[</span>, <em>area</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Texture.load_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>area</em> can be either a tuple or an <tt class="xref py py-class docutils literal"><span class="pre">sf.IntRect</span></tt>.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Texture.load_from_image">
+<em class="property">classmethod </em><tt class="descname">load_from_image</tt><big>(</big><em>image</em><span class="optional">[</span>, <em>area</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Texture.load_from_image" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>area</em> can be either a tuple or an <tt class="xref py py-class docutils literal"><span class="pre">sf.IntRect</span></tt>.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Texture.load_from_memory">
+<em class="property">classmethod </em><tt class="descname">load_from_memory</tt><big>(</big><em>bytes data</em><span class="optional">[</span>, <em>area</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Texture.load_from_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>area</em> can be either a tuple or an <tt class="xref py py-class docutils literal"><span class="pre">sf.IntRect</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Texture.bind">
+<tt class="descname">bind</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Texture.bind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">get_tex_coords(rect):</tt></dt>
+<dd><p><em>rect</em> can be either a tuple or an <tt class="xref py py-class docutils literal"><span class="pre">sf.IntRect</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Texture.update">
+<tt class="descname">update</tt><big>(</big><em>object source</em>, <em>int p1=-1</em>, <em>int p2=-1</em>, <em>int p3=-1</em>, <em>int p4=-1</em><big>)</big><a class="headerlink" href="#sf.graphics.Texture.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method can be called in three ways, to be consistent with
+the C++ method overloading:</p>
+<div class="highlight-python"><pre>update(bytes pixels[, width, height, x, y])
+update(image[, x, y])
+update(window[, x, y])</pre>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.Drawable">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Drawable</tt><a class="headerlink" href="#sf.graphics.Drawable" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Abstract base class for objects that can be drawn to a render target.</p>
+<p>sf.Drawable defines the attributes and operations that are common to all the drawable classes:</p>
+<p>transformations (position, rotation, scale, local origin)
+global overlay color
+blending mode with background pixels
+the ability to be drawn on a sf.RenderTarget (either RenderWindow or RenderTexture)</p>
+<p>Please note that all these attributes are hardware accelerated, therefore they are extremely cheap to use (unlike older libraries that perform slow transformations on the CPU, such as rotation or scale).</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># here we&#39;ll use a sf.Sprite to demonstrate the features of sf.Drawable</span>
+<span class="n">drawable</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">texture</span><span class="p">)</span>
+
+<span class="n">drawable</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>         <span class="c"># set its origin to the local point (10, 20)</span>
+<span class="n">drawable</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>     <span class="c"># set its position to (100, 100)</span>
+<span class="n">drawable</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="mi">45</span>             <span class="c"># set its orientation to 45 degrees</span>
+<span class="n">drawable</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span>      <span class="c"># set its global color to red</span>
+<span class="n">drawable</span><span class="o">.</span><span class="n">blend_mode</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Blend</span><span class="o">.</span><span class="n">ADD</span> <span class="c"># set an additive blend mode</span>
+
+<span class="n">window</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">drawable</span><span class="p">);</span> <span class="c"># finally draw it (window is a sf.RenderWindow)</span>
+</pre></div>
+</div>
+<p>Deriving your own class from sf.Drawable is possible, however you have to use the sf.Renderer class instead of direct OpenGL calls, which is more limited. To create a derived drawable class, all you have to do is to override the virtual Render function.</p>
+<p>One of the main benefits of creating your own drawable class is that you can build hierarchies of drawable objects. Indeed, when you draw a drawable inside the Render function of another drawable, the former inherits the transformations and color of the latter and combines them with its own attributes. This way, you can apply global transformations/color to a set of drawables as if it was a single entity.</p>
+<p>Example:</p>
+<div class="highlight-python"><pre>class MyDrawable: sf.Drawable
+    def render(self, target, renderer):
+        # low-level geometry rendering
+        renderer.texture = texture
+        renderer.begin(sf.Renderer.QUADLIST)
+            renderer.add_vertex(...)
+            renderer.add_vertex(...)
+            renderer.add_vertex(...)
+            renderer.add_vertex(...)
+        renderer.end();
+
+        # high-level drawable rendering
+        target.draw(mySubSprite);</pre>
+</div>
+</div></blockquote>
+<dl class="attribute">
+<dt id="sf.graphics.Drawable.x">
+<tt class="descname">x</tt><a class="headerlink" href="#sf.graphics.Drawable.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>The X position of the object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Drawable.y">
+<tt class="descname">y</tt><a class="headerlink" href="#sf.graphics.Drawable.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Y position of the object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Drawable.position">
+<tt class="descname">position</tt><a class="headerlink" href="#sf.graphics.Drawable.position" title="Permalink to this definition">¶</a></dt>
+<dd><p>The position of the object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Drawable.scale">
+<tt class="descname">scale</tt><a class="headerlink" href="#sf.graphics.Drawable.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>The scale factors of the object.</p>
+<p>The object returned by this property will behave, but it might
+be important in some cases to know that its exact type isn&#8217;t
+tuple, although its class does inherit tuple. In practice it
+should behave just like a tuple, except if you write code that
+checks for exact type using the <tt class="docutils literal"><span class="pre">type()</span></tt> function. Instead,
+use <tt class="docutils literal"><span class="pre">isinstance()</span></tt>:</p>
+<div class="highlight-python"><pre>if isinstance(some_object, tuple):
+    # We now know that some_object is a tuple</pre>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Drawable.origin">
+<tt class="descname">origin</tt><a class="headerlink" href="#sf.graphics.Drawable.origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>The local origin of the object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Drawable.rotation">
+<tt class="descname">rotation</tt><a class="headerlink" href="#sf.graphics.Drawable.rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>The orientation of the object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Drawable.color">
+<tt class="descname">color</tt><a class="headerlink" href="#sf.graphics.Drawable.color" title="Permalink to this definition">¶</a></dt>
+<dd><p>The global color of the object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Drawable.blend_mode">
+<tt class="descname">blend_mode</tt><a class="headerlink" href="#sf.graphics.Drawable.blend_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>The blending mode of the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Drawable.move">
+<tt class="descname">move</tt><big>(</big><em>float x</em>, <em>float y</em><big>)</big><a class="headerlink" href="#sf.graphics.Drawable.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the object by a given offset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">scale</tt><big>(</big><em>float x</em>, <em>float y</em><big>)</big></dt>
+<dd><p>Scale the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Drawable.rotate">
+<tt class="descname">rotate</tt><big>(</big><em>float angle</em><big>)</big><a class="headerlink" href="#sf.graphics.Drawable.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Drawable.tranform_to_local">
+<tt class="descname">tranform_to_local</tt><big>(</big><em>float x</em>, <em>float y</em><big>)</big><a class="headerlink" href="#sf.graphics.Drawable.tranform_to_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform a point in object local coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Drawable.transform_to_global">
+<tt class="descname">transform_to_global</tt><big>(</big><em>float x</em>, <em>float y</em><big>)</big><a class="headerlink" href="#sf.graphics.Drawable.transform_to_global" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform a local point in global coordinates.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.Shape">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Shape</tt><a class="headerlink" href="#sf.graphics.Shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>A convex, colored polygon with an optional outline.</p>
+<p>sf.Shape is a drawable class that allows to define and display a custom convex shape on a render target.</p>
+<p>It is important to keep in mind that shapes must always be convex, otherwise they may not be drawn correctly. Moreover, the points must be added in the right order; using a random order would also result in an incorrect shape.</p>
+<p>A shape is made of points that have their own individual attributes:</p>
+<blockquote>
+<div><ul class="simple">
+<li>position (relative to the origin of the shape)</li>
+<li>color</li>
+<li>outline color</li>
+</ul>
+</div></blockquote>
+<p>Shapes have an outline that can be enabled or not. You can control the thickness of the outline with the SetOutlineThickness function.</p>
+<p>They also inherits all the functions from sf.Drawable: position, rotation, scale, origin, (global) color and blend_mode.</p>
+<p>Some static functions are provided to directly create common shapes such as lines, rectangles and circles:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">line</span>      <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+<span class="n">rectangle</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">thickness</span><span class="p">)</span>
+<span class="n">circle</span>    <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A common mistake is to mix the individual points positions / colors and the global position / color of the shape. They are completely separate attributes that are combined when the shape is drawn (positions are added, colors are multiplied).:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">line</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="mi">10</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">);</span>
+<span class="n">line</span><span class="o">.</span><span class="n">position</span> <span class="c"># will return (0, 0), *not* (100, 100)</span>
+<span class="n">line</span><span class="o">.</span><span class="n">color</span>    <span class="c"># is white, *not* red</span>
+</pre></div>
+</div>
+<p>So if you plan to change the position / color of your shape after it is created, you&#8217;d better create the points around the origin and with white color, and use only the global position / color (SetPosition, SetColor).</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">shape</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Shape</span><span class="p">()</span> <span class="c"># create a shape</span>
+
+<span class="c"># define its points</span>
+<span class="n">shape</span><span class="o">.</span><span class="n">add_point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">)</span>
+<span class="n">shape</span><span class="o">.</span><span class="n">add_point</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span><span class="p">)</span>
+<span class="n">shape</span><span class="o">.</span><span class="n">add_point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">BLUE</span><span class="p">)</span>
+
+<span class="c"># enable outline only</span>
+<span class="n">shape</span><span class="o">.</span><span class="n">fill_enabled</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">shape</span><span class="o">.</span><span class="n">outline_enabled</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">shape</span><span class="o">.</span><span class="n">outline_thickness</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c">#display it</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">shape</span><span class="p">);</span> <span class="c"># window is a sf.RenderWindow</span>
+
+<span class="c"># display static shapes</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">))</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">rectangle</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span><span class="p">))</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">circle</span><span class="p">((</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span> <span class="mi">20</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">BLUE</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">BLACK</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="sf.graphics.Shape.add_point">
+<tt class="descname">add_point</tt><big>(</big><em>position</em><span class="optional">[</span>, <em>color</em><span class="optional">[</span>, <em>outline_color</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Shape.add_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new point to the shape.</p>
+<p>The new point is inserted at the end of the shape.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>position</strong> (<em>sf.Position</em>) &#8211; Position of the point</li>
+<li><strong>color</strong> (<em>sf.Color</em>) &#8211; Color of the point</li>
+<li><strong>outline_color</strong> (<em>sf.Color</em>) &#8211; Outline color of the point</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Shape.points_count">
+<tt class="descname">points_count</tt><a class="headerlink" href="#sf.graphics.Shape.points_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of points composing the shape.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Shape.fill_enabled">
+<tt class="descname">fill_enabled</tt><a class="headerlink" href="#sf.graphics.Shape.fill_enabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Shape.outline_enabled">
+<tt class="descname">outline_enabled</tt><a class="headerlink" href="#sf.graphics.Shape.outline_enabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Shape.outline_thickness">
+<tt class="descname">outline_thickness</tt><a class="headerlink" href="#sf.graphics.Shape.outline_thickness" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shape.set_point_position">
+<tt class="descname">set_point_position</tt><big>(</big><em>int index</em>, <em>float x</em>, <em>float y</em><big>)</big><a class="headerlink" href="#sf.graphics.Shape.set_point_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the position of a point.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shape.set_point_color">
+<tt class="descname">set_point_color</tt><big>(</big><em>int index</em>, <em>color</em><big>)</big><a class="headerlink" href="#sf.graphics.Shape.set_point_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the color of a point.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shape.set_point_outline_color">
+<tt class="descname">set_point_outline_color</tt><big>(</big><em>int index</em>, <em>color</em><big>)</big><a class="headerlink" href="#sf.graphics.Shape.set_point_outline_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the outline color of a point.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shape.get_point_position">
+<tt class="descname">get_point_position</tt><big>(</big><em>int index</em><big>)</big><a class="headerlink" href="#sf.graphics.Shape.get_point_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the position of a point.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shape.get_point_color">
+<tt class="descname">get_point_color</tt><big>(</big><em>int index</em><big>)</big><a class="headerlink" href="#sf.graphics.Shape.get_point_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the color of a point.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shape.get_point_outline_color">
+<tt class="descname">get_point_outline_color</tt><big>(</big><em>int index</em><big>)</big><a class="headerlink" href="#sf.graphics.Shape.get_point_outline_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the outline color of a point.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Shape.line">
+<em class="property">classmethod </em><tt class="descname">line</tt><big>(</big><em>start</em>, <em>end</em>, <em>thickness</em>, <em>color</em><span class="optional">[</span>, <em>outline=0</em><span class="optional">[</span>, <em>outline_color=sf.Color.BLACK</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Shape.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new line.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> (<em>sf.Position</em>) &#8211; Start point</li>
+<li><strong>end</strong> (<em>sf.Position</em>) &#8211; End point</li>
+<li><strong>thickness</strong> (<em>integer</em>) &#8211; Thickness of the line</li>
+<li><strong>color</strong> (<em>sf.Color</em>) &#8211; Color of the shape&#8217;s points</li>
+<li><strong>outline</strong> (<em>integer</em>) &#8211; Outline thickness</li>
+<li><strong>outline_color</strong> (<em>sf.Color</em>) &#8211; Outline color of the shape&#8217;s points</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">sf.Shape</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Shape.rectangle">
+<em class="property">classmethod </em><tt class="descname">rectangle</tt><big>(</big><em>rectangle</em>, <em>color</em><span class="optional">[</span>, <em>float outline=0</em><span class="optional">[</span>, <em>outline_color=sf.Color.BLACK</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Shape.rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new rectangular shape.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>rectangle</strong> (<em>sf.Rectangle</em>) &#8211; Rectangle defining the shape</li>
+<li><strong>color</strong> (<em>sf.Color</em>) &#8211; Color of the shape&#8217;s points</li>
+<li><strong>outline</strong> (<em>integer</em>) &#8211; Outline thickness</li>
+<li><strong>outline_color</strong> (<em>sf.Color</em>) &#8211; Outline color of the shape&#8217;s points</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">sf.Shape</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Shape.circle">
+<em class="property">classmethod </em><tt class="descname">circle</tt><big>(</big><em>center</em>, <em>radius</em>, <em>color</em><span class="optional">[</span>, <em>outline=0</em><span class="optional">[</span>, <em>outline_color=sf.Color.BLACK</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Shape.circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new circular shape.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>center</strong> (<em>sf.Position</em>) &#8211; Center of the circle</li>
+<li><strong>radius</strong> (<em>integer</em>) &#8211; Radius of the circle</li>
+<li><strong>color</strong> (<em>sf.Color</em>) &#8211; Color of the shape&#8217;s points</li>
+<li><strong>outline</strong> (<em>integer</em>) &#8211; Outline thickness</li>
+<li><strong>outline_color</strong> (<em>sf.Color</em>) &#8211; Outline color of the shape&#8217;s points</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">sf.Shape</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.Sprite">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Sprite</tt><big>(</big><span class="optional">[</span><em>texture</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Sprite" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.graphics.Sprite.blend_mode">
+<tt class="descname">blend_mode</tt><a class="headerlink" href="#sf.graphics.Sprite.blend_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.color">
+<tt class="descname">color</tt><a class="headerlink" href="#sf.graphics.Sprite.color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.graphics.Sprite.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.origin">
+<tt class="descname">origin</tt><a class="headerlink" href="#sf.graphics.Sprite.origin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.position">
+<tt class="descname">position</tt><a class="headerlink" href="#sf.graphics.Sprite.position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.rotation">
+<tt class="descname">rotation</tt><a class="headerlink" href="#sf.graphics.Sprite.rotation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.the_scale">
+<tt class="descname">the_scale</tt><a class="headerlink" href="#sf.graphics.Sprite.the_scale" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.size">
+<tt class="descname">size</tt><a class="headerlink" href="#sf.graphics.Sprite.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.texture">
+<tt class="descname">texture</tt><a class="headerlink" href="#sf.graphics.Sprite.texture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.graphics.Sprite.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.x">
+<tt class="descname">x</tt><a class="headerlink" href="#sf.graphics.Sprite.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Sprite.y">
+<tt class="descname">y</tt><a class="headerlink" href="#sf.graphics.Sprite.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.__getitem__">
+<tt class="descname">__getitem__</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equivalent to <tt class="xref py py-meth docutils literal"><span class="pre">get_pixel()</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.get_sub_rect">
+<tt class="descname">get_sub_rect</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.get_sub_rect" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>This method returns a copy of the rectangle, so code like
+this won&#8217;t work:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="n">sprite</span><span class="o">.</span><span class="n">get_sub_rect</span><span class="p">()</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="mi">10</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.flip_x">
+<tt class="descname">flip_x</tt><big>(</big><em>flipped</em><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.flip_x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.flip_y">
+<tt class="descname">flip_y</tt><big>(</big><em>flipped</em><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.flip_y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.move">
+<tt class="descname">move</tt><big>(</big><em>float x</em>, <em>float y</em><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.move" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.resize">
+<tt class="descname">resize</tt><big>(</big><em>float width</em>, <em>float height</em><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.resize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.rotate">
+<tt class="descname">rotate</tt><big>(</big><em>float angle</em><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.rotate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.scale">
+<tt class="descname">scale</tt><big>(</big><em>float x</em>, <em>float y</em><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.scale" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.set_sub_rect">
+<tt class="descname">set_sub_rect</tt><big>(</big><em>rect</em><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.set_sub_rect" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>rect</em> can be either a tuple or an <tt class="xref py py-class docutils literal"><span class="pre">IntRect</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.set_texture">
+<tt class="descname">set_texture</tt><big>(</big><em>image</em><span class="optional">[</span>, <em>adjust_to_new_size=False</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.set_texture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.transform_to_global">
+<tt class="descname">transform_to_global</tt><big>(</big><em>float x</em>, <em>float y</em><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.transform_to_global" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Sprite.transform_to_local">
+<tt class="descname">transform_to_local</tt><big>(</big><em>float x</em>, <em>float y</em><big>)</big><a class="headerlink" href="#sf.graphics.Sprite.transform_to_local" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.Shader">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Shader</tt><a class="headerlink" href="#sf.graphics.Shader" title="Permalink to this definition">¶</a></dt>
+<dd><p>The constructor will raise <tt class="docutils literal"><span class="pre">NotImplementedError</span></tt> if called.  Use
+class methods like <a class="reference internal" href="#sf.graphics.Shader.load_from_file" title="sf.graphics.Shader.load_from_file"><tt class="xref py py-meth docutils literal"><span class="pre">load_from_file()</span></tt></a> or <a class="reference internal" href="#sf.graphics.Shader.load_from_memory" title="sf.graphics.Shader.load_from_memory"><tt class="xref py py-meth docutils literal"><span class="pre">load_from_memory()</span></tt></a>
+instead.</p>
+<dl class="classmethod">
+<dt id="sf.graphics.Shader.load_from_file">
+<em class="property">classmethod </em><tt class="descname">load_from_file</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#sf.graphics.Shader.load_from_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Shader.load_from_memory">
+<em class="property">classmethod </em><tt class="descname">load_from_memory</tt><big>(</big><em>str shader</em><big>)</big><a class="headerlink" href="#sf.graphics.Shader.load_from_memory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shader.bind">
+<tt class="descname">bind</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Shader.bind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shader.set_parameter">
+<tt class="descname">set_parameter</tt><big>(</big><em>str name</em>, <em>float x</em><span class="optional">[</span>, <em>float y</em>, <em>float z</em>, <em>float w</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Shader.set_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>After <em>name</em>, you can pass as many parameters as four, depending
+on your need.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shader.set_texture">
+<tt class="descname">set_texture</tt><big>(</big><em>str name</em><big>)</big><a class="headerlink" href="#sf.graphics.Shader.set_texture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shader.set_current_texture">
+<tt class="descname">set_current_texture</tt><big>(</big><em>str name</em><big>)</big><a class="headerlink" href="#sf.graphics.Shader.set_current_texture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Shader.unbind">
+<tt class="descname">unbind</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.Shader.unbind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.RenderTarget">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">RenderTarget</tt><a class="headerlink" href="#sf.graphics.RenderTarget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for all render targets (window, texture, ...)</p>
+<p>sf.RenderTarget defines the common behaviour of all the 2D render targets usable in the graphics module.</p>
+<p>It makes it possible to draw 2D entities like sprites, shapes, text without using any OpenGL command directly.</p>
+<p>A sf.RenderTarget is also able to use views (sf.View), which are a kind of 2D cameras. With views you can globally scroll, rotate or zoom everything that is drawn, without having to transform every single entity. See the documentation of sf::View for more details and sample pieces of code about this class.</p>
+<dl class="method">
+<dt id="sf.graphics.RenderTarget.clear">
+<tt class="descname">clear</tt><big>(</big><span class="optional">[</span><em>color=sf.Color.BLACK</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderTarget.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Clear the entire target with a single color.</p>
+<p>This function is usually called once every frame, to clear the previous contents of the target.</p>
+<dl class="method">
+<dt id="sf.graphics.RenderTarget.draw">
+<tt class="descname">draw</tt><big>(</big><em>object</em><span class="optional">[</span>, <em>shader</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderTarget.draw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Draw an object into the target with an optional shader.</p>
+<p>This function draws anything that inherits from the sf.Drawable base class (sf.Sprite, sf.Shape, sf.Text, or even your own derived classes). The shader alters the way that the pixels are processed right before being written to the render target.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.RenderWindow">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">RenderWindow</tt><big>(</big><em>VideoMode mode</em>, <em>title</em><span class="optional">[</span>, <em>style</em><span class="optional">[</span>, <em>ContextSettings settings</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.graphics.RenderWindow.active">
+<tt class="descname">active</tt><a class="headerlink" href="#sf.graphics.RenderWindow.active" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.cursor_position">
+<tt class="descname">cursor_position</tt><a class="headerlink" href="#sf.graphics.RenderWindow.cursor_position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.default_view">
+<tt class="descname">default_view</tt><a class="headerlink" href="#sf.graphics.RenderWindow.default_view" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.framerate_limit">
+<tt class="descname">framerate_limit</tt><a class="headerlink" href="#sf.graphics.RenderWindow.framerate_limit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.frame_time">
+<tt class="descname">frame_time</tt><a class="headerlink" href="#sf.graphics.RenderWindow.frame_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.graphics.RenderWindow.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.joystick_threshold">
+<tt class="descname">joystick_threshold</tt><a class="headerlink" href="#sf.graphics.RenderWindow.joystick_threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.key_repeat_enabled">
+<tt class="descname">key_repeat_enabled</tt><a class="headerlink" href="#sf.graphics.RenderWindow.key_repeat_enabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.opened">
+<tt class="descname">opened</tt><a class="headerlink" href="#sf.graphics.RenderWindow.opened" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.position">
+<tt class="descname">position</tt><a class="headerlink" href="#sf.graphics.RenderWindow.position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.settings">
+<tt class="descname">settings</tt><a class="headerlink" href="#sf.graphics.RenderWindow.settings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.show_mouse_cursor">
+<tt class="descname">show_mouse_cursor</tt><a class="headerlink" href="#sf.graphics.RenderWindow.show_mouse_cursor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.size">
+<tt class="descname">size</tt><a class="headerlink" href="#sf.graphics.RenderWindow.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.system_handle">
+<tt class="descname">system_handle</tt><a class="headerlink" href="#sf.graphics.RenderWindow.system_handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the system handle as a long (or int on Python 3). Windows
+and Mac users will probably need to cast this as another type
+suitable for their system&#8217;s API. Please contact me and show me
+your use case so that I can make the API more user-friendly.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.title">
+<tt class="descname">title</tt><a class="headerlink" href="#sf.graphics.RenderWindow.title" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.vertical_sync_enabled">
+<tt class="descname">vertical_sync_enabled</tt><a class="headerlink" href="#sf.graphics.RenderWindow.vertical_sync_enabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.view">
+<tt class="descname">view</tt><a class="headerlink" href="#sf.graphics.RenderWindow.view" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderWindow.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.graphics.RenderWindow.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.RenderWindow.from_window_handle">
+<em class="property">classmethod </em><tt class="descname">from_window_handle</tt><big>(</big><em>long window_handle</em><span class="optional">[</span>, <em>ContextSettings settings</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.from_window_handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equivalent to this C++ constructor:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">RenderWindow</span><span class="p">(</span><span class="n">WindowHandle</span><span class="p">,</span> <span class="n">ContextSettings</span><span class="o">=</span><span class="n">ContextSettings</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.clear">
+<tt class="descname">clear</tt><big>(</big><span class="optional">[</span><em>color</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.convert_coords">
+<tt class="descname">convert_coords</tt><big>(</big><em>x</em>, <em>y</em><span class="optional">[</span>, <em>view</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.convert_coords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.create">
+<tt class="descname">create</tt><big>(</big><em>VideoMode mode</em>, <em>title</em><span class="optional">[</span>, <em>int style</em><span class="optional">[</span>, <em>ContextSettings settings</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.display">
+<tt class="descname">display</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.draw">
+<tt class="descname">draw</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.draw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.get_input">
+<tt class="descname">get_input</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.get_input" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.get_viewport">
+<tt class="descname">get_viewport</tt><big>(</big><em>view</em><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.get_viewport" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.poll_event">
+<tt class="descname">poll_event</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.poll_event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.restore_gl_states">
+<tt class="descname">restore_gl_states</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.restore_gl_states" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.save_gl_states">
+<tt class="descname">save_gl_states</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.save_gl_states" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.set_icon">
+<tt class="descname">set_icon</tt><big>(</big><em>int width</em>, <em>int height</em>, <em>str pixels</em><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.set_icon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.show">
+<tt class="descname">show</tt><big>(</big><em>show</em><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.show" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderWindow.wait_event">
+<tt class="descname">wait_event</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderWindow.wait_event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.RenderTexture">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">RenderTexture</tt><big>(</big><em>int width</em>, <em>int height</em><span class="optional">[</span>, <em>bool depth=False</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderTexture" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.graphics.RenderTexture.active">
+<tt class="descname">active</tt><a class="headerlink" href="#sf.graphics.RenderTexture.active" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderTexture.default_view">
+<tt class="descname">default_view</tt><a class="headerlink" href="#sf.graphics.RenderTexture.default_view" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderTexture.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.graphics.RenderTexture.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderTexture.texture">
+<tt class="descname">texture</tt><a class="headerlink" href="#sf.graphics.RenderTexture.texture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderTexture.smooth">
+<tt class="descname">smooth</tt><a class="headerlink" href="#sf.graphics.RenderTexture.smooth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderTexture.view">
+<tt class="descname">view</tt><a class="headerlink" href="#sf.graphics.RenderTexture.view" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.RenderTexture.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.graphics.RenderTexture.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderTexture.clear">
+<tt class="descname">clear</tt><big>(</big><span class="optional">[</span><em>color</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderTexture.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderTexture.convert_coords">
+<tt class="descname">convert_coords</tt><big>(</big><em>int x</em>, <em>int y</em><span class="optional">[</span>, <em>view</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderTexture.convert_coords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderTexture.create">
+<tt class="descname">create</tt><big>(</big><em>int width</em>, <em>int height</em><span class="optional">[</span>, <em>bool depth=False</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderTexture.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderTexture.display">
+<tt class="descname">display</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderTexture.display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderTexture.draw">
+<tt class="descname">draw</tt><big>(</big><em>drawable</em><span class="optional">[</span>, <em>shader</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.RenderTexture.draw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderTexture.get_viewport">
+<tt class="descname">get_viewport</tt><big>(</big><em>view</em><big>)</big><a class="headerlink" href="#sf.graphics.RenderTexture.get_viewport" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderTexture.restore_gl_states">
+<tt class="descname">restore_gl_states</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderTexture.restore_gl_states" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.RenderTexture.save_gl_states">
+<tt class="descname">save_gl_states</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.RenderTexture.save_gl_states" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.ContextSettings">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">ContextSettings</tt><big>(</big><em>int depth=24</em>, <em>int stencil=8</em>, <em>int antialiasing=0</em>, <em>int major=2</em>, <em>int minor=0</em><big>)</big><a class="headerlink" href="#sf.graphics.ContextSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure defining the settings of the OpenGL context attached to a window.</p>
+<p>ContextSettings allows to define several advanced settings of the OpenGL context attached to a window.</p>
+<p>All these settings have no impact on the regular SFML rendering (graphics module) &#8211; except the anti-aliasing level, so you may need to use this structure only if you&#8217;re using SFML as a windowing system for custom OpenGL rendering.</p>
+<p>The depth_bits and stencil_bits properties define the number of bits per pixel requested for the (respectively) depth and stencil buffers.</p>
+<p>antialiasing_level represents the requested number of multisampling levels for anti-aliasing.</p>
+<p>major_version and minor_version define the version of the OpenGL context that you want. Only versions greater or equal to 3.0 are relevant; versions lesser than 3.0 are all handled the same way (i.e. you can use any version &lt; 3.0 if you don&#8217;t want an OpenGL 3 context).</p>
+<p>Please note that these values are only a hint. No failure will be reported if one or more of these values are not supported by the system; instead, SFML will try to find the closest valid match. You can then retrieve the settings that the window actually used to create its context, with sf.Window.settings.</p>
+<dl class="attribute">
+<dt id="sf.graphics.ContextSettings.depth_bits">
+<tt class="descname">depth_bits</tt><a class="headerlink" href="#sf.graphics.ContextSettings.depth_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bits of the depth buffer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.ContextSettings.stencil_bits">
+<tt class="descname">stencil_bits</tt><a class="headerlink" href="#sf.graphics.ContextSettings.stencil_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bits of the stencil buffer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.ContextSettings.antialiasing_level">
+<tt class="descname">antialiasing_level</tt><a class="headerlink" href="#sf.graphics.ContextSettings.antialiasing_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Level of antialiasing.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.ContextSettings.major_version">
+<tt class="descname">major_version</tt><a class="headerlink" href="#sf.graphics.ContextSettings.major_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Major number of the context version to create.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.ContextSettings.minor_version">
+<tt class="descname">minor_version</tt><a class="headerlink" href="#sf.graphics.ContextSettings.minor_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minor number of the context version to create.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.VideoMode">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">VideoMode</tt><big>(</big><span class="optional">[</span><em>width</em>, <em>height</em>, <em>bits_per_pixel=32</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.VideoMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>sf.VideoMode defines a video mode (width, height, bpp)</p>
+<p>A video mode is defined by a width and a height (in pixels) and a depth (in bits per pixel).</p>
+<p>Video modes are used to setup windows (sf.Window) at creation time.</p>
+<p>The main usage of video modes is for fullscreen mode: indeed you must use one of the valid video modes allowed by the OS (which are defined by what the monitor and the graphics card support), otherwise your window creation will just fail.</p>
+<p>sf.VideoMode provides a static function for retrieving the list of all the video modes supported by the system: get_fullscreen_modes().</p>
+<p>A custom video mode can also be checked directly for fullscreen compatibility with its is_valid() function.</p>
+<p>Additionnally, sf.VideoMode provides a static function to get the mode currently used by the desktop: get_desktop_mode(). This allows to build windows with the same size or pixel depth as the current resolution.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># display the list of all the video modes available for fullscreen</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mode</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="o">.</span><span class="n">get_fullscreen_modes</span><span class="p">()):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Mode #{0}: {1}x{2} - {3} bpp&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">mode</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">mode</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">mode</span><span class="o">.</span><span class="n">bits_per_pixel</span><span class="p">))</span>
+
+<span class="c"># create a window with the same pixel depth as the desktop</span>
+<span class="n">desktop</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="o">.</span><span class="n">get_desktop_mode</span><span class="p">()</span>
+<span class="n">window</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">768</span><span class="p">,</span> <span class="n">desktop</span><span class="o">.</span><span class="n">bits_per_pixel</span><span class="p">),</span> <span class="s">&quot;SFML window&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="sf.graphics.VideoMode.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.graphics.VideoMode.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video mode width, in pixels.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.VideoMode.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.graphics.VideoMode.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video mode height, in pixels.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.VideoMode.bits_per_pixel">
+<tt class="descname">bits_per_pixel</tt><a class="headerlink" href="#sf.graphics.VideoMode.bits_per_pixel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video mode pixel depth, in bits per pixels.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.VideoMode.get_desktop_mode">
+<em class="property">classmethod </em><tt class="descname">get_desktop_mode</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.VideoMode.get_desktop_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current desktop video mode.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.VideoMode.get_fullscreen_modes">
+<em class="property">classmethod </em><tt class="descname">get_fullscreen_modes</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.VideoMode.get_fullscreen_modes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all the video modes supported in fullscreen mode.</p>
+<p>When creating a fullscreen window, the video mode is restricted to be compatible with what the graphics driver and monitor support. This function returns the complete list of all video modes that can be used in fullscreen mode. The returned array is sorted from best to worst, so that the first element will always give the best mode (higher width, height and bits-per-pixel).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.VideoMode.is_valid">
+<tt class="descname">is_valid</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.VideoMode.is_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tell whether or not the video mode is valid.</p>
+<p>The validity of video modes is only relevant when using fullscreen windows; otherwise any video mode can be used with no restriction.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.View">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">View</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.View" title="Permalink to this definition">¶</a></dt>
+<dd><p>2D camera that defines what region is shown on screen</p>
+<p>sf.View defines a camera in the 2D scene.</p>
+<p>This is a very powerful concept: you can scroll, rotate or zoom the entire scene without altering the way that your drawable objects are drawn.</p>
+<p>A view is composed of a source rectangle, which defines what part of the 2D scene is shown, and a target viewport, which defines where the contents of the source rectangle will be displayed on the render target (window or texture).</p>
+<p>The viewport allows to map the scene to a custom part of the render target, and can be used for split-screen or for displaying a minimap, for example. If the source rectangle has not the same size as the viewport, its contents will be stretched to fit in.</p>
+<p>To apply a view, you have to assign it to the render target. Then, every objects drawn in this render target will be affected by the view until you use another view.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">()</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">View</span><span class="p">()</span>
+
+<span class="c"># initialize the view to a rectangle located at (100, 100) and with a size of 400x200</span>
+<span class="n">view</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+
+<span class="c"># rotate it by 45 degrees</span>
+<span class="n">view</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+
+<span class="c"># set its target viewport to be half of the window and apply it</span>
+<span class="n">view</span><span class="o">.</span><span class="n">viewport</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c"># or a tuple (0, 0, 0.5, 1)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+
+<span class="c"># render stuff</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">some_sprite</span><span class="p">);</span>
+
+<span class="c"># set the default view back</span>
+<span class="n">window</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">default_view</span>
+
+<span class="c"># render stuff not affected by the view</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">some_text</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="sf.graphics.View.center">
+<tt class="descname">center</tt><a class="headerlink" href="#sf.graphics.View.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>The center of the view.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.View.size">
+<tt class="descname">size</tt><a class="headerlink" href="#sf.graphics.View.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The size of the view.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.View.rotation">
+<tt class="descname">rotation</tt><a class="headerlink" href="#sf.graphics.View.rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>The orientation of the view.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.View.viewport">
+<tt class="descname">viewport</tt><a class="headerlink" href="#sf.graphics.View.viewport" title="Permalink to this definition">¶</a></dt>
+<dd><p>The target viewport.</p>
+<p>The viewport is the rectangle into which the contents of the view are displayed, expressed as a factor (between 0 and 1) of the size of the RenderTarget to which the view is applied. For example, a view which takes the left side of the target would be defined with view.viewport = (0, 0, 0.5, 1). By default, a view has a viewport which covers the entire target.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.View.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.graphics.View.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the view to the given rectangle.</p>
+<p>Note that this function resets the rotation angle to 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.View.move">
+<tt class="descname">move</tt><big>(</big><em>offset</em><big>)</big><a class="headerlink" href="#sf.graphics.View.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the view relatively to its current position.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.View.rotate">
+<tt class="descname">rotate</tt><big>(</big><em>(float angle</em><big>)</big><a class="headerlink" href="#sf.graphics.View.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate the view relatively to its current orientation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.View.zoom">
+<tt class="descname">zoom</tt><big>(</big><em>float factor</em><big>)</big><a class="headerlink" href="#sf.graphics.View.zoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize the view rectangle relatively to its current size.</p>
+<p>Resizing the view simulates a zoom, as the zone displayed on screen grows or shrinks. factor is a multiplier:</p>
+<blockquote>
+<div>1 keeps the size unchanged
+&gt; 1 makes the view bigger (objects appear smaller)
+&lt; 1 makes the view smaller (objects appear bigger)</div></blockquote>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.View.from_center_and_size">
+<em class="property">classmethod </em><tt class="descname">from_center_and_size</tt><big>(</big><em>center</em>, <em>size</em><big>)</big><a class="headerlink" href="#sf.graphics.View.from_center_and_size" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>center</em> and <em>size</em> can be either tuples or <tt class="xref py py-class docutils literal"><span class="pre">Vector2f</span></tt>.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.View.from_rect">
+<em class="property">classmethod </em><tt class="descname">from_rect</tt><big>(</big><em>rect</em><big>)</big><a class="headerlink" href="#sf.graphics.View.from_rect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.View.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.graphics.View.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.View.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.graphics.View.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.Font">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Font</tt><a class="headerlink" href="#sf.graphics.Font" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.graphics.Font.DEFAULT_FONT">
+<tt class="descname">DEFAULT_FONT</tt><a class="headerlink" href="#sf.graphics.Font.DEFAULT_FONT" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default font (Arial), as a class attribute:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">sf</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">DEFAULT_FONT</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Font.load_from_file">
+<em class="property">classmethod </em><tt class="descname">load_from_file</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#sf.graphics.Font.load_from_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.graphics.Font.load_from_memory">
+<em class="property">classmethod </em><tt class="descname">load_from_memory</tt><big>(</big><em>str data</em><big>)</big><a class="headerlink" href="#sf.graphics.Font.load_from_memory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Font.get_glyph">
+<tt class="descname">get_glyph</tt><big>(</big><em>int code_point</em>, <em>int character_size</em>, <em>bool bold</em><big>)</big><a class="headerlink" href="#sf.graphics.Font.get_glyph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Font.get_texture">
+<tt class="descname">get_texture</tt><big>(</big><em>int character_size</em><big>)</big><a class="headerlink" href="#sf.graphics.Font.get_texture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Font.get_kerning">
+<tt class="descname">get_kerning</tt><big>(</big><em>int first</em>, <em>int second</em>, <em>int character_size</em><big>)</big><a class="headerlink" href="#sf.graphics.Font.get_kerning" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.graphics.Font.get_line_spacing">
+<tt class="descname">get_line_spacing</tt><big>(</big><em>int character_size</em><big>)</big><a class="headerlink" href="#sf.graphics.Font.get_line_spacing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.Text">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Text</tt><big>(</big><span class="optional">[</span><em>string</em>, <em>font</em>, <em>character_size=0</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.graphics.Text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Graphical text that can be drawn to a render target.</p>
+<p>sf.Text is a drawable class that allows to easily display some text with custom style and color on a render target.</p>
+<p>It inherits all the functions from sf.Drawable: position, rotation, scale, origin, (global) color and blend mode. It also adds text-specific properties such as the font to use, the character size, the font style (bold, italic, underlined), and the text to display of course. It also provides convenience functions to calculate the graphical size of the text, or to get the visual position of a given character.</p>
+<p>sf.Text works in combination with the sf.Font class, which loads and provides the glyphs (visual characters) of a given font.</p>
+<p>The separation of sf.Font and sf.Text allows more flexibility and better performances: indeed a sf.Font is a heavy resource, and any operation on it is slow (often too slow for real-time applications). On the other side, a sf::Text is a lightweight object which can combine the glyphs data and metrics of a sf.Font to display any text on a render target.</p>
+<p>It is important to note that the sf.Text instance doesn&#8217;t copy the font that it uses, it only keeps a reference to it. Thus, a sf.Font must not be destructed while it is used by a sf.Text (i.e. never write a function that uses a local sf.Font instance for creating a text).</p>
+<p>Usage example:</p>
+<div class="highlight-python"><pre># declare and load a font
+font = sf.Font()
+font.load_from_file("arial.tff")
+
+# create a text
+text = sf.Text("hello")
+text.font = font
+text.character_size = 30
+text.style = sf.Text.REGULAR
+
+# display it
+window.draw(text); // window is a sf.RenderWindow</pre>
+</div>
+<dl class="attribute">
+<dt id="sf.graphics.Text.string">
+<tt class="descname">string</tt><a class="headerlink" href="#sf.graphics.Text.string" title="Permalink to this definition">¶</a></dt>
+<dd><p>The text&#8217;s string.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Text.font">
+<tt class="descname">font</tt><a class="headerlink" href="#sf.graphics.Text.font" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the text&#8217;s font.</p>
+<p>Texts have a valid font by default, which the built-in Font.DEFAULT_FONT.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Text.character_size">
+<tt class="descname">character_size</tt><a class="headerlink" href="#sf.graphics.Text.character_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The character size.</p>
+<p>The default size is 30.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Text.style">
+<tt class="descname">style</tt><a class="headerlink" href="#sf.graphics.Text.style" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can be one or more of the following:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">sf.Text.REGULAR</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">sf.Text.BOLD</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">sf.Text.ITALIC</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">sf.Text.UNDERLINED</span></tt></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">text</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Text</span><span class="o">.</span><span class="n">BOLD</span> <span class="o">|</span> <span class="n">sf</span><span class="o">.</span><span class="n">Text</span><span class="o">.</span><span class="n">ITALIC</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Text.rect">
+<tt class="descname">rect</tt><a class="headerlink" href="#sf.graphics.Text.rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bounding rectangle of the text.</p>
+<p>The returned rectangle is in global coordinates.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.graphics.Glyph">
+<em class="property">class </em><tt class="descclassname">sf.graphics.</tt><tt class="descname">Glyph</tt><a class="headerlink" href="#sf.graphics.Glyph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure describing a glyph.</p>
+<p>A glyph is the visual representation of a character.</p>
+<p>The sf.Glyph structure provides the information needed to handle the glyph:</p>
+<blockquote>
+<div><ul class="simple">
+<li>its coordinates in the font&#8217;s texture</li>
+<li>its bounding rect</li>
+<li>the offset to apply to get the starting position of the next glyph</li>
+</ul>
+</div></blockquote>
+<dl class="attribute">
+<dt id="sf.graphics.Glyph.advance">
+<tt class="descname">advance</tt><a class="headerlink" href="#sf.graphics.Glyph.advance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Offset to move horizontically to the next character.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Glyph.bounds">
+<tt class="descname">bounds</tt><a class="headerlink" href="#sf.graphics.Glyph.bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bounding rectangle of the glyph, in coordinates relative to the baseline.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.graphics.Glyph.sub_rect">
+<tt class="descname">sub_rect</tt><a class="headerlink" href="#sf.graphics.Glyph.sub_rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Texture coordinates of the glyph inside the font&#8217;s texture.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="window.html"
+                        title="previous chapter">Window</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="audio.html"
+                        title="next chapter">Audio</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/documentation/graphics.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="audio.html" title="Audio"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="window.html" title="Window"
+             >previous</a> |</li>
+        <li><a href="../index.html">pySFML 0.9 documentation</a> &raquo;</li>
+          <li><a href="../documentation.html" >Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,159 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Displaying text &mdash; pySFML 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pySFML 0.9 documentation" href="../../index.html" />
+    <link rel="up" title="Tutorials" href="../../tutorials.html" />
+    <link rel="next" title="Drawing simple shapes" href="drawing_simple_shapes.html" />
+    <link rel="prev" title="Displaying a sprite" href="displaying_a_sprite.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="drawing_simple_shapes.html" title="Drawing simple shapes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="displaying_a_sprite.html" title="Displaying a sprite"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">pySFML 0.9 documentation</a> &raquo;</li>
+          <li><a href="../../tutorials.html" accesskey="U">Tutorials</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="displaying-text">
+<h1>Displaying text<a class="headerlink" href="#displaying-text" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="loading-a-font">
+<h2>Loading a font<a class="headerlink" href="#loading-a-font" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="creating-a-string">
+<h2>Creating a string<a class="headerlink" href="#creating-a-string" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="displaying-a-string">
+<h2>Displaying a string<a class="headerlink" href="#displaying-a-string" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="what-about-single-character-s-positions">
+<h2>What about single character&#8217;s positions?<a class="headerlink" href="#what-about-single-character-s-positions" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="fonts-and-strings-management">
+<h2>Fonts and strings management<a class="headerlink" href="#fonts-and-strings-management" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Displaying text</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#loading-a-font">Loading a font</a></li>
+<li><a class="reference internal" href="#creating-a-string">Creating a string</a></li>
+<li><a class="reference internal" href="#displaying-a-string">Displaying a string</a></li>
+<li><a class="reference internal" href="#what-about-single-character-s-positions">What about single character&#8217;s positions?</a></li>
+<li><a class="reference internal" href="#fonts-and-strings-management">Fonts and strings management</a></li>
+<li><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="displaying_a_sprite.html"
+                        title="previous chapter">Displaying a sprite</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="drawing_simple_shapes.html"
+                        title="next chapter">Drawing simple shapes</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorials/graphics/displaying_text.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="drawing_simple_shapes.html" title="Drawing simple shapes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="displaying_a_sprite.html" title="Displaying a sprite"
+             >previous</a> |</li>
+        <li><a href="../../index.html">pySFML 0.9 documentation</a> &raquo;</li>
+          <li><a href="../../tutorials.html" >Tutorials</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
