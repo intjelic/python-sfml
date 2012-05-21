@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# pySFML2 - Cython SFML Wrapper for Python
+# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+#
+# This software is released under the GPLv3 license.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 class Position:
     def __init__(self, x=0, y=0):
         self._x = x
@@ -15,7 +25,7 @@ class Position:
     def __getitem__(self, key):
         if key == 0: return self.x
         else: return self.y
-        
+
     def __setitem__(self, key, value):
         if key == 0: self.x = value
         else: self.y = value

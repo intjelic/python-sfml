@@ -12,6 +12,9 @@ cdef extern from "<string>" namespace "std":
 	cdef cppclass string:
 		char* c_str()
 
+cdef extern from *:
+	ctypedef unsigned char* const_Uint8_ptr "const unsigned char*"
+
 cdef extern from "SFML/System.hpp" namespace "sf":
 	# 8 bits integer types
 	ctypedef signed   char Int8
@@ -34,7 +37,22 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		float asSeconds()
 		Int32 asMilliseconds()
 		Int64 asMicroseconds()
-
+		bint operator==(Time&)
+		bint operator!=(Time&)
+		bint operator<(Time&)
+		bint operator>(Time&)
+		bint operator<=(Time&)
+		bint operator>=(Time&)
+		Time operator-(Time, Time)        
+		Time operator+(Time, Time)
+		#Time operator-=(Time&, Time)        
+		#Time operator+=(Time&, Time)
+		#Time operator*(float)
+		#Time operator*(float)
+		#Time operator*(Int64)
+		#Time operator/(float)
+		#Time operator/(Int64)
+        
 	cdef void sleep(Time)
 
 	cdef cppclass Clock:
@@ -42,18 +60,12 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		Time getElapsedTime()
 		Time restart()
 
-#	cdef cppclass String:
-#		String()
-#		String(Uint32*)
-#		Uint32* GetData()
-#		size_t GetSize()
-#		string ToAnsiString()
+	cdef Time seconds(float)
+	cdef Time milliseconds(Int32)
+	cdef Time microseconds(Int64)
 
-#    cdef cppclass Vector2f:
-#        Vector2f()
-#        Vector2f(float, float)
-#        float x
-#        float y
+	cdef cppclass String:
+		String()
 
 	cdef cppclass Vector2i:
 		Vector2i()
@@ -66,34 +78,58 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		Vector2u(unsigned int, unsigned int)
 		unsigned int x
 		unsigned int y
+		
+	cdef cppclass Vector2f:
+		Vector2f()
+		Vector2f(float, float)
+		float x
+		float y
+		
+	cdef cppclass Vector3i:
+		Vector3i()
+		Vector3i(int, int, int)
+		int x
+		int y
+		int z
+		
+	cdef cppclass Vector3u:
+		Vector3u()
+		Vector3u(unsigned int, unsigned int, unsigned int)
+		unsigned int x
+		unsigned int y
+		unsigned int z
+		
+	cdef cppclass Vector3f:
+		Vector3f()
+		Vector3f(float, float, float)
+		float x
+		float y
+		float z
 
-#    cdef cppclass Vector3f:
-#        Vector3f()
-#        Vector3f(float, float, float)
-#        float x
-#        float y
-#        float z
 
-        
-#cdef extern from "SFML/Graphics.hpp" namespace "sf":
-#    cdef cppclass IntRect:
-#        IntRect()
-#        IntRect(int, int, int, int)
-#        bint Contains(int, int)
-#        bint Intersects(IntRect&)
-#        bint Intersects(IntRect&, IntRect&)
-#        int Left
-#        int Top
-#        int Width
-#        int Height
+cdef extern from "SFML/Graphics.hpp" namespace "sf":
+	cdef cppclass IntRect:
+		IntRect()
+		IntRect(int, int, int, int)
+		IntRect(Vector2i&, Vector2i&)
+		bint contains(int, int)
+		bint contains(Vector2i&)
+		bint intersects(IntRect&)
+		bint intersects(IntRect&, IntRect&)
+		int left
+		int top
+		int width
+		int height
 
-#    cdef cppclass FloatRect:
-#        FloatRect()
-#        FloatRect(float, float, float, float)
-#        bint Contains(int, int)
-#        bint Intersects(FloatRect&)
-#        bint Intersects(FloatRect&, FloatRect&)
-#        float Left
-#        float Top
-#        float Width
-#        float Height
+	cdef cppclass FloatRect:
+		FloatRect()
+		FloatRect(float, float, float, float)
+		FloatRect(Vector2f&, Vector2f&)
+		bint contains(float, float)
+		bint contains(Vector2f&)
+		bint intersects(FloatRect&)
+		bint intersects(FloatRect&, FloatRect&)
+		float left
+		float top
+		float width
+		float height

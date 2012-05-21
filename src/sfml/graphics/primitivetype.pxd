@@ -8,11 +8,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-cdef extern from "SFML/Window.hpp" namespace "sf::Style":
-	cdef enum Style:
-		None
-		Titlebar
-		Resize
-		Close
-		Fullscreen
-		Default
+cdef extern from "SFML/Graphics.hpp" namespace "sf":
+	cdef enum PrimitiveType:
+		Points
+		Lines
+		LinesStrip
+		Triangles
+		TrianglesStrip
+		TrianglesFan
+		Quads

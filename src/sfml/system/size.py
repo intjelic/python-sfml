@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# pySFML2 - Cython SFML Wrapper for Python
+# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+#
+# This software is released under the GPLv3 license.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 class Size:
     def __init__(self, width=0, height=0):
         self._width = width
@@ -165,7 +175,7 @@ class Size:
     def from_tuple(cls, value):
         x, y = value
         return cls(max(x, 0), max(y, 0))
-        
+
     def _get_width(self):
         return self._width
 

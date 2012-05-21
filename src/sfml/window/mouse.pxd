@@ -8,27 +8,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#from cpp cimport Vector2i, RenderWindow
-#cdef cppclass Vector2i
-#cdef cppclass RenderWindow
+from dwindow cimport Window
+from dsystem cimport Vector2i
 
-cdef extern from "SFML/Window.hpp" namespace "sf":
-    cppclass Window
-    
-cdef extern from "SFML/System.hpp" namespace "sf":
-    cppclass Vector2i
-    
 cdef extern from "SFML/Window.hpp" namespace "sf::Mouse":
-    cdef cppclass Button
-    int Left
-    int Right
-    int Middle
-    int XButton1
-    int XButton2
-    int ButtonCount
+	cdef enum Button:
+		Left
+		Right
+		Middle
+		XButton1
+		XButton2
+		ButtonCount
 
-    bint isButtonPressed(Button)
-    Vector2i getPosition()
-    Vector2i getPosition(Window&)
-    void setPosition(Vector2i&)
-    void setPosition(Vector2i&, Window&)
+	bint isButtonPressed(Button)
+	Vector2i getPosition()
+	Vector2i getPosition(Window&)
+	void setPosition(Vector2i&)
+	void setPosition(Vector2i&, Window&)

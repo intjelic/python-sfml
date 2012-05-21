@@ -10,13 +10,9 @@
 
 from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
+from dsystem cimport Vector2i, Vector2u, Vector2f
 
-from dsystem cimport Vector2i, Vector2u
-
-cimport style, event, keyboard, joystick, mouse
-
-#cimport videomode
-
+cimport style, event, videomode, keyboard, joystick, mouse
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Event":
 	cdef struct SizeEvent:
@@ -48,7 +44,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
 		int y
 
 	cdef struct JoystickConnectEvent:
-		unsigned int JoystickId
+		unsigned int joystickId
 
 	cdef struct JoystickMoveEvent:
 		unsigned int joystickId
@@ -61,7 +57,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
 
 cdef extern from "SFML/Window.hpp" namespace "sf":
 	cdef cppclass Event:
-		int Type
+		event.EventType type
 		SizeEvent size
 		KeyEvent key
 		TextEvent text		
@@ -79,8 +75,8 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 		ContextSettings(unsigned int, unsigned int, unsigned int)
 		ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int)
 		ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
-		unsigned int depthBits   
-		unsigned int stencilBits            
+		unsigned int depthBits
+		unsigned int stencilBits
 		unsigned int antialiasingLevel
 		unsigned int majorVersion
 		unsigned int minorVersion
@@ -93,6 +89,12 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 		unsigned int width
 		unsigned int height
 		unsigned int bitsPerPixel
+		bint operator==(VideoMode&)
+		bint operator!=(VideoMode&)
+		bint operator<(VideoMode&)
+		bint operator>(VideoMode&)
+		bint operator<=(VideoMode&)
+		bint operator>=(VideoMode&)
 
 	cdef cppclass WindowHandle
 
@@ -105,20 +107,20 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 		Window(WindowHandle window_handle, ContextSettings&)
 		void create(VideoMode, char*)
 		void create(VideoMode, char*, unsigned long)
-		void create(VideoMode, char*, unsigned long, ContextSettings&)  
-		void create(WindowHandle, ContextSettings&)    
+		void create(VideoMode, char*, unsigned long, ContextSettings&)
+		void create(WindowHandle, ContextSettings&)
 		void close()
 		bint isOpen()
-		ContextSettings& getSettings()  
-		bint pollEvent(Event&)  
+		ContextSettings& getSettings()
+		bint pollEvent(Event&)
 		bint waitEvent(Event&)
 		Vector2i getPosition()
 		void setPosition(Vector2i&)
 		Vector2u getSize()
 		void setSize(Vector2u)
 		void setTitle(char*)
-		void setIcon(unsigned int, unsigned int, Uint8*)        
-		void setVisible(bint)           
+		void setIcon(unsigned int, unsigned int, Uint8*)
+		void setVisible(bint)
 		void setVerticalSyncEnabled(bint)
 		void setMouseCursorVisible(bint)
 		void setKeyRepeatEnabled(bint)
@@ -127,6 +129,21 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 		bint setActive()
 		bint setActive(bint)
 		void display()
-		WindowHandle getSystemHandle() 
+		WindowHandle getSystemHandle()
 		void onCreate()
 		void onResize()
+
+	cdef cppclass Context:
+		Context()
+		bint setActive(bint)
+
+cdef extern from "derivablewindow.hpp":
+	cdef cppclass DerivableWindow:
+		DerivableWindow()
+		DerivableWindow(VideoMode, char*)
+		DerivableWindow(VideoMode, char*, unsigned long)
+		DerivableWindow(VideoMode, char*, unsigned long, ContextSettings&)
+		DerivableWindow(WindowHandle window_handle)
+		DerivableWindow(WindowHandle window_handle, ContextSettings&)
+		void set_pyobj(void*)
+		
