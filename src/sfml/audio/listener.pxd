@@ -1,9 +1,21 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# pySFML2 - Cython SFML Wrapper for Python
+# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+#
+# This software is released under the GPLv3 license.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from dsystem cimport Vector3f
+
 cdef extern from "SFML/Audio.hpp" namespace "sf::Listener":
-    cdef void SetGlobalVolume(float volume)
-    cdef float GetGlobalVolume()
-    cdef void SetPosition(float x, float y, float z)
-    #cdef void SetPosition(const Vector3f &position)
-    #cdef Vector3f GetPosition()
-    cdef void SetDirection(float x, float y, float z)
-    #cdef void SetDirection(Vector3f &direction)
-    #cdef Vector3f GetDirection()
+    cdef void setGlobalVolume(float)
+    cdef float getGlobalVolume()
+    cdef void setPosition(float, float, float)
+    cdef void setPosition(Vector3f&)
+    cdef Vector3f getPosition()
+    cdef void setDirection(float, float, float)
+    cdef void setDirection(Vector3f&)
+    cdef Vector3f getDirection()

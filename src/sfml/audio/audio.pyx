@@ -1,369 +1,468 @@
-########################################################################
-# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>   #
-#                                                                      #
-# This program is free software: you can redistribute it and/or modify #
-# it under the terms of the GNU General Public License as published by #
-# the Free Software Foundation, either version 3 of the License, or    #
-# (at your option) any later version.                                  #
-#                                                                      #
-# This program is distributed in the hope that it will be useful,      #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of       #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        #
-# GNU General Public License for more details.                         #
-#                                                                      #
-# You should have received a copy of the GNU General Public License    #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.#
-########################################################################
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# pySFML2 - Cython SFML Wrapper for Python
+# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+#
+# This software is released under the GPLv3 license.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#from libc.stdlib cimport malloc, free
+#from cython.operator cimport preincrement as preinc, dereference as deref
 
-from libc.stdlib cimport malloc, free
-from cython.operator cimport preincrement as preinc, dereference as deref
-cimport declaudio
+from dsystem cimport Int8, Int16, Int32, Int64
+from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
+from dsystem cimport Vector3f
 
-class SFMLException(Exception): pass
+cimport dsystem, daudio
 
+class SFMLException(Exception):
+	def __init__(self, value=None):
+		self.value = value
+		
+	def __str__(self):
+		return repr(self.value)
 
+ctypedef fused Vector3:
+	Vector
+	tuple
+
+cdef class Vector:
+	cdef public object x
+	cdef public object y
+	cdef public object z
+	
+	def __init__(self, x=0, y=0, z=0):
+		self.x = x
+		self.y = y
+		self.z = z
+		
+	def __repr__(self):
+		return "sf.Vector({0}[1:-1])".format(self)
+
+	def __str__(self):
+		return "({0}x, {1}y, {2}z)".format(self.x, self.y, self.z)
+
+	def __iter__(self):
+		return iter((self.x, self.y, self.z))
+
+cdef Vector vector3f_to_vector(Vector3f* v):
+	cdef Vector r = Vector.__new__(Vector)
+	r.x = v.x
+	r.y = v.y
+	r.z = v.z
+	return r
+	
 cdef class Listener:
-    def __cinit__(self, *args, **kwargs):
-        NotImplementedError("This class can't be instanciated!")
-    
-    ## The six following static method should be static properties.
-    @classmethod
-    def get_global_volume(cls):
-        return declaudio.listener.GetGlobalVolume()
-    
-    @classmethod
-    def set_global_volume(cls, float volume):
-        declaudio.listener.SetGlobalVolume(volume)
-    
-    #@classmethod
-    #def get_position(cls, filename): pass
-    
-    @classmethod
-    def set_position(cls, x, y, z):
-        declaudio.listener.SetPosition(x, y, z)
-    
-    ##@classmethod
-    ##def set_direction(cls, filename): pass
-    
-    ##@classmethod
-    ##def set_direction(cls, filename): pass
-    
-    
+	def __init__(self):
+		NotImplementedError("This class is not meant to be instanciated!")
+
+	@classmethod
+	def get_global_volume(cls):
+		return daudio.listener.getGlobalVolume()
+
+	@classmethod
+	def set_global_volume(cls, float volume):
+		daudio.listener.setGlobalVolume(volume)
+
+	@classmethod
+	def get_position(cls):
+		cdef Vector3f v = daudio.listener.getPosition()
+		return vector3f_to_vector(&v)
+		
+	@classmethod
+	def set_position(cls, Vector3 position):
+		x, y, z = position
+		daudio.listener.setPosition(x, y, z)
+
+	@classmethod
+	def get_direction(cls):
+		cdef Vector3f v = daudio.listener.getDirection()
+		return vector3f_to_vector(&v)
+
+	@classmethod
+	def set_direction(cls, Vector3 direction):
+		x, y, z = direction
+		daudio.listener.setPosition(x, y, z)
+
+
+cdef class Chunk:
+	cdef Int16* m_samples
+	cdef size_t m_sampleCount
+
+	#def __cinit__(self):
+		##print("Somewhere in time I will find you and haunt you again!")
+		#self.p_this = new daudio.Chunk()
+		
+	#def __dealloc__(self):
+		#del self.p_this
+
+	def __init__(self): pass
+	def __dealloc__(self):
+		print("Chunk destroy!")
+	
+	def __repr__(self): pass
+	def __str__(self): pass
+
+	#def __len__(self):
+		#return self.p_this.sampleCount
+		
+	#def __getitem__(self, size_t key):
+		#return self.p_this.samples[key]
+
+
+cdef api object wrap_chunk(Int16* samples, unsigned int sample_count):
+	cdef Chunk r = Chunk.__new__(Chunk)
+	r.m_samples = samples
+	r.m_sampleCount = sample_count
+	return r
+
+
 cdef class SoundBuffer:
-    cdef declaudio.const_SoundBuffer *p_this
-    cdef bint delete_this
-    
-    def __init__(self):
-        self.delete_this = True
-        raise NotImplementedError("Use static methods like load_from_file to create SoundBuffer instances")
+	cdef daudio.SoundBuffer *p_this
+	cdef bint                delete_this
+	
+	def __init__(self):
+		raise NotImplementedError("Use specific methods")
 
-    def __dealloc__(self):
-        if self.delete_this:
-            del self.p_this
+	def __dealloc__(self):
+		if self.delete_this: del self.p_this
+			
+	def __repr__(self): pass
+	def __str__(self): pass
 
-    property channels_count:
-        def __get__(self):
-            return self.p_this.GetChannelsCount()
+	@classmethod
+	def load_from_file(cls, filename):
+		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
+		cdef char* encoded_filename
+		
+		encoded_filename_temporary = filename.encode('UTF-8')	
+		encoded_filename = encoded_filename_temporary
+		
+		if p.loadFromFile(encoded_filename): return wrap_soundbuffer(p)
+		
+		del p
+		raise SFMLException()
 
-    property duration:
-        def __get__(self):
-            return self.p_this.GetDuration()
+	@classmethod
+	def load_from_memory(cls, bytes data):
+		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
+		
+		if p.loadFromMemory(<char*>data, len(data)): return wrap_soundbuffer(p)
 
-    property sample_rate:
-        def __get__(self):
-            return self.p_this.GetSampleRate()
+		del p
+		raise SFMLException()
 
-    property samples:
-        def __get__(self):
-            cdef declaudio.Int16 *p = <declaudio.Int16*>self.p_this.GetSamples()
-            cdef unsigned int i
-            ret = []
+	#@classmethod
+	#def load_from_samples(cls, list samples, unsigned int channels_count, unsigned int sample_rate):
+		#cdef declaudio.SoundBuffer *p_sb = new declaudio.SoundBuffer()
+		#cdef declaudio.Int16 *p_samples = <declaudio.Int16*>malloc(len(samples) * sizeof(declaudio.Int16))
+		#cdef declaudio.Int16 *p_temp = NULL
 
-            for i in range(self.p_this.GetSamplesCount()):
-                ret.append(int(p[i]))
+		#if p_samples == NULL:
+			#raise SFMLException()
+		#else:
+			#p_temp = p_samples
 
-            return ret
+			#for sample in samples:
+				#p_temp[0] = <int>sample
+				#preinc(p_temp)
 
-    property samples_count:
-        def __get__(self):
-            return self.p_this.GetSamplesCount()
+			#if p_sb.LoadFromSamples(p_samples, len(samples), channels_count, sample_rate):
+				#free(p_samples)
+				#return wrap_sound_buffer_instance(p_sb, True)
+			#else:
+				#free(p_samples)
+				#raise SFMLException()
 
-    @classmethod
-    def load_from_file(cls, filename):
-        cdef declaudio.SoundBuffer *p = new declaudio.SoundBuffer()
+	def save_to_file(self, filename):
+		cdef char* encoded_filename	
+			
+		encoded_filename_temporary = filename.encode('UTF-8')	
+		encoded_filename = encoded_filename_temporary
+		
+		self.p_this.saveToFile(encoded_filename)
 
-        bFilename = filename.encode('UTF-8')
-        if p.LoadFromFile(bFilename):
-            return wrap_sound_buffer_instance(p, True)
+	#property samples:
+		#def __get__(self):
+			#cdef declaudio.Int16 *p = <Int16*>self.p_this.getSamples()
+			#cdef unsigned int i
+			#ret = []
 
-        raise SFMLException()
+			#for i in range(self.p_this.GetSamplesCount()):
+				#ret.append(int(p[i]))
 
-    @classmethod
-    def load_from_memory(cls, bytes data):
-        cdef declaudio.SoundBuffer *p = new declaudio.SoundBuffer()
+			#return ret
 
-        if p.LoadFromMemory(<char*>data, len(data)):
-            return wrap_sound_buffer_instance(p, True)
+	property sample_count:
+		def __get__(self):
+			return self.p_this.getSampleCount()
 
-        raise SFMLException()
+	property sample_rate:
+		def __get__(self):
+			return self.p_this.getSampleRate()
 
-    @classmethod
-    def load_from_samples(cls, list samples, unsigned int channels_count,
-                          unsigned int sample_rate):
-        cdef declaudio.SoundBuffer *p_sb = new declaudio.SoundBuffer()
-        cdef declaudio.Int16 *p_samples = <declaudio.Int16*>malloc(
-            len(samples) * sizeof(declaudio.Int16))
-        cdef declaudio.Int16 *p_temp = NULL
+	property channel_count:
+		def __get__(self):
+			return self.p_this.getChannelCount()
 
-        if p_samples == NULL:
-            raise SFMLException()
-        else:
-            p_temp = p_samples
+	property duration:
+		def __get__(self):
+			return self.p_this.getDuration().asMilliseconds()
 
-            for sample in samples:
-                p_temp[0] = <int>sample
-                preinc(p_temp)
-
-            if p_sb.LoadFromSamples(p_samples, len(samples), channels_count,
-                                    sample_rate):
-                free(p_samples)
-                return wrap_sound_buffer_instance(p_sb, True)
-            else:
-                free(p_samples)
-                raise SFMLException()
-
-    def save_to_file(self, char* filename):
-        self.p_this.SaveToFile(filename)
-
-
-cdef SoundBuffer wrap_sound_buffer_instance(declaudio.SoundBuffer *instance, bint delete_this):
-    cdef SoundBuffer ret = SoundBuffer.__new__(SoundBuffer)
-
-    ret.p_this = instance
-    ret.delete_this = delete_this
-
-    return ret
+cdef SoundBuffer wrap_soundbuffer(daudio.SoundBuffer *p, bint delete_this=True):
+	cdef SoundBuffer r = SoundBuffer.__new__(SoundBuffer)
+	r.p_this = p
+	r.delete_this = delete_this
+	return r
 
 
 cdef class SoundSource:
-    STOPPED = declaudio.sound_source.Stopped
-    PAUSED = declaudio.sound_source.Paused
-    PLAYING = declaudio.sound_source.Playing
-    
-    cdef declaudio.SoundSource *thisptr
-    
-    property pitch:
-        def __get__(self):
-            return self.thisptr.GetPitch()
+	STOPPED = daudio.soundsource.Stopped
+	PAUSED = daudio.soundsource.Paused
+	PLAYING = daudio.soundsource.Playing
 
-        def __set__(self, float value):
-            self.thisptr.SetPitch(value)
+	cdef daudio.SoundSource *p_soundsource
 
-    property volume:
-        def __get__(self):
-            return self.thisptr.GetVolume()
+	property pitch:
+		def __get__(self):
+			return self.p_soundsource.getPitch()
 
-        def __set__(self, float value):
-            self.thisptr.SetVolume(value)
-            
-    property position:
-        def __get__(self):
-            return NotImplemented
-            #cdef declaudio.Vector3f pos = self.thisptr.GetPosition()
+		def __set__(self, float pitch):
+			self.p_soundsource.setPitch(pitch)
 
-            #return (pos.x, pos.y, pos.z)
+	property volume:
+		def __get__(self):
+			return self.p_soundsource.getVolume()
 
-        def __set__(self, tuple value):
-            x, y, z = value
-            self.thisptr.SetPosition(x, y, z)
-        
-    property relative_to_listener:
-        def __get__(self):
-            return self.thisptr.IsRelativeToListener()
+		def __set__(self, float volume):
+			self.p_soundsource.setVolume(volume)
+			
+	property position:
+		def __get__(self):
+			cdef Vector3f v = self.p_soundsource.getPosition()
+			return vector3f_to_vector(&v)
 
-        def __set__(self, bint value):
-            self.thisptr.SetRelativeToListener(value)
-          
-    property min_distance:
-        def __get__(self):
-            return self.thisptr.GetMinDistance()
+		def __set__(self, object position):
+			x, y, z = position
+			self.p_soundsource.setPosition(x, y, z)
 
-        def __set__(self, float value):
-            self.thisptr.SetMinDistance(value)
-            
-    property attenuation:
-        def __get__(self):
-            return self.thisptr.GetAttenuation()
+	property relative_to_listener:
+		def __get__(self):
+			return self.p_soundsource.isRelativeToListener()
 
-        def __set__(self, float value):
-            self.thisptr.SetAttenuation(value)  
-            
-            
+		def __set__(self, bint relative):
+			self.p_soundsource.setRelativeToListener(relative)
+		  
+	property min_distance:
+		def __get__(self):
+			return self.p_soundsource.getMinDistance()
+
+		def __set__(self, float distance):
+			self.p_soundsource.setMinDistance(distance)
+			
+	property attenuation:
+		def __get__(self):
+			return self.p_soundsource.getAttenuation()
+
+		def __set__(self, float attenuation):
+			self.p_soundsource.setAttenuation(attenuation)  
+
+
 cdef class Sound(SoundSource):
-    cdef SoundBuffer buffer
-    
-    def __cinit__(self, SoundBuffer buffer=None):
-        if buffer is None:
-            self.thisptr = <declaudio.SoundSource*>new declaudio.Sound()
-            self.buffer = None
-        else:
-            self.thisptr = <declaudio.SoundSource*>new declaudio.Sound(buffer.p_this[0])
-            self.buffer = buffer
+	cdef daudio.Sound *p_this	
+	cdef SoundBuffer   m_buffer
 
-    def __dealloc__(self):
-        del self.thisptr
+	def __init__(self, SoundBuffer buffer=None):
+		self.p_this = new daudio.Sound()
+		self.p_soundsource = <daudio.SoundSource*>self.p_this
+		
+		if buffer: self.buffer = buffer
 
-    property buffer:
-        def __get__(self):
-            return self.buffer
+	def __dealloc__(self):
+		del self.p_this
 
-        def __set__(self, SoundBuffer value):
-            self.buffer = value
-            (<declaudio.Sound*>self.thisptr).SetBuffer(value.p_this[0])
+	def __repr__(self):
+		return "sf.Sound()"
+		
+	def play(self):
+		self.p_this.play()
+		
+	def pause(self):
+		self.p_this.pause()
 
-    property loop:
-        def __get__(self):
-            return (<declaudio.Sound*>self.thisptr).GetLoop()
+	def stop(self):
+		self.p_this.stop()
+		
+	property buffer:
+		def __get__(self):
+			return self.m_buffer
 
-        def __set__(self, bint value):
-            (<declaudio.Sound*>self.thisptr).SetLoop(value)
+		def __set__(self, SoundBuffer buffer):
+			self.p_this.setBuffer(buffer.p_this[0])
+			self.m_buffer = buffer			
 
-    property playing_offset:
-        def __get__(self):
-            return (<declaudio.Sound*>self.thisptr).GetPlayingOffset()
+	property loop:
+		def __get__(self):
+			return self.p_this.getLoop()
 
-        def __set__(self, int value):
-            (<declaudio.Sound*>self.thisptr).SetPlayingOffset(value)
+		def __set__(self, bint loop):
+			self.p_this.setLoop(loop)
 
-    property status:
-        def __get__(self):
-            return <int>(<declaudio.Sound*>self.thisptr).GetStatus()
+	property playing_offset:
+		def __get__(self):
+			return self.p_this.getPlayingOffset().asMilliseconds()
 
-    def pause(self):
-        (<declaudio.Sound*>self.thisptr).Pause()
+		def __set__(self, Uint32 time_offset):
+			self.p_this.setPlayingOffset(dsystem.milliseconds(time_offset))
 
-    def play(self):
-        (<declaudio.Sound*>self.thisptr).Play()
-
-    def stop(self):
-        (<declaudio.Sound*>self.thisptr).Stop()
+	property status:
+		def __get__(self):
+			return self.p_this.getStatus()
 
 
 cdef class SoundStream(SoundSource):
-    def __cinit__(self, *args, **kwargs):
-        if self.__class__ == SoundStream:
-            raise NotImplementedError("SoundStream is abstract")
-          
-    property channels_count:
-        def __get__(self):
-            return (<declaudio.SoundStream*>self.thisptr).GetChannelsCount()
-            
-    property sample_rate:
-        def __get__(self):
-            return (<declaudio.SoundStream*>self.thisptr).GetSampleRate()
+	cdef daudio.SoundStream *p_soundstream
+	
+	def __init__(self):
+		if self.__class__ == SoundStream:
+			raise NotImplementedError("SoundStream is abstract")
+			
+	def play(self):
+		self.p_soundstream.play()
+		
+	def pause(self):
+		self.p_soundstream.pause()
 
-    property status:
-        def __get__(self):
-            return <int>(<declaudio.SoundStream*>self.thisptr).GetStatus()
-    property playing_offset:
-        def __get__(self):
-            return (<declaudio.SoundStream*>self.thisptr).GetPlayingOffset()
+	def stop(self):
+		self.p_soundstream.stop()
 
-        def __set__(self, int value):
-            (<declaudio.SoundStream*>self.thisptr).SetPlayingOffset(value)
-            
-    property loop:
-        def __get__(self):
-            return (<declaudio.SoundStream*>self.thisptr).GetLoop()
+	property channel_count:
+		def __get__(self):
+			return self.p_soundstream.getChannelCount()
+			
+	property sample_rate:
+		def __get__(self):
+			return self.p_soundstream.getSampleRate()
 
-        def __set__(self, bint value):
-            (<declaudio.SoundStream*>self.thisptr).SetLoop(value)
-        
-    def play(self):
-        (<declaudio.SoundStream*>self.thisptr).Play()
-            
-    def pause(self):
-        (<declaudio.SoundStream*>self.thisptr).Pause()
+	property status:
+		def __get__(self):
+			return self.p_soundstream.getStatus()
+			
+	property playing_offset:
+		def __get__(self):
+			return self.p_soundstream.getPlayingOffset().asMilliseconds()
 
-    def stop(self):
-        (<declaudio.SoundStream*>self.thisptr).Stop()
-        
-        
+		def __set__(self, Uint32 time_offset):
+			self.p_soundstream.setPlayingOffset(dsystem.milliseconds(time_offset))
+			
+	property loop:
+		def __get__(self):
+			return self.p_soundstream.getLoop()
+
+		def __set__(self, bint loop):
+			self.p_soundstream.setLoop(loop)
+
+
 cdef class Music(SoundStream):
-    def __init__(self):
-        raise NotImplementedError("Use class methods like open_from_file() or open_from_memory() to create Music objects")
+	cdef daudio.Music *p_this
+	
+	def __init__(self):
+		raise NotImplementedError("Use specific constructor")
 
-    def __dealloc__(self):
-        del self.thisptr
+	def __dealloc__(self):
+		del self.p_this
 
-    property duration:
-        def __get__(self):
-            return (<declaudio.Music*>self.thisptr).GetDuration()
+	@classmethod
+	def open_from_file(cls, filename):
+		cdef daudio.Music *p = new daudio.Music()
+		cdef char* encoded_filename	
 
-    @classmethod
-    def open_from_file(cls, char* filename):
-        cdef declaudio.Music *p = new declaudio.Music()
+		encoded_filename_temporary = filename.encode('UTF-8')	
+		encoded_filename = encoded_filename_temporary
+		
+		if p.openFromFile(encoded_filename): return wrap_music(p)
+		
+		del p
+		raise SFMLException()
 
-        if p.OpenFromFile(filename):
-            return wrap_music_instance(p)
+	@classmethod
+	def open_from_memory(cls, bytes data):
+		cdef daudio.Music *p = new daudio.Music()
 
-        raise SFMLException()
+		if p.openFromMemory(<char*>data, len(data)): return wrap_music(p)
 
-    @classmethod
-    def open_from_memory(cls, bytes data):
-        cdef declaudio.Music *p = new declaudio.Music()
-
-        if p.OpenFromMemory(<char*>data, len(data)):
-            return wrap_music_instance(p)
-
-        raise SFMLException()
+		del p
+		raise SFMLException()
+		
+	property duration:
+		def __get__(self):
+			return self.p_this.getDuration().asMilliseconds()
 
 
-cdef Music wrap_music_instance(declaudio.Music *p_cpp_instance):
-    cdef Music ret = Music.__new__(Music)
-
-    ret.thisptr = <declaudio.SoundSource*>p_cpp_instance
-
-    return ret
+cdef Music wrap_music(daudio.Music *p):
+	cdef Music r = Music.__new__(Music)
+	r.p_this = p
+	r.p_soundstream = <daudio.SoundStream*>p
+	r.p_soundsource = <daudio.SoundSource*>p
+	return r
 
 
 cdef class SoundRecorder:
-    cdef declaudio.SoundRecorder *thisptr
-    
-    def __cinit__(self, *args, **kwargs):
-        if self.__class__ == SoundRecorder:
-            raise NotImplementedError("SoundRecorder is abstract")
-    
-    def __dealloc__(self):
-        del self.thisptr
-    def start(self, unsigned int sampleRate=44100):
-        self.thisptr.Start(sampleRate)
-        
-    def stop(self):
-        self.thisptr.Stop()
-        
-    @classmethod
-    def is_available(cls):
-        return declaudio.sound_recorder.IsAvailable()
-        
-    property sample_rate:
-        def __get__(self):
-            return self.thisptr.GetSampleRate()
-            
-    
+	cdef daudio.SoundRecorder *p_soundrecorder
+
+	def __init__(self):
+		if self.__class__ == SoundRecorder:
+			raise NotImplementedError("SoundRecorder is abstract")
+		elif self.__class__ is not SoundBufferRecorder:
+			self.p_soundrecorder = <daudio.SoundRecorder*>new daudio.DerivableSoundRecorder(<void*>self)
+
+	def __dealloc__(self):
+		if self.__class__ is SoundRecorder:
+			print("HEINNNNNNNNNNNNn")
+			del self.p_soundrecorder
+			
+	def start(self, unsigned int sample_rate=44100):
+		self.p_soundrecorder.start(sample_rate)
+		
+	def stop(self):
+		self.p_soundrecorder.stop()
+
+	property sample_rate:
+		def __get__(self):
+			return self.p_soundrecorder.getSampleRate()
+			
+	@classmethod
+	def is_available(cls):
+		return daudio.soundrecorder.isAvailable()
+
+	def on_start(self):
+		print("sf.SoundRecorder.on_start()")
+		return True
+		
+	def on_process_samples(self, chunk, foo):
+		print("sf.SoundRecorder.on_process_samples()")
+		return True
+	
+	def on_stop(self):
+		print("sf.SoundRecorder.on_stop()")
+
+
 cdef class SoundBufferRecorder(SoundRecorder):
-    def __cinit__(self, *args, **kwargs):
-        self.thisptr = <declaudio.SoundRecorder*>new declaudio.SoundBufferRecorder()
-        
-    def get_buffer(self):
-        cdef declaudio.const_SoundBuffer* sb
-        sb = &(<declaudio.SoundBufferRecorder*>self.thisptr).GetBuffer()
-        
-        cdef SoundBuffer ret = SoundBuffer.__new__(SoundBuffer)
+	cdef daudio.SoundBufferRecorder *p_this
+	cdef SoundBuffer                 m_buffer
 
-        ret.p_this = sb
-        ret.delete_this = False
+	def __init__(self):
+		self.p_this = new daudio.SoundBufferRecorder()
+		self.p_soundrecorder = <daudio.SoundRecorder*>self.p_this
 
-        return ret
+		self.m_buffer = wrap_soundbuffer(<daudio.SoundBuffer*>&self.p_this.getBuffer(), False)
+		
+	def __dealloc__(self):
+		del self.p_this
+
+	property buffer:
+		def __get__(self):
+			return self.m_buffer

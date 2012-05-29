@@ -1,102 +1,98 @@
-########################################################################
-# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>   #
-#                                                                      #
-# This program is free software: you can redistribute it and/or modify #
-# it under the terms of the GNU General Public License as published by #
-# the Free Software Foundation, either version 3 of the License, or    #
-# (at your option) any later version.                                  #
-#                                                                      #
-# This program is distributed in the hope that it will be useful,      #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of       #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        #
-# GNU General Public License for more details.                         #
-#                                                                      #
-# You should have received a copy of the GNU General Public License    #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.#
-########################################################################
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# pySFML2 - Cython SFML Wrapper for Python
+# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+#
+# This software is released under the GPLv3 license.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from dsystem cimport Int8, Int16, Int32, Int64
+from dsystem cimport Uint8, Uint16, Uint32, Uint64
+from dsystem cimport Time, Vector3f
 
-from declsystem cimport Int16,  Uint8, Uint32
-cimport listener    
+cimport listener, soundsource, soundrecorder
 
 cdef extern from "SFML/Audio.hpp" namespace "sf":
-    cdef cppclass SoundBuffer:
-        SoundBuffer()
-        unsigned int GetChannelsCount()
-        Uint32 GetDuration()
-        Int16* GetSamples()
-        unsigned int GetSampleRate()
-        size_t GetSamplesCount()
-        bint LoadFromFile(char*)
-        bint LoadFromMemory(void*, size_t)
-        bint LoadFromSamples(Int16*, size_t, unsigned int, unsigned int)
-        bint SaveToFile(char*)
+	ctypedef Int16* const_Int16 "const sf::Int16*"	
+	
+	cdef cppclass SoundBuffer:
+		SoundBuffer()
+		bint loadFromFile(char*&)
+		bint loadFromMemory(void*, size_t)
+		bint loadFromSamples(Int16*, size_t, unsigned int, unsigned int)
+		bint saveToFile(char*&)
+		Int16* getSamples()
+		size_t getSampleCount()	
+		unsigned int getSampleRate()
+		unsigned int getChannelCount()
+		Time getDuration()
 
-cimport sound_source
-cimport sound_recorder
+cdef extern from "SFML/Audio.hpp" namespace "sf::SoundStream":
+	cdef struct Chunk:
+		const_Int16 samples
+		size_t sampleCount
 
 cdef extern from "SFML/Audio.hpp" namespace "sf":
-    cdef cppclass SoundSource:
-        void SetPitch(float pitch)
-        void SetVolume(float volume)
-        void SetPosition(float x, float y, float z)
-        #void SetPosition(const Vector3f &position)
-        void SetRelativeToListener(bint relative)
-        void SetMinDistance(float distance)
-        void SetAttenuation(float attenuation)
-        float GetPitch()
-        float GetVolume()
-        #Vector3f GetPosition()
-        bint IsRelativeToListener()
-        float GetMinDistance()
-        float GetAttenuation() 
-        
+	cdef cppclass SoundSource:
+		void setPitch(float)
+		void setVolume(float)
+		void setPosition(float, float, float)
+		void setPosition(Vector3f&)
+		void setRelativeToListener(bint)
+		void setMinDistance(float)
+		void setAttenuation(float)
+		float getPitch()
+		float getVolume()
+		Vector3f getPosition()
+		bint isRelativeToListener()
+		float getMinDistance()
+		float getAttenuation() 
 
-    cdef cppclass Sound:
-        Sound()
-        Sound(SoundBuffer&)
-        SoundBuffer* GetBuffer()
-        bint GetLoop()
-        Uint32 GetPlayingOffset()
-        float GetVolume()
-        sound_source.Status GetStatus()
-        void Pause()
-        void Play()
-        void SetBuffer(SoundBuffer&)
-        void SetLoop(bint)
-        void SetPlayingOffset(Uint32)
-        void SetVolume(float)
-        void Stop()
-        
-        
-    cdef cppclass SoundStream:
-        void Play()
-        void Pause()
-        void Stop()
-        unsigned int GetChannelsCount()
-        unsigned int GetSampleRate()
-        sound_source.Status GetStatus()
-        void SetPlayingOffset(Uint32 timeOffset)
-        Uint32 GetPlayingOffset()
-        void SetLoop(bint loop)
-        bint GetLoop()
+	cdef cppclass Sound:
+		Sound()
+		Sound(SoundBuffer&)
+		void play()
+		void pause()
+		void stop()
+		void setBuffer(SoundBuffer&)
+		void setLoop(bint)
+		void setPlayingOffset(Time)
+		SoundBuffer* getBuffer()
+		bint getLoop()
+		Time getPlayingOffset()
+		soundsource.Status getStatus()
+		void resetBuffer()
 
+	cdef cppclass SoundStream:
+		void play()
+		void pause()
+		void stop()
+		unsigned int getChannelCount()
+		unsigned int getSampleRate()
+		soundsource.Status getStatus()
+		void setPlayingOffset(Time)
+		Time getPlayingOffset()
+		void setLoop(bint)
+		bint getLoop()
 
-    cdef cppclass Music:
-        Music()
-        Uint32 GetDuration()
-        bint OpenFromFile(char*)
-        bint OpenFromMemory(void*, size_t)
-        
-        
-    cdef cppclass SoundRecorder:
-        void Start(unsigned int sampleRate)
-        void Stop()
-        unsigned int GetSampleRate()
-        
-        
-    cdef cppclass SoundBufferRecorder:
-        #SoundBufferRecorder()
-        SoundBuffer& GetBuffer()
+	cdef cppclass Music:
+		Music()
+		bint openFromFile(char*&)
+		bint openFromMemory(void*, size_t)
+		Time getDuration()	
 
-ctypedef SoundBuffer const_SoundBuffer "const SoundBuffer" 
+	cdef cppclass SoundRecorder:
+		void start(unsigned int)
+		void stop()
+		unsigned int getSampleRate()
+
+	cdef cppclass SoundBufferRecorder:
+		SoundBufferRecorder()
+		SoundBuffer& getBuffer()
+		
+cdef extern from "derivablesoundrecorder.hpp":
+	cdef cppclass DerivableSoundRecorder:
+		DerivableSoundRecorder(void*)
+		
