@@ -14,11 +14,18 @@ class Size:
         self._height = height
 
     def __repr__(self):
-        return "({0}, {1})".format(self.width, self.height)
+        return "sf.Size({0}, {1})".format(self.width, self.height)
 
     def __str__(self):
-        return "({0}, {1})".format(self.width, self.height)
+        return "{0}, {1}".format(self.width, self.height)
 
+    def __eq__(self, other):
+        width, height = other
+        return self.width == width and self.height == height
+            
+    def __ne__(self, other):
+        return not self == other
+        
     def __iter__(self):
         return iter((self.width, self.height))
 

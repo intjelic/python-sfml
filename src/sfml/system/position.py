@@ -14,11 +14,18 @@ class Position:
         self._y = y
 
     def __repr__(self):
-        return "({0}, {1})".format(self.x, self.y)
+        return "sf.Position({0}, {1})".format(self.x, self.y)
 
     def __str__(self):
-        return "({0}, {1})".format(self.x, self.y)
+        return "{0}, {1}".format(self.x, self.y)
 
+    def __eq__(self, other):
+        x, y = other
+        return self.x == x and self.y == y
+            
+    def __ne__(self, other):
+        return not self == other
+        
     def __iter__(self):
         return iter((self.x, self.y))
 
@@ -136,16 +143,3 @@ class Position:
 
     x = property(_get_x, _set_x)
     y = property(_get_y, _set_y)
-
-if __name__ == "__main__":
-    pos1 = Position(3, 5)
-    pos2 = Position(4, 6)
-    print(pos1 + (4, 6))
-    print(pos1 - (4, 6))
-    print((3, 5) + pos2)
-    print((3, 5) - pos2)
-    pos1 += pos2
-    print(pos1)
-    pos2 -= pos1
-    print(pos2)
-    

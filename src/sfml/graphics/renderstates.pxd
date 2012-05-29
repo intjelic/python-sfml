@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dgraphics cimport Font
+from dgraphics cimport RenderStates
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Font":
-	cdef Font& getDefaultFont()
+cdef extern from "SFML/Graphics.hpp" namespace "sf::RenderStates":
+	cdef RenderStates Default

@@ -22,11 +22,6 @@ from dsystem cimport const_Uint8_ptr
 
 cimport dsystem, dwindow, dgraphics
 
-#cdef extern from "graphics_api.h":
-	#void import_sfml__graphics__graphics()
-
-#import_sfml__graphics__graphics()
-
 ########################################################################
 #                           System Module                              #
 ########################################################################
@@ -37,8 +32,10 @@ class SFMLException(Exception):
 		
 	def __str__(self):
 		return repr(self.value)
-
+	
 cdef class Time:
+	ZERO = wrap_time(<dsystem.Time*>&dsystem.time.Zero)
+
 	cdef dsystem.Time *p_this
 
 	def __init__(self):
@@ -61,20 +58,38 @@ cdef class Time:
 		elif op == 3: return x.p_this[0] != y.p_this[0]
 		elif op == 5: return x.p_this[0] >= y.p_this[0]
 
+	def __add__(Time x, Time y):
+		cdef dsystem.Time* p = new dsystem.Time()
+		p[0] = x.p_this[0] + y.p_this[0]
+		return wrap_time(p)
+		
+	def __sub__(Time x, Time y):
+		cdef dsystem.Time* p = new dsystem.Time()
+		p[0] = x.p_this[0] - y.p_this[0]
+		return wrap_time(p)
+		
+	def __iadd__(self, Time x):
+		self.p_this[0] = self.p_this[0] + x.p_this[0]
+		return self
+
+	def __isub__(self, Time x):
+		self.p_this[0] = self.p_this[0] - x.p_this[0]
+		return self
+
 	property seconds:
 		def __get__(self):
 			return self.p_this.asSeconds()
 
 		def __set__(self, float seconds):
 			self.p_this[0] = dsystem.seconds(seconds)
-			
+
 	property milliseconds:
 		def __get__(self):
 			return self.p_this.asMilliseconds()
 
 		def __set__(self, Int32 milliseconds):
 			self.p_this[0] = dsystem.milliseconds(milliseconds)
-			
+
 	property microseconds:
 		def __get__(self):
 			return self.p_this.asMicroseconds()
@@ -85,7 +100,12 @@ cdef class Time:
 	def reset(self):
 		self.milliseconds = 0
 
+	def copy(self):
+		cdef dsystem.Time* p = new dsystem.Time()
+		p[0] = self.p_this[0]
+		return wrap_time(p)
 
+ 
 def sleep(Time duration):
 	dsystem.sleep(duration.p_this[0])
 
@@ -115,7 +135,6 @@ cdef class Clock:
 		cdef dsystem.Time* p = new dsystem.Time()
 		p[0] = self.p_this.restart()
 		return wrap_time(p)
-
 
 def seconds(float amount):
 	cdef dsystem.Time* p = new dsystem.Time()
@@ -163,10 +182,10 @@ cdef dsystem.Vector2f size_to_vector2f(size):
 	return dsystem.Vector2f(w, h)
 
 cdef object intrect_to_rectangle(dsystem.IntRect* intrect):
-	return Rectangle(intrect.left, intrect.top, intrect.width, intrect.height)
+	return Rectangle((intrect.left, intrect.top), (intrect.width, intrect.height))
 
 cdef object floatrect_to_rectangle(dsystem.FloatRect* floatrect):
-	return Rectangle(floatrect.left, floatrect.top, floatrect.width, floatrect.height)
+	return Rectangle((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
 
 
 ########################################################################
@@ -435,7 +454,14 @@ cdef class JoystickMoveEvent(Event):
 		def __set__(self, float position):
 			self.p_this.joystickMove.position = position
 
-
+	property x:
+		def __get__(self): pass
+		def __set__(self, x): pass
+		
+	property y:
+		def __get__(self): pass
+		def __set__(self, y): pass
+		
 cdef class JoystickButtonEvent(Event):
 	def __str__(self):
 		if self.type == Event.JOYSTICK_BUTTON_PRESSED:
@@ -457,7 +483,7 @@ cdef class JoystickButtonEvent(Event):
 		def __set__(self, unsigned int button):
 			self.p_this.joystickButton.button = button
 			
-		
+
 cdef class JoystickConnectEvent(Event):
 	def __str__(self):
 		if self.type == Event.JOYSTICK_CONNECTED:
@@ -499,7 +525,7 @@ cdef class VideoMode:
 		elif op == 5: return x.p_this[0] >= y.p_this[0]
 
 	def __iter__(self):
-		return iter((self.width, self.height, self.bpp))
+		return iter((self.size, self.bpp))
 		
 	property width:
 		def __get__(self):
@@ -614,10 +640,16 @@ cdef class ContextSettings:
 
 cdef class Window:
 	cdef dwindow.Window *p_window
+	cdef bint            m_visible
+	cdef bint            m_vertical_synchronization
 	
+	def __cinit__(self, *args, **kwargs):
+		self.m_visible = True
+		self.m_vertical_synchronization = False
+		
 	def __init__(self, VideoMode mode, title, Uint32 style=dwindow.style.Default, ContextSettings settings=None):
 		cdef char* encoded_title
-
+		
 		if self.__class__ is not RenderWindow:
 			encoded_title_temporary = title.encode(u"ISO-8859-1")
 			encoded_title = encoded_title_temporary
@@ -698,11 +730,15 @@ cdef class Window:
 
 	property icon:
 		def __set__(self, Pixels icon):
-			self.p_window.setIcon(icon.width, icon.height, icon.p_this)
+			self.p_window.setIcon(icon.m_width, icon.m_height, icon.p_array)
 
 	property visible:
+		def __get__(self):
+			return self.m_visible
+			
 		def __set__(self, bint visible):
 			self.p_window.setVisible(visible)
+			self.m_visible = visible
 			
 	def show(self):
 		self.visible = True
@@ -711,9 +747,12 @@ cdef class Window:
 		self.visible = False
 
 	property vertical_synchronization:
+		def __get__(self):
+			return self.m_vertical_synchronization
+			
 		def __set__(self, bint vertical_synchronization):
 			self.p_window.setVerticalSyncEnabled(vertical_synchronization)
-
+			self.m_vertical_synchronization = vertical_synchronization
 
 	property mouse_cursor_visible:
 		def __set__(self, bint mouse_cursor_visible):
@@ -850,6 +889,9 @@ cdef class Keyboard:
 	PAUSE = dwindow.keyboard.Pause
 	KEY_COUNT = dwindow.keyboard.KeyCount
 
+	def __init__(self):
+		raise NotImplementedError("This class is not meant to be instantiated!")
+		
 	@classmethod
 	def is_key_pressed(cls, int key):
 		return dwindow.keyboard.isKeyPressed(<dwindow.keyboard.Key>key)
@@ -869,6 +911,9 @@ cdef class Joystick:
 	POV_X = dwindow.joystick.PovX
 	POV_Y = dwindow.joystick.PovY
 
+	def __init__(self):
+		raise NotImplementedError("This class is not meant to be instantiated!")
+		
 	@classmethod
 	def is_connected(cls, unsigned int joystick):
 		return dwindow.joystick.isConnected(joystick)
@@ -901,7 +946,10 @@ cdef class Mouse:
 	X_BUTTON1 = dwindow.mouse.XButton1
 	X_BUTTON2 = dwindow.mouse.XButton2
 	BUTTON_COUNT = dwindow.mouse.ButtonCount
-
+	
+	def __init__(self):
+		raise NotImplementedError("This class is not meant to be instantiated!")
+		
 	@classmethod
 	def is_button_pressed(cls, int button):
 		return dwindow.mouse.isButtonPressed(<dwindow.mouse.Button>button)
@@ -1130,17 +1178,11 @@ cdef class Transform:
 		def __get__(self):
 			return <long>self.p_this.getMatrix()
 		
-		def __set__(self, matrix):
-			raise NotImplemented
-		
 	property inverse:
 		def __get__(self):
 			cdef dgraphics.Transform *p = new dgraphics.Transform()
 			p[0] = self.p_this.getInverse()
 			return wrap_transform(p)
-			
-		def __set__(self, inverse):
-			raise NotImplemented
 	
 	def transform_point(self, point):
 		cdef dsystem.Vector2f p = self.p_this.transformPoint(position_to_vector2f(point))
@@ -1148,7 +1190,7 @@ cdef class Transform:
 		
 	def transform_rectangle(self, rectangle):
 		cdef dsystem.FloatRect p = self.p_this.transformRect(rectangle_to_floatrect(rectangle))
-		return Rectangle(p.top, p.left, p.width, p.height)
+		return Rectangle((p.top, p.left), (p.width, p.height))
 		
 	def combine(self, Transform transform):
 		self.p_this.combine(transform.p_this[0])
@@ -1183,9 +1225,9 @@ cdef Transform wrap_transform(dgraphics.Transform *p, bint d=True):
 
 
 cdef class Pixels:
-	cdef const_Uint8_ptr p_this
-	cdef unsigned int width
-	cdef unsigned int height
+	cdef const_Uint8_ptr p_array
+	cdef unsigned int    m_width
+	cdef unsigned int    m_height
 	
 	def __init__(self):
 		raise UserWarning("Not meant to be constructed")
@@ -1196,10 +1238,10 @@ cdef class Pixels:
 
 cdef Pixels wrap_pixels(const_Uint8_ptr p, unsigned int w, unsigned int h):
 	cdef Pixels r = Pixels.__new__(Pixels)
-	r.p_this, r.width, r.height = p, w, h
+	r.p_array, r.m_width, r.m_height = p, w, h
 	return r
 	
-	
+
 cdef class Image:
 	cdef dgraphics.Image *p_this
 	
@@ -1218,17 +1260,22 @@ cdef class Image:
 		self.p_this.setPixel(k[0], k[1], v.p_this[0])
 
 	@classmethod
-	def create(unsigned int width, unsigned int height, Color color=None):
+	def create(cls, unsigned int width, unsigned int height, Color color=None):
 		cdef dgraphics.Image *p = new dgraphics.Image()
 		if not color: p.create(width, height)
-		else: raise NotImplemented("Not implemented due to a bug in Cython, see task #74 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
+		else: raise NotImplementedError("Not implemented due to a bug in Cython, see task #74 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
 		return wrap_image(p)
 
 	@classmethod
-	def create_from_pixels(self, Pixels pixels):
-		cdef dgraphics.Image *p = new dgraphics.Image()
-		p.create(pixels.width, pixels.height, pixels.p_this)
-		return wrap_image(p)
+	def create_from_pixels(cls, Pixels pixels):
+		cdef dgraphics.Image *p
+		
+		if pixels.p_array != None:
+			p = new dgraphics.Image()
+			p.create(pixels.m_width, pixels.m_height, pixels.p_array)
+			return wrap_image(p)
+			
+		raise SFMLException("sf.Pixels's array points on NULL - It would create an empty image")
 
 	@classmethod
 	def load_from_file(cls, filename):
@@ -1277,14 +1324,15 @@ cdef class Image:
 	def create_mask_from_color(self, Color color, Uint8 alpha=0):
 		self.p_this.createMaskFromColor(color.p_this[0], alpha)
 	
-	def copy(self, Image source, dest, source_rect, bint apply_alpha=False):
+	def blit(self, Image source, dest, source_rect=None, bint apply_alpha=False):
 		x, y = dest
 		if not source_rect: self.p_this.copy(source.p_this[0], x, y, dsystem.IntRect(0, 0, 0, 0), apply_alpha)
 		else: self.p_this.copy(source.p_this[0], x, y, rectangle_to_intrect(source_rect), apply_alpha)
 	
 	property pixels:
 		def __get__(self):
-			return wrap_pixels(self.p_this.getPixelsPtr(), self.width, self.height)
+			if self.p_this.getPixelsPtr() != None:
+				return wrap_pixels(self.p_this.getPixelsPtr(), self.width, self.height)
 		
 	def flip_horizontally(self):
 		self.p_this.flipHorizontally()
@@ -1292,6 +1340,10 @@ cdef class Image:
 	def flip_vertically(self):
 		self.p_this.flipVertically()
 
+	def copy(self):
+		cdef dgraphics.Image *p = new dgraphics.Image()
+		p[0] = self.p_this[0]
+		return wrap_image(p)
 
 cdef Image wrap_image(dgraphics.Image *p):
 	cdef Image r = Image.__new__(Image)
@@ -1303,15 +1355,14 @@ cdef class Texture:
 	NORMALIZED = dgraphics.texture.Normalized
 	PIXELS = dgraphics.texture.Pixels
 	
-	maximum_size = dgraphics.texture.getMaximumSize()
-
 	cdef dgraphics.Texture *p_this
-
+	cdef bint               delete_this
+	
 	def __init__(self):
 		raise UserWarning("Use a specific constructor")
 
 	def __dealloc__(self):
-		del self.p_this
+		if self.delete_this: del self.p_this
 
 	@classmethod
 	def create(cls, unsigned int width, unsigned int height):
@@ -1341,12 +1392,15 @@ cdef class Texture:
 		raise SFMLException()
 		
 	@classmethod
-	def load_from_memory(cls, bytes data):
+	def load_from_memory(cls, bytes data, area=None):
 		cdef dgraphics.Texture *p = new dgraphics.Texture()
 		
-		if p.loadFromMemory(<char*>data, len(data)):
-			return wrap_texture(p)
-			
+		if not area:
+			if p.loadFromMemory(<char*>data, len(data)): return wrap_texture(p)
+		else:
+			l, t, w, h = area
+			if p.loadFromMemory(<char*>data, len(data), dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
+	
 		del p
 		raise SFMLException()
 		
@@ -1354,13 +1408,15 @@ cdef class Texture:
 	def load_from_image(cls, Image image, area=None):
 		cdef dgraphics.Texture *p = new dgraphics.Texture()
 		
-		if p.loadFromImage(image.p_this[0]):
-			return wrap_texture(p)
+		if not area:
+			if p.loadFromImage(image.p_this[0]): return wrap_texture(p)
+		else:
+			l, t, w, h = area
+			if p.loadFromImage(image.p_this[0], dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
 		
 		del p
 		raise SFMLException()
-			
-		
+
 	property size:
 		def __get__(self):
 			return Size(self.p_this.getSize().x, self.p_this.getSize().y)
@@ -1389,12 +1445,12 @@ cdef class Texture:
 	
 	def update(self): raise NotImplemented
 	
-	def update_from_pixels(self, Pixels pixels, rectangle=None):
-		if not rectangle:
-			self.p_this.update(pixels.p_this)
+	def update_from_pixels(self, Pixels pixels, area=None):
+		if not area:
+			self.p_this.update(pixels.p_array)
 		else:
-			l, t, w, h = rectangle
-			self.p_this.update(pixels.p_this, w, h, l, t)
+			l, t, w, h = area
+			self.p_this.update(pixels.p_array, w, h, l, t)
 			
 	def update_from_image(self, Image image, position=None):
 		if not position:
@@ -1402,7 +1458,7 @@ cdef class Texture:
 		else:
 			#x, y = position
 			#self.p_this.update(image.p_this[0], x, y)
-			raise NotImplemented("Not implemented due to a bug in Cython, see task #76 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
+			raise NotImplementedError("Not implemented due to a bug in Cython, see task #76 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
 		
 	def update_from_window(self, Window window, position=None):
 		if not position:
@@ -1410,7 +1466,7 @@ cdef class Texture:
 		else:
 			#x, y = position
 			#self.p_this.update(window.p_this[0], x, y)
-			raise NotImplemented("Not implemented due to a bug in Cython, see task #77 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
+			raise NotImplementedError("Not implemented due to a bug in Cython, see task #77 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
 			
 	def bind(self, dgraphics.texture.CoordinateType coordinate_type=dgraphics.texture.Normalized):
 		self.p_this.bind(coordinate_type)
@@ -1429,10 +1485,20 @@ cdef class Texture:
 		def __set__(self, bint repeated):
 			self.p_this.setRepeated(repeated)
 
-
-cdef Texture wrap_texture(dgraphics.Texture *p):
+	def copy(self):
+		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		p[0] = self.p_this[0]
+		return wrap_texture(p)
+		
+	@classmethod
+	def get_maximum_size(cls):
+		return dgraphics.texture.getMaximumSize()
+		
+		
+cdef Texture wrap_texture(dgraphics.Texture *p, bint d=True):
 	cdef Texture r = Texture.__new__(Texture)
 	r.p_this = p
+	r.delete_this = d
 	return r
 
 
@@ -1477,14 +1543,14 @@ cdef Glyph wrap_glyph(dgraphics.Glyph *p):
 
 cdef class Font:
 	cdef dgraphics.Font *p_this
+	cdef bint            delete_this
+	cdef Texture         m_texture
 	
-	default_font = wrap_font(<dgraphics.Font*>&dgraphics.font.getDefaultFont())
-
 	def __init__(self):
 		raise UserWarning("Use a specific constructor")
 
 	def __dealloc__(self):
-		del self.p_this
+		if self.delete_this: del self.p_this
 
 	@classmethod
 	def load_from_file(cls, filename):
@@ -1524,12 +1590,16 @@ cdef class Font:
 	def get_texture(self, unsigned int character_size):
 		cdef dgraphics.Texture *p
 		p = <dgraphics.Texture*>&self.p_this.getTexture(character_size)
-		return wrap_texture(p)
+		return wrap_texture(p, False)
 
+	@classmethod
+	def get_default_font(cls):
+		return wrap_font(<dgraphics.Font*>&dgraphics.font.getDefaultFont(), False)
 
-cdef Font wrap_font(dgraphics.Font *p):
+cdef Font wrap_font(dgraphics.Font *p, bint d=True):
 	cdef Font r = Font.__new__(Font)
 	r.p_this = p
+	r.delete_this = d
 	return r
 
 
@@ -1538,12 +1608,13 @@ cdef class Shader:
 	FRAGMENT = dgraphics.shader.Fragment
 	
 	cdef dgraphics.Shader *p_this
-
+	cdef bint              delete_this
+	
 	def __init__(self):
 		raise UserWarning("Use a specific constructor")
 
 	def __dealloc__(self):
-		del self.p_this
+		if self.delete_this: del self.p_this
 
 	@classmethod
 	def load_from_file(cls, filename, dgraphics.shader.Type type):
@@ -1569,8 +1640,30 @@ cdef class Shader:
 		del p
 		raise SFMLException()
 		
-	def set_parameter(self): raise NotImplemented
+	def set_parameter(self): 
+		raise NotImplementedError("Will be implemented in the next release")
 
+	def set_float_parameter(self, float x, float y=0, float z=0, float w=0): 
+		raise NotImplementedError("Will be implemented in the next release")
+		
+	def set_vector2_paramater(self): 
+		raise NotImplementedError("Will be implemented in the next release")
+	
+	def set_vector3_paramater(self): 
+		raise NotImplementedError("Will be implemented in the next release")
+	
+	def set_color_parameter(self): 
+		raise NotImplementedError("Will be implemented in the next release")
+	
+	def set_transform_parameter(self): 
+		raise NotImplementedError("Will be implemented in the next release")
+	
+	def set_texture_parameter(self): 
+		raise NotImplementedError("Will be implemented in the next release")
+	
+	def set_texturetype_parameter(self): 
+		raise NotImplementedError("Will be implemented in the next release")
+	
 	def bind(self):
 		self.p_this.bind()
 
@@ -1582,19 +1675,23 @@ cdef class Shader:
 		return dgraphics.shader.isAvailable()
 
 
-cdef Shader wrap_shader(dgraphics.Shader *p):
+cdef Shader wrap_shader(dgraphics.Shader *p, bint d=True):
 	cdef Shader r = Shader.__new__(Shader)
 	r.p_this = p
+	r.delete_this = d
 	return r
 
 
 cdef class RenderStates:
+	DEFAULT = wrap_renderstates(<dgraphics.RenderStates*>&dgraphics.renderstates.Default, False)
+	
 	cdef dgraphics.RenderStates *p_this
+	cdef bint                    delete_this
 	cdef Transform               m_transform
 	cdef Texture                 m_texture
 	cdef Shader                  m_shader
 	
-	def __cinit__(self, dgraphics.blendmode.BlendMode blend_mode=dgraphics.blendmode.BlendAlpha, Transform transform=None, Texture texture=None, Shader shader=None):
+	def __init__(self, dgraphics.blendmode.BlendMode blend_mode=dgraphics.blendmode.BlendAlpha, Transform transform=None, Texture texture=None, Shader shader=None):
 		self.p_this = new dgraphics.RenderStates()
 		
 		self.m_transform = wrap_transform(&self.p_this.transform, False)
@@ -1607,7 +1704,7 @@ cdef class RenderStates:
 		if shader: self.shader = shader
 
 	def __dealloc__(self):
-		del self.p_this
+		if self.delete_this: del self.p_this
 
 	property blend_mode:
 		def __get__(self):
@@ -1639,9 +1736,26 @@ cdef class RenderStates:
 			self.p_this.shader = shader.p_this			
 			self.m_shader = shader
 
-cdef api object wrap_renderstates(dgraphics.RenderStates *p):
+cdef RenderStates wrap_renderstates(dgraphics.RenderStates *p, bint d=True):
 	cdef RenderStates r = RenderStates.__new__(RenderStates)
 	r.p_this = p
+	r.delete_this = d
+	r.m_transform = wrap_transform(&p.transform, False)
+	if p.texture: r.m_texture = wrap_texture(<dgraphics.Texture*>p.texture, False)
+	else: r.m_texture = None
+	if p.shader: r.m_shader = wrap_shader(<dgraphics.Shader*>p.shader, False)
+	else: r.m_shader = None
+	return r
+	
+cdef api object api_wrap_renderstates(dgraphics.RenderStates *p):
+	cdef RenderStates r = RenderStates.__new__(RenderStates)
+	r.p_this = p
+	r.delete_this = False
+	r.m_transform = wrap_transform(&p.transform, False)
+	if p.texture: r.m_texture = wrap_texture(<dgraphics.Texture*>p.texture, False)
+	else: r.m_texture = None
+	if p.shader: r.m_shader = wrap_shader(<dgraphics.Shader*>p.shader, False)
+	else: r.m_shader = None
 	return r
 
 cdef class Drawable:
@@ -1776,8 +1890,12 @@ cdef class Sprite(TransformableDrawable):
 	cdef dgraphics.Sprite *p_this
 	cdef Texture           m_texture
 	
-	def __cinit__(self, Texture texture):
-		self.p_this = new dgraphics.Sprite(texture.p_this[0])
+	def __cinit__(self, Texture texture, rectangle=None):
+		if not rectangle: self.p_this = new dgraphics.Sprite(texture.p_this[0])
+		else:
+			l, t, w, h = rectangle
+			self.p_this = new dgraphics.Sprite(texture.p_this[0], dsystem.IntRect(l, t, w, h))
+			
 		self.p_drawable = <dgraphics.Drawable*>self.p_this
 		self.p_transformable = <dgraphics.Transformable*>self.p_this
 		
@@ -1830,18 +1948,33 @@ cdef class Text(TransformableDrawable):
 	cdef dgraphics.Text *p_this
 	cdef Font            m_font
 
-	def __cinit__(self, bytes string=None, Font font=None, unsigned int character_size=30):
+	def __init__(self, bytes string=None, Font font=None, unsigned int character_size=30):
 		self.p_this = new dgraphics.Text()
 		self.p_drawable = <dgraphics.Drawable*>self.p_this
 		self.p_transformable = <dgraphics.Transformable*>self.p_this
+		
+		if string: self.string = string
+		if font: self.font = font
+		self.character_size = 30
 
 	def __dealloc__(self):
 		del self.p_this
 
 	property string:
-		def __get__(self): pass 
-		def __set__(self, string): pass
+		def __get__(self):
+			cdef char* decoded_string
+			decoded_string = <char*>self.p_this.getString().toAnsiString().c_str()
+			
+			return decoded_string.decode('utf-8')
 
+		def __set__(self, string):
+			cdef char* encoded_string	
+
+			encoded_string_temporary = string.encode('utf-8')	
+			encoded_string = encoded_string_temporary
+			
+			self.p_this.setString(dgraphics.String(encoded_string))
+					
 	property font:
 		def __get__(self):
 			return self.m_font
@@ -1901,8 +2034,12 @@ cdef class Shape(TransformableDrawable):
 			return self.m_texture
 
 		def __set__(self, Texture texture):
-			self.p_shape.setTexture(texture.p_this)
-			self.m_texture = texture
+			if texture:
+				self.p_shape.setTexture(texture.p_this, True)
+				self.m_texture = texture
+			else:
+				self.p_shape.setTexture(NULL)
+				self.m_texture = None
 
 	property texture_rectangle:
 		def __get__(self):
@@ -1910,10 +2047,6 @@ cdef class Shape(TransformableDrawable):
 			
 		def __set__(self, rectangle):
 			self.p_shape.setTextureRect(rectangle_to_intrect(rectangle))
-
-	def reset_texture_rectangle(self):
-		w, h = self.texture.size
-		self.texture_rectangle = Rectangle(0, 0, w, h)
 		
 	property fill_color:
 		def __get__(self):
@@ -2027,11 +2160,12 @@ cdef class RectangleShape(Shape):
 			
 		def __set__(self, size):
 			self.p_this.setSize(size_to_vector2f(size))
-		
 
+	
 cdef class View:
-	cdef dgraphics.View *p_this
-	cdef RenderTarget    m_target
+	cdef dgraphics.View  *p_this
+	cdef RenderWindow     m_renderwindow
+	cdef RenderTarget     m_rendertarget
 	
 	def __init__(self):
 		self.p_this = new dgraphics.View()
@@ -2100,12 +2234,27 @@ cdef class View:
 			return wrap_transform(p)
 
 	def _update_target(self):
-		if self.m_target: self.m_target.view = self
+		if self.m_renderwindow:
+			self.m_renderwindow.view = self
 
-cdef View wrap_view(dgraphics.View *p, object target=None):
+		if self.m_rendertarget:
+			self.m_rendertarget.view = self
+
+cdef View wrap_view(dgraphics.View *p):
 	cdef View r = View.__new__(View)
 	r.p_this = p
-	r.m_target = target
+	return r
+	
+cdef View wrap_view_for_renderwindow(dgraphics.View *p, RenderWindow renderwindow):
+	cdef View r = View.__new__(View)
+	r.p_this = p
+	r.m_renderwindow = renderwindow
+	return r
+	
+cdef View wrap_view_for_rendertarget(dgraphics.View *p, RenderTarget rendertarget):
+	cdef View r = View.__new__(View)
+	r.p_this = p
+	r.m_rendertarget = rendertarget
 	return r
 
 
@@ -2124,7 +2273,7 @@ cdef class RenderTarget:
 		def __get__(self):
 			cdef dgraphics.View *p = new dgraphics.View()
 			p[0] = self.p_rendertarget.getView()
-			return wrap_view(p, self)
+			return wrap_view_for_rendertarget(p, self)
 			
 		def __set__(self, View view):
 			self.p_rendertarget.setView(view.p_this[0])
@@ -2206,7 +2355,7 @@ cdef class RenderWindow(Window):
 		def __get__(self):
 			cdef dgraphics.View *p = new dgraphics.View()
 			p[0] = self.p_this.getView()
-			return wrap_view(p, self)
+			return wrap_view_for_renderwindow(p, self)
 			
 		def __set__(self, View view):
 			self.p_this.setView(view.p_this[0])
@@ -2289,3 +2438,22 @@ cdef class RenderTexture(RenderTarget):
 		def __get__(self):
 			self.m_texture.p_this = <dgraphics.Texture*>(&self.p_this.getTexture())
 			return self.m_texture
+
+cdef class HandledWindow(RenderTarget):
+	cdef dgraphics.RenderWindow *p_this
+	cdef dgraphics.Window       *p_window
+	
+	def __init__(self):
+		self.p_this = new dgraphics.RenderWindow()
+		self.p_rendertarget = <dgraphics.RenderTarget*>self.p_this
+		self.p_window = <dwindow.Window*>self.p_this
+		
+	def __dealloc__(self):
+		del self.p_this
+
+	def create(self, unsigned long window_handle, ContextSettings settings=None):
+		if not settings: self.p_this.create(<dwindow.WindowHandle>window_handle)
+		else: self.p_this.create(<dwindow.WindowHandle>window_handle, settings.p_this[0])
+		
+	def display(self):
+		self.p_window.display()

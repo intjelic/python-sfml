@@ -8,6 +8,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+cimport time
+
 cdef extern from "<string>" namespace "std":
 	cdef cppclass string:
 		char* c_str()
@@ -43,8 +45,10 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		bint operator>(Time&)
 		bint operator<=(Time&)
 		bint operator>=(Time&)
-		Time operator-(Time, Time)        
-		Time operator+(Time, Time)
+		Time operator+(Time&)		
+		Time operator-(Time&)
+		Time operator*(Time&) 
+		Time operator/(Time&)    
 		#Time operator-=(Time&, Time)        
 		#Time operator+=(Time&, Time)
 		#Time operator*(float)
@@ -65,7 +69,8 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 	cdef Time microseconds(Int64)
 
 	cdef cppclass String:
-		String()
+		String(char*)
+		string toAnsiString()
 
 	cdef cppclass Vector2i:
 		Vector2i()

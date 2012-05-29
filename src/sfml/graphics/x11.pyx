@@ -8,7 +8,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dgraphics cimport Font
+cimport declx11
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Font":
-	cdef Font& getDefaultFont()
+# This function is needed to flush the screen when we integrate pySFML 
+# to PyQt
+def flush_screen(int d):
+	# cdef declx11.Display* myDisplay = declx11.XOpenDisplay(":0")
+	cdef declx11.Display* myDisplay = <declx11.Display*>d
+	declx11.XFlush(myDisplay)

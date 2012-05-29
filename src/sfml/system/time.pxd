@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dgraphics cimport Font
+from dsystem cimport Time
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Font":
-	cdef Font& getDefaultFont()
+cdef extern from "SFML/System.hpp" namespace "sf::Time":
+	cdef Time Zero

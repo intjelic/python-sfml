@@ -1,4 +1,14 @@
-__all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 'Pixels', 'Image', 'Texture', 'Glyph', 'Font', 'Shader', 'RenderStates', 'Drawable', 'Transformable', 'Sprite', 'Text', 'Shape', 'CircleShape', 'ConvexShape', 'RectangleShape', 'View', 'RenderTarget', 'RenderTexture', 'RenderWindow']
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# pySFML2 - Cython SFML Wrapper for Python
+# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+#
+# This software is released under the GPLv3 license.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+__all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 'Pixels', 'Image', 'Texture', 'Glyph', 'Font', 'Shader', 'RenderStates', 'Drawable', 'Transformable', 'Sprite', 'Text', 'Shape', 'CircleShape', 'ConvexShape', 'RectangleShape', 'View', 'RenderTarget', 'RenderTexture', 'RenderWindow', 'HandledWindow']
 
 from sfml.graphics.graphics import BlendMode, PrimitiveType
 from sfml.graphics.graphics import Color, Transform
@@ -11,6 +21,7 @@ from sfml.graphics.graphics import Sprite, Text, Shape
 from sfml.graphics.graphics import CircleShape, ConvexShape, RectangleShape
 from sfml.graphics.graphics import View
 from sfml.graphics.graphics import RenderTarget, RenderTexture, RenderWindow
+from sfml.graphics.graphics import HandledWindow
 
 from sfml.graphics.graphics import Style
 from sfml.graphics.graphics import ContextSettings, VideoMode

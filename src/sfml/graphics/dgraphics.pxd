@@ -17,7 +17,7 @@ from dsystem cimport IntRect, FloatRect
 from dsystem cimport *
 from dwindow cimport *
 
-cimport blendmode, primitivetype, texture, shader, text, font
+cimport blendmode, primitivetype, texture, shader, text, font, renderstates
 
 cdef extern from *:
 	ctypedef unsigned char* const_Uint8_ptr "const unsigned char*"
@@ -183,6 +183,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 	cdef cppclass Sprite:
 		Sprite()
 		Sprite(Texture&)
+		Sprite(Texture&, IntRect&)
 		void setTexture(Texture&)
 		void setTexture(Texture&, bint)
 		void setTextureRect(IntRect&)
@@ -304,7 +305,9 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		RenderWindow()
 		RenderWindow(VideoMode, char*&)
 		RenderWindow(VideoMode, char*&, Uint32)
-		RenderWindow(VideoMode, char*&, Uint32, ContextSettings)
+		RenderWindow(VideoMode, char*&, Uint32, ContextSettings&)
+		void create(WindowHandle)
+		void create(WindowHandle, ContextSettings&)
 		void clear()
 		void clear(Color&)
 		void setView(View&)
@@ -343,4 +346,3 @@ cdef extern from "derivablerenderwindow.hpp":
 		DerivableRenderWindow(WindowHandle window_handle)
 		DerivableRenderWindow(WindowHandle window_handle, ContextSettings&)
 		void set_pyobj(void*)
-		
