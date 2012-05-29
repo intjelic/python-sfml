@@ -29,9 +29,10 @@ class MyCyanCanvas(QSFMLCanvas):
         self.texture = sf.Texture.load_from_image(self.image)
         self.sprite = sf.Sprite(self.texture)
         self.sprite.position = self.texture.size // (2, 2)
+        
     def onUpdate(self):
         self.clear(sf.Color.CYAN)
-        self.sprite.rotate(0.5)
+        self.sprite.rotate(0.05)
         self.sprite.origin = self.texture.size // (2, 2)
         self.draw(self.sprite)
             
@@ -39,7 +40,7 @@ app = QApplication(sys.argv)
 
 # create the main frame
 mainFrame = QFrame()
-mainFrame.setWindowTitle("Qt pySFML")
+mainFrame.setWindowTitle("pySFML - Qt")
 mainFrame.resize(400, 400)
 mainFrame.show()
 

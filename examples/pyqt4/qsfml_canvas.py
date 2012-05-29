@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
+import sys, platform
 
 try:
         import sip
@@ -69,10 +69,11 @@ class QSFMLCanvas(QWidget):
 			# under X11, we need to flush the commands sent to the server 
 			# to ensure that SFML will get an updated view of the windows
 			# create the SFML window with the widget handle
-			import sfml.x11 as x11
-			display = sip.unwrapinstance(QX11Info.display())
-			x11.flush_screen(display)
-			
+			if platform.system() == 'Linux':
+				import sfml.graphics.x11 as x11
+				display = sip.unwrapinstance(QX11Info.display())
+				x11.flush_screen(display)
+				
 			self._HandledWindow.create(self.winId())
 			
 			# let the derived class do its specific stuff
