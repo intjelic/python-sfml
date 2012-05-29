@@ -8,56 +8,47 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import time
-import sfml.audio as sf
-
+import sfml as sf
 
 def play_sound():
-    # load a sound buffer from a wav file
-    buffer = sf.SoundBuffer.load_from_file("data/canary.wav")
-    
-    # display sound informations
-    print("canary.wav:")
-    print("{0} seconds".format(buffer.duration))
-    print("{0} samples / sec".format(buffer.sample_rate))
-    print("{0} channels".format(buffer.channels_count))
+	# load a sound buffer from a wav file
+	buffer = sf.SoundBuffer.load_from_file("data/canary.wav")
 
-    # create a sound instance and play it
-    sound = sf.Sound(buffer)
-    sound.play();
+	# display sound informations
+	print("canary.wav:")
+	print("{0} seconds".format(buffer.duration))
+	print("{0} samples / sec".format(buffer.sample_rate))
+	print("{0} channels".format(buffer.channel_count))
 
-    # loop while the sound is playing
-    while sound.status == sf.Sound.PLAYING:
-        # leave some CPU time for other processes
-        time.sleep(0.1);
+	# create a sound instance and play it
+	sound = sf.Sound(buffer)
+	sound.play();
 
-        # display the playing position
-        #std::cout << "\rPlaying... " << std::fixed << std::setprecision(2) << sound.GetPlayingOffset() << " sec   ";
+	# loop while the sound is playing
+	while sound.status == sf.Sound.PLAYING:
+		# leave some CPU time for other processes
+		sf.sleep(sf.milliseconds(100))
 
 def play_music():
-    # load an ogg music file    
-    music = sf.Music.open_from_file(b"data/orchestral.ogg")
-    
-    # display music informations
-    print("orchestral.ogg:")
-    print("{0} seconds".format(music.duration))
-    print("{0} samples / sec".format(music.sample_rate))
-    print("{0} channels".format(music.channels_count))
-    
-    # play it
-    music.play();
+	# load an ogg music file    
+	music = sf.Music.open_from_file("data/orchestral.ogg")
 
-    # loop while the music is playing
-    while music.status == sf.Music.PLAYING:
-        # leave some CPU time for other processes
-        time.sleep(0.1)
+	# display music informations
+	print("orchestral.ogg:")
+	print("{0} seconds".format(music.duration))
+	print("{0} samples / sec".format(music.sample_rate))
+	print("{0} channels".format(music.channel_count))
 
-        # display the playing position
-        #std::cout << "\rPlaying... " << std::fixed << std::setprecision(2) << music.GetPlayingOffset() << " sec   ";
-        
+	# play it
+	music.play();
+
+	# loop while the music is playing
+	while music.status == sf.Music.PLAYING:
+		# leave some CPU time for other processes
+		sf.sleep(sf.milliseconds(100))
 
 if __name__ == "__main__":
-    play_sound()
-    play_music()
-    
-    input("Press enter to exit...")
+	play_sound()
+	play_music()
+
+	input("Press enter to exit...")
