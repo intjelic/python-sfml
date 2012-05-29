@@ -1,86 +1,161 @@
 Audio
 =====
 
-.. module:: sf.audio
+.. module:: sf
 
+.. class:: Vector
+
+   .. attribute:: x
+   .. attribute:: y
+   .. attribute:: z
 
 .. class:: Listener
 
-   The audio listener is the point in the scene from where all the sounds are heard.
+   The audio listener is the point in the scene from where all the 
+   sounds are heard.
 
-   The audio listener defines the global properties of the audio environment, it defines where and how sounds and musics are heard.
+   The audio listener defines the global properties of the audio 
+   environment, it defines where and how sounds and musics are heard.
 
-   If sf.View is the eyes of the user, then sf.Listener is his ears (by the way, they are often linked together -- same position, orientation, etc.).
+   If :class:`sf.View` is the eyes of the user, then 
+   :class:`sf.Listener` is his ears (by the way, they are often linked 
+   together -- same position, orientation, etc.).
 
-   sf.Listener is a simple interface, which allows to setup the listener in the 3D audio environment (position and direction), and to adjust the global volume.
+   :class:`sf.Listener` is a simple interface, which allows to setup 
+   the listener in the 3D audio environment (position and direction), 
+   and to adjust the global volume.
 
-   Because the listener is unique in the scene, sf.Listener only contains static functions and doesn't have to be instanciated.
+   Because the listener is unique in the scene, :class:`sf.Listener`
+   only contains class methods and doesn't have to be instanciated.
 
    Usage example::
-   
+
       # move the listener to the position (1, 0, -5)
-      sf.Listener.position = (1, 0, -5)
-      # or sf.Listener.position = sf.Vector3f(1, 0, -5)
+      sf.Listener.set_position((1, 0, -5))
 
       # make it face the right axis (1, 0, 0)
-      sf.Listener.direction = (1, 0, 0)
-      # or sf.Listener.direction = sf.Vector3f(1, 0, -5)
+      sf.Listener.set_direction(sf.Vector(1, 0, 0))
 
       # reduce the global volume
-      sf.Listener.global_volume = 50
+      sf.Listener.set_global_volume = 50
 
-   .. attribute:: global_volume
-   
-         The global volume of all the sounds and musics.
 
-         The volume is a number between 0 and 100; it is combined with the individual volume of each sound / music. The default value for the volume is 100 (maximum).   
+   .. classmethod:: get_global_volume()
 
-   .. attribute:: position
-   
-         Get the current position of the listener in the scene. 
+      Get the current value of the global volume.
+      
+      :return: Current global volume, in the range [0, 100]
+      :rtype: float
 
-   .. attribute:: direction
-   
-         The orientation of the listener in the scene.
-         
-         The orientation defines the 3D axes of the listener (left, up, front) in the scene. The orientation vector doesn't have to be normalized. The default listener's orientation is (0, 0, -1).
-   
+   .. classmethod:: set_global_volume(volume)
+
+      Change the global volume of all the sounds and musics.
+
+      The volume is a number between 0 and 100; it is combined with 
+      the individual volume of each sound / music. The default value 
+      for the volume is 100 (maximum).
+      
+      :param float volume: New global volume, in the range [0, 100]
+      
+   .. classmethod:: get_position()
+
+      Get the current position of the listener in the scene.
+      
+      :return: Listener's position
+      :rtype: :class:`sf.Vector`
+      
+   .. classmethod:: set_position(position)
+
+      Set the position of the listener in the scene.
+
+      The default listener's position is (0, 0, 0).
+      
+      :param position: New listener's position
+      :type position: :class:`sf.Vector` or tuple		
+
+   .. classmethod:: get_direction()
+
+      Get the current orientation of the listener in the scene.
+      
+      :return: Listener's orientation
+      :rtype: :class:`sf.Vector`
+      
+   .. classmethod:: set_direction(direction)
+
+      Set the orientation of the listener in the scene.
+      
+      The orientation defines the 3D axes of the listener (left, up, 
+      front) in the scene. The orientation vector doesn't have to be 
+      normalized. The default listener's orientation is (0, 0, -1).
+
+      :param direction: New listener's orientation
+      :type position: :class:`sf.Vector` or tuple	
+
+.. class:: Chunk
+
 
 .. class:: SoundBuffer
 
-      Storage for audio samples defining a sound.
+   Storage for audio samples defining a sound.
 
-      A sound buffer holds the data of a sound, which is an array of audio samples.
+   A sound buffer holds the data of a sound, which is an array of 
+   audio samples.
 
-      A sample is a 16 bits signed integer that defines the amplitude of the sound at a given time. The sound is then restituted by playing these samples at a high rate (for example, 44100 samples per second is the standard rate used for playing CDs). In short, audio samples are like texture pixels, and a sf.SoundBuffer is similar to a sf.Texture.
+   A sample is a 16 bits signed integer that defines the amplitude of 
+   the sound at a given time. The sound is then restituted by playing 
+   these samples at a high rate (for example, 44100 samples per second 
+   is the standard rate used for playing CDs). In short, audio samples 
+   are like texture pixels, and a :class:`sf.SoundBuffer` is similar 
+   to a :class:`sf.Texture`.
 
-      A sound buffer can be loaded from a file (see :py:func:`load_from_file` for the complete list of supported formats), from memory or directly from an array of samples. It can also be saved back to a file.
+   A sound buffer can be loaded from a file (see 
+   :func:`load_from_file()' for the complete list of supported 
+   formats), from memory or directly from an array of samples. It can 
+   also be saved back to a file.
 
-      Sound buffers alone are not very useful: they hold the audio data but cannot be played. To do so, you need to use the sf.Sound class, which provides functions to play/pause/stop the sound as well as changing the way it is outputted (volume, pitch, 3D position, ...). This separation allows more flexibility and better performances: indeed a sf.SoundBuffer is a heavy resource, and any operation on it is slow (often too slow for real-time applications). On the other side, a sf.Sound is a lightweight object, which can use the audio data of a sound buffer and change the way it is played without actually modifying that data. Note that it is also possible to bind several sf.Sound instances to the same sf.SoundBuffer.
+   Sound buffers alone are not very useful: they hold the audio data 
+   but cannot be played. To do so, you need to use the 
+   :class:`sf.Sound` class, which provides functions to 
+   play/pause/stop the sound as well as changing the way it is 
+   outputted (volume, pitch, 3D position, ...). This separation allows 
+   more flexibility and better performances: indeed a 
+   :class:`sf.SoundBuffer` is a heavy resource, and any operation on 
+   it is slow (often too slow for real-time applications). On the 
+   other side, a :class:`sf.Sound` is a lightweight object, which can 
+   use the audio data of a sound buffer and change the way it is 
+   played without actually modifying that data. Note that it is also 
+   possible to bind several :class:`sf.Sound` instances to the same 
+   :class:`sf.SoundBuffer`.
 
-      It is important to note that the sf.Sound instance doesn't copy the buffer that it uses, it only keeps a reference to it. Thus, a sf.SoundBuffer must not be destructed while it is used by a sf.Sound (i.e. never write a function that uses a local sf.SoundBuffer instance for loading a sound).
+   It is important to note that the :class:`sf.Sound` instance doesn't 
+   copy the buffer that it uses, it only keeps a reference to it. 
+   Thus, a :class:`sf.SoundBuffer` must not be destructed while it is 
+   used by a :class:`sf.Sound` (i.e. never write a function that uses 
+   a local :class:`sf.SoundBuffer` instance for loading a sound).
 
-      Usage example::
+   Usage example::
+   
+      # load a new sound buffer from a file
+      try: buffer = sf.SoundBuffer.load_from_file("data/sound.wav")
+      except sf.SFMLException as error:
+         # error...
+         print("error?")
+         exit()
 
-         # load a new sound buffer from a file
-         try:
-            buffer = sf.SoundBuffer.load_from_file("sound.wav")
-         except:
-            # error...
+      # create a sound source and bind it to the buffer
+      sound1 = sf.Sound()
+      sound1.buffer = buffer
 
-         # create a sound source and bind it to the buffer
-         sound1 = sf.Sound()
-         sound1.buffer = buffer
-         
-         # play the sound
-         sound1.play()
+      # play the sound
+      sound1.play();
+      input()
 
-         # create another sound source bound to the same buffer
-         sound2 = sf.Sound(buffer)
+      # create another sound source bound to the same buffer
+      sound2 = sf.Sound(buffer)
 
-         # play it with a higher pitch -- the first sound remains unchanged
-         sound2.pitch = 2
-         sound2.play()
+      # play it with higher pitch -- the first sound remains unchanged
+      sound2.pitch = 2
+      sound2.play()
 
 
    .. attribute:: channels_count
