@@ -15,6 +15,5 @@ Contents:
 
    introduction
    gettingstarted
-   tutorials
    examples
    documentation
