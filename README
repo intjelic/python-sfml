@@ -1,27 +1,18 @@
-This is an non-official python 3 binding for SFML 2.
+This is a non-official python binding for SFML2.
 
 It was forked from the official python binding created by 
-Bastien Léonard the 16th of November 2011 to suit my own needs.
+Bastien Leonard the 16th of November 2011 to suit my own needs.
 
 It has since then widely improved and I decided to share my work under
 a new license: GPLv3
 
-I'm going to complete this README...
+For all information about the project (installing, compiling source, 
+documentation), you may want to loop up 
+http://openhelbreath.net/python-sfml2/0.1/doc/
 
+The bug-tracker is temporarily read-only  so if you want to report issues, you can 
+do it on the github page of the project itself, I'll add them.
 
-
-
-
-/*
-This is a pythonic binding for SFML 2, which supports Python 2 and 3.
-This library allows you to write multimedia applications or games with
-a simple Python API.
-
-Go to the project page if you're looking for the source code,
-downloads or the bug tracker:
-https://github.com/bastienleonard/pysfml2-cython
-
-Please read doc/sphinx/source/introduction.rst for more information.
-You can also read the generated HTML documentation at
-http://pysfml2-cython.readthedocs.org/
-*/
+Website: http://openhelbreath.net/python-sfml2/
+Bugtracker: http://openhelbreath.net/python-sfml2/flyspray/
+Github: https://github.com/Sonkun/python-sfml2
