@@ -58,13 +58,6 @@ cdef class IpAddress:
 		cdef dnetwork.IpAddress *p = new dnetwork.IpAddress(b1, b2, b3, b4)
 		return wrap_ipaddress(p)
 
-	@classmethod
-	def from_tuple(self, tuple v):
-		b1, b2, b3, b4 = v
-		
-		cdef dnetwork.IpAddress *p = new dnetwork.IpAddress(b1, b2, b3, b4)
-		return wrap_ipaddress(p)
-
 	property string:
 		def __get__(self):
 			return self.p_this.toString().c_str()
@@ -80,9 +73,9 @@ cdef class IpAddress:
 		return wrap_ipaddress(p)
 
 	@classmethod
-	def get_public_address(self, timeout=0):		
+	def get_public_address(self, Uint32 timeout=0):		
 		cdef dnetwork.IpAddress* p = new dnetwork.IpAddress()
-		dnetwork.ipaddress.getPublicAddress(dsystem.milliseconds(timeout))
+		p[0] = dnetwork.ipaddress.getPublicAddress(dsystem.milliseconds(timeout))
 		return wrap_ipaddress(p)
 
 cdef wrap_ipaddress(dnetwork.IpAddress* p):
@@ -138,10 +131,7 @@ cdef class TcpListener(Socket):
 		def __get__(self):
 			return self.p_this.getLocalPort()
 			
-	def old_listen(self, unsigned short port):
-		return self.p_this.listen(port)
-
-	def new_listen(self, unsigned short port):
+	def listen(self, unsigned short port):
 		cdef dnetwork.socket.Status status = self.p_this.listen(port)
 		
 		if status is not dnetwork.socket.Done:
@@ -244,12 +234,12 @@ cdef class TcpSocket(Socket):
 cdef class UdpSocket(Socket):
 	cdef dnetwork.UdpSocket *p_this
 	
-	max_datagram_size = dnetwork.udpsocket.MaxDatagramSize
+	MAX_DATAGRAM_SIZE = dnetwork.udpsocket.MaxDatagramSize
 
 	def __init__(self):
 		self.p_this = new dnetwork.UdpSocket()
 		self.p_socket = <dnetwork.Socket*>self.p_this
-		
+
 	def __dealloc__(self):
 		del self.p_this
 		
