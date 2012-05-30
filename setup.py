@@ -15,94 +15,72 @@ from distutils.extension import Extension
 USE_CYTHON = True
 
 if USE_CYTHON:
-    import Cython.Distutils
-  
-    x11_libs = ['X11']
-    x11_mod = Extension('sfml.x11', ['src/sfml/x11/x11.pyx'], libraries=x11_libs)
+	import Cython.Distutils
 
-    graphics_dir = ['src/sfml/system', 'src/sfml/window']
-    graphics_libs = ['sfml-system', 'sfml-window', 'sfml-graphics']
-    graphics_mod = Extension('sfml.graphics.graphics', ['src/sfml/graphics/graphics.pyx', 'src/sfml/graphics/hacks.cpp'], graphics_dir, language='c++', libraries=graphics_libs)
-
-    audio_dir = ['src/sfml/system']
-    audio_libs = ['sfml-audio']
-    audio_mod = Extension('sfml.audio.audio', ['src/sfml/audio/audio.pyx'], audio_dir, language='c++', libraries=audio_libs)
-
-    network_dir = ['src/sfml/system']
-    network_libs = ['sfml-network']
-    network_mod = Extension('sfml.network.network', ['src/sfml/network/network.pyx'], network_dir, language='c++', libraries=network_libs)
-    
+	x11_source = 'src/sfml/graphics/x11.pyx'
+	graphics_source = 'src/sfml/graphics/graphics.pyx'
+	audio_source = 'src/sfml/audio/audio.pyx'
+	network_source = 'src/sfml/network/network.pyx'
+	
 else:
-    input()
-    x11_libs = ['X11']
-    x11_mod = Extension('sfml.sfml.x11', ['src/x11/x11.cpp'], libraries=x11_libs)
+	x11_source = 'src/sfml/graphics/x11.cpp'
+	graphics_source = 'src/sfml/graphics/graphics.cpp'
+	audio_source = 'src/sfml/audio/audio.cpp'
+	network_source = 'src/sfml/network/network.cpp'
+	
+x11 = Extension('sfml.graphics.x11', 
+				[x11_source],
+				language='c++',
+				libraries=['X11'])
 
-    graphics_libs = ['sfml-system', 'sfml-window', 'sfml-graphics']
-    graphics_mod = Extension('sfml.graphics.graphics', ['src/graphics/graphics.cpp', 'src/graphics/hacks.cpp'], libraries=graphics_libs)
+graphics = Extension('sfml.graphics.graphics', 
+					[graphics_source, 'src/sfml/graphics/derivablewindow.cpp', 'src/sfml/graphics/derivablerenderwindow.cpp', 'src/sfml/graphics/derivabledrawable.cpp'], 
+					['src/sfml/system', 'src/sfml/window'], 
+					language='c++', 
+					libraries=['sfml-system', 'sfml-window', 'sfml-graphics'])
 
-    audio_libs = ['sfml-audio']
-    audio_mod = Extension('sfml.audio.audio', ['src/audio/audio.cpp'], libraries=audio_libs)
+audio = Extension('sfml.audio.audio', 
+					[audio_source, 'src/sfml/audio/derivablesoundrecorder.cpp'], 
+					['src/sfml/system'], 
+					language='c++',
+					libraries=['sfml-system', 'sfml-audio'])
 
-    network_libs = ['sfml-network']
-    network_mod = Extension('sfml.network.network', ['src/network/network.cpp'], libraries=network_libs)
-    
-ext_modules = [x11_mod, graphics_mod, audio_mod, network_mod]
+network = Extension('sfml.network.network', 
+					[network_source], 
+					['src/sfml/system'], 
+					language='c++', 
+					libraries=['sfml-system', 'sfml-network'])
 
 with open('README', 'r') as f:
-    long_description = f.read()
+	long_description = f.read()
     
 major, minor, micro, releaselevel, serial = sys.version_info
     
-if major == 2:      
-  kwargs = dict(name='SFML2',
-                ext_modules=ext_modules,
-                package_dir={'': 'src'},
-                packages=['sfml', 'sfml.x11', 'sfml.system', 'sfml.window', 'sfml.graphics', 'sfml.audio', 'sfml.network'],
-                version='0.9.0',
-                description='A non-official Python binding for SFML 2',
-                long_description=long_description,
-                author='Jonathan De Wachter'.decode(),
-                author_email='dewachter.jonathan@gmail.com',
-                url='http://dewachterjonathan.be/python-sfml2',
-                license='GPLv3',
-                classifiers=[
-                    'Development Status :: 3 - Alpha',
-                    'Intended Audience :: Developers',
-                    'Operating System :: OS Independent',
-                    'Programming Language :: Cython',
-                    'Topic :: Games/Entertainment',
-                    'Topic :: Multimedia',
-                    'Topic :: Software Development :: Libraries :: Python Modules'
-                    ])
-
-  if USE_CYTHON:
-      kwargs.update(cmdclass={'build_ext': Cython.Distutils.build_ext})
-
-  setup(**kwargs)
-
+kwargs = dict(name='pySFML2',
+			ext_modules=[x11, graphics, audio, network],
+			package_dir={'': 'src'},
+			packages=['sfml', 'sfml.system', 'sfml.window', 'sfml.graphics', 'sfml.audio', 'sfml.network'],
+			version='1.0.0',
+			description='A non-official Python binding for SFML2',
+			long_description=long_description,
+			author_email='dewachter.jonathan@gmail.com',
+			url='http://openhelbreath.be/python-sfml2',
+			license='GPLv3',
+			classifiers=['Development Status :: 5 - Production/Stable',
+						'Intended Audience :: Developers',
+						'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+						'Operating System :: OS Independent',
+						'Programming Language :: Cython',
+						'Topic :: Games/Entertainment',
+						'Topic :: Multimedia',
+						'Topic :: Software Development :: Libraries :: Python Modules'])    
+    
+if major == 2:
+	kwargs.update(author='Jonathan De Wachter'.decode())
 else:
-  kwargs = dict(name='SFML2',
-                ext_modules=ext_modules,
-                package_dir={'': 'src'},
-                packages=['sfml', 'sfml.x11', 'sfml.system', 'sfml.window', 'sfml.graphics', 'sfml.audio', 'sfml.network'],
-                version='0.9.0',
-                description='A non-official Python binding for SFML 2',
-                long_description=long_description,
-                author='Jonathan De Wachter',
-                author_email='dewachter.jonathan@gmail.com',
-                url='https://dewachterjonathan.be/python3-sfml2',
-                license='GPLv3',
-                classifiers=[
-                    'Development Status :: 3 - Alpha',
-                    'Intended Audience :: Developers',
-                    'Operating System :: OS Independent',
-                    'Programming Language :: Cython',
-                    'Topic :: Games/Entertainment',
-                    'Topic :: Multimedia',
-                    'Topic :: Software Development :: Libraries :: Python Modules'
-                    ])
+	kwargs.update(author='Jonathan De Wachter')
 
-  if USE_CYTHON:
-      kwargs.update(cmdclass={'build_ext': Cython.Distutils.build_ext})
+if USE_CYTHON:
+	kwargs.update(cmdclass={'build_ext': Cython.Distutils.build_ext})
 
-  setup(**kwargs)
+setup(**kwargs)
