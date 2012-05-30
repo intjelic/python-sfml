@@ -1,13 +1,13 @@
 Examples
 ========
 As this is a fast release and I don't have much time to write some 
-tutorial or provide more 'official' example, here is a page where you'll
-find the official examples code source AND many piece of code I wrote to
-see if everything works.
+tutorials or provide more official example, here is a page where you'll
+find the official examples' source code source AND many piece of code I wrote to
+see if everything worked.
 
 You won't find any explaination but they should work.
 
-Official examples code source
+Official examples source code
 -----------------------------
 
 .. toctree::
@@ -21,8 +21,8 @@ Official examples code source
    examples/pyqt4
 
 
-Some piece of code
-------------------
+Various pieces of code
+----------------------
 
 .. toctree::
    :maxdepth: 1

@@ -1,5 +1,5 @@
-Getting the started
-===================
+Getting started
+===============
 First, you need to install all the stuff, read the installing section.
 
 Your first script
@@ -44,12 +44,12 @@ Here is the official short example to show you how simple using pySFML is. ::
        window.draw(text) # draw the string
        window.display() # update the window
 
-As you can see, the interface is the same as SFML2 but it has been pythonized.
+As you can see; the interface is the same as SFML2 but it has been pythonized.
 
 Overview
 --------
-Open a terminal, run the python interpreter. Now you can play around,
-for examples, try these commands::
+Open a terminal, run the python interpreter. Now you can play around.
+For example; try these commands::
 
    >>> import sfml as sf
    >>> w = sf.RenderWindow(sf.VideoMode(640, 480), "My first pySFML Window - or not ?")
@@ -63,12 +63,12 @@ for examples, try these commands::
    >>> w.close()
    >>> exit()
 
-To try out more, some examples are provided. If you downloaded the source, 
+To help with trying it out more, some examples are provided. If you downloaded the source 
 they are in examples/ and if you installed from the debian repository
-(assume you did install the package python-sfml2-examples too), just type
+(assuming you installed the pysfml2-examples package as well), just type
 pysfml2-<example name>.
 
-For examples, pysfml2-sound will run the official example provided by
+For examples; pysfml2-sound will run the official example provided by
 SFML2 but translated for this binding.
 
 .. Note::
