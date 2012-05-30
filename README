@@ -1,10 +1,8 @@
 This is a non-official python binding for SFML2.
 
-It was forked from the official python binding created by 
-Bastien Leonard the 16th of November 2011 to suit my own needs.
-
-It has since then widely improved and I decided to share my work under
-a new license: GPLv3
+This binding was forked from the official python binding created by 
+Bastien Leonard 16th of November 2011. It has since then widely 
+improved and I decided to share my work under a new license: GPLv3.
 
 This version (1.0) is a fast release and is compatible with the first 
 release candidate of SFML2.
