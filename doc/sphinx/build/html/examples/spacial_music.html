@@ -1,0 +1,227 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Spacial Music &mdash; pySFML2 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pySFML2 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Examples" href="../examples.html" />
+    <link rel="next" title="PyQt4" href="pyqt4.html" />
+    <link rel="prev" title="Sockets" href="sockets.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyqt4.html" title="PyQt4"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sockets.html" title="Sockets"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pySFML2 1.0 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" accesskey="U">Examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="spacial-music">
+<h1>Spacial Music<a class="headerlink" href="#spacial-music" title="Permalink to this headline">¶</a></h1>
+<p>spacial_music.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">song</span><span class="p">):</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">),</span> <span class="s">&quot;pySFML - Spacial Music&quot;</span><span class="p">)</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">framerate_limit</span> <span class="o">=</span> <span class="mi">60</span>
+
+        <span class="c"># load a song and make sure it can be spacialized</span>
+        <span class="k">try</span><span class="p">:</span>
+                <span class="n">music</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Music</span><span class="o">.</span><span class="n">open_from_file</span><span class="p">(</span><span class="n">song</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">sf</span><span class="o">.</span><span class="n">SFMLException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;An error occured during the loading data process:</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+                <span class="nb">exit</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">music</span><span class="o">.</span><span class="n">channel_count</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;Only sounds with one channel (mono sounds) can be spatialized.&quot;</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;This song ({0}) has {1} channels.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">SONG</span><span class="p">,</span> <span class="n">music</span><span class="o">.</span><span class="n">channels_count</span><span class="p">))</span>
+                <span class="nb">exit</span><span class="p">()</span>
+
+        <span class="c"># by default, the music is not relative to the listener</span>
+        <span class="c">#music.relative_to_listener = True</span>
+
+        <span class="n">hears_position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">speaker_position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">350</span><span class="p">,</span> <span class="mi">348</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">hears_position</span>
+        <span class="n">sf</span><span class="o">.</span><span class="n">Listener</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+        <span class="n">music</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">speaker_position</span>
+
+        <span class="k">try</span><span class="p">:</span>
+                <span class="n">hears_texture</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;data/head_kid.png&quot;</span><span class="p">)</span>
+                <span class="n">speaker_texture</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;data/speaker.gif&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">sf</span><span class="o">.</span><span class="n">SFMLException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;An error occured during the loading data process:</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+                <span class="nb">exit</span><span class="p">()</span>
+
+        <span class="n">hears</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">hears_texture</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">hears_position</span>
+        <span class="n">hears</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="n">speaker</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">speaker_texture</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">speaker_position</span>
+        <span class="n">speaker</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="n">music</span><span class="o">.</span><span class="n">min_distance</span> <span class="o">=</span> <span class="mi">200</span>
+        <span class="n">music</span><span class="o">.</span><span class="n">attenuation</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">music</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">music</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+
+        <span class="n">loop</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">while</span> <span class="n">loop</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">CLOSED</span><span class="p">:</span>
+                                <span class="n">loop</span> <span class="o">=</span> <span class="bp">False</span>
+                        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">KEY_PRESSED</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">code</span> <span class="ow">is</span> <span class="n">sf</span><span class="o">.</span><span class="n">Keyboard</span><span class="o">.</span><span class="n">UP</span><span class="p">:</span>
+                                        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">hears_position</span>
+                                        <span class="n">y</span> <span class="o">-=</span> <span class="mi">5</span>
+
+                                        <span class="n">hears_position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+                                        <span class="n">sf</span><span class="o">.</span><span class="n">Listener</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+                                        <span class="n">hears</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+                                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">code</span> <span class="ow">is</span> <span class="n">sf</span><span class="o">.</span><span class="n">Keyboard</span><span class="o">.</span><span class="n">DOWN</span><span class="p">:</span>
+                                        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">hears_position</span>
+                                        <span class="n">y</span> <span class="o">+=</span> <span class="mi">5</span>
+
+                                        <span class="n">hears_position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+                                        <span class="n">sf</span><span class="o">.</span><span class="n">Listener</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+                                        <span class="n">hears</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+                                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">code</span> <span class="ow">is</span> <span class="n">sf</span><span class="o">.</span><span class="n">Keyboard</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
+                                        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">hears_position</span>
+                                        <span class="n">x</span> <span class="o">-=</span> <span class="mi">5</span>
+
+                                        <span class="n">hears_position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+                                        <span class="n">sf</span><span class="o">.</span><span class="n">Listener</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+                                        <span class="n">hears</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+                                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">code</span> <span class="ow">is</span> <span class="n">sf</span><span class="o">.</span><span class="n">Keyboard</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
+                                        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">hears_position</span>
+                                        <span class="n">x</span> <span class="o">+=</span> <span class="mi">5</span>
+
+                                        <span class="n">hears_position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+                                        <span class="n">sf</span><span class="o">.</span><span class="n">Listener</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+                                        <span class="n">hears</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+
+                <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">WHITE</span><span class="p">)</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">speaker</span><span class="p">)</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">hears</span><span class="p">)</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+        <span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+        <span class="n">main</span><span class="p">(</span><span class="s">&quot;data/mario.flac&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="sockets.html"
+                        title="previous chapter">Sockets</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyqt4.html"
+                        title="next chapter">PyQt4</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/examples/spacial_music.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyqt4.html" title="PyQt4"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="sockets.html" title="Sockets"
+             >previous</a> |</li>
+        <li><a href="../index.html">pySFML2 1.0 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" >Examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

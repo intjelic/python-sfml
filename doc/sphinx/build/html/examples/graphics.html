@@ -1,0 +1,872 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Graphics &mdash; pySFML2 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pySFML2 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Examples" href="../examples.html" />
+    <link rel="next" title="Audio" href="audio.html" />
+    <link rel="prev" title="Window" href="window.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="audio.html" title="Audio"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="window.html" title="Window"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pySFML2 1.0 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" accesskey="U">Examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="graphics">
+<h1>Graphics<a class="headerlink" href="#graphics" title="Permalink to this headline">¶</a></h1>
+<p>transform.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="mf">6.88</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Transform</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">inverse</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>transformable.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">foo</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Transformable</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Transformable.position ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">foo</span><span class="o">.</span><span class="n">position</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Transformable.rotation ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">rotation</span><span class="p">)</span> <span class="o">==</span> <span class="nb">float</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">rotation</span><span class="p">)</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="mf">5.6</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">rotation</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Transformable.ratio ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">ratio</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">ratio</span><span class="p">)</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">foo</span><span class="o">.</span><span class="n">ratio</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">ratio</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Transformable.origin ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">foo</span><span class="o">.</span><span class="n">origin</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Transformable.move() ###&quot;</span><span class="p">)</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">move</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Transformable.rotate() ###&quot;</span><span class="p">)</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mf">5.6</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Transformable.scale() ###&quot;</span><span class="p">)</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+<span class="n">foo</span><span class="o">.</span><span class="n">scale</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Transformable.transform ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Transform</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Transformable.inverse_transform ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Transform</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>texture.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.graphics</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture() ###&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s">&quot;Shouldn&#39;t work!&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">UserWarning</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;This error was expected...&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.NORMALIZED ###&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">NORMALIZED</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.PIXELS ###&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">PIXELS</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.PIXELS ###&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">get_maximum_size</span><span class="p">())</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.create() ###&quot;</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.load_from_file() ###&quot;</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/background.jpg&quot;</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/background.jpg&quot;</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)))</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/background.jpg&quot;</span><span class="p">,</span> <span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)))</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.load_from_memory() ###&quot;</span><span class="p">)</span>
+<span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;../data/background.jpg&quot;</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_memory</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.load_from_image() ###&quot;</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/background.jpg&quot;</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)))</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)))</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.size ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.width ###&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.height ###&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.copy_to_image() ###&quot;</span><span class="p">)</span>
+<span class="n">copy</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="c">#print(&quot;### sf.Texture.update() ###&quot;)</span>
+<span class="c">## not implemented yet</span>
+<span class="c">#input()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.update_from_pixels() ###&quot;</span><span class="p">)</span>
+<span class="n">image_sfml</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/sfml.png&quot;</span><span class="p">)</span>
+<span class="n">i</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">i</span><span class="o">.</span><span class="n">update_from_pixels</span><span class="p">(</span><span class="n">image_sfml</span><span class="o">.</span><span class="n">pixels</span><span class="p">)</span>
+<span class="n">i</span><span class="o">.</span><span class="n">update_from_pixels</span><span class="p">(</span><span class="n">image_sfml</span><span class="o">.</span><span class="n">pixels</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mf">200.5</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">)))</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.update_from_image() ###&quot;</span><span class="p">)</span>
+<span class="n">j</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">j</span><span class="o">.</span><span class="n">update_from_image</span><span class="p">(</span><span class="n">image_sfml</span><span class="p">)</span>
+<span class="c">#j.update_from_image(image_sfml, (200, 200)) # not implemented yet due to a bug in cython</span>
+<span class="c">#j.update_from_image(image_sfml, sf.Position(200, 200)) # not implemented yet due to a bug in cython</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="c">#print(&quot;### sf.Texture.update_from_window() ###&quot;)</span>
+<span class="c">#k = b.copy()</span>
+<span class="c">#k.update_from_image(</span>
+<span class="c">#copy = b.copy_to_image()</span>
+<span class="c">#input()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.bind() ###&quot;</span><span class="p">)</span>
+<span class="n">j</span><span class="o">.</span><span class="n">bind</span><span class="p">()</span>
+<span class="n">j</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">PIXELS</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.smooth ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">smooth</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span>
+<span class="k">print</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">smooth</span><span class="p">)</span>
+<span class="n">j</span><span class="o">.</span><span class="n">smooth</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">j</span><span class="o">.</span><span class="n">smooth</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.repeated ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">repeated</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span>
+<span class="k">print</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">repeated</span><span class="p">)</span>
+<span class="n">j</span><span class="o">.</span><span class="n">repeated</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">j</span><span class="o">.</span><span class="n">repeated</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Texture.copy() ###&quot;</span><span class="p">)</span>
+<span class="n">l</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### See result now ###&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/a.png&quot;</span><span class="p">)</span>
+<span class="n">b</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/b.png&quot;</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/c.png&quot;</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/d.png&quot;</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/e.png&quot;</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/f.png&quot;</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/g.png&quot;</span><span class="p">)</span>
+<span class="n">h</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/h.png&quot;</span><span class="p">)</span>
+<span class="n">i</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/i.png&quot;</span><span class="p">)</span>
+<span class="n">j</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/j.png&quot;</span><span class="p">)</span>
+<span class="c">#k.copy_to_image().save_to_file(&quot;result/k.png&quot;)</span>
+<span class="n">l</span><span class="o">.</span><span class="n">copy_to_image</span><span class="p">()</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;result/l.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>sprite.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">),</span> <span class="s">&quot;pySFML - sf.Sprite&quot;</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+<span class="n">texture_a</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/sfml.png&quot;</span><span class="p">)</span>
+<span class="n">texture_b</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/background.jpg&quot;</span><span class="p">)</span>
+<span class="n">sprite</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">texture_a</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="n">sprite</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="mi">45</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="n">sprite</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">texture_a</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="n">sprite</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="c">### TEST SPRITE ###</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">texture_rectangle</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">texture_rectangle</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="mi">250</span> <span class="p">,</span> <span class="mi">250</span><span class="p">))</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="n">sprite</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="n">texture_b</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">texture_rectangle</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">texture</span><span class="p">))</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;## sf.Sprite.texture ##&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">texture</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">texture</span><span class="p">))</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="n">texture_b</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">reset_texture_rectangle</span><span class="p">()</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;## sf.Sprite.texture_rectangle ##&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">texture_rectangle</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">texture_rectangle</span><span class="p">))</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">texture_rectangle</span> <span class="o">=</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">texture_rectangle</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">texture_rectangle</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">texture_rectangle</span><span class="p">))</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;## sf.Sprite.color ##&quot;</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">color</span><span class="p">))</span>
+<span class="nb">input</span><span class="p">()</span>
+
+
+<span class="k">print</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">local_bounds</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">global_bounds</span><span class="p">)</span>
+
+<span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>shape.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.graphics</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">),</span> <span class="s">&quot;pySFML - sf.Shape&quot;</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">WHITE</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="n">image</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;data/sfml.png&quot;</span><span class="p">)</span>
+<span class="n">sprite</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="n">texture</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;data/windows_icon2.jpg&quot;</span><span class="p">)</span>
+<span class="n">sprite</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">texture</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Shape() ###&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Shape</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">sf</span><span class="o">.</span><span class="n">SFMLException</span><span class="p">(</span><span class="s">&quot;You shouldn&#39;t have been able to instantiate a sf.Shape&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">NotImplementedError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Error expected, press any key to continue...&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_shape</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Shape.texture ###&quot;</span><span class="p">)</span>
+<span class="n">circle</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">CircleShape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="n">texture</span>
+<span class="k">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">fill_color</span><span class="p">)</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">fill_color</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">outline_color</span><span class="p">)</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">outline_color</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">outline_thickness</span><span class="p">)</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">outline_thickness</span> <span class="o">=</span> <span class="mi">15</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">local_bounds</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">global_bounds</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="c">### TEST CIRCLE SHAPE ###</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="mi">75</span>
+<span class="k">print</span><span class="p">(</span><span class="n">circle</span><span class="o">.</span><span class="n">point_count</span><span class="p">)</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">point_count</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="c">### TEST CONVEX SHAPE ###</span>
+<span class="n">polygon</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">ConvexShape</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">polygon</span><span class="o">.</span><span class="n">point_count</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">polygon</span><span class="o">.</span><span class="n">get_point</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+<span class="n">polygon</span><span class="o">.</span><span class="n">point_count</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">polygon</span><span class="o">.</span><span class="n">set_point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="n">polygon</span><span class="o">.</span><span class="n">set_point</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="n">polygon</span><span class="o">.</span><span class="n">set_point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
+<span class="n">polygon</span><span class="o">.</span><span class="n">set_point</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">))</span>
+<span class="n">polygon</span><span class="o">.</span><span class="n">set_point</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">75</span><span class="p">))</span>
+<span class="n">polygon</span><span class="o">.</span><span class="n">set_point</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+
+<span class="c">### TEST RECTANGLE SHAPE ###</span>
+<span class="n">rectangle</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RectangleShape</span><span class="p">((</span><span class="mi">125</span><span class="p">,</span> <span class="mi">75</span><span class="p">))</span>
+<span class="n">square</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RectangleShape</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">rectangle</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="n">square</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">75</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rectangle</span><span class="o">.</span><span class="n">point_count</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">rectangle</span><span class="o">.</span><span class="n">get_point</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="c">### DRAWING ###</span>
+<span class="n">circle</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">polygon</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">rectangle</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">105</span><span class="p">)</span>
+<span class="n">square</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">rectangle</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>rendertarget.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.graphics</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget() ###&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderTarget</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s">&quot;Shouldn&#39;t work!&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">NotImplementedError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;This error was expected...&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">test_rendertarget</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget.clear() ###&quot;</span><span class="p">)</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">)</span>
+        <span class="nb">input</span><span class="p">()</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget.view ###&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">view</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">View</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">View</span><span class="p">()</span>
+        <span class="nb">input</span><span class="p">()</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget.default_view ###&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">default_view</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">View</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">default_view</span><span class="p">)</span>
+        <span class="nb">input</span><span class="p">()</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget.get_viewport() ###&quot;</span><span class="p">)</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">View</span><span class="p">()</span>
+        <span class="n">viewport</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_viewport</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">viewport</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">viewport</span><span class="p">)</span>
+        <span class="nb">input</span><span class="p">()</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget.convert_coords() ###&quot;</span><span class="p">)</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">View</span><span class="p">()</span>
+        <span class="n">v2</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">View</span><span class="p">()</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">convert_coords</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">convert_coords</span><span class="p">((</span><span class="mi">120</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="n">p3</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">convert_coords</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span> <span class="n">v1</span><span class="p">)</span>
+        <span class="n">p4</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">convert_coords</span><span class="p">((</span><span class="mi">78</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span> <span class="n">v2</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget.draw() ###&quot;</span><span class="p">)</span>
+        <span class="n">texture</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/background.jpg&quot;</span><span class="p">)</span>
+        <span class="n">sprite</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">texture</span><span class="p">)</span>
+        <span class="n">render_states</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderStates</span><span class="p">()</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">,</span> <span class="n">render_states</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget.size&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget.push_GL_states() ###&quot;</span><span class="p">)</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">push_GL_states</span><span class="p">()</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget.pop_GL_states() ###&quot;</span><span class="p">)</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">pop_GL_states</span><span class="p">()</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.RenderTarget.reset_GL_states() ###&quot;</span><span class="p">)</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">reset_GL_states</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>renderwindow.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.graphics</span> <span class="kn">as</span> <span class="nn">sf</span>
+<span class="kn">from</span> <span class="nn">rendertarget</span> <span class="kn">import</span> <span class="n">test_rendertarget</span>
+
+<span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">),</span> <span class="s">&quot;pySFML - sf.RenderTexture&quot;</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">WHITE</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="n">image</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/sfml.png&quot;</span><span class="p">)</span>
+<span class="n">sprite</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="n">rendertexture</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderTexture</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+<span class="n">rendertexture</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span><span class="p">)</span>
+<span class="n">rendertexture</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span>
+<span class="n">rendertexture</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+<span class="n">test_rendertarget</span><span class="p">(</span><span class="n">rendertexture</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>image.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.graphics</span> <span class="kn">as</span> <span class="nn">sf</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image() ###&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s">&quot;Shouldn&#39;t work!&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">UserWarning</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;This error was expected...&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.create() ###&quot;</span><span class="p">)</span>
+<span class="c">#a = sf.Image.create(50, 50, sf.Color.CYAN) # bug due to a bug in cython</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.create_from_pixels() ###&quot;</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">create_from_pixels</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">pixels</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.load_from_file() ###&quot;</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/background.jpg&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.load_from_memory() ###&quot;</span><span class="p">)</span>
+<span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;../data/background.jpg&quot;</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">load_from_memory</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.save_to_file() ###&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;a.png&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;éééàààùù^o^.png&quot;</span><span class="p">)</span>
+<span class="n">b</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;b.jpg&quot;</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;c.png&quot;</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;d.jpg&quot;</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.size ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.width ###&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.height ###&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.create_mask_from_color ###&quot;</span><span class="p">)</span>
+<span class="c">#d.create_mask_from_color(sf.Color.CYAN)</span>
+<span class="n">b</span><span class="o">.</span><span class="n">create_mask_from_color</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">BLACK</span><span class="p">)</span>
+<span class="n">b</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;e.png&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.blit() ###&quot;</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+<span class="n">c</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+
+<span class="n">c</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">)))</span>
+<span class="c">#c.blit(d, sf.Position(200, 200), sf.Rectangle(200, 200, 400, 400))</span>
+<span class="n">c</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;f.png&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.pixels ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">pixels</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Pixels</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">pixels</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.flip_horizontally() ###&quot;</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">flip_horizontally</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;g.png&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.flip_vertically() ###&quot;</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">flip_vertically</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;h.png&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.copy() ###&quot;</span><span class="p">)</span>
+<span class="n">i</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">i</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;i.png&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.__get__ ###&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Image.__set__ ###&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">width</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+                <span class="n">i</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+<span class="n">i</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s">&quot;j.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>glyph.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.graphics</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Glyph() ###&quot;</span><span class="p">)</span>
+<span class="n">glyph</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Glyph</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Glyph.advance ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">glyph</span><span class="o">.</span><span class="n">advance</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span>
+<span class="k">print</span><span class="p">(</span><span class="n">glyph</span><span class="o">.</span><span class="n">advance</span><span class="p">)</span>
+<span class="n">glyph</span><span class="o">.</span><span class="n">advance</span> <span class="o">=</span> <span class="o">-</span><span class="mi">50</span>
+<span class="n">glyph</span><span class="o">.</span><span class="n">advance</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="k">print</span><span class="p">(</span><span class="n">glyph</span><span class="o">.</span><span class="n">advance</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Glyph.bounds ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">glyph</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span>
+<span class="k">print</span><span class="p">(</span><span class="n">glyph</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+<span class="n">glyph</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+<span class="n">glyph</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">glyph</span><span class="o">.</span><span class="n">bounds</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">glyph</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Glyph.texture_rectangle ###&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">glyph</span><span class="o">.</span><span class="n">texture_rectangle</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span>
+<span class="k">print</span><span class="p">(</span><span class="n">glyph</span><span class="o">.</span><span class="n">texture_rectangle</span><span class="p">)</span>
+<span class="n">glyph</span><span class="o">.</span><span class="n">texture_rectangle</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+<span class="n">glyph</span><span class="o">.</span><span class="n">texture_rectangle</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">glyph</span><span class="o">.</span><span class="n">texture_rectangle</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">glyph</span><span class="o">.</span><span class="n">texture_rectangle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>font.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.graphics</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Font() ###&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Font</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s">&quot;Shouldn&#39;t work!&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">UserWarning</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;This error was expected...&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Font.load_from_file() ###&quot;</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/myfont.ttf&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Font.load_from_memory() ###&quot;</span><span class="p">)</span>
+<span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;../data/myfont.ttf&quot;</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">load_from_memory</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Font.get_default_font ###&quot;</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">get_default_font</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Font.get_glyph ###&quot;</span><span class="p">)</span>
+<span class="n">glyph_a</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get_glyph</span><span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">glyph_b</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get_glyph</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+<span class="n">glyph_c</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get_glyph</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">glyph_a</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Glyph</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">glyph_b</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Glyph</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">glyph_c</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Glyph</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">glyph_a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">glyph_b</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">glyph_c</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Font.get_kerning ###&quot;</span><span class="p">)</span>
+<span class="n">kerning_a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get_kerning</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">kerning_b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get_kerning</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">kerning_c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get_kerning</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">kerning_a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">kerning_b</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">kerning_c</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;### sf.Font.get_texture ###&quot;</span><span class="p">)</span>
+<span class="n">texture</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get_texture</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">texture</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span>
+<span class="nb">input</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>drawable.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.graphics</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="k">class</span> <span class="nc">MyDrawable</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Drawable</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">sf</span><span class="o">.</span><span class="n">Drawable</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/background.jpg&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">states</span><span class="p">):</span>
+                <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderTarget</span>
+                <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">states</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderStates</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">texture</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">shader</span><span class="p">)</span>
+                <span class="n">sprite</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">texture</span><span class="p">)</span>
+                <span class="n">target</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">,</span> <span class="n">states</span><span class="p">)</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+        <span class="n">mydrawable</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Drawable</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">UserWarning</span><span class="p">(</span><span class="s">&quot;Shouldn&#39;t work!!!&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;This error was expected&quot;</span><span class="p">)</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span> <span class="s">&quot;pySFML - Drawable&quot;</span><span class="p">)</span>
+<span class="n">mydrawable</span> <span class="o">=</span> <span class="n">MyDrawable</span><span class="p">()</span>
+
+<span class="n">myshader</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Shader</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/wave.vert&quot;</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Shader</span><span class="o">.</span><span class="n">VERTEX</span><span class="p">)</span>
+<span class="n">mytexture</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;../data/sfml.png&quot;</span><span class="p">)</span>
+<span class="n">renderstates</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderStates</span><span class="p">(</span><span class="n">texture</span><span class="o">=</span><span class="n">mytexture</span><span class="p">,</span> <span class="n">shader</span><span class="o">=</span><span class="n">myshader</span><span class="p">)</span>
+<span class="n">renderstates</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+
+<span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">mydrawable</span><span class="p">,</span> <span class="n">renderstates</span><span class="p">)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="window.html"
+                        title="previous chapter">Window</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="audio.html"
+                        title="next chapter">Audio</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/examples/graphics.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="audio.html" title="Audio"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="window.html" title="Window"
+             >previous</a> |</li>
+        <li><a href="../index.html">pySFML2 1.0 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" >Examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

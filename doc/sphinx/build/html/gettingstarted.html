@@ -1,0 +1,218 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting started &mdash; pySFML2 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pySFML2 1.0 documentation" href="index.html" />
+    <link rel="next" title="Installation" href="installing.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installing.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="introduction.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pySFML2 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>First, you need to install all the stuff, read the installing section.</p>
+<div class="section" id="your-first-script">
+<h2>Your first script<a class="headerlink" href="#your-first-script" title="Permalink to this headline">¶</a></h2>
+<p>Here is the official short example to show you how simple using pySFML is.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+
+<span class="c"># create the main window</span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">),</span> <span class="s">&quot;pySFML Window&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c"># load a sprite to display</span>
+    <span class="n">texture</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;cute_image.png&quot;</span><span class="p">)</span>
+    <span class="n">sprite</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">texture</span><span class="p">)</span>
+
+    <span class="c"># create a graphical text to display</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;arial.ttf&quot;</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="s">&quot;Hello SFML&quot;</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="c"># load a music to play</span>
+    <span class="n">music</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Music</span><span class="o">.</span><span class="n">open_from_file</span><span class="p">(</span><span class="s">&quot;nice_music.ogg&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="n">sf</span><span class="o">.</span><span class="n">SFMLException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="nb">exit</span><span class="p">()</span>
+
+<span class="c"># play the music</span>
+<span class="n">music</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+
+<span class="c"># start the game loop</span>
+<span class="k">while</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">opened</span><span class="p">):</span>
+    <span class="c"># process events</span>
+    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+        <span class="c"># close window: exit</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">CLOSED</span><span class="p">:</span>
+            <span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span> <span class="c"># clear screen</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span> <span class="c"># draw the sprite</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="c"># draw the string</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span> <span class="c"># update the window</span>
+</pre></div>
+</div>
+<p>As you can see; the interface is the same as SFML2 but it has been pythonized.</p>
+</div>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Open a terminal, run the python interpreter. Now you can play around.
+For example; try these commands:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sfml</span> <span class="kn">as</span> <span class="nn">sf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">),</span> <span class="s">&quot;My first pySFML Window - or not ?&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">BLUE</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Yes, it&#39;s my first PySFML Window&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">exit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To help with trying it out more, some examples are provided. If you downloaded the source
+they are in examples/ and if you installed from the debian repository
+(assuming you installed the pysfml2-examples package as well), just type
+pysfml2-&lt;example name&gt;.</p>
+<p>For examples; pysfml2-sound will run the official example provided by
+SFML2 but translated for this binding.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Examples are only avalaible for python3.2 and you can find them in
+/usr/lib/games/pysfml2-examples/ (if you want to read the code)</p>
+</div>
+<p>The available examples are:</p>
+<ol class="arabic simple">
+<li>sound</li>
+<li>sockets</li>
+<li>ftp (new)</li>
+<li>sound</li>
+<li>sound_capture</li>
+<li>spacial_music (no official sfml example)</li>
+<li>pyqt4         (no official sfml example)*</li>
+</ol>
+<ul class="simple">
+<li>Pyqt4 must be installed to run (not Pyside).</li>
+</ul>
+<p>In other words: python-sfml2-sound, python-sfml2-pyqt4, etc.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting started</a><ul>
+<li><a class="reference internal" href="#your-first-script">Your first script</a></li>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="introduction.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="installing.html"
+                        title="next chapter">Installation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/gettingstarted.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installing.html" title="Installation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="introduction.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">pySFML2 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

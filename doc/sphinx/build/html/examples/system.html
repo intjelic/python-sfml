@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>System &mdash; pySFML2 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pySFML2 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Examples" href="../examples.html" />
+    <link rel="next" title="Window" href="window.html" />
+    <link rel="prev" title="PyQt4" href="pyqt4.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="window.html" title="Window"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyqt4.html" title="PyQt4"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pySFML2 1.0 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" accesskey="U">Examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="system">
+<h1>System<a class="headerlink" href="#system" title="Permalink to this headline">¶</a></h1>
+<p>time.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.system</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;# Seconds + convertisor&quot;</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">seconds</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">a_ms</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">milliseconds</span>
+<span class="n">a_us</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">microseconds</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a_ms</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a_us</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;# Milliseconds + convertisor&quot;</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">milliseconds</span><span class="p">(</span><span class="mi">50000</span><span class="p">)</span>
+<span class="n">b_s</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">seconds</span>
+<span class="n">b_us</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">microseconds</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b_s</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b_us</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;# Microseconds + convertisor&quot;</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">microseconds</span><span class="p">(</span><span class="mi">50000000</span><span class="p">)</span>
+<span class="n">c_s</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">seconds</span>
+<span class="n">c_ms</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">milliseconds</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c_s</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c_ms</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;# Overload operators&quot;</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="o">-</span> <span class="n">c</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">-</span> <span class="n">c</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;# In-place operators&quot;</span><span class="p">)</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">h</span> <span class="o">+=</span> <span class="n">b</span>
+<span class="n">h</span> <span class="o">+=</span> <span class="n">c</span>
+
+
+<span class="n">i</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">i</span> <span class="o">-=</span> <span class="n">b</span>
+<span class="n">i</span> <span class="o">-=</span> <span class="n">c</span>
+
+<span class="n">j</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">j</span> <span class="o">+=</span> <span class="n">b</span>
+<span class="n">j</span> <span class="o">-=</span> <span class="n">c</span>
+
+<span class="n">k</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">k</span> <span class="o">-=</span> <span class="n">b</span>
+<span class="n">k</span> <span class="o">+=</span> <span class="n">c</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;# Do overload opeartors compute the same result&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">h</span> <span class="o">==</span> <span class="n">d</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="o">==</span> <span class="n">e</span>
+<span class="k">assert</span> <span class="n">j</span> <span class="o">==</span> <span class="n">f</span>
+<span class="k">assert</span> <span class="n">k</span> <span class="o">==</span> <span class="n">g</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;It seems ok!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>sleep.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.system</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Wait 2 seconds&quot;</span><span class="p">)</span>
+<span class="n">sf</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">seconds</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Wait 1000 milliseconds&quot;</span><span class="p">)</span>
+<span class="n">sf</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">milliseconds</span><span class="p">(</span><span class="mi">1000</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Wait 500000 microseconds&quot;</span><span class="p">)</span>
+<span class="n">sf</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">microseconds</span><span class="p">(</span><span class="mi">500000</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>clock.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.system</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="n">clock</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Clock</span><span class="p">()</span>
+<span class="nb">input</span><span class="p">()</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">clock</span><span class="o">.</span><span class="n">elapsed_time</span>
+<span class="nb">input</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">clock</span><span class="o">.</span><span class="n">elapsed_time</span>
+<span class="nb">input</span><span class="p">()</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">clock</span><span class="o">.</span><span class="n">elapsed_time</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Time</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Time</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Time</span>
+
+<span class="nb">input</span><span class="p">()</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">clock</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Time</span>
+</pre></div>
+</div>
+<p>size.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.system</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span>
+
+<span class="c"># TODO: add overload operators tests</span>
+<span class="k">assert</span> <span class="n">a</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">b</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">c</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">d</span> <span class="o">==</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>rectangle.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml.system</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">sf</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Position</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">sf</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Rectangle</span>
+
+<span class="c"># TODO: add overload operators tests</span>
+<span class="c">#assert a == sf.Rectangle(0, 0)</span>
+<span class="c">#assert b == sf.Position(0, 50)</span>
+<span class="c">#assert c == sf.Size(50, 0)</span>
+<span class="c">#assert d == [50, 100]</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyqt4.html"
+                        title="previous chapter">PyQt4</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="window.html"
+                        title="next chapter">Window</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/examples/system.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="window.html" title="Window"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyqt4.html" title="PyQt4"
+             >previous</a> |</li>
+        <li><a href="../index.html">pySFML2 1.0 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" >Examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

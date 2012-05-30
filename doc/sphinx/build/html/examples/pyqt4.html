@@ -1,0 +1,251 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PyQt4 &mdash; pySFML2 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pySFML2 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Examples" href="../examples.html" />
+    <link rel="next" title="System" href="system.html" />
+    <link rel="prev" title="Spacial Music" href="spacial_music.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="system.html" title="System"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="spacial_music.html" title="Spacial Music"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pySFML2 1.0 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" accesskey="U">Examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pyqt4">
+<h1>PyQt4<a class="headerlink" href="#pyqt4" title="Permalink to this headline">¶</a></h1>
+<p>qsfml_canvas.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">platform</span>
+
+<span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">sip</span>
+                <span class="kn">from</span> <span class="nn">PyQt4.QtCore</span> <span class="kn">import</span> <span class="o">*</span>
+                <span class="kn">from</span> <span class="nn">PyQt4.QtGui</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;Install PyQt4 and sip from Riverbank.The package name is python-pyqt4 and python-sip&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">sfml</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+<span class="k">class</span> <span class="nc">QSFMLCanvas</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">frameTime</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                <span class="n">QWidget</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="bp">False</span>
+
+                <span class="n">w</span> <span class="o">=</span> <span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">size</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_HandledWindow</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">HandledWindow</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_HandledWindow</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;draw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_HandledWindow</span><span class="o">.</span><span class="n">draw</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;clear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_HandledWindow</span><span class="o">.</span><span class="n">clear</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;view&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_HandledWindow</span><span class="o">.</span><span class="n">view</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;display&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_HandledWindow</span><span class="o">.</span><span class="n">display</span>
+
+                <span class="c"># setup some states to allow direct rendering into the widget</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_PaintOnScreen</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_OpaquePaintEvent</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_NoSystemBackground</span><span class="p">)</span>
+
+                <span class="c"># set strong focus to enable keyboard events to be received</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">StrongFocus</span><span class="p">);</span>
+
+                <span class="c"># setup the widget geometry</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">position</span><span class="p">);</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
+
+                <span class="c"># setup the timer</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="n">QTimer</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="o">.</span><span class="n">setInterval</span><span class="p">(</span><span class="n">frameTime</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">onInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
+
+        <span class="k">def</span> <span class="nf">onUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
+
+        <span class="k">def</span> <span class="nf">sizeHint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">paintEngine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="c"># let the derived class do its specific stuff</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">onUpdate</span><span class="p">()</span>
+
+                <span class="c"># display on screen</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">showEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span><span class="p">:</span>
+                        <span class="c"># under X11, we need to flush the commands sent to the server</span>
+                        <span class="c"># to ensure that SFML will get an updated view of the windows</span>
+                        <span class="c"># create the SFML window with the widget handle</span>
+                        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;Linux&#39;</span><span class="p">:</span>
+                                <span class="kn">import</span> <span class="nn">sfml.graphics.x11</span> <span class="kn">as</span> <span class="nn">x11</span>
+                                <span class="n">display</span> <span class="o">=</span> <span class="n">sip</span><span class="o">.</span><span class="n">unwrapinstance</span><span class="p">(</span><span class="n">QX11Info</span><span class="o">.</span><span class="n">display</span><span class="p">())</span>
+                                <span class="n">x11</span><span class="o">.</span><span class="n">flush_screen</span><span class="p">(</span><span class="n">display</span><span class="p">)</span>
+
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_HandledWindow</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">winId</span><span class="p">())</span>
+
+                        <span class="c"># let the derived class do its specific stuff</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">onInit</span><span class="p">()</span>
+
+                        <span class="c"># setup the timer to trigger a refresh at specified framerate</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="p">,</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;timeout()&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">SLOT</span><span class="p">(</span><span class="s">&#39;repaint()&#39;</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+                        <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">None</span>
+</pre></div>
+</div>
+<p>pyqt4.py</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">PyQt4.QtCore</span> <span class="kn">import</span> <span class="o">*</span>
+                <span class="kn">from</span> <span class="nn">PyQt4.QtGui</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;Install PyQt4 from Riverbank. The package name is python-pyqt4&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">sfml</span> <span class="kn">as</span> <span class="nn">sf</span>
+<span class="kn">from</span> <span class="nn">qsfml_canvas</span> <span class="kn">import</span> <span class="n">QSFMLCanvas</span>
+
+
+<span class="k">class</span> <span class="nc">MyCyanCanvas</span><span class="p">(</span><span class="n">QSFMLCanvas</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+                <span class="n">QSFMLCanvas</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">onInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">load_from_file</span><span class="p">(</span><span class="s">&quot;data/head_kid.png&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">load_from_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sprite</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">texture</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">texture</span><span class="o">.</span><span class="n">size</span> <span class="o">//</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">onUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">CYAN</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">texture</span><span class="o">.</span><span class="n">size</span> <span class="o">//</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sprite</span><span class="p">)</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+
+<span class="c"># create the main frame</span>
+<span class="n">mainFrame</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">()</span>
+<span class="n">mainFrame</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s">&quot;pySFML - Qt&quot;</span><span class="p">)</span>
+<span class="n">mainFrame</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">mainFrame</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c"># create a SFML view inside the main frame</span>
+<span class="n">SFMLView</span> <span class="o">=</span> <span class="n">MyCyanCanvas</span><span class="p">(</span><span class="n">mainFrame</span><span class="p">,</span> <span class="n">QPoint</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">QSize</span><span class="p">(</span><span class="mi">360</span><span class="p">,</span> <span class="mi">360</span><span class="p">))</span>
+<span class="n">SFMLView</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="spacial_music.html"
+                        title="previous chapter">Spacial Music</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="system.html"
+                        title="next chapter">System</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/examples/pyqt4.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="system.html" title="System"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="spacial_music.html" title="Spacial Music"
+             >previous</a> |</li>
+        <li><a href="../index.html">pySFML2 1.0 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" >Examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

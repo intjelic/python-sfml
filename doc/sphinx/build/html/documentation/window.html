@@ -1,0 +1,1849 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Window &mdash; pySFML2 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pySFML2 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Documentation" href="../documentation.html" />
+    <link rel="next" title="Graphics" href="graphics.html" />
+    <link rel="prev" title="System" href="system.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="graphics.html" title="Graphics"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="system.html" title="System"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pySFML2 1.0 documentation</a> &raquo;</li>
+          <li><a href="../documentation.html" accesskey="U">Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-sf">
+<span id="window"></span><h1>Window<a class="headerlink" href="#module-sf" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="sf.Style">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">Style</tt><a class="headerlink" href="#sf.Style" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class define the following constants:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Style</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>NONE</td>
+<td>No border / title bar (this flag and all others are mutually exclusive).</td>
+</tr>
+<tr class="row-odd"><td>TITLEEBAR</td>
+<td>Title bar + fixed border.</td>
+</tr>
+<tr class="row-even"><td>RESIZE</td>
+<td>Titlebar + close button.</td>
+</tr>
+<tr class="row-odd"><td>CLOSE</td>
+<td>Request a page&#8217;s header only.</td>
+</tr>
+<tr class="row-even"><td>FULLSCREEN</td>
+<td>Fullscreen mode (this flag and all others are mutually exclusive)</td>
+</tr>
+<tr class="row-odd"><td>DEFAULT</td>
+<td>Default window style.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.Event">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">Event</tt><a class="headerlink" href="#sf.Event" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Defines a system event and its parameters.</p>
+<p>sf.Event holds all the informations about a system event that just
+happened.</p>
+<p>Events are retrieved using the <a class="reference internal" href="#sf.Window.poll_event" title="sf.Window.poll_event"><tt class="xref py py-func docutils literal"><span class="pre">sf.Window.poll_event()</span></tt></a> and
+<a class="reference internal" href="#sf.Window.wait_event" title="sf.Window.wait_event"><tt class="xref py py-func docutils literal"><span class="pre">sf.Window.wait_event()</span></tt></a> functions.</p>
+<p>A sf.Event instance contains the type of the event (mouse moved,
+key pressed, window closed, ...) as well as the details about this
+particular event. Please note that the event parameters are defined
+in a union, which means that only the member matching the type of
+the event will be properly filled; all other members will have
+undefined values and must not be read if the type of the event
+doesn&#8217;t match. For example, if you received a KeyPressed event,
+then you must read the event.key member, all other members such as
+event.MouseMove or event.text will have undefined values.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+        <span class="c"># request for closing the window</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">CLOSED</span><span class="p">:</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c"># the escape key was pressed</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">KEY_PRESSED</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Keyboard</span><span class="o">.</span><span class="n">ESCAPE</span><span class="p">:</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c"># the window was resized</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">RESIZED</span><span class="p">:</span>
+                <span class="n">do_something_with_the_new_size</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="c"># ...</span>
+</pre></div>
+</div>
+</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Event</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>CLOSED</td>
+<td>The window requested to be closed.</td>
+</tr>
+<tr class="row-odd"><td>RESIZED</td>
+<td>The window was resized.</td>
+</tr>
+<tr class="row-even"><td>LOST_FOCUS</td>
+<td>The window lost the focus.</td>
+</tr>
+<tr class="row-odd"><td>GAINED_FOCUS</td>
+<td>The window gained the focus.</td>
+</tr>
+<tr class="row-even"><td>TEXT_ENTERED</td>
+<td>A character was entered.</td>
+</tr>
+<tr class="row-odd"><td>KEY_PRESSED</td>
+<td>A key was pressed.</td>
+</tr>
+<tr class="row-even"><td>KEY_RELEASED</td>
+<td>A key was released.</td>
+</tr>
+<tr class="row-odd"><td>MOUSE_WHEEL_MOVED</td>
+<td>The mouse wheel was scrolled.</td>
+</tr>
+<tr class="row-even"><td>MOUSE_BUTTON_PRESSED</td>
+<td>A mouse button was pressed.</td>
+</tr>
+<tr class="row-odd"><td>MOUSE_BUTTON_RELEASED</td>
+<td>A mouse button was released.</td>
+</tr>
+<tr class="row-even"><td>MOUSE_MOVED</td>
+<td>The mouse cursor moved.</td>
+</tr>
+<tr class="row-odd"><td>MOUSE_ENTERED</td>
+<td>The mouse cursor entered the area of the window.</td>
+</tr>
+<tr class="row-even"><td>MOUSE_LEFT</td>
+<td>The mouse cursor left the area of the window.</td>
+</tr>
+<tr class="row-odd"><td>JOYSTICK_BUTTON_PRESSED</td>
+<td>A joystick button was pressed.</td>
+</tr>
+<tr class="row-even"><td>JOYSTICK_BUTTON_RELEASED</td>
+<td>A joystick button was released.</td>
+</tr>
+<tr class="row-odd"><td>JOYSTICK_MOVED</td>
+<td>The joystick moved along an axis.</td>
+</tr>
+<tr class="row-even"><td>JOYSTICK_CONNECTED</td>
+<td>A joystick was connected.</td>
+</tr>
+<tr class="row-odd"><td>JOYSTICK_DISCONNECTED</td>
+<td>A joystick was disconnected.</td>
+</tr>
+<tr class="row-even"><td>COUNT</td>
+<td>The total number of event types.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="sf.Event.type">
+<tt class="descname">type</tt><a class="headerlink" href="#sf.Event.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the event</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.SizeEvent">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">SizeEvent</tt><a class="headerlink" href="#sf.SizeEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#sf.Event" title="sf.Event"><tt class="xref py py-class docutils literal"><span class="pre">Event</span></tt></a> that handles parameters when its type is
+<tt class="xref py py-const docutils literal"><span class="pre">RESIZED</span></tt></p>
+<blockquote>
+<div><blockquote>
+<div><dl class="attribute">
+<dt id="sf.SizeEvent.size">
+<tt class="descname">size</tt><a class="headerlink" href="#sf.SizeEvent.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+<p>New size, in pixels.</p>
+<blockquote>
+<div><dl class="attribute">
+<dt id="sf.SizeEvent.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.SizeEvent.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+<p>New width, in pixels.</p>
+<blockquote>
+<div><dl class="attribute">
+<dt id="sf.SizeEvent.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.SizeEvent.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+<p>New height, in pixels.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.KeyEvent">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">KeyEvent</tt><a class="headerlink" href="#sf.KeyEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#sf.Event" title="sf.Event"><tt class="xref py py-class docutils literal"><span class="pre">Event</span></tt></a> that handles parameters when its type is either
+<tt class="xref py py-const docutils literal"><span class="pre">KEY_PRESSED</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">KEY_RELEASED</span></tt></p>
+<dl class="attribute">
+<dt id="sf.KeyEvent.code">
+<tt class="descname">code</tt><a class="headerlink" href="#sf.KeyEvent.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Code of the key that has been pressed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">integer (<a class="reference internal" href="#sf.Keyboard" title="sf.Keyboard"><tt class="xref py py-class docutils literal"><span class="pre">sf.Keyboard</span></tt></a>&#8216;s constante)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.KeyEvent.alt">
+<tt class="descname">alt</tt><a class="headerlink" href="#sf.KeyEvent.alt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the Alt key pressed?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.KeyEvent.control">
+<tt class="descname">control</tt><a class="headerlink" href="#sf.KeyEvent.control" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the Control key pressed?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.KeyEvent.shift">
+<tt class="descname">shift</tt><a class="headerlink" href="#sf.KeyEvent.shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the Shift key pressed?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.KeyEvent.system">
+<tt class="descname">system</tt><a class="headerlink" href="#sf.KeyEvent.system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the System key pressed?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.TextEvent">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">TextEvent</tt><a class="headerlink" href="#sf.TextEvent" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.TextEvent.unicode">
+<tt class="descname">unicode</tt><a class="headerlink" href="#sf.TextEvent.unicode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.MouseMoveEvent">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">MouseMoveEvent</tt><a class="headerlink" href="#sf.MouseMoveEvent" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.MouseMoveEvent.x">
+<tt class="descname">x</tt><a class="headerlink" href="#sf.MouseMoveEvent.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.MouseMoveEvent.y">
+<tt class="descname">y</tt><a class="headerlink" href="#sf.MouseMoveEvent.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.MouseMoveEvent.position">
+<tt class="descname">position</tt><a class="headerlink" href="#sf.MouseMoveEvent.position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.MouseButtonEvent">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">MouseButtonEvent</tt><a class="headerlink" href="#sf.MouseButtonEvent" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.MouseButtonEvent.button">
+<tt class="descname">button</tt><a class="headerlink" href="#sf.MouseButtonEvent.button" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.MouseButtonEvent.x">
+<tt class="descname">x</tt><a class="headerlink" href="#sf.MouseButtonEvent.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.MouseButtonEvent.y">
+<tt class="descname">y</tt><a class="headerlink" href="#sf.MouseButtonEvent.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.MouseButtonEvent.position">
+<tt class="descname">position</tt><a class="headerlink" href="#sf.MouseButtonEvent.position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.MouseWheelEvent">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">MouseWheelEvent</tt><a class="headerlink" href="#sf.MouseWheelEvent" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.MouseWheelEvent.delta">
+<tt class="descname">delta</tt><a class="headerlink" href="#sf.MouseWheelEvent.delta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.MouseWheelEvent.x">
+<tt class="descname">x</tt><a class="headerlink" href="#sf.MouseWheelEvent.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.MouseWheelEvent.y">
+<tt class="descname">y</tt><a class="headerlink" href="#sf.MouseWheelEvent.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.MouseWheelEvent.position">
+<tt class="descname">position</tt><a class="headerlink" href="#sf.MouseWheelEvent.position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.JoystickMoveEvent">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">JoystickMoveEvent</tt><a class="headerlink" href="#sf.JoystickMoveEvent" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.JoystickMoveEvent.joystick_id">
+<tt class="descname">joystick_id</tt><a class="headerlink" href="#sf.JoystickMoveEvent.joystick_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.JoystickMoveEvent.axis">
+<tt class="descname">axis</tt><a class="headerlink" href="#sf.JoystickMoveEvent.axis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.JoystickMoveEvent.position">
+<tt class="descname">position</tt><a class="headerlink" href="#sf.JoystickMoveEvent.position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.JoystickMoveEvent.x">
+<tt class="descname">x</tt><a class="headerlink" href="#sf.JoystickMoveEvent.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.JoystickMoveEvent.y">
+<tt class="descname">y</tt><a class="headerlink" href="#sf.JoystickMoveEvent.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.JoystickButtonEvent">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">JoystickButtonEvent</tt><a class="headerlink" href="#sf.JoystickButtonEvent" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.JoystickButtonEvent.joystick_id">
+<tt class="descname">joystick_id</tt><a class="headerlink" href="#sf.JoystickButtonEvent.joystick_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sf.JoystickButtonEvent.button">
+<tt class="descname">button</tt><a class="headerlink" href="#sf.JoystickButtonEvent.button" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.JoystickConnectEvent">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">JoystickConnectEvent</tt><a class="headerlink" href="#sf.JoystickConnectEvent" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="sf.JoystickConnectEvent.joystick_id">
+<tt class="descname">joystick_id</tt><a class="headerlink" href="#sf.JoystickConnectEvent.joystick_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.VideoMode">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">VideoMode</tt><big>(</big><em>width</em>, <em>height</em><span class="optional">[</span>, <em>bits_per_pixel=32</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.VideoMode" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p><a class="reference internal" href="#sf.VideoMode" title="sf.VideoMode"><tt class="xref py py-class docutils literal"><span class="pre">VideoMode</span></tt></a> defines a video mode (width, height, bpp)</p>
+<p>A video mode is defined by a width and a height (in pixels) and a depth
+(in bits per pixel).</p>
+<p>Video modes are used to setup windows (sf.Window) at creation time.</p>
+<p>The main usage of video modes is for fullscreen mode: indeed you must
+use one of the valid video modes allowed by the OS (which are defined
+by what the monitor and the graphics card support), otherwise your
+window creation will just fail.</p>
+<p><a class="reference internal" href="#sf.VideoMode" title="sf.VideoMode"><tt class="xref py py-class docutils literal"><span class="pre">VideoMode</span></tt></a> provides a class method for retrieving the list
+of all the video modes supported by the system:
+<a class="reference internal" href="#sf.VideoMode.get_fullscreen_modes" title="sf.VideoMode.get_fullscreen_modes"><tt class="xref py py-func docutils literal"><span class="pre">get_fullscreen_modes()</span></tt></a>.</p>
+<p>A custom video mode can also be checked directly for fullscreen
+compatibility with its <a class="reference internal" href="#sf.VideoMode.is_valid" title="sf.VideoMode.is_valid"><tt class="xref py py-func docutils literal"><span class="pre">is_valid()</span></tt></a> function.</p>
+<p>Additionnally, <a class="reference internal" href="#sf.VideoMode" title="sf.VideoMode"><tt class="xref py py-class docutils literal"><span class="pre">VideoMode</span></tt></a> provides a class method to get the
+mode currently used by the desktop: <a class="reference internal" href="#sf.VideoMode.get_desktop_mode" title="sf.VideoMode.get_desktop_mode"><tt class="xref py py-func docutils literal"><span class="pre">get_desktop_mode()</span></tt></a>. This
+allows to build windows with the same size or pixel depth as the
+current resolution.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># display the list of all the video modes available for fullscreen</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">modes</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="o">.</span><span class="n">get_fullscreen_modes</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Mode #{0}: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">mode</span><span class="p">))</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c"># create a window with the same pixel depth as the desktop</span>
+<span class="n">desktop</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="o">.</span><span class="n">get_desktop_mode</span><span class="p">()</span>
+<span class="n">width</span><span class="p">,</span> <span class="n">bpp</span> <span class="o">=</span> <span class="n">desktop</span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">768</span><span class="p">,</span> <span class="n">bpp</span><span class="p">),</span> <span class="s">&quot;pySFML Window&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="attribute">
+<dt id="sf.VideoMode.size">
+<tt class="descname">size</tt><a class="headerlink" href="#sf.VideoMode.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video mode size, in pixels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">sf.system.Size</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.VideoMode.width">
+<tt class="descname">width</tt><a class="headerlink" href="#sf.VideoMode.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video mode width, in pixels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.VideoMode.height">
+<tt class="descname">height</tt><a class="headerlink" href="#sf.VideoMode.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video mode height, in pixels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.VideoMode.bpp">
+<tt class="descname">bpp</tt><a class="headerlink" href="#sf.VideoMode.bpp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video mode pixel depth, in bits per pixels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.VideoMode.get_desktop_mode">
+<em class="property">classmethod </em><tt class="descname">get_desktop_mode</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.VideoMode.get_desktop_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current desktop video mode.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">sf.window.VideoMode</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.VideoMode.get_fullscreen_modes">
+<em class="property">classmethod </em><tt class="descname">get_fullscreen_modes</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.VideoMode.get_fullscreen_modes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all the video modes supported in fullscreen mode.</p>
+<p>When creating a fullscreen window, the video mode is restricted
+to be compatible with what the graphics driver and monitor
+support. This function returns the complete list of all video
+modes that can be used in fullscreen mode. The returned array
+is sorted from best to worst, so that the first element will
+always give the best mode (higher width, height and
+bits-per-pixel).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.VideoMode.is_valid">
+<tt class="descname">is_valid</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.VideoMode.is_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tell whether or not the video mode is valid.</p>
+<p>The validity of video modes is only relevant when using
+fullscreen windows; otherwise any video mode can be used with no
+restriction.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.ContextSettings">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">ContextSettings</tt><big>(</big><em>int depth=0</em>, <em>int stencil=0</em>, <em>int antialiasing=0</em>, <em>int major=2</em>, <em>int minor=0</em><big>)</big><a class="headerlink" href="#sf.ContextSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure defining the settings of the OpenGL context attached to a window.</p>
+<p>ContextSettings allows to define several advanced settings of the OpenGL context attached to a window.</p>
+<p>All these settings have no impact on the regular SFML rendering (graphics module) &#8211; except the anti-aliasing level, so you may need to use this structure only if you&#8217;re using SFML as a windowing system for custom OpenGL rendering.</p>
+<p>The depth_bits and stencil_bits properties define the number of bits per pixel requested for the (respectively) depth and stencil buffers.</p>
+<p>antialiasing_level represents the requested number of multisampling levels for anti-aliasing.</p>
+<p>major_version and minor_version define the version of the OpenGL context that you want. Only versions greater or equal to 3.0 are relevant; versions lesser than 3.0 are all handled the same way (i.e. you can use any version &lt; 3.0 if you don&#8217;t want an OpenGL 3 context).</p>
+<p>Please note that these values are only a hint. No failure will be reported if one or more of these values are not supported by the system; instead, SFML will try to find the closest valid match. You can then retrieve the settings that the window actually used to create its context, with sf.Window.settings.</p>
+<dl class="attribute">
+<dt id="sf.ContextSettings.depth_bits">
+<tt class="descname">depth_bits</tt><a class="headerlink" href="#sf.ContextSettings.depth_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bits of the depth buffer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.ContextSettings.stencil_bits">
+<tt class="descname">stencil_bits</tt><a class="headerlink" href="#sf.ContextSettings.stencil_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bits of the stencil buffer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.ContextSettings.antialiasing_level">
+<tt class="descname">antialiasing_level</tt><a class="headerlink" href="#sf.ContextSettings.antialiasing_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Level of antialiasing.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.ContextSettings.major_version">
+<tt class="descname">major_version</tt><a class="headerlink" href="#sf.ContextSettings.major_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Major number of the context version to create.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.ContextSettings.minor_version">
+<tt class="descname">minor_version</tt><a class="headerlink" href="#sf.ContextSettings.minor_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minor number of the context version to create.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.Window">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">Window</tt><a class="headerlink" href="#sf.Window" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Window that serves as a target for OpenGL rendering.</p>
+<p><a class="reference internal" href="#sf.Window" title="sf.Window"><tt class="xref py py-class docutils literal"><span class="pre">sf.Window</span></tt></a> is the main class of the Window module.</p>
+<p>It defines an OS window that is able to receive an OpenGL rendering.</p>
+<p>A <a class="reference internal" href="#sf.Window" title="sf.Window"><tt class="xref py py-class docutils literal"><span class="pre">sf.Window</span></tt></a> can create its own new window, or be embedded into
+an already existing control using the create(handle) function. This can
+be useful for embedding an OpenGL rendering area into a view which is
+part of a bigger GUI with existing windows, controls, etc. It can also
+serve as embedding an OpenGL rendering area into a window created by
+another (probably richer) GUI library like Qt or wxWidgets.</p>
+<p>The <a class="reference internal" href="#sf.Window" title="sf.Window"><tt class="xref py py-class docutils literal"><span class="pre">sf.Window</span></tt></a> class provides a simple interface for
+manipulating the window: move, resize, show/hide, control mouse cursor,
+etc. It also provides event handling through its <a class="reference internal" href="#sf.Window.poll_event" title="sf.Window.poll_event"><tt class="xref py py-func docutils literal"><span class="pre">poll_event()</span></tt></a> and
+<a class="reference internal" href="#sf.Window.wait_event" title="sf.Window.wait_event"><tt class="xref py py-func docutils literal"><span class="pre">wait_event()</span></tt></a> functions.</p>
+<p>Note that OpenGL experts can pass their own parameters (antialiasing
+level, bits for the depth and stencil buffers, etc.) to the OpenGL
+context attached to the window, with the <a class="reference internal" href="#sf.ContextSettings" title="sf.ContextSettings"><tt class="xref py py-class docutils literal"><span class="pre">sf.ContextSettings</span></tt></a>
+structure which is passed as an optional argument when creating the
+window.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># declare and create a new window</span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Window</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span> <span class="s">&quot;pySFML Window&quot;</span><span class="p">)</span>
+
+<span class="c"># limit the framerate to 60 frames per second (this step is optional)</span>
+<span class="n">window</span><span class="o">.</span><span class="n">framerate_limit</span> <span class="o">=</span> <span class="mi">60</span>
+
+<span class="c"># the main loop - ends as soon as the window is closed</span>
+<span class="k">while</span> <span class="n">window</span><span class="o">.</span><span class="n">opened</span><span class="p">:</span>
+        <span class="c"># event processing</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+                <span class="c"># request for closing the window</span>
+                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">sf</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">CLOSED</span><span class="p">:</span>
+                        <span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+                <span class="c"># activate the window for OpenGL rendering</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="bp">True</span>
+
+                <span class="c"># openGL drawing commands go here...</span>
+
+                <span class="c"># end the current frame and display its contents on screen</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="method">
+<dt id="sf.Window.Window">
+<tt class="descname">Window</tt><big>(</big><em>mode</em>, <em>title</em><span class="optional">[</span>, <em>style</em><span class="optional">[</span>, <em>settings</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.Window.Window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a new window.</p>
+<p>This creates the window with the size and pixel depth defined in
+mode. An optional style can be passed to customize the look and
+behaviour of the window (borders, title bar, resizable, closable,
+...). If style contains <tt class="xref py py-const docutils literal"><span class="pre">sf.Style.FULLSCREEN</span></tt>, then mode
+must be a valid video mode.</p>
+<p>The fourth parameter is an optional structure specifying advanced
+OpenGL context settings such as antialiasing, depth-buffer bits,
+etc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mode</strong> (<a class="reference internal" href="#sf.VideoMode" title="sf.VideoMode"><em>sf.VideoMode</em></a>) &#8211; Video mode to use (defines the width, height and depth of the rendering area of the window)</li>
+<li><strong>title</strong> (<em>string</em>) &#8211; Title of the window</li>
+<li><strong>style</strong> (<a class="reference internal" href="#sf.Style" title="sf.Style"><em>sf.Style</em></a>) &#8211; Window style</li>
+<li><strong>settings</strong> (<a class="reference internal" href="#sf.ContextSettings" title="sf.ContextSettings"><em>sf.ContextSettings</em></a>) &#8211; Additional settings for the underlying OpenGL context</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.create_empty">
+<tt class="descname">create_empty</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.create_empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.create_from_handle">
+<tt class="descname">create_from_handle</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.create_from_handle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.recreate">
+<tt class="descname">recreate</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.recreate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the window and destroy all the attached resources.</p>
+<p>After calling this function, the <a class="reference internal" href="#sf.Window" title="sf.Window"><tt class="xref py py-class docutils literal"><span class="pre">sf.Window</span></tt></a> instance
+remains valid and you can call <a class="reference internal" href="#sf.Window.recreate" title="sf.Window.recreate"><tt class="xref py py-func docutils literal"><span class="pre">recreate()</span></tt></a> to recreate the
+window. All other functions such as <a class="reference internal" href="#sf.Window.poll_event" title="sf.Window.poll_event"><tt class="xref py py-func docutils literal"><span class="pre">poll_event()</span></tt></a> or
+<a class="reference internal" href="#sf.Window.display" title="sf.Window.display"><tt class="xref py py-func docutils literal"><span class="pre">display()</span></tt></a> will still work (i.e. you don&#8217;t have to test
+<a class="reference internal" href="#sf.Window.opened" title="sf.Window.opened"><tt class="xref py py-attr docutils literal"><span class="pre">opened</span></tt></a> every time), and will have no effect on closed
+windows.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.opened">
+<tt class="descname">opened</tt><a class="headerlink" href="#sf.Window.opened" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tell whether or not the window is open.</p>
+<p>This attribute returns whether or not the window exists. Note
+that a hidden window (<a class="reference internal" href="#sf.Window.hide" title="sf.Window.hide"><tt class="xref py py-func docutils literal"><span class="pre">hide()</span></tt></a>) is open (therefore this
+function would return true).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.settings">
+<tt class="descname">settings</tt><a class="headerlink" href="#sf.Window.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the settings of the OpenGL context of the window.</p>
+<p>Note that these settings may be different from what was passed to
+the constructor or the <a class="reference internal" href="#sf.Window.recreate" title="sf.Window.recreate"><tt class="xref py py-func docutils literal"><span class="pre">recreate()</span></tt></a> function, if one or more
+settings were not supported. In this case, SFML chose the closest
+match.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body"><a class="reference internal" href="#sf.ContextSettings" title="sf.ContextSettings"><tt class="xref py py-class docutils literal"><span class="pre">sf.ContextSettings</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.events">
+<tt class="descname">events</tt><a class="headerlink" href="#sf.Window.events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple of events that haven&#8217;t been handled yet.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.poll_event">
+<tt class="descname">poll_event</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.poll_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop the event on top of events stack, if any, and return it.</p>
+<p>This function is not blocking: if there&#8217;s no pending event then
+it will return false and leave event unmodified. Note that more
+than one event may be present in the events stack, thus you
+should always call this function in a loop to make sure that you
+process every pending event.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Returns an event if any otherwhise None</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#sf.Event" title="sf.Event"><tt class="xref py py-class docutils literal"><span class="pre">sf.Event</span></tt></a> or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.wait_event">
+<tt class="descname">wait_event</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.wait_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for an event and return it.</p>
+<p>This function is blocking: if there&#8217;s no pending event then it
+will wait until an event is received. After this function returns
+(and no error occured), the event object is always valid. This
+function is typically used when you have a thread that is
+dedicated to events handling: you want to make this thread sleep
+as long as no new event is received.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Returns an event or None if an error occured.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#sf.Event" title="sf.Event"><tt class="xref py py-class docutils literal"><span class="pre">sf.Event</span></tt></a> or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.position">
+<tt class="descname">position</tt><a class="headerlink" href="#sf.Window.position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return or change the position of the window on screen.</p>
+<p>This function only works for top-level windows (i.e. it will be
+ignored for windows created from the handle of a
+child window/control).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body"><a class="reference internal" href="system.html#sf.Position" title="sf.Position"><tt class="xref py py-class docutils literal"><span class="pre">sf.Position</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.size">
+<tt class="descname">size</tt><a class="headerlink" href="#sf.Window.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return or change the size of the rendering region of the window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body"><a class="reference internal" href="system.html#sf.Size" title="sf.Size"><tt class="xref py py-class docutils literal"><span class="pre">sf.Size</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.icon">
+<tt class="descname">icon</tt><a class="headerlink" href="#sf.Window.icon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allow to change the window&#8217;s icon.</p>
+<p>The OS default icon is used by default.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body"><a class="reference internal" href="graphics.html#sf.Pixels" title="sf.Pixels"><tt class="xref py py-class docutils literal"><span class="pre">sf.Pixels</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.visible">
+<tt class="descname">visible</tt><a class="headerlink" href="#sf.Window.visible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set or get the window&#8217;s visibility status.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can&#8217;t really rely on the getter since there&#8217;s no method
+&#8220;isVisible&#8221; in SFML. Actually it emulates it by tracking what
+you do with the window.</p>
+</div>
+<p>The window is shown by default.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.show">
+<tt class="descname">show</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the window.</p>
+<p>It has no effect if the window was already shown.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.hide">
+<tt class="descname">hide</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.hide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hide the window.</p>
+<p>It has no effect if the window was already hidden.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.vertical_synchronization">
+<tt class="descname">vertical_synchronization</tt><a class="headerlink" href="#sf.Window.vertical_synchronization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the vertical synchronization.</p>
+<p>Activating vertical synchronization will limit the number of
+frames displayed to the refresh rate of the monitor. This can
+avoid some visual artifacts, and limit the framerate to a good
+value (but not constant across different computers).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can&#8217;t really rely on the getter since there&#8217;s no method
+&#8220;isVerticalSynchronizationEnabled&#8221; in SFML. Actually it
+emulates it by tracking what you do with the window.</p>
+</div>
+<p>Vertical synchronization is disabled by default</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.mouse_cursor_visible">
+<tt class="descname">mouse_cursor_visible</tt><a class="headerlink" href="#sf.Window.mouse_cursor_visible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show or hide the mouse cursor.</p>
+<p>The mouse cursor is visible by default</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.key_repeat_enabled">
+<tt class="descname">key_repeat_enabled</tt><a class="headerlink" href="#sf.Window.key_repeat_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable or disable automatic key-repeat.</p>
+<p>If key repeat is enabled, you will receive repeated
+<tt class="xref py py-class docutils literal"><span class="pre">KeyPressed</span></tt> events while keeping a key pressed. If it is
+disabled, you will only get a single event when the key is
+pressed.</p>
+<p>Key repeat is enabled by default.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.framerate_limit">
+<tt class="descname">framerate_limit</tt><a class="headerlink" href="#sf.Window.framerate_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Limit the framerate to a maximum fixed frequency.</p>
+<p>If a limit is set, the window will use a small delay after each
+call to <a class="reference internal" href="#sf.Window.display" title="sf.Window.display"><tt class="xref py py-func docutils literal"><span class="pre">display()</span></tt></a> to ensure that the current frame lasted
+long enough to match the framerate limit. pySFML will try to
+match the given limit as much as it can, but since it internally
+uses <a class="reference internal" href="system.html#sf.sleep" title="sf.sleep"><tt class="xref py py-func docutils literal"><span class="pre">sf.sleep()</span></tt></a>, whose precision depends on the underlying
+OS, the results may be a little unprecise as well (for example,
+you can get 65 FPS when requesting 60).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.joystick_threshold">
+<tt class="descname">joystick_threshold</tt><a class="headerlink" href="#sf.Window.joystick_threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the joystick threshold.</p>
+<p>The joystick threshold is the value below which no
+<tt class="xref py py-class docutils literal"><span class="pre">JoystickMoved</span></tt> event will be generated.</p>
+<p>The threshold value is 0.1 by default.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sf.Window.active">
+<tt class="descname">active</tt><a class="headerlink" href="#sf.Window.active" title="Permalink to this definition">¶</a></dt>
+<dd><p>Activate or deactivate the window as the current target for
+OpenGL rendering.</p>
+<p>A window is active only on the current thread, if you want to
+make it active on another thread you have to deactivate it on the
+previous thread first if it was active. Only one window can be
+active on a thread at a time, thus the window previously active
+(if any) automatically gets deactivated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.display">
+<tt class="descname">display</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display on screen what has been rendered to the window so far.</p>
+<p>This function is typically called after all OpenGL rendering has
+been done for the current frame, in order to show it on screen.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.on_create">
+<tt class="descname">on_create</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.on_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function called after the window has been created.</p>
+<p>This function is called so that derived classes can perform their
+own specific initialization as soon as the window is created.</p>
+<p>Usage examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Window</span><span class="p">):</span>
+   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="n">sf</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">),</span> <span class="s">&quot;pySFML&quot;</span><span class="p">)</span>
+
+   <span class="k">def</span> <span class="nf">on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">print</span><span class="p">(</span><span class="s">&quot;Window created or recreated...&quot;</span><span class="p">)</span>
+      <span class="n">do_something</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Reimplemented in <a class="reference internal" href="graphics.html#sf.RenderWindow" title="sf.RenderWindow"><tt class="xref py py-class docutils literal"><span class="pre">sf.RenderWindow</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sf.Window.on_resize">
+<tt class="descname">on_resize</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Window.on_resize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function called after the window has been resized.</p>
+<p>This function is called so that derived classes can perform
+custom actions when the size of the window changes.</p>
+<p>Usage examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Window</span><span class="p">):</span>
+   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="n">sf</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">),</span> <span class="s">&quot;pySFML&quot;</span><span class="p">)</span>
+
+   <span class="k">def</span> <span class="nf">on_resize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">print</span><span class="p">(</span><span class="s">&quot;Window size changed&quot;</span><span class="p">)</span>
+      <span class="n">do_something</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Reimplemented in <a class="reference internal" href="graphics.html#sf.RenderWindow" title="sf.RenderWindow"><tt class="xref py py-class docutils literal"><span class="pre">sf.RenderWindow</span></tt></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.Keyboard">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">Keyboard</tt><a class="headerlink" href="#sf.Keyboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give access to the real-time state of the keyboard.</p>
+<p>:class:<a href="#id1"><span class="problematic" id="id2">`</span></a>sf.Keyboard provides an interface to the state of the
+keyboard.</p>
+<p>It only contains class methods (a single keyboard is assumed), so
+it&#8217;s not meant to be instanciated.</p>
+<p>This class allows users to query the keyboard state at any time and
+directly, without having to deal with a window and its events.
+Compared to the <tt class="xref py py-const docutils literal"><span class="pre">KEY_PRESSED</span></tt> and <tt class="xref py py-const docutils literal"><span class="pre">KEY_RELEASED</span></tt>
+events, <a class="reference internal" href="#sf.Keyboard" title="sf.Keyboard"><tt class="xref py py-class docutils literal"><span class="pre">sf.Keyboard</span></tt></a> can retrieve the state of a key at any
+time (you don&#8217;t need to store and update a boolean on your side in
+order to know if a key is pressed or released), and you always get
+the real state of the keyboard, even if keys are pressed or released
+when your window is out of focus and no event is triggered.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><pre>if sf.Keyboard.is_key_pressed(sf.Keyboard.LEFT)
+   # move left...
+else if sf.Keyboard.is_key_pressed(sf.Keyboard.RIGHT):
+   # move right...
+else if sf.Keyboard.is_key_pressed(sf.Keyboard.ESCAPE):
+   # quit...</pre>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>A</td>
+<td>The A key.</td>
+</tr>
+<tr class="row-odd"><td>B</td>
+<td>The B key.</td>
+</tr>
+<tr class="row-even"><td>C</td>
+<td>The C key.</td>
+</tr>
+<tr class="row-odd"><td>D</td>
+<td>The D key.</td>
+</tr>
+<tr class="row-even"><td>E</td>
+<td>The E key.</td>
+</tr>
+<tr class="row-odd"><td>F</td>
+<td>The F key.</td>
+</tr>
+<tr class="row-even"><td>G</td>
+<td>The G key.</td>
+</tr>
+<tr class="row-odd"><td>H</td>
+<td>The H key.</td>
+</tr>
+<tr class="row-even"><td>I</td>
+<td>The I key.</td>
+</tr>
+<tr class="row-odd"><td>J</td>
+<td>The J key.</td>
+</tr>
+<tr class="row-even"><td>K</td>
+<td>The K key.</td>
+</tr>
+<tr class="row-odd"><td>L</td>
+<td>The L key.</td>
+</tr>
+<tr class="row-even"><td>M</td>
+<td>The M key.</td>
+</tr>
+<tr class="row-odd"><td>N</td>
+<td>The N key.</td>
+</tr>
+<tr class="row-even"><td>O</td>
+<td>The O key.</td>
+</tr>
+<tr class="row-odd"><td>P</td>
+<td>The P key.</td>
+</tr>
+<tr class="row-even"><td>Q</td>
+<td>The Q key.</td>
+</tr>
+<tr class="row-odd"><td>R</td>
+<td>The R key.</td>
+</tr>
+<tr class="row-even"><td>S</td>
+<td>The S key.</td>
+</tr>
+<tr class="row-odd"><td>T</td>
+<td>The T key.</td>
+</tr>
+<tr class="row-even"><td>U</td>
+<td>The U key.</td>
+</tr>
+<tr class="row-odd"><td>V</td>
+<td>The V key.</td>
+</tr>
+<tr class="row-even"><td>W</td>
+<td>The W key.</td>
+</tr>
+<tr class="row-odd"><td>X</td>
+<td>The X key.</td>
+</tr>
+<tr class="row-even"><td>Y</td>
+<td>The Y key.</td>
+</tr>
+<tr class="row-odd"><td>Z</td>
+<td>The Z key.</td>
+</tr>
+<tr class="row-even"><td>NUM0</td>
+<td>The 0 key.</td>
+</tr>
+<tr class="row-odd"><td>NUM1</td>
+<td>The 1 key.</td>
+</tr>
+<tr class="row-even"><td>NUM2</td>
+<td>The 2 key.</td>
+</tr>
+<tr class="row-odd"><td>NUM3</td>
+<td>The 3 key.</td>
+</tr>
+<tr class="row-even"><td>NUM4</td>
+<td>The 4 key.</td>
+</tr>
+<tr class="row-odd"><td>NUM5</td>
+<td>The 5 key.</td>
+</tr>
+<tr class="row-even"><td>NUM6</td>
+<td>The 6 key.</td>
+</tr>
+<tr class="row-odd"><td>NUM7</td>
+<td>The 7 key.</td>
+</tr>
+<tr class="row-even"><td>NUM8</td>
+<td>The 8 key.</td>
+</tr>
+<tr class="row-odd"><td>NUM9</td>
+<td>The 9 key.</td>
+</tr>
+<tr class="row-even"><td>ESCAPE</td>
+<td>The Escape key.</td>
+</tr>
+<tr class="row-odd"><td>L_CONTROL</td>
+<td>The left Control key.</td>
+</tr>
+<tr class="row-even"><td>L_SHIFT</td>
+<td>The left Shift key.</td>
+</tr>
+<tr class="row-odd"><td>L_ALT</td>
+<td>The left Alt key.</td>
+</tr>
+<tr class="row-even"><td>L_SYSTEM</td>
+<td>The left OS specific key: window (Windows and Linux), apple (MacOS X), ...</td>
+</tr>
+<tr class="row-odd"><td>R_CONTROL</td>
+<td>The right Control key.</td>
+</tr>
+<tr class="row-even"><td>R_SHIFT</td>
+<td>The right Shift key.</td>
+</tr>
+<tr class="row-odd"><td>R_ALT</td>
+<td>The right Alt key.</td>
+</tr>
+<tr class="row-even"><td>R_SYSTEM</td>
+<td>The right OS specific key: window (Windows and Linux), apple (MacOS X), ...</td>
+</tr>
+<tr class="row-odd"><td>MENU</td>
+<td>The Menu key.</td>
+</tr>
+<tr class="row-even"><td>L_BRACKET</td>
+<td>The [ key.</td>
+</tr>
+<tr class="row-odd"><td>R_BRACKET</td>
+<td>The ] key.</td>
+</tr>
+<tr class="row-even"><td>SEMI_COLON</td>
+<td>The ; key.</td>
+</tr>
+<tr class="row-odd"><td>COMMA</td>
+<td>The , key.</td>
+</tr>
+<tr class="row-even"><td>PERIOD</td>
+<td>The . key.</td>
+</tr>
+<tr class="row-odd"><td>QUOTE</td>
+<td>The &#8216; key.</td>
+</tr>
+<tr class="row-even"><td>SLASH</td>
+<td>The / key.</td>
+</tr>
+<tr class="row-odd"><td>BACK_SLASH</td>
+<td>The key.</td>
+</tr>
+<tr class="row-even"><td>TILDE</td>
+<td>The ~ key.</td>
+</tr>
+<tr class="row-odd"><td>EQUAL</td>
+<td>The = key.</td>
+</tr>
+<tr class="row-even"><td>DASH</td>
+<td>The - key.</td>
+</tr>
+<tr class="row-odd"><td>SPACE</td>
+<td>The Space key.</td>
+</tr>
+<tr class="row-even"><td>RETURN</td>
+<td>The Return key.</td>
+</tr>
+<tr class="row-odd"><td>BACK</td>
+<td>The Backspace key.</td>
+</tr>
+<tr class="row-even"><td>TAB</td>
+<td>The Tabulation key.</td>
+</tr>
+<tr class="row-odd"><td>PAGE_UP</td>
+<td>The Page up key.</td>
+</tr>
+<tr class="row-even"><td>PAGE_DOWN</td>
+<td>The Page down key.</td>
+</tr>
+<tr class="row-odd"><td>END</td>
+<td>The End key.</td>
+</tr>
+<tr class="row-even"><td>HOME</td>
+<td>The Home key.</td>
+</tr>
+<tr class="row-odd"><td>INSERT</td>
+<td>The Insert key.</td>
+</tr>
+<tr class="row-even"><td>DELETE</td>
+<td>The Delete key.</td>
+</tr>
+<tr class="row-odd"><td>ADD</td>
+<td>+</td>
+</tr>
+<tr class="row-even"><td>SUBTRACT</td>
+<td>-</td>
+</tr>
+<tr class="row-odd"><td>MULTIPLY</td>
+<td>*</td>
+</tr>
+<tr class="row-even"><td>DIVIDE</td>
+<td>/</td>
+</tr>
+<tr class="row-odd"><td>LEFT</td>
+<td>Left arrow.</td>
+</tr>
+<tr class="row-even"><td>RIGHT</td>
+<td>Right arrow.</td>
+</tr>
+<tr class="row-odd"><td>UP</td>
+<td>Up arrow.</td>
+</tr>
+<tr class="row-even"><td>DOWN</td>
+<td>Down arrow.</td>
+</tr>
+<tr class="row-odd"><td>NUMPAD0</td>
+<td>The numpad 0 key.</td>
+</tr>
+<tr class="row-even"><td>NUMPAD1</td>
+<td>The numpad 1 key.</td>
+</tr>
+<tr class="row-odd"><td>NUMPAD2</td>
+<td>The numpad 2 key.</td>
+</tr>
+<tr class="row-even"><td>NUMPAD3</td>
+<td>The numpad 3 key.</td>
+</tr>
+<tr class="row-odd"><td>NUMPAD4</td>
+<td>The numpad 4 key.</td>
+</tr>
+<tr class="row-even"><td>NUMPAD5</td>
+<td>The numpad 5 key.</td>
+</tr>
+<tr class="row-odd"><td>NUMPAD6</td>
+<td>The numpad 6 key.</td>
+</tr>
+<tr class="row-even"><td>NUMPAD7</td>
+<td>The numpad 7 key.</td>
+</tr>
+<tr class="row-odd"><td>NUMPAD8</td>
+<td>The numpad 8 key.</td>
+</tr>
+<tr class="row-even"><td>NUMPAD9</td>
+<td>The numpad 9 key.</td>
+</tr>
+<tr class="row-odd"><td>F1</td>
+<td>The F1 key.</td>
+</tr>
+<tr class="row-even"><td>F2</td>
+<td>The F2 key.</td>
+</tr>
+<tr class="row-odd"><td>F3</td>
+<td>The F3 key.</td>
+</tr>
+<tr class="row-even"><td>F4</td>
+<td>The F4 key.</td>
+</tr>
+<tr class="row-odd"><td>F5</td>
+<td>The F5 key.</td>
+</tr>
+<tr class="row-even"><td>F6</td>
+<td>The F6 key.</td>
+</tr>
+<tr class="row-odd"><td>F7</td>
+<td>The F7 key.</td>
+</tr>
+<tr class="row-even"><td>F8</td>
+<td>The F8 key.</td>
+</tr>
+<tr class="row-odd"><td>F9</td>
+<td>The F9 key.</td>
+</tr>
+<tr class="row-even"><td>F10</td>
+<td>The F10 key.</td>
+</tr>
+<tr class="row-odd"><td>F11</td>
+<td>The F11 key.</td>
+</tr>
+<tr class="row-even"><td>F12</td>
+<td>The F12 key.</td>
+</tr>
+<tr class="row-odd"><td>F13</td>
+<td>The F13 key.</td>
+</tr>
+<tr class="row-even"><td>F14</td>
+<td>The F14 key.</td>
+</tr>
+<tr class="row-odd"><td>F15</td>
+<td>The F15 key.</td>
+</tr>
+<tr class="row-even"><td>PAUSE</td>
+<td>The Pause key.</td>
+</tr>
+<tr class="row-odd"><td>KEY_COUNT</td>
+<td>The total number of keyboard keys</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt id="sf.Keyboard.is_key_pressed">
+<em class="property">classmethod </em><tt class="descname">is_key_pressed</tt><big>(</big><em>key</em><big>)</big><a class="headerlink" href="#sf.Keyboard.is_key_pressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a key is pressed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (integer (<a class="reference internal" href="#sf.Keyboard" title="sf.Keyboard"><tt class="xref py py-class docutils literal"><span class="pre">sf.Keyboard</span></tt></a>&#8216;s constant)) &#8211; Key to check</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.Joystick">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">Joystick</tt><a class="headerlink" href="#sf.Joystick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give access to the real-time state of the joysticks.</p>
+<p><a class="reference internal" href="#sf.Joystick" title="sf.Joystick"><tt class="xref py py-class docutils literal"><span class="pre">sf.Joystick</span></tt></a> provides an interface to the state of the
+joysticks.</p>
+<p>It only contains class methods, so it&#8217;s not meant to be instanciated.
+Instead, each joystick is identified by an index that is passed to
+the functions of this class.</p>
+<p>This class allows users to query the state of joysticks at any time
+and directly, without having to deal with a window and its events.
+Compared to the <tt class="xref py py-const docutils literal"><span class="pre">JOYSTICK_MOVED</span></tt>,
+<tt class="xref py py-const docutils literal"><span class="pre">JOYSTICK_BUTTON_PRESSED</span></tt> and
+<tt class="xref py py-const docutils literal"><span class="pre">JOYSTICK_BUTTON_RELEASED</span></tt> events, <a class="reference internal" href="#sf.Joystick" title="sf.Joystick"><tt class="xref py py-class docutils literal"><span class="pre">sf.Joystick</span></tt></a> can
+retrieve the state of axes and buttons of joysticks at any time (you
+don&#8217;t need to store and update a boolean on your side in order to
+know if a button is pressed or released), and you always get the
+real state of joysticks, even if they are moved, pressed or released
+when your window is out of focus and no event is triggered.</p>
+<p>SFML supports:</p>
+<blockquote>
+<div><ul class="simple">
+<li>8 joysticks (<a class="reference internal" href="#sf.Joystick.COUNT" title="sf.Joystick.COUNT"><tt class="xref py py-const docutils literal"><span class="pre">sf.Joystick.COUNT</span></tt></a>)</li>
+<li>32 buttons per joystick (<a class="reference internal" href="#sf.Joystick.BUTTON_COUNT" title="sf.Joystick.BUTTON_COUNT"><tt class="xref py py-const docutils literal"><span class="pre">sf.Joystick.BUTTON_COUNT</span></tt></a>)</li>
+<li>8 axes per joystick (<a class="reference internal" href="#sf.Joystick.AXIS_COUNT" title="sf.Joystick.AXIS_COUNT"><tt class="xref py py-const docutils literal"><span class="pre">sf.Joystick.AXIS_COUNT</span></tt></a>)</li>
+</ul>
+</div></blockquote>
+<p>Unlike the keyboard or mouse, the state of joysticks is sometimes
+not directly available (depending on the OS), therefore an
+<a class="reference internal" href="#sf.Joystick.update" title="sf.Joystick.update"><tt class="xref py py-func docutils literal"><span class="pre">update()</span></tt></a> function must be called in order to update the
+current state of joysticks. When you have a window with event
+handling, this is done automatically, you don&#8217;t need to call
+anything. But if you have no window, or if you want to check
+joysticks state before creating one, you must call
+<a class="reference internal" href="#sf.Joystick.update" title="sf.Joystick.update"><tt class="xref py py-func docutils literal"><span class="pre">sf.Joystick.update()</span></tt></a> explicitely.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># is joystick #0 connected ?</span>
+<span class="n">connected</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c"># how many button does joystick #0 support ?</span>
+<span class="n">buttons</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">get_button_count</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c"># does joystick # define a X axis ?</span>
+<span class="n">has_X</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">has_axis</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c"># is button #2 pressed on joystick #0 ?</span>
+<span class="n">pressed</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">is_button_pressed</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c"># what&#39;s the current position of the Y axis on joystick #0?</span>
+<span class="n">position</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">get_axis_position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Joystick</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Axis</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>X</td>
+<td>The X axis.</td>
+</tr>
+<tr class="row-odd"><td>Y</td>
+<td>The X axis.</td>
+</tr>
+<tr class="row-even"><td>Z</td>
+<td>The X axis.</td>
+</tr>
+<tr class="row-odd"><td>R</td>
+<td>The X axis.</td>
+</tr>
+<tr class="row-even"><td>U</td>
+<td>The X axis.</td>
+</tr>
+<tr class="row-odd"><td>V</td>
+<td>The X axis.</td>
+</tr>
+<tr class="row-even"><td>POV_X</td>
+<td>The X axis of the point-of-view hat.</td>
+</tr>
+<tr class="row-odd"><td>POV_Y</td>
+<td>The Y axis of the point-of-view hat.</td>
+</tr>
+</tbody>
+</table>
+<dl class="data">
+<dt id="sf.Joystick.COUNT">
+<tt class="descname">COUNT</tt><a class="headerlink" href="#sf.Joystick.COUNT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum number of supported joysticks.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sf.Joystick.BUTTON_COUNT">
+<tt class="descname">BUTTON_COUNT</tt><a class="headerlink" href="#sf.Joystick.BUTTON_COUNT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum number of supported buttons.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sf.Joystick.AXIS_COUNT">
+<tt class="descname">AXIS_COUNT</tt><a class="headerlink" href="#sf.Joystick.AXIS_COUNT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum number of supported axes.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.Joystick.is_connected">
+<em class="property">classmethod </em><tt class="descname">is_connected</tt><big>(</big><em>joystick</em><big>)</big><a class="headerlink" href="#sf.Joystick.is_connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a joystick is connected.</p>
+<p>If the joystick is not connected, this function returns false.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joystick</strong> (<em>integer</em>) &#8211; Index of the joystick to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">booléan</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.Joystick.get_button_count">
+<em class="property">classmethod </em><tt class="descname">get_button_count</tt><big>(</big><em>joystick</em><big>)</big><a class="headerlink" href="#sf.Joystick.get_button_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of buttons supported by a joystick.</p>
+<p>If the joystick is not connected, this function returns 0.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>joystick</strong> (<em>integer</em>) &#8211; Index of the joystick</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.Joystick.has_axis">
+<em class="property">classmethod </em><tt class="descname">has_axis</tt><big>(</big><em>joystick</em>, <em>axis</em><big>)</big><a class="headerlink" href="#sf.Joystick.has_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a joystick supports a given axis.</p>
+<p>If the joystick is not connected, this function returns false.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>joystick</strong> (<em>integer</em>) &#8211; Index of the joystick</li>
+<li><strong>axis</strong> (<em>integer</em>) &#8211; Axis to check</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">booléan</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.Joystick.is_button_pressed">
+<em class="property">classmethod </em><tt class="descname">is_button_pressed</tt><big>(</big><em>joystick</em>, <em>button</em><big>)</big><a class="headerlink" href="#sf.Joystick.is_button_pressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a joystick button is pressed.</p>
+<p>If the joystick is not connected, this function returns false.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>joystick</strong> (<em>integer</em>) &#8211; Index of the joystick</li>
+<li><strong>axis</strong> (<em>integer</em>) &#8211; Button to check</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">booléan</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.Joystick.get_axis_position">
+<em class="property">classmethod </em><tt class="descname">get_axis_position</tt><big>(</big><em>joystick</em>, <em>axis</em><big>)</big><a class="headerlink" href="#sf.Joystick.get_axis_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current position of a joystick axis.</p>
+<p>If the joystick is not connected, this function returns 0.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>joystick</strong> (<em>integer</em>) &#8211; Index of the joystick</li>
+<li><strong>axis</strong> (<em>integer</em>) &#8211; Axis to check</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">booléan</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.Joystick.update">
+<em class="property">classmethod </em><tt class="descname">update</tt><big>(</big><big>)</big><a class="headerlink" href="#sf.Joystick.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the states of all joysticks.</p>
+<p>This function is used internally by SFML, so you normally don&#8217;t
+have to call it explicitely. However, you may need to call it if
+you have no window yet (or no window at all): in this case the
+joysticks states are not updated automatically.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.Mouse">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">Mouse</tt><a class="headerlink" href="#sf.Mouse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give access to the real-time state of the mouse.</p>
+<p><a class="reference internal" href="#sf.Mouse" title="sf.Mouse"><tt class="xref py py-class docutils literal"><span class="pre">sf.Mouse</span></tt></a> provides an interface to the state of the mouse.</p>
+<p>It only contains class methods (a single mouse is assumed), so it&#8217;s
+not meant to be instanciated.</p>
+<p>This class allows users to query the mouse state at any time and
+directly, without having to deal with a window and its events.
+Compared to the <tt class="xref py py-const docutils literal"><span class="pre">MOUSE_MOVED</span></tt>, <tt class="xref py py-const docutils literal"><span class="pre">MOUSE_BUTTON_PRESSED</span></tt> and
+<tt class="xref py py-const docutils literal"><span class="pre">MOUSE_BUTTON_RELEASED</span></tt> events, :const: sf.Mouse` can retrieve
+the state of the cursor and the buttons at any time (you don&#8217;t need
+to store and update a boolean on your side in order to know if a
+button is pressed or released), and you always get the real state of
+the mouse, even if it is moved, pressed or released when your window
+is out of focus and no event is triggered.</p>
+<p>The <a class="reference internal" href="#sf.Mouse.set_position" title="sf.Mouse.set_position"><tt class="xref py py-func docutils literal"><span class="pre">set_position()</span></tt></a> and <a class="reference internal" href="#sf.Mouse.get_position" title="sf.Mouse.get_position"><tt class="xref py py-func docutils literal"><span class="pre">get_position()</span></tt></a> functions can be
+used to change or retrieve the current position of the mouse
+pointer. There are two versions: one that operates in global
+coordinates (relative to the desktop) and one that operates in
+window coordinates (relative to a specific window).</p>
+<p>Usage example:</p>
+<div class="highlight-python"><pre>if sf.Mouse.is_button_pressed(sf.Mouse.LEFT):
+   # left click...
+
+# get global mouse position
+position = sf.Mouse.position
+# or: position = sf.Mouse.get_position()
+
+# set mouse position relative to a window
+sf.Mouse.set_position(sf.Position(100, 200), window)</pre>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Button</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>LEFT</td>
+<td>The left mouse button.</td>
+</tr>
+<tr class="row-odd"><td>RIGHT</td>
+<td>The right mouse button.</td>
+</tr>
+<tr class="row-even"><td>MIDDLE</td>
+<td>The middle (wheel) mouse button.</td>
+</tr>
+<tr class="row-odd"><td>X_BUTTON1</td>
+<td>The first extra mouse button.</td>
+</tr>
+<tr class="row-even"><td>X_BUTTON2</td>
+<td>The second extra mouse button.</td>
+</tr>
+<tr class="row-odd"><td>BUTTON_COUNT</td>
+<td>The total number of mouse buttons.</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt id="sf.Mouse.is_button_pressed">
+<em class="property">classmethod </em><tt class="descname">is_button_pressed</tt><big>(</big><em>button</em><big>)</big><a class="headerlink" href="#sf.Mouse.is_button_pressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a mouse button is pressed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>button</strong> (integer (a <a class="reference internal" href="#sf.Mouse" title="sf.Mouse"><tt class="xref py py-class docutils literal"><span class="pre">sf.Mouse</span></tt></a>&#8216;s constant)) &#8211; Button to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.Mouse.get_position">
+<em class="property">classmethod </em><tt class="descname">get_position</tt><big>(</big><span class="optional">[</span><em>relativ_to</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.Mouse.get_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current position of the mouse in window coordinates.</p>
+<p>This function returns the current position of the mouse cursor,
+relative to the given window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>relativ_to</strong> (<a class="reference internal" href="#sf.Window" title="sf.Window"><em>sf.Window</em></a>) &#8211; Reference window</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sf.Mouse.set_position">
+<em class="property">classmethod </em><tt class="descname">set_position</tt><big>(</big><em>position</em><span class="optional">[</span>, <em>relativ_to</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sf.Mouse.set_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the current position of the mouse in window coordinates.</p>
+<p>This function sets the current position of the mouse cursor,
+relative to the given window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>position</strong> (<a class="reference internal" href="system.html#sf.Position" title="sf.Position"><em>sf.Position</em></a>) &#8211; New position of the mouse</li>
+<li><strong>relativ_to</strong> (<a class="reference internal" href="#sf.Window" title="sf.Window"><em>sf.Window</em></a>) &#8211; Reference window</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sf.Context">
+<em class="property">class </em><tt class="descclassname">sf.</tt><tt class="descname">Context</tt><a class="headerlink" href="#sf.Context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class holding a valid drawing context.</p>
+<p>If you need to make OpenGL calls without having an active window
+(like in a thread), you can use an instance of this class to get a
+valid context.</p>
+<p>Having a valid context is necessary for <em>every</em> OpenGL call.</p>
+<p>Note that a context is only active in its current thread, if you
+create a new thread it will have no valid context by default.</p>
+<p>To use a <a class="reference internal" href="#sf.Context" title="sf.Context"><tt class="xref py py-class docutils literal"><span class="pre">sf.Context</span></tt></a> instance, just construct it and let it
+live as long as you need a valid context. No explicit activation is
+needed, all it has to do is to exist. Its destructor will take care
+of deactivating and freeing all the attached resources.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">thread_function</span><span class="p">():</span>
+   <span class="n">context</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+   <span class="c"># from now on, you have a valid context</span>
+
+   <span class="c"># you can make OpenGL calls</span>
+   <span class="n">glClear</span><span class="p">(</span><span class="n">GL_DEPTH_BUFFER_BIT</span><span class="p">)</span>
+
+<span class="c"># the context is automatically deactivated and destroyed by the</span>
+<span class="c"># sf.Context destructor</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="system.html"
+                        title="previous chapter">System</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="graphics.html"
+                        title="next chapter">Graphics</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/documentation/window.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="graphics.html" title="Graphics"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="system.html" title="System"
+             >previous</a> |</li>
+        <li><a href="../index.html">pySFML2 1.0 documentation</a> &raquo;</li>
+          <li><a href="../documentation.html" >Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jonathan De Wachter.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
