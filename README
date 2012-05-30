@@ -6,12 +6,16 @@ Bastien Leonard the 16th of November 2011 to suit my own needs.
 It has since then widely improved and I decided to share my work under
 a new license: GPLv3
 
+This version (1.0) is a fast release and is compatible with the first 
+release candidate of SFML2.
+
 For all information about the project (installing, compiling source, 
 documentation), you may want to loop up 
 http://openhelbreath.net/python-sfml2/0.1/doc/
 
-The bug-tracker is temporarily read-only  so if you want to report issues, you can 
-do it on the github page of the project itself, I'll add them.
+The bug-tracker is temporarily read-only  so if you want to report 
+issues, you can do it on the github page of the project itself, I'll 
+add them.
 
 Website: http://openhelbreath.net/python-sfml2/
 Bugtracker: http://openhelbreath.net/python-sfml2/flyspray/
