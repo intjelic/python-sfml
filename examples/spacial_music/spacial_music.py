@@ -10,20 +10,19 @@
 
 import sfml as sf
 
-
-def main():
+def main(song):
     window = sf.RenderWindow(sf.VideoMode(800, 800), "pySFML - Spacial Music")
     window.framerate_limit = 60
     
     # load a song and make sure it can be spacialized
     try:
-        music = sf.Music.open_from_file(SONG.encode('UTF-8'))
+        music = sf.Music.open_from_file(song)
         
     except sf.SFMLException as error:
         print("An error occured during the loading data process:\n" + str(error))
         exit()
 
-    if music.channels_count != 1:
+    if music.channel_count != 1:
         print("Only sounds with one channel (mono sounds) can be spatialized.")
         print("This song ({0}) has {1} channels.".format(SONG, music.channels_count))
         exit()
@@ -35,7 +34,7 @@ def main():
     speaker_position = (350, 348, 0)
     
     x, y, z = hears_position
-    sf.Listener.set_position(x, y, z)
+    sf.Listener.set_position((x, y, z))
     music.position = speaker_position
     
     try:
@@ -71,7 +70,7 @@ def main():
                     y -= 5
                     
                     hears_position = (x, y, z)
-                    sf.Listener.set_position(x, y, z)
+                    sf.Listener.set_position((x, y, z))
                     hears.position = (x, y)
                     
                 elif event.code is sf.Keyboard.DOWN:
@@ -79,7 +78,7 @@ def main():
                     y += 5
                     
                     hears_position = (x, y, z)
-                    sf.Listener.set_position(x, y, z)
+                    sf.Listener.set_position((x, y, z))
                     hears.position = (x, y)
                     
                 elif event.code is sf.Keyboard.LEFT:
@@ -87,7 +86,7 @@ def main():
                     x -= 5
                     
                     hears_position = (x, y, z)
-                    sf.Listener.set_position(x, y, z)
+                    sf.Listener.set_position((x, y, z))
                     hears.position = (x, y)
                     
                 elif event.code is sf.Keyboard.RIGHT:
@@ -95,7 +94,7 @@ def main():
                     x += 5
                     
                     hears_position = (x, y, z)
-                    sf.Listener.set_position(x, y, z)
+                    sf.Listener.set_position((x, y, z))
                     hears.position = (x, y)
 
 
@@ -108,6 +107,4 @@ def main():
     
     
 if __name__ == "__main__":
-    SONG = "data/mario.flac"
-    
-    main()
+    main("data/mario.flac")
