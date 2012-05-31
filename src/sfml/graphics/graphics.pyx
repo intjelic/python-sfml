@@ -8,8 +8,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from libcpp.vector cimport vector
+cimport cython
 from cython.operator cimport dereference as deref, preincrement as inc
+
+from libcpp.vector cimport vector
 
 from sfml.system.position import Position
 from sfml.system.size import Size
@@ -32,7 +34,7 @@ class SFMLException(Exception):
 		
 	def __str__(self):
 		return repr(self.value)
-	
+
 cdef class Time:
 	ZERO = wrap_time(<dsystem.Time*>&dsystem.time.Zero)
 
@@ -1639,30 +1641,130 @@ cdef class Shader:
 			
 		del p
 		raise SFMLException()
-		
-	def set_parameter(self): 
-		raise NotImplementedError("Will be implemented in the next release")
 
-	def set_float_parameter(self, float x, float y=0, float z=0, float w=0): 
-		raise NotImplementedError("Will be implemented in the next release")
+	def set_parameter(self, *args, **kwargs):
+		if len(args) == 0:
+			raise UserWarning("No arguments provided. It requires at least one string.")
+			
+		if type(args[0]) not in [bytes, unicode, str]:
+			raise UserWarning("The first argument must be a string (bytes, unicode or str)")
+
+		if len(args) == 1:
+			self.set_currenttexturetype_parameter(args[0])
+		elif len(args) == 2:
+			if type(args[1]) in [Position, tuple]:
+				if type(args[1]) is Position:
+					self.set_vector2_paramater(args[0], args[1])
+					return
+				elif len(args[1]) == 2:
+					self.set_vector2_paramater(args[0], args[1])
+				elif len(args[1]) == 3:
+					self.set_vector3_paramater(args[0], args[1])
+				else:
+					raise UserWarning("The second argument must be a tuple of length 2 or 3")
+			elif type(args[1]) is Color:
+				self.set_color_parameter(args[0], args[1])
+			elif type(args[1]) is Transform:
+				self.set_transform_parameter(args[0], args[1])
+			elif type(args[1]) is Texture:
+				self.set_texture_parameter(args[0], args[1])
+			elif type(args[1]) in [int, long, float, long]:
+				self.set_1float_parameter(args[0], args[1])
+			else:
+				raise UserWarning("The second argument type must be a number, an sf.Position, an sf.Color, an sf.Transform or an sf.Texture")
+		else:
+			if len(args) > 5:
+				raise UserWarning("Wrong number of argument.")
+			for i in range(1, len(args)):
+				if type(args[i]) not in [int, long, float, long]:
+					raise UserWarning("Argument {0} must be a number".format(i+1))
+			if len(args) == 3:
+				self.set_2float_parameter(args[0], args[1], args[2])
+			elif len(args) == 4:
+				self.set_3float_parameter(args[0], args[1], args[2], args[3])
+			else:
+				self.set_4float_parameter(args[0], args[1], args[2], args[3], args[4])
+
+	def set_1float_parameter(self, name, float x):
+		cdef char* encoded_name
 		
-	def set_vector2_paramater(self): 
-		raise NotImplementedError("Will be implemented in the next release")
+		encoded_name_temporary = name.encode('UTF-8')	
+		encoded_name = encoded_name_temporary
+		
+		self.p_this.setParameter(encoded_name, x)
+
+	def set_2float_parameter(self, name, float x, float y):
+		cdef char* encoded_name
+		
+		encoded_name_temporary = name.encode('UTF-8')	
+		encoded_name = encoded_name_temporary
+		
+		self.p_this.setParameter(encoded_name, x, y)
+
+	def set_3float_parameter(self, name, float x, float y, float z):
+		cdef char* encoded_name
+		
+		encoded_name_temporary = name.encode('UTF-8')	
+		encoded_name = encoded_name_temporary
+		
+		self.p_this.setParameter(encoded_name, x, y, z)
+
+	def set_4float_parameter(self, name, float x, float y, float z, float w):
+		cdef char* encoded_name
+		
+		encoded_name_temporary = name.encode('UTF-8')	
+		encoded_name = encoded_name_temporary
+		
+		self.p_this.setParameter(encoded_name, x, y, z, w)
+
+	def set_vector2_paramater(self, name, vector): 
+		cdef char* encoded_name
+		
+		encoded_name_temporary = name.encode('UTF-8')	
+		encoded_name = encoded_name_temporary
+		
+		self.p_this.setParameter(encoded_name, position_to_vector2f(vector))
 	
-	def set_vector3_paramater(self): 
-		raise NotImplementedError("Will be implemented in the next release")
+	def set_vector3_paramater(self, name, tuple vector): 
+		cdef char* encoded_name
+		
+		encoded_name_temporary = name.encode('UTF-8')	
+		encoded_name = encoded_name_temporary
+
+		x, y, z = vector
+		self.p_this.setParameter(encoded_name, dsystem.Vector3f(x, y, z))
 	
-	def set_color_parameter(self): 
-		raise NotImplementedError("Will be implemented in the next release")
+	def set_color_parameter(self, name, Color color): 
+		cdef char* encoded_name
+		
+		encoded_name_temporary = name.encode('UTF-8')	
+		encoded_name = encoded_name_temporary
+		
+		self.p_this.setParameter(encoded_name, color.p_this[0])
 	
-	def set_transform_parameter(self): 
-		raise NotImplementedError("Will be implemented in the next release")
+	def set_transform_parameter(self, name, Transform transform): 
+		cdef char* encoded_name
+		
+		encoded_name_temporary = name.encode('UTF-8')	
+		encoded_name = encoded_name_temporary
+		
+		self.p_this.setParameter(encoded_name, transform.p_this[0])
 	
-	def set_texture_parameter(self): 
-		raise NotImplementedError("Will be implemented in the next release")
+	def set_texture_parameter(self, name, Texture texture): 
+		cdef char* encoded_name
+		
+		encoded_name_temporary = name.encode('UTF-8')	
+		encoded_name = encoded_name_temporary
+		
+		self.p_this.setParameter(encoded_name, texture.p_this[0])
 	
-	def set_texturetype_parameter(self): 
-		raise NotImplementedError("Will be implemented in the next release")
+	def set_currenttexturetype_parameter(self, name): 
+		cdef char* encoded_name
+		
+		encoded_name_temporary = name.encode('UTF-8')	
+		encoded_name = encoded_name_temporary
+		
+		self.p_this.setParameter(encoded_name, dgraphics.shader.CurrentTexture)
 	
 	def bind(self):
 		self.p_this.bind()
