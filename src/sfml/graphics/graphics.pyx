@@ -24,6 +24,9 @@ from dsystem cimport const_Uint8_ptr
 
 cimport dsystem, dwindow, dgraphics
 
+string_type = [bytes, unicode, str]
+numeric_type = [int, long, float, long]
+
 ########################################################################
 #                           System Module                              #
 ########################################################################
@@ -1604,11 +1607,8 @@ cdef Font wrap_font(dgraphics.Font *p, bint d=True):
 	r.delete_this = d
 	return r
 
-
-cdef class Shader:
-	VERTEX = dgraphics.shader.Vertex
-	FRAGMENT = dgraphics.shader.Fragment
 	
+cdef class Shader:
 	cdef dgraphics.Shader *p_this
 	cdef bint              delete_this
 	
@@ -1619,24 +1619,76 @@ cdef class Shader:
 		if self.delete_this: del self.p_this
 
 	@classmethod
-	def load_from_file(cls, filename, dgraphics.shader.Type type):
+	def load_from_file(cls, vertex_filename, fragment_filename):
 		cdef dgraphics.Shader *p = new dgraphics.Shader()
-		cdef char* encoded_filename	
-			
-		encoded_filename_temporary = filename.encode('UTF-8')	
-		encoded_filename = encoded_filename_temporary
-
-		if p.loadFromFile(encoded_filename, type):
+		cdef char* encoded_vertex_filename
+		cdef char* encoded_fragment_filename
+		
+		encoded_vertex_filename_temporary = vertex_filename.encode('utf-8')	
+		encoded_vertex_filename = encoded_vertex_filename_temporary
+						
+		encoded_fragment_filename_temporary = fragment_filename.encode('utf-8')	
+		encoded_fragment_filename = encoded_fragment_filename_temporary
+	
+		if p.loadFromFile(encoded_vertex_filename, encoded_fragment_filename):
 			return wrap_shader(p)
 		
 		del p
 		raise SFMLException()
 		
 	@classmethod
-	def load_from_memory(cls, char* shader, dgraphics.shader.Type type):
+	def load_vertex_from_file(cls, filename):
+		cdef dgraphics.Shader *p = new dgraphics.Shader()
+		cdef char* encoded_filename
+		
+		encoded_filename_temporary = filename.encode('utf-8')	
+		encoded_filename = encoded_filename_temporary
+		
+		if p.loadFromFile(encoded_filename, dgraphics.shader.Vertex):
+			return wrap_shader(p)
+		
+		del p
+		raise SFMLException()
+		
+	@classmethod
+	def load_fragment_from_file(cls, filename):
+		cdef dgraphics.Shader *p = new dgraphics.Shader()
+		cdef char* encoded_filename
+		
+		encoded_filename_temporary = filename.encode('utf-8')	
+		encoded_filename = encoded_filename_temporary
+		
+		if p.loadFromFile(encoded_filename, dgraphics.shader.Fragment):
+			return wrap_shader(p)
+		
+		del p
+		raise SFMLException()
+		
+	@classmethod
+	def load_from_memory(cls, char* vertex, char* fragment):
 		cdef dgraphics.Shader *p = new dgraphics.Shader()
 
-		if p.loadFromMemory(shader, type):
+		if p.loadFromMemory(vertex, fragment):
+			return wrap_shader(p)
+			
+		del p
+		raise SFMLException()
+		
+	@classmethod
+	def load_vertex_from_memory(cls, char* vertex):
+		cdef dgraphics.Shader *p = new dgraphics.Shader()
+
+		if p.loadFromMemory(vertex, dgraphics.shader.Vertex):
+			return wrap_shader(p)
+			
+		del p
+		raise SFMLException()
+		
+	@classmethod
+	def load_fragment_from_memory(cls, char* fragment):
+		cdef dgraphics.Shader *p = new dgraphics.Shader()
+
+		if p.loadFromMemory(fragment, dgraphics.shader.Fragment):
 			return wrap_shader(p)
 			
 		del p
@@ -1668,7 +1720,7 @@ cdef class Shader:
 				self.set_transform_parameter(args[0], args[1])
 			elif type(args[1]) is Texture:
 				self.set_texture_parameter(args[0], args[1])
-			elif type(args[1]) in [int, long, float, long]:
+			elif type(args[1]) in numeric_type:
 				self.set_1float_parameter(args[0], args[1])
 			else:
 				raise UserWarning("The second argument type must be a number, an sf.Position, an sf.Color, an sf.Transform or an sf.Texture")
@@ -1676,7 +1728,7 @@ cdef class Shader:
 			if len(args) > 5:
 				raise UserWarning("Wrong number of argument.")
 			for i in range(1, len(args)):
-				if type(args[i]) not in [int, long, float, long]:
+				if type(args[i]) not in numeric_type:
 					raise UserWarning("Argument {0} must be a number".format(i+1))
 			if len(args) == 3:
 				self.set_2float_parameter(args[0], args[1], args[2])
