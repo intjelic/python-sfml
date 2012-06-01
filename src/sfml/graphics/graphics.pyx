@@ -2315,7 +2315,45 @@ cdef class RectangleShape(Shape):
 		def __set__(self, size):
 			self.p_this.setSize(size_to_vector2f(size))
 
+
+cdef class Vertex:
+	cdef dgraphics.Vertex *p_this
+	cdef Color             m_color
 	
+	def __init__(self, position=None, Color color=None, tex_coords=None):
+		self.p_this = new dgraphics.Vertex()
+		
+		self.m_color = wrap_color(&self.p_this.color)
+		
+		if position: self.position = position
+		if color: self.color = color
+		if tex_coords: self.tex_coords = tex_coords
+		
+	def __dealloc__(self):
+		del self.p_this
+		
+	property position:
+		def __get__(self):
+			return Position(self.p_this.position.x, self.p_this.position.y)
+			
+		def __set__(self, position):
+			self.p_this.position.x, self.p_this.position.y = position
+		
+	property color:
+		def __get__(self):
+			return self.m_color
+			
+		def __set__(self, Color color):
+			self.p_this.color = color.p_this[0]
+		
+	property tex_coords:
+		def __get__(self):
+			return Position(self.p_this.texCoords.x, self.p_this.texCoords.y)
+			
+		def __set__(self, tex_coords):
+			self.p_this.texCoords.x, self.p_this.texCoords.y = tex_coords
+
+
 cdef class View:
 	cdef dgraphics.View  *p_this
 	cdef RenderWindow     m_renderwindow

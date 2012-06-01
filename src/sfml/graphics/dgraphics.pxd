@@ -256,8 +256,12 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		Vector2f getPoint(unsigned int)
 		
 		
-	cdef cppclass Vertex
-	
+	cdef cppclass Vertex:
+		Vertex()
+		Vector2f position
+		Color color
+		Vector2f texCoords
+		
 	cdef cppclass VertexArray:
 		VertexArray()
 

@@ -8,7 +8,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 'Pixels', 'Image', 'Texture', 'Glyph', 'Font', 'Shader', 'RenderStates', 'Drawable', 'Transformable', 'Sprite', 'Text', 'Shape', 'CircleShape', 'ConvexShape', 'RectangleShape', 'View', 'RenderTarget', 'RenderTexture', 'RenderWindow', 'HandledWindow']
+__all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 
+			'Pixels', 'Image', 'Texture', 'Glyph', 'Font', 'Shader', 
+			'RenderStates', 'Drawable', 'Transformable', 'Sprite', 
+			'Text', 'Shape', 'CircleShape', 'ConvexShape', 
+			'RectangleShape', 'Vertex', 'View', 'RenderTarget', 
+			'RenderTexture', 'RenderWindow', 'HandledWindow']
 
 from sfml.graphics.graphics import BlendMode, PrimitiveType
 from sfml.graphics.graphics import Color, Transform
@@ -19,6 +24,7 @@ from sfml.graphics.graphics import RenderStates
 from sfml.graphics.graphics import Drawable, Transformable
 from sfml.graphics.graphics import Sprite, Text, Shape
 from sfml.graphics.graphics import CircleShape, ConvexShape, RectangleShape
+from sfml.graphics.graphics import Vertex
 from sfml.graphics.graphics import View
 from sfml.graphics.graphics import RenderTarget, RenderTexture, RenderWindow
 from sfml.graphics.graphics import HandledWindow
