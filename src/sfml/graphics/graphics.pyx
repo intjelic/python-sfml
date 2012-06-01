@@ -2102,7 +2102,7 @@ cdef class Text(TransformableDrawable):
 	cdef dgraphics.Text *p_this
 	cdef Font            m_font
 
-	def __init__(self, bytes string=None, Font font=None, unsigned int character_size=30):
+	def __init__(self, string=None, Font font=None, unsigned int character_size=30):
 		self.p_this = new dgraphics.Text()
 		self.p_drawable = <dgraphics.Drawable*>self.p_this
 		self.p_transformable = <dgraphics.Transformable*>self.p_this
