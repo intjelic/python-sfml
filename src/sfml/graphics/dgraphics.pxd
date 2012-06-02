@@ -255,7 +255,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		unsigned int getPointCount()
 		Vector2f getPoint(unsigned int)
 		
-		
 	cdef cppclass Vertex:
 		Vertex()
 		Vector2f position
@@ -264,6 +263,16 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		
 	cdef cppclass VertexArray:
 		VertexArray()
+		VertexArray(primitivetype.PrimitiveType)
+		VertexArray(primitivetype.PrimitiveType, unsigned int)
+		unsigned int getVertexCount()
+		Vertex& operator[] (unsigned int)
+		void clear()
+		void resize(unsigned int)
+		void append(Vertex)
+		void setPrimitiveType(primitivetype.PrimitiveType)
+		primitivetype.PrimitiveType getPrimitiveType()
+		FloatRect getBounds()
 
 	cdef cppclass View:
 		View()

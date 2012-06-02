@@ -1918,7 +1918,7 @@ cdef class Drawable:
 	def __cinit__(self, *args, **kwargs):
 		if self.__class__ == Drawable:
 			raise NotImplementedError('Drawable is abstact')
-		elif self.__class__ not in [Shape, Sprite, Text]:
+		elif self.__class__ not in [Shape, Sprite, Text, VertexArray]:
 			self.p_drawable = <dgraphics.Drawable*>new dgraphics.DerivableDrawable(<void*>self)
 			
 	def draw(self, target, states): pass
@@ -2318,17 +2318,18 @@ cdef class RectangleShape(Shape):
 
 cdef class Vertex:
 	cdef dgraphics.Vertex *p_this
-	cdef Color             m_color
+	cdef bint              delete_this
 	
 	def __init__(self, position=None, Color color=None, tex_coords=None):
 		self.p_this = new dgraphics.Vertex()
+		self.delete_this = True
 		
 		if position: self.position = position
 		if color: self.color = color
 		if tex_coords: self.tex_coords = tex_coords
 		
 	def __dealloc__(self):
-		del self.p_this
+		if self.delete_this: del self.p_this
 		
 	property position:
 		def __get__(self):
@@ -2352,11 +2353,57 @@ cdef class Vertex:
 			
 		def __set__(self, tex_coords):
 			self.p_this.texCoords.x, self.p_this.texCoords.y = tex_coords
-
-cdef Vertex wrap_vertex(dgraphics.Vertex* p):
+	
+cdef Vertex wrap_vertex(dgraphics.Vertex* p, bint d=True):
 	cdef Vertex r = Vertex.__new__(Vertex)
 	r.p_this = p
+	r.delete_this = d
 	return r
+
+
+cdef class VertexArray(Drawable):
+	cdef dgraphics.VertexArray *p_this
+
+	def __init__(self, dgraphics.primitivetype.PrimitiveType type = dgraphics.primitivetype.Points, unsigned int vertex_count=0):
+		self.p_this = new dgraphics.VertexArray(type, vertex_count)
+		self.p_drawable = <dgraphics.Drawable*>self.p_this
+		
+	def __dealloc__(self):
+		del self.p_this
+
+	def __len__(self):
+		return self.p_this.getVertexCount()
+		
+	def __getitem__(self, unsigned int index):
+		if index < len(self):
+			return wrap_vertex(&self.p_this[0][index], False)
+		else:
+			raise IndexError
+		
+	def __setitem__(self, unsigned int index, Vertex key):
+		self.p_this[0][index] = key.p_this[0]
+		
+	def clear(self):
+		self.p_this.clear()
+		
+	def resize(self, unsigned int vertex_count):
+		self.p_this.resize(vertex_count)
+		
+	def append(self, Vertex vertex):
+		self.p_this.append(vertex.p_this[0])
+		
+	property primitive_type:
+		def __get__(self):
+			return self.p_this.getPrimitiveType()
+			
+		def __set__(self, dgraphics.primitivetype.PrimitiveType primitive_type):
+			self.p_this.setPrimitiveType(primitive_type)
+			
+	property bounds:
+		def __get__(self):
+			cdef dsystem.FloatRect p = self.p_this.getBounds()
+			return floatrect_to_rectangle(&p)
+
 
 cdef class View:
 	cdef dgraphics.View  *p_this
