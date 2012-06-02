@@ -2323,8 +2323,6 @@ cdef class Vertex:
 	def __init__(self, position=None, Color color=None, tex_coords=None):
 		self.p_this = new dgraphics.Vertex()
 		
-		self.m_color = wrap_color(&self.p_this.color)
-		
 		if position: self.position = position
 		if color: self.color = color
 		if tex_coords: self.tex_coords = tex_coords
@@ -2341,11 +2339,13 @@ cdef class Vertex:
 		
 	property color:
 		def __get__(self):
-			return self.m_color
-			
+			cdef dgraphics.Color *p = new dgraphics.Color()
+			p[0] = self.p_this.color
+			return wrap_color(p)
+
 		def __set__(self, Color color):
-			self.p_this.color = color.p_this[0]
-		
+			self.p_this.color = color.p_this[0]	
+
 	property tex_coords:
 		def __get__(self):
 			return Position(self.p_this.texCoords.x, self.p_this.texCoords.y)
@@ -2353,6 +2353,10 @@ cdef class Vertex:
 		def __set__(self, tex_coords):
 			self.p_this.texCoords.x, self.p_this.texCoords.y = tex_coords
 
+cdef Vertex wrap_vertex(dgraphics.Vertex* p):
+	cdef Vertex r = Vertex.__new__(Vertex)
+	r.p_this = p
+	return r
 
 cdef class View:
 	cdef dgraphics.View  *p_this
