@@ -2109,7 +2109,7 @@ cdef class Text(TransformableDrawable):
 		
 		if string: self.string = string
 		if font: self.font = font
-		self.character_size = 30
+		self.character_size = character_size
 
 	def __dealloc__(self):
 		del self.p_this
