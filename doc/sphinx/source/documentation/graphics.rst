@@ -1958,29 +1958,117 @@ Graphics
       
       :rtype: :class:`sf.Position`
       
+.. py:class:: VertexArray(sf.Drawable)
+
+   Define a set of one or more 2D primitives.
+
+   :class:`sf.VertexArray` is a very simple wrapper around a dynamic 
+   array of vertices and a primitives type.
+
+   It inherits :class:`sf.Drawable`, but unlike other drawables it is 
+   not transformable.
+
+   Example::
+   
+      lines = sf.VertexArray(sf.PrimitiveType.LINES_STRIP, 2)
+      lines[0].position = (10, 0)
+      lines[1].position = (20, 0)
+      
+      lines.append(sf.Vertex((30, 5)))
+      
+      lines.resize(4)
+      lines[3].position = (40, 2)
+
+      window.draw(lines)
+      
+   .. py:method:: VertexArray([type[, vertex_count]])
+   
+      Construct the vertex array with a type and an initial number of 
+      vertices.
+      
+      :param sf.PrimitiveType type: Type of primitives
+      :param integer vertex_count: Initial number of vertices in the array
+      
+   .. py:method:: __len__()
+   
+      Return the vertex count.
+      
+   .. py:method:: __getitem__(index)
+   
+      Get an access to a vertex by its index.
+
+   .. py:method:: __setitem__(index, vertex)
+   
+      Set a vertex by its index.
+
+   .. py:method:: clear()
+   
+      Clear the vertex array.
+
+      This method removes all the vertices from the array. It doesn't 
+      deallocate the corresponding memory, so that adding new vertices 
+      after clearing doesn't involve reallocating all the memory.
+
+   .. py:method:: resize(vertex_count)
+   
+      Resize the vertex array.
+
+      If *vertex_count* is greater than the current size, the previous 
+      vertices are kept and new (default-constructed) vertices are 
+      added. If *vertex_count* is less than the current size, existing 
+      vertices are removed from the array.
+
+   .. py:method:: append()
+   
+      Add a vertex to the array.
+   
+   .. py:attribute:: primitive_type:
+   
+      Set/get the type of primitives to draw.
+
+      This defines how the vertices must be interpreted when it's time 
+      to draw them: 
+
+         - As points
+         - As lines
+         - As triangles
+         - As quads
+         
+      The default primitive type is :const:`POINTS`.
+
+      :rtype: :class:`sf.PrimitiveType`
+      
+   .. py:attribute:: bounds
+   
+      Compute the bounding rectangle of the vertex array.
+
+      This returns the axis-aligned rectangle that contains all the 
+      vertices of the array.
+      
+      :rtype: :class:`sf.Rectangle`
       
 .. py:class:: RenderTarget
 
-      Base class for all render targets (window, texture, ...)
+   Base class for all render targets (window, texture, ...)
 
-      :class:`sf.RenderTarget` defines the common behaviour of all the 
-      2D render targets usable in the graphics module.
+   :class:`sf.RenderTarget` defines the common behaviour of all the 
+   2D render targets usable in the graphics module.
 
-      It makes it possible to draw 2D entities like sprites, shapes, 
-      text without using any OpenGL command directly.
+   It makes it possible to draw 2D entities like sprites, shapes, 
+   text without using any OpenGL command directly.
 
-      A :class:`sf.RenderTarget` is also able to use views 
-      (:class:`sf.View`), which are a kind of 2D cameras. With views 
-      you can globally scroll, rotate or zoom everything that is drawn, 
-      without having to transform every single entity. See the 
-      documentation of :class:`sf.View` for more details and sample 
-      pieces of code about this class.
+   A :class:`sf.RenderTarget` is also able to use views 
+   (:class:`sf.View`), which are a kind of 2D cameras. With views 
+   you can globally scroll, rotate or zoom everything that is drawn, 
+   without having to transform every single entity. See the 
+   documentation of :class:`sf.View` for more details and sample 
+   pieces of code about this class.
 
-      On top of that, render targets are still able to render direct 
-      OpenGL stuff. It is even possible to mix together OpenGL calls 
-      and regular SFML drawing commands. When doing so, make sure that 
-      OpenGL states are not messed up by calling the 
-      :func:`push_GL_states`/:func:`pop_GL_states` functions.
+   On top of that, render targets are still able to render direct 
+   OpenGL stuff. It is even possible to mix together OpenGL calls 
+   and regular SFML drawing commands. When doing so, make sure that 
+   OpenGL states are not messed up by calling the 
+   :func:`push_GL_states`/:func:`pop_GL_states` functions.
 
    .. py:method:: RenderTarget()
       
