@@ -9,7 +9,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
-	cdef struct CurrentTextureType
+	cdef struct CurrentTextureType:
+		pass
+	
+	cdef CurrentTextureType CurrentTexture
 	
 	cdef enum Type:
 		Vertex
