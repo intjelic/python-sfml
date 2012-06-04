@@ -1830,10 +1830,73 @@ Graphics
       :return: Position of the index-th point of the shape
       :rtype: :class:`sf.Position`
       
-      
+   
+.. py:class:: Vertex
 
+   Define a point with color and texture coordinates.
+
+   A vertex is an improved point.
+
+   It has a position and other extra attributes that will be used for 
+   drawing: in pySFML, vertices also have a color and a pair of 
+   texture coordinates.
+
+   The vertex is the building block of drawing. Everything which is 
+   visible on screen is made of vertices. They are grouped as 2D 
+   primitives (triangles, quads, ...), and these primitives are 
+   grouped to create even more complex 2D entities such as sprites, 
+   texts, etc.
+
+   If you use the graphical entities of pySFML (sprite, text, shape) 
+   you won't have to deal with vertices directly. But if you want to 
+   define your own 2D entities, such as tiled maps or particle 
+   systems, using vertices will allow you to get maximum performances.
+
+   Example ::
+
+      # define a 100x100 square, red, with a 10x10 texture mapped on it
+      sf.Vertex(sf.Position(  0,   0), sf.Color.RED, sf.Position( 0,  0))
+      sf.Vertex(sf.Position(  0, 100), sf.Color.RED, sf.Position( 0, 10))
+      sf.Vertex(sf.Position(100, 100), sf.Color.RED, sf.Position(10, 10))
+      sf.Vertex(sf.Position(100,   0), sf.Color.RED, sf.Position(10,  0))
+
+      # all arguments are optional
+      sf.Vertex()
+      sf.Vertex(color=sf.Color.RED)
+      sf.Vertex((50, 100), sf.Color.BLUE)
+      sf.Vertex(tex_coords=(20, 20))
+         
+   Note: although texture coordinates are supposed to be an integer 
+   amount of pixels, their type is float because of some buggy 
+   graphics drivers that are not able to process integer coordinates 
+   correctly.
+
+   .. py:method:: Vertex([position[, color[, tex_coords]]])
+
+      Construct the vertex from its position, color and texture 
+      coordinates.
       
+      :param sf.Position position: :class:`Vertex` position
+      :param sf.Color color: :class:`Vertex` color
+      :param sf.Position tex_coords: :class:`Vertex` texture coordinates
       
+   .. py:attribute:: position
+
+      2D position of the vertex 
+      
+      :rtype: :class:`sf.Position`
+      
+   .. py:attribute:: color
+
+      Color of the vertex. 
+      
+      :rtype: :class:`sf.Color`
+      
+   .. py:attribute:: tex_coords
+
+      Coordinates of the texture's pixel to map to the vertex. 
+      
+      :rtype: :class:`sf.Position`
       
       
 .. py:class:: RenderTarget
