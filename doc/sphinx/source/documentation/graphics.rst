@@ -3,6 +3,29 @@ Graphics
 
 .. module:: sf
 
+
+.. py:class:: BlendMode
+
+   Empty class that defines some constants. These are the available 
+   blending modes for drawing. 
+   
+   .. py:data:: BLEND_ALPHA
+   
+      Pixel = Source * Source.a + Dest * (1 - Source.a) 
+      
+   .. py:data:: BLEND_ADD
+
+      Pixel = Source + Dest.
+
+   .. py:data:: BLEND_MULTIPLY
+   
+      Pixel = Source * Dest. 
+
+   .. py:data:: BLEND_NONE
+      
+      Pixel = Source. 
+      
+
 .. py:class:: Color
 
       Utility class for manpulating RGBA colors.
