@@ -1042,8 +1042,6 @@ Graphics
       :rtype: :class:`sf.Font`
 
 
-
-
 .. py:class:: Shader
    
    :class:`Shader` class (vertex and fragment)
@@ -1083,64 +1081,112 @@ Graphics
       Those specific constructors are: :func:`load_from_file` and 
       :func:`load_from_memory`.
       
-   .. py:data:: VERTEX
-   
-      Vertex shader. 
-      
-   .. py:data:: FRAGMENT
-   
-      Fragment (pixel) shader. 
-      
-   .. py:classmethod:: load_from_file(filename, type)
-         
-      Load either the vertex or fragment shader from a file.
+   .. py:classmethod:: load_from_file(vertex_filename, fragment_filename)
 
-      This function loads a single shader, either vertex or fragment, 
-      identified by the second argument. The source must be a text file 
-      containing a valid shader in GLSL language. GLSL is a C-like 
-      language dedicated to OpenGL shaders; you'll probably need to 
-      read a good documentation for it before writing your own shaders.
-      
-      This function raises an exception if it fails.
-      
-      :raise: :exc:`sf.SFMLException` - If it fails.
-      :param string filename: Path of the vertex or fragment shader file to load.
-      :param type: Type of shader (vertex or fragment)
-      :type type: :class:`sf.Shader`'s constant
+      Load both the vertex and fragment shaders from files.
+
+      This function loads both the vertex and the fragment shaders. If 
+      one of them fails to load, the error :exc:`IOError` is raised. The 
+      sources must be text files containing valid shaders in GLSL 
+      language. GLSL is a C-like language dedicated to OpenGL shaders; 
+      you'll probably need to read a good documentation for it before 
+      writing your own shaders.
+
+      :raise: :exc:`IOError` - If loading does not succeed
+      :param string vertex_filename: Path of the vertex or fragment shader file to load
+      :param string fragment_filename: Path of the fragment shader file to load
       :rtype: :class:`sf.Shader`
       
-   .. py:classmethod:: load_from_memory(data, type)
+   .. py:classmethod:: load_vertex_from_file(filename)
          
-      Load either the vertex or fragment shader from a source code in 
+      Load a vertex shader from a file.
+
+      This function loads a single vertex shader. The source must be a 
+      text file containing a valid shader in GLSL language. GLSL is a 
+      C-like language dedicated to OpenGL shaders; you'll probably need 
+      to read a good documentation for it before writing your own 
+      shaders.
+      
+      :raise: :exc:`IOError` - If loading does not succeed
+      :param string filename: Path of the vertex file to load 
+      :rtype: :class:`sf.Shader`
+      
+   .. py:classmethod:: load_fragment_from_file(filename)
+         
+      Load a fragment shader from a file.
+
+      This function loads a single fragment shader. The source must be a 
+      text file containing a valid shader in GLSL language. GLSL is a 
+      C-like language dedicated to OpenGL shaders; you'll probably need 
+      to read a good documentation for it before writing your own 
+      shaders.
+
+      :raise: :exc:`IOError` - If loading does not succeed
+      :param string filename: Path of the vertex file to load 
+      :rtype: :class:`sf.Shader`
+      
+   .. py:classmethod:: load_from_memory(vertex_shader, fragment_shader)
+   
+      Load both the vertex and fragment shaders from source codes in 
       memory.
 
-      This function loads a single shader, either vertex or fragment, 
-      identified by the second argument. The source code must be a 
-      valid shader in GLSL language. GLSL is a C-like language 
+      This function loads both the vertex and the fragment shaders. If 
+      one of them fails to load, the error :exc:`IOError` is raised. 
+      The sources must be valid shaders in GLSL language. GLSL is a 
+      C-like language dedicated to OpenGL shaders; you'll probably need 
+      to read a good documentation for it before writing your own 
+      shaders.
+
+      :raise: :exc:`IOError` - If loading does not succeed
+      :param string vertex_shader: String containing the source code of the vertex shader 
+      :param string fragment_shader: String containing the source code of the fragment shader 
+      :rtype: :class:`sf.Shader`
+      
+   .. py:classmethod:: load_vertex_from_memory(shader)
+         
+      Load either a vertex shader from a source code in memory.
+
+      This function loads a single vertex shader. The source code must 
+      be a valid shader in GLSL language. GLSL is a C-like language 
       dedicated to OpenGL shaders; you'll probably need to read a good 
       documentation for it before writing your own shaders.
 
-      This function raises an exception if it fails.
-      
-      :raise: :exc:`sf.SFMLException` - If it fails.
-      :param bytes data: String containing the source code of the shader 
-      :param type: Type of shader (vertex or fragment)
-      :type type: :class:`sf.Shader`'s constant
+      :raise: :exc:`IOError` - If loading does not succeed
+      :param string shader: String containing the source code of the shader 
       :rtype: :class:`sf.Shader`
       
-   .. py:method:: set_parameter()
+   .. py:classmethod:: load_fragment_from_memory(shader)
    
-      .. note::
-         
-         Not implemented yet. It will be in the next realease.
-         
+      Load either a fragment shader from a source code in memory.
+
+      This function loads a single fragment shader. The source code must 
+      be a valid shader in GLSL language. GLSL is a C-like language 
+      dedicated to OpenGL shaders; you'll probably need to read a good 
+      documentation for it before writing your own shaders.
+
+      :raise: :exc:`IOError` - If loading does not succeed
+      :param string shader: String containing the source code of the shader 
+      :rtype: :class:`sf.Shader`
+      
+   .. py:method:: set_parameter(*args, **kwargs)
+   .. py:method:: set_1float_parameter(name, x)
+   .. py:method:: set_2float_parameter(name, x, y)
+   .. py:method:: set_3float_parameter(name, x, y, z)
+   .. py:method:: set_4float_parameter(name, x, y, z, w)
+   .. py:method:: set_vector2_paramater(name, vector2)
+   .. py:method:: set_vector3_paramater(name, vector3)
+   .. py:method:: set_color_parameter(name, color)
+   .. py:method:: set_transform_parameter(name, transform)
+   .. py:method:: set_texture_parameter(name, texture)
+   .. py:method:: set_currenttexturetype_parameter(name)
+    
    .. py:method:: bind()
    
       Bind the shader for rendering (activate it)
 
       This function is normally for internal use only, unless you want 
       to use the shader with a custom OpenGL rendering instead of a 
-      SFML drawable. ::
+      pySFML drawable. ::
       
          window.active = True
          shader.bind()
@@ -1153,7 +1199,7 @@ Graphics
 
       This function is normally for internal use only, unless you want 
       to use the shader with a custom OpenGL rendering instead of a 
-      SFML drawable.
+      pySFML drawable.
       
       
 .. py:class:: RenderStates
