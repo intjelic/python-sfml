@@ -25,6 +25,43 @@ Graphics
       
       Pixel = Source. 
       
+.. py:class:: PrimitiveType
+
+   Empty class that defines some constants. The are the types of 
+   primitives that a :class:`sf.VertexArray` can render.
+
+   :const:`POINTS` and :class:`LINES` have no area, therefore their 
+   thickness will always be 1 pixel, regarldess the current transform 
+   and view. 
+
+   .. py:data:: POINTS
+
+      List of individual points.
+      
+   .. py:data:: LINES
+   
+      List of individual lines. 
+
+   .. py:data:: LINES_STRIP
+
+      List of connected lines, a point uses the previous point to form a line. 
+
+   .. py:data:: TRIANGLES
+   
+      List of individual triangles.
+      
+   .. py:data:: TRIANGLES_STRIP
+   
+      List of connected triangles, a point uses the two previous points to form a triangle.
+      
+   .. py:data:: TRIANGLES_FAN
+   
+      List of connected triangles, a point uses the common center and the previous point to form a triangle. 
+      
+   .. py:data:: QUADS
+   
+      List of individual quads. 
+
 
 .. py:class:: Color
 
