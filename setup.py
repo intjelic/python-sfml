@@ -17,37 +17,53 @@ USE_CYTHON = True
 if USE_CYTHON:
 	import Cython.Distutils
 
-	x11_source = 'src/sfml/graphics/x11.pyx'
-	graphics_source = 'src/sfml/graphics/graphics.pyx'
-	audio_source = 'src/sfml/audio/audio.pyx'
-	network_source = 'src/sfml/network/network.pyx'
+	x11_source = 'src/sfml/x11.pyx'
+	system_source = 'src/sfml/system.pyx'
+	window_source = 'src/sfml/window.pyx'
+	graphics_source = 'src/sfml/graphics.pyx'
+	audio_source = 'src/sfml/audio.pyx'
+	network_source = 'src/sfml/network.pyx'
 	
 else:
-	x11_source = 'src/sfml/graphics/x11.cpp'
-	graphics_source = 'src/sfml/graphics/graphics.cpp'
-	audio_source = 'src/sfml/audio/audio.cpp'
-	network_source = 'src/sfml/network/network.cpp'
+	x11_source = 'src/sfml/x11.cpp'
+	system_source = 'src/sfml/system.cpp'
+	window_source = 'src/sfml/window.cpp'
+	graphics_source = 'src/sfml/graphics.cpp'
+	audio_source = 'src/sfml/audio.cpp'
+	network_source = 'src/sfml/network.cpp'
 	
 x11 = Extension('sfml.graphics.x11', 
 				[x11_source],
 				language='c++',
 				libraries=['X11'])
 
-graphics = Extension('sfml.graphics.graphics', 
-					[graphics_source, 'src/sfml/graphics/derivablewindow.cpp', 'src/sfml/graphics/derivablerenderwindow.cpp', 'src/sfml/graphics/derivabledrawable.cpp'], 
-					['src/sfml/system', 'src/sfml/window'], 
+system = Extension('sfml.system', 
+					[system_source], 
+					['include', 'src/sfml'], 
+					language='c++', 
+					libraries=['sfml-system', 'sfml-graphics'])
+					
+window = Extension('sfml.window', 
+					[window_source, 'src/sfml/derivablewindow.cpp'], 
+					['include', 'src/sfml'], 
+					language='c++', 
+					libraries=['sfml-system', 'sfml-window'])
+					
+graphics = Extension('sfml.graphics', 
+					[graphics_source, 'src/sfml/derivablerenderwindow.cpp', 'src/sfml/derivabledrawable.cpp'],
+					['include', 'src/sfml'], 
 					language='c++', 
 					libraries=['sfml-system', 'sfml-window', 'sfml-graphics'])
 
-audio = Extension('sfml.audio.audio', 
-					[audio_source, 'src/sfml/audio/derivablesoundrecorder.cpp'], 
-					['src/sfml/system'], 
+audio = Extension('sfml.audio', 
+					[audio_source, 'src/sfml/derivablesoundrecorder.cpp'], 
+					['include', 'src/sfml'], 
 					language='c++',
 					libraries=['sfml-system', 'sfml-audio'])
 
-network = Extension('sfml.network.network', 
+network = Extension('sfml.network', 
 					[network_source], 
-					['src/sfml/system'], 
+					['include', 'src/sfml'], 
 					language='c++', 
 					libraries=['sfml-system', 'sfml-network'])
 
@@ -57,9 +73,9 @@ with open('README', 'r') as f:
 major, minor, micro, releaselevel, serial = sys.version_info
     
 kwargs = dict(name='pySFML2',
-			ext_modules=[x11, graphics, audio, network],
+			ext_modules=[x11, system, window, graphics, audio, network],
 			package_dir={'': 'src'},
-			packages=['sfml', 'sfml.system', 'sfml.window', 'sfml.graphics', 'sfml.audio', 'sfml.network'],
+			packages=['sfml'],
 			version='1.0.0',
 			description='A non-official Python binding for SFML2',
 			long_description=long_description,
