@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sfml.graphics as sf
+import sfml as sf
 
 window = sf.RenderWindow(sf.VideoMode(640, 480), "pySFML - sf.Text")
 window.clear(sf.Color.RED)

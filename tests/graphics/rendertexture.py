@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sfml.graphics as sf
+import sfml as sf
 from rendertarget import test_rendertarget
 
 window = sf.RenderWindow(sf.VideoMode(640, 480), "pySFML - sf.RenderTexture")

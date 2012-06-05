@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sfml.graphics as sf
+import sfml as sf
 
 class MyDrawable(sf.Drawable):
 	def __init__(self):
@@ -37,7 +37,7 @@ input()
 window = sf.RenderWindow(sf.VideoMode(600, 600), "pySFML - Drawable")
 mydrawable = MyDrawable()
 
-myshader = sf.Shader.load_from_file("../data/wave.vert", sf.Shader.VERTEX)
+myshader = sf.Shader.load_vertex_from_file("../data/wave.vert")
 mytexture = sf.Texture.load_from_file("../data/sfml.png")
 renderstates = sf.RenderStates(texture=mytexture, shader=myshader)
 renderstates.transform.rotate(45)

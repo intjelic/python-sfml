@@ -16,14 +16,14 @@ print(foo.transform)
 print(foo.texture)
 print(foo.shader)
 
-texture = sf.Texture.load_from_file("data/background.jpg")
-shader = sf.Shader.load_from_file("data/wave.vert", sf.Shader.VERTEX)
+texture = sf.Texture.load_from_file("../data/background.jpg")
+shader = sf.Shader.load_vertex_from_file("../data/wave.vert")
 
 print(texture)
 print(shader)
 
 try:
-	image = sf.Image.load_from_file("data/background.jpg")
+	image = sf.Image.load_from_file("../data/background.jpg")
 	foo.texture = image
 
 except TypeError:
