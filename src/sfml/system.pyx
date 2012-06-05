@@ -52,7 +52,7 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 
 	def __init__(self):
 		self.p_this = new dsystem.Time()
-
+		
 	def __dealloc__(self):
 		del self.p_this
 
@@ -90,8 +90,7 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 
 	property seconds:
 		def __get__(self):
-			raise SFMLException()
-			#return self.p_this.asSeconds()
+			return self.p_this.asSeconds()
 
 		def __set__(self, float seconds):
 			self.p_this[0] = dsystem.seconds(seconds)

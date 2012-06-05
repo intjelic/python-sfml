@@ -140,7 +140,7 @@ cdef class SoundBuffer:
 		if p.loadFromFile(encoded_filename): return wrap_soundbuffer(p)
 		
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 
 	@classmethod
 	def load_from_memory(cls, bytes data):
@@ -149,7 +149,7 @@ cdef class SoundBuffer:
 		if p.loadFromMemory(<char*>data, len(data)): return wrap_soundbuffer(p)
 
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 
 	#@classmethod
 	#def load_from_samples(cls, list samples, unsigned int channels_count, unsigned int sample_rate):
@@ -382,7 +382,7 @@ cdef class Music(SoundStream):
 		if p.openFromFile(encoded_filename): return wrap_music(p)
 		
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 
 	@classmethod
 	def open_from_memory(cls, bytes data):
@@ -391,7 +391,7 @@ cdef class Music(SoundStream):
 		if p.openFromMemory(<char*>data, len(data)): return wrap_music(p)
 
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 		
 	property duration:
 		def __get__(self):

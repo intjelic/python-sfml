@@ -18,7 +18,7 @@ def main(song):
     try:
         music = sf.Music.open_from_file(song)
         
-    except sf.SFMLException as error:
+    except IOError as error:
         print("An error occured during the loading data process:\n" + str(error))
         exit()
 
@@ -41,7 +41,7 @@ def main(song):
         hears_texture = sf.Texture.load_from_file("data/head_kid.png")
         speaker_texture = sf.Texture.load_from_file("data/speaker.gif")
         
-    except sf.SFMLException as error:
+    except IOError as error:
         print("An error occured during the loading data process:\n" + str(error))
         exit()
         

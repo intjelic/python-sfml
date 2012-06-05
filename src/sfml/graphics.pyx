@@ -329,7 +329,7 @@ cdef class Image:
 			return wrap_image(p)
 			
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 
 	@classmethod
 	def load_from_memory(cls, bytes data):
@@ -339,7 +339,7 @@ cdef class Image:
 			return wrap_image(p)
 			
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 
 	def save_to_file(self, filename):
 		cdef char* encoded_filename	
@@ -347,7 +347,7 @@ cdef class Image:
 		encoded_filename_temporary = filename.encode('UTF-8')	
 		encoded_filename = encoded_filename_temporary
 
-		if not self.p_this.saveToFile(encoded_filename): raise SFMLException()
+		if not self.p_this.saveToFile(encoded_filename): raise IOError(pop_error_message())
 	
 	property size:
 		def __get__(self):
@@ -441,7 +441,7 @@ cdef class Texture:
 			if p.loadFromMemory(<char*>data, len(data), dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
 	
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 		
 	@classmethod
 	def load_from_image(cls, Image image, area=None):
@@ -454,7 +454,7 @@ cdef class Texture:
 			if p.loadFromImage(image.p_this[0], dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
 		
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 
 	property size:
 		def __get__(self):
@@ -603,8 +603,8 @@ cdef class Font:
 			return wrap_font(p)
 
 		del p
-		raise SFMLException()
-
+		raise IOError(pop_error_message())
+		
 	@classmethod
 	def load_from_memory(cls, bytes data):
 		cdef dgraphics.Font *p = new dgraphics.Font()
@@ -613,7 +613,7 @@ cdef class Font:
 			return wrap_font(p)
 			
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 
 	def get_glyph(self, Uint32 code_point, unsigned int character_size, bint bold):
 		cdef dgraphics.Glyph *p = new dgraphics.Glyph()
@@ -668,7 +668,7 @@ cdef class Shader:
 			return wrap_shader(p)
 		
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 		
 	@classmethod
 	def load_vertex_from_file(cls, filename):
@@ -682,7 +682,7 @@ cdef class Shader:
 			return wrap_shader(p)
 		
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 		
 	@classmethod
 	def load_fragment_from_file(cls, filename):
@@ -696,7 +696,7 @@ cdef class Shader:
 			return wrap_shader(p)
 		
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 		
 	@classmethod
 	def load_from_memory(cls, char* vertex, char* fragment):
@@ -706,7 +706,7 @@ cdef class Shader:
 			return wrap_shader(p)
 			
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 		
 	@classmethod
 	def load_vertex_from_memory(cls, char* vertex):
@@ -716,7 +716,7 @@ cdef class Shader:
 			return wrap_shader(p)
 			
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 		
 	@classmethod
 	def load_fragment_from_memory(cls, char* fragment):
@@ -726,7 +726,7 @@ cdef class Shader:
 			return wrap_shader(p)
 			
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 
 	def set_parameter(self, *args, **kwargs):
 		if len(args) == 0:

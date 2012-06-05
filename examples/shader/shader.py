@@ -55,7 +55,7 @@ class Pixelate(Effect):
 			self.shader = sf.Shader.load_fragment_from_file("data/pixelate.frag")
 			self.shader.set_parameter("texture")
 			
-		except sf.SFMLException as error:
+		except IOError as error:
 			print("An error occured: {0}".format(error))
 			exit(1)
 			
@@ -83,7 +83,7 @@ class WaveBlur(Effect):
 			# load the shader
 			self.shader = sf.Shader.load_from_file("data/wave.vert", "data/blur.frag")
 			
-		except sf.SFMLException as error:
+		except IOError as error:
 			print("An error occured: {0}".format(error))
 			exit(1)
 			
@@ -121,7 +121,7 @@ class StormBlink(Effect):
 			# load the shader
 			self.shader = sf.Shader.load_from_file("data/storm.vert", "data/blink.frag")
 			
-		except sf.SFMLException as error:
+		except IOError as error:
 			print("An error occured: {0}".format(error))
 			exit(1)
 		
@@ -210,7 +210,7 @@ if __name__ == "__main__":
 	try:
 		text_background_texture = sf.Texture.load_from_file("data/text-background.png")
 	
-	except sf.SFMLException as error:
+	except IOError as error:
 		print("An error occured: {0}".format(error))
 		exit(1)
 		
@@ -222,7 +222,7 @@ if __name__ == "__main__":
 	try:
 		font = sf.Font.load_from_file("data/sansation.ttf")
 	
-	except sf.SFMLException as error:
+	except IOError as error:
 		print("An error occured: {0}".format(error))
 		exit(1)
 		
