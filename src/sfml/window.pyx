@@ -30,7 +30,6 @@ __all__ = ['Style', 'Event', 'SizeEvent', 'KeyEvent', 'TextEvent',
 			'Pixels', 'Window', 'Keyboard', 'Joystick', 'Mouse', 
 			'Context']
 			
-
 cdef dsystem.Vector2i position_to_vector2i(position):
 	x, y = position
 	return dsystem.Vector2i(x, y)

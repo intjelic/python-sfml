@@ -20,6 +20,8 @@ from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 cimport dsystem, dnetwork
 
+from sfml.system import SFMLException, pop_error_message, push_error_message
+
 cdef extern from "system.h":
 
 	cdef class sfml.system.Time [object PyTimeObject]:

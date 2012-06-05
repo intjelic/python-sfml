@@ -8,7 +8,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#cimport cython
+cimport cython
+from libcpp.string cimport string
+from libcpp.vector cimport vector
 
 cimport dsystem
 from dsystem cimport Int8, Int16, Int32, Int64
@@ -21,13 +23,26 @@ from sfml.rectangle import Rectangle
 __all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds', 
 			'milliseconds', 'microseconds', 'Position', 'Size', 
 			'Rectangle']
-			
+
+dsystem.replace_error_handler()
+
+def pop_error_message():
+	message = dsystem.get_last_error_message().c_str()
+	message = message.decode('utf-8')
+	return message
+	
+def push_error_message(message):
+	raise NotImplementedError
+	
 class SFMLException(Exception):
-	def __init__(self, value=None):
-		self.value = value
-		
+	def __init__(self, message=None):
+		if not message: message = pop_error_message()
+		self.message = message
+			
+		Exception.__init__(self, message)
+
 	def __str__(self):
-		return repr(self.value)
+		return repr(self.message)
 
 
 cdef public class Time[type PyTimeType, object PyTimeObject]:
@@ -75,7 +90,8 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 
 	property seconds:
 		def __get__(self):
-			return self.p_this.asSeconds()
+			raise SFMLException()
+			#return self.p_this.asSeconds()
 
 		def __set__(self, float seconds):
 			self.p_this[0] = dsystem.seconds(seconds)

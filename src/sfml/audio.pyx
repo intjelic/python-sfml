@@ -18,13 +18,8 @@ from dsystem cimport Vector3f
 
 cimport dsystem, daudio
 
-class SFMLException(Exception):
-	def __init__(self, value=None):
-		self.value = value
-		
-	def __str__(self):
-		return repr(self.value)
-		
+from sfml.system import SFMLException, pop_error_message, push_error_message
+
 ctypedef fused Vector3:
 	Vector
 	tuple

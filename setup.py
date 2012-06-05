@@ -12,7 +12,7 @@ import sys
 from distutils.core import setup
 from distutils.extension import Extension
 
-USE_CYTHON = True
+USE_CYTHON = False
 
 if USE_CYTHON:
 	import Cython.Distutils
@@ -38,7 +38,7 @@ x11 = Extension('sfml.graphics.x11',
 				libraries=['X11'])
 
 system = Extension('sfml.system', 
-					[system_source], 
+					[system_source, 'src/sfml/error.cpp'], 
 					['include', 'src/sfml'], 
 					language='c++', 
 					libraries=['sfml-system', 'sfml-graphics'])

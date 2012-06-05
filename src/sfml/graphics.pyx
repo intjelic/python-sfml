@@ -24,6 +24,7 @@ from sfml.position import Position
 from sfml.size import Size
 from sfml.rectangle import Rectangle
 
+from sfml.system import SFMLException, pop_error_message, push_error_message
 
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 
 			'Image', 'Texture', 'Glyph', 'Font', 'Shader', 
@@ -33,8 +34,6 @@ __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
 			'RenderTarget', 'RenderTexture', 'RenderWindow', 
 			'HandledWindow']
 			
-
-
 string_type = [bytes, unicode, str]
 numeric_type = [int, long, float, long]
 
@@ -60,16 +59,6 @@ cdef Pixels wrap_pixels(const_Uint8_ptr p, unsigned int w, unsigned int h):
 	r.p_array, r.m_width, r.m_height = p, w, h
 	return r
 	
-########################################################################
-########################################################################
-
-class SFMLException(Exception):
-	def __init__(self, value=None):
-		self.value = value
-		
-	def __str__(self):
-		return repr(self.value)
-		
 ########################################################################
 #################    DIRTY COPY FROM SYSTEM.PYX    #####################
 ########################################################################
@@ -338,7 +327,7 @@ cdef class Image:
 
 		if p.loadFromFile(encoded_filename):
 			return wrap_image(p)
-
+			
 		del p
 		raise SFMLException()
 
@@ -439,7 +428,7 @@ cdef class Texture:
 			if p.loadFromFile(encoded_filename, dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
 			
 		del p
-		raise SFMLException()
+		raise IOError(pop_error_message())
 
 	@classmethod
 	def load_from_memory(cls, bytes data, area=None):
