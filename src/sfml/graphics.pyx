@@ -9,26 +9,104 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 cimport cython
-from cython.operator cimport dereference as deref, preincrement as inc
+from cython.operator cimport dereference as deref
+from cython.operator cimport preincrement as inc
 
 from libcpp.vector cimport vector
 
-
+cimport dsystem, dwindow, dgraphics
 from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 from dsystem cimport const_Uint8_ptr
 
-cimport dsystem, dwindow, dgraphics
+from sfml.position import Position
+from sfml.size import Size
+from sfml.rectangle import Rectangle
 
-from sfml.system.position import Position
-from sfml.system.size import Size
-from sfml.system.rectangle import Rectangle
+
+__all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 
+			'Image', 'Texture', 'Glyph', 'Font', 'Shader', 
+			'RenderStates', 'Drawable', 'Transformable', 'Sprite', 
+			'Text', 'Shape', 'CircleShape', 'ConvexShape', 
+			'RectangleShape', 'Vertex', 'VertexArray', 'View', 
+			'RenderTarget', 'RenderTexture', 'RenderWindow', 
+			'HandledWindow']
+			
 
 
 string_type = [bytes, unicode, str]
 numeric_type = [int, long, float, long]
 
+
+cdef extern from "window.h":
+	cdef class sfml.window.Window [object PyWindowObject]:
+		cdef dwindow.Window *p_window
+		
+	cdef class sfml.window.VideoMode [object PyVideoModeObject]:
+		cdef dwindow.VideoMode *p_this
+		
+	cdef class sfml.window.ContextSettings [object PyContextSettingsObject]:
+		cdef dwindow.ContextSettings *p_this
+		
+	cdef class sfml.window.Pixels [object PyPixelsObject]:
+		cdef const_Uint8_ptr p_array
+		cdef unsigned int    m_width
+		cdef unsigned int    m_height
+
+
+cdef Pixels wrap_pixels(const_Uint8_ptr p, unsigned int w, unsigned int h):
+	cdef Pixels r = Pixels.__new__(Pixels)
+	r.p_array, r.m_width, r.m_height = p, w, h
+	return r
+	
+########################################################################
+########################################################################
+
+class SFMLException(Exception):
+	def __init__(self, value=None):
+		self.value = value
+		
+	def __str__(self):
+		return repr(self.value)
+		
+########################################################################
+#################    DIRTY COPY FROM SYSTEM.PYX    #####################
+########################################################################
+
+
+cdef dsystem.FloatRect rectangle_to_floatrect(rectangle):
+	l, t, w, h = rectangle
+	return dsystem.FloatRect(l, t, w, h)
+	
+cdef dsystem.IntRect rectangle_to_intrect(rectangle):
+	l, t, w, h = rectangle
+	return dsystem.IntRect(l, t, w, h)
+
+cdef dsystem.Vector2i position_to_vector2i(position):
+	x, y = position
+	return dsystem.Vector2i(x, y)
+	
+cdef dsystem.Vector2f position_to_vector2f(position):
+	x, y = position
+	return dsystem.Vector2f(x, y)
+
+cdef dsystem.Vector2u size_to_vector2u(size):
+	w, h = size
+	return dsystem.Vector2u(w, h)
+	
+cdef dsystem.Vector2f size_to_vector2f(size):
+	w, h = size
+	return dsystem.Vector2f(w, h)
+
+cdef object intrect_to_rectangle(dsystem.IntRect* intrect):
+	return Rectangle((intrect.left, intrect.top), (intrect.width, intrect.height))
+
+cdef object floatrect_to_rectangle(dsystem.FloatRect* floatrect):
+	return Rectangle((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
+	
+########################################################################
+########################################################################
 
 class BlendMode:
 	BLEND_ALPHA = dgraphics.blendmode.BlendAlpha
@@ -214,24 +292,6 @@ cdef Transform wrap_transform(dgraphics.Transform *p, bint d=True):
 	r.delete_this = d
 	return r
 
-
-cdef class Pixels:
-	cdef const_Uint8_ptr p_array
-	cdef unsigned int    m_width
-	cdef unsigned int    m_height
-	
-	def __init__(self):
-		raise UserWarning("Not meant to be constructed")
-	
-	def __getitem__(self, unsigned int index):
-		return self.p_this[index]
-
-
-cdef Pixels wrap_pixels(const_Uint8_ptr p, unsigned int w, unsigned int h):
-	cdef Pixels r = Pixels.__new__(Pixels)
-	r.p_array, r.m_width, r.m_height = p, w, h
-	return r
-	
 
 cdef class Image:
 	cdef dgraphics.Image *p_this
@@ -457,7 +517,7 @@ cdef class Texture:
 			#x, y = position
 			#self.p_this.update(window.p_this[0], x, y)
 			raise NotImplementedError("Not implemented due to a bug in Cython, see task #77 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
-			
+
 	def bind(self, dgraphics.texture.CoordinateType coordinate_type=dgraphics.texture.Normalized):
 		self.p_this.bind(coordinate_type)
 
@@ -897,6 +957,7 @@ cdef api object api_wrap_renderstates(dgraphics.RenderStates *p):
 	else: r.m_shader = None
 	return r
 
+
 cdef class Drawable:
 	cdef dgraphics.Drawable *p_drawable
 	
@@ -907,7 +968,6 @@ cdef class Drawable:
 			self.p_drawable = <dgraphics.Drawable*>new dgraphics.DerivableDrawable(<void*>self)
 			
 	def draw(self, target, states): pass
-	
 	
 cdef class Transformable:
 	cdef dgraphics.Transformable *p_this

@@ -5,7 +5,7 @@ DerivableSoundRecorder::DerivableSoundRecorder(void* pyobj):
 sf::SoundRecorder (),
 m_pyobj           (static_cast<PyObject*>(pyobj))
 {
-	import_sfml__audio__audio(); // make sure the audio module is imported
+	import_sfml__audio(); // make sure the audio module is imported
 };
 
 bool DerivableSoundRecorder::onStart()

@@ -8,14 +8,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#cimport cython
+
 cimport dsystem
 from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
-from sfml.system.position import Position
-from sfml.system.size import Size
-from sfml.system.rectangle import Rectangle
+from sfml.position import Position
+from sfml.size import Size
+from sfml.rectangle import Rectangle
 
+__all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds', 
+			'milliseconds', 'microseconds', 'Position', 'Size', 
+			'Rectangle']
+			
 class SFMLException(Exception):
 	def __init__(self, value=None):
 		self.value = value
@@ -23,7 +29,8 @@ class SFMLException(Exception):
 	def __str__(self):
 		return repr(self.value)
 
-cdef public class Time[type Py_TimeType, object Py_TimeObject]:
+
+cdef public class Time[type PyTimeType, object PyTimeObject]:
 	ZERO = wrap_time(<dsystem.Time*>&dsystem.time.Zero)
 
 	cdef dsystem.Time *p_this
@@ -143,33 +150,3 @@ def microseconds(Int64 amount):
 	cdef dsystem.Time* p = new dsystem.Time()
 	p[0] = dsystem.microseconds(amount)
 	return wrap_time(p)
-
-cdef dsystem.FloatRect rectangle_to_floatrect(rectangle):
-	l, t, w, h = rectangle
-	return dsystem.FloatRect(l, t, w, h)
-	
-cdef dsystem.IntRect rectangle_to_intrect(rectangle):
-	l, t, w, h = rectangle
-	return dsystem.IntRect(l, t, w, h)
-
-cdef dsystem.Vector2i position_to_vector2i(position):
-	x, y = position
-	return dsystem.Vector2i(x, y)
-	
-cdef dsystem.Vector2f position_to_vector2f(position):
-	x, y = position
-	return dsystem.Vector2f(x, y)
-
-cdef dsystem.Vector2u size_to_vector2u(size):
-	w, h = size
-	return dsystem.Vector2u(w, h)
-	
-cdef dsystem.Vector2f size_to_vector2f(size):
-	w, h = size
-	return dsystem.Vector2f(w, h)
-
-cdef object intrect_to_rectangle(dsystem.IntRect* intrect):
-	return Rectangle((intrect.left, intrect.top), (intrect.width, intrect.height))
-
-cdef object floatrect_to_rectangle(dsystem.FloatRect* floatrect):
-	return Rectangle((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))

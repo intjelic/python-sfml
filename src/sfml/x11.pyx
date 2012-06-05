@@ -8,11 +8,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-cimport declx11
+cimport dx11
 
 # This function is needed to flush the screen when we integrate pySFML 
 # to PyQt
 def flush_screen(int d):
 	# cdef declx11.Display* myDisplay = declx11.XOpenDisplay(":0")
-	cdef declx11.Display* myDisplay = <declx11.Display*>d
-	declx11.XFlush(myDisplay)
+	cdef dx11.Display* myDisplay = <dx11.Display*>d
+	dx11.XFlush(myDisplay)

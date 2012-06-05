@@ -8,9 +8,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#from sfml.system import Position, Size
-from sfml.system.position import Position
-from sfml.system.size import Size
+#from sfml import Position, Size
+from sfml.position import Position
+from sfml.size import Size
 
 class Rectangle:
 	def __init__(self, position=(0, 0), size=(0, 0)):

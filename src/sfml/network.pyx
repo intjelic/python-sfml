@@ -8,7 +8,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from cython.operator cimport dereference as deref, preincrement as inc
+from cython.operator cimport dereference as deref
+from cython.operator cimport preincrement as inc
 
 from libc.stdlib cimport *
 from libcpp.string cimport string
@@ -19,6 +20,11 @@ from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 cimport dsystem, dnetwork
 
+cdef extern from "system.h":
+
+	cdef class sfml.system.Time [object PyTimeObject]:
+		cdef dsystem.Time *p_this
+		
 
 cdef class IpAddress:
 	cdef dnetwork.IpAddress *p_this
@@ -73,9 +79,9 @@ cdef class IpAddress:
 		return wrap_ipaddress(p)
 
 	@classmethod
-	def get_public_address(self, Uint32 timeout=0):		
+	def get_public_address(self, Time timeout):
 		cdef dnetwork.IpAddress* p = new dnetwork.IpAddress()
-		p[0] = dnetwork.ipaddress.getPublicAddress(dsystem.milliseconds(timeout))
+		p[0] = dnetwork.ipaddress.getPublicAddress(timeout.p_this[0])
 		return wrap_ipaddress(p)
 
 cdef wrap_ipaddress(dnetwork.IpAddress* p):

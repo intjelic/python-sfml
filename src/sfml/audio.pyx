@@ -24,7 +24,7 @@ class SFMLException(Exception):
 		
 	def __str__(self):
 		return repr(self.value)
-
+		
 ctypedef fused Vector3:
 	Vector
 	tuple
@@ -54,6 +54,7 @@ cdef Vector vector3f_to_vector(Vector3f* v):
 	r.y = v.y
 	r.z = v.z
 	return r
+	
 	
 cdef class Listener:
 	def __init__(self):
