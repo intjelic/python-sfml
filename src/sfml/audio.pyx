@@ -213,6 +213,9 @@ cdef class SoundSource:
 
 	cdef daudio.SoundSource *p_soundsource
 
+	def __init__(self, *args, **kwargs):
+		raise UserWarning("This class is not meant to be used directly")
+		
 	property pitch:
 		def __get__(self):
 			return self.p_soundsource.getPitch()
