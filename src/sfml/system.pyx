@@ -85,20 +85,32 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return Vector2(self.x - x, self.y - y)
 		
 	def __mul__(self, other):
-		x, y = other
-		return Vector2(self.x * x, self.y * y)
+		if type(other) in [int, float]:
+			return Vector2(self.x * other, self.y * other)
+		else:
+			x, y = other
+			return Vector2(self.x * x, self.y * y)
 		
 	def __truediv__(self, other):
-		x, y = other
-		return Vector2(self.x / x, self.y / y)
-		
+		if type(other) in [int, float]:
+			return Vector2(self.x / other, self.y / other)
+		else:
+			x, y = other
+			return Vector2(self.x / x, self.y / y)
+			
 	def __floordiv__(self, other):
-		x, y = other
-		return Vector2(self.x // x, self.y // y)
+		if type(other) in [int, float]:
+			return Vector2(self.x // other, self.y // other)
+		else:
+			x, y = other
+			return Vector2(self.x // x, self.y // y)
 
 	def __mod__(self, other):
-		x, y = other
-		return Vector2(self.x % x, self.y % y)
+		if type(other) in [int, float]:
+			return Vector2(self.x % other, self.y % other)
+		else:
+			x, y = other
+			return Vector2(self.x % x, self.y % y)
 		
 	def __divmod__(self, other):
 		return self // other, self % other
@@ -116,27 +128,47 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return self
 		
 	def __imul__(self, other):
-		x, y = other
-		self.x *= x
-		self.y *= y
+		if type(other) in [int, float]:
+			self.x *= other
+			self.y *= other
+		else:
+			x, y = other
+			self.x *= x
+			self.y *= y
+			
 		return self
 		
 	def __itruediv__(self, other):
-		x, y = other
-		self.x /= x
-		self.y /= y
+		if type(other) in [int, float]:
+			self.x /= other
+			self.y /= other
+		else:
+			x, y = other
+			self.x /= x
+			self.y /= y
+			
 		return self
 		
 	def __ifloordiv__(self, other):
-		x, y = other
-		self.x //= x
-		self.y //= y
+		if type(other) in [int, float]:
+			self.x //= other
+			self.y //= other
+		else:
+			x, y = other
+			self.x //= x
+			self.y //= y
+			
 		return self
 		
 	def __imod__(self, other):
-		x, y = other
-		self.x %= x
-		self.y %= y
+		if type(other) in [int, float]:
+			self.x %= other
+			self.y %= other
+		else:
+			x, y = other
+			self.x %= x
+			self.y %= y
+			
 		return self
 		
 	@classmethod
