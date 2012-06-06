@@ -72,34 +72,28 @@ cdef class Listener:
 	@classmethod
 	def set_direction(cls, direction):
 		x, y, z = direction
-		daudio.listener.setPosition(x, y, z)
-
+		daudio.listener.setDirection(x, y, z)
 
 cdef class Chunk:
 	cdef Int16* m_samples
 	cdef size_t m_sampleCount
 
-	#def __cinit__(self):
-		##print("Somewhere in time I will find you and haunt you again!")
-		#self.p_this = new daudio.Chunk()
+	def __len__(self):
+		return self.m_sampleCount
 		
-	#def __dealloc__(self):
-		#del self.p_this
+	def __getitem__(self, size_t key):
+		return self.m_samples[key]
 
-	def __init__(self): pass
-	def __dealloc__(self):
-		print("Chunk destroy!")
-	
-	def __repr__(self): pass
-	def __str__(self): pass
-
-	#def __len__(self):
-		#return self.p_this.sampleCount
+	#def as_bytes(self):
+		#cdef object r 
+		#if PY_VERSION_HEX >= 0x03000000:
+			#r = PyBytes_FromStringAndSize(<char*>self.m_samples, 2*self.m_samplecount)
+		#else:
+			#r = PyString_FromStringAndSize(<char*>self.m_samples, 2*self.m_samplecount)
+			
+		#return r
 		
-	#def __getitem__(self, size_t key):
-		#return self.p_this.samples[key]
-
-
+		
 cdef api object wrap_chunk(Int16* samples, unsigned int sample_count):
 	cdef Chunk r = Chunk.__new__(Chunk)
 	r.m_samples = samples
@@ -308,7 +302,7 @@ cdef class Sound(SoundSource):
 			return wrap_time(p)
 
 		def __set__(self, Time time_offset):
-			self.p_this.setPlayingOffset(time_offset[0])
+			self.p_this.setPlayingOffset(time_offset.p_this[0])
 
 	property status:
 		def __get__(self):
@@ -350,7 +344,7 @@ cdef class SoundStream(SoundSource):
 			return wrap_time(p)
 
 		def __set__(self, Time time_offset):
-			self.p_soundstream.setPlayingOffset(time_offset[0])
+			self.p_soundstream.setPlayingOffset(time_offset.p_this[0])
 			
 	property loop:
 		def __get__(self):
@@ -438,7 +432,7 @@ cdef class SoundRecorder:
 		print("sf.SoundRecorder.on_start()")
 		return True
 		
-	def on_process_samples(self, chunk, foo):
+	def on_process_samples(self, chunk):
 		print("sf.SoundRecorder.on_process_samples()")
 		return True
 	
