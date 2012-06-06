@@ -16,13 +16,8 @@ cimport dsystem
 from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
-from sfml.position import Position
-from sfml.size import Size
-from sfml.rectangle import Rectangle
-
 __all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds', 
-			'milliseconds', 'microseconds', 'Position', 'Size', 
-			'Rectangle']
+			'milliseconds', 'microseconds', 'Vector2', 'Vector3']
 
 dsystem.replace_error_handler()
 
@@ -43,6 +38,225 @@ class SFMLException(Exception):
 
 	def __str__(self):
 		return repr(self.message)
+
+
+cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
+	cdef public object x
+	cdef public object y
+
+	def __init__(self, x=0, y=0):
+		self.x = x
+		self.y = y
+		
+	def __repr__(self):
+		return "sf.Vector2({0})".format(self)
+
+	def __str__(self):
+		return "{0}x, {1}y".format(self.x, self.y)
+
+	def __richcmp__(Vector2 x, y, op):
+		x1, y1 = x
+		try: x2, y2 = y
+		except Exception: return False
+		
+		if op == 2: return x1 == x2 and y1 == y2
+		elif op == 3: return not (x1 == x2 and y1 == y2)
+		else: raise NotImplementedError
+
+	def __iter__(self):
+		return iter((self.x, self.y))
+
+	def __getitem__(self, key):
+		if key == 0: return self.x
+		elif key == 1: return self.y
+		else: raise IndexError
+
+	def __setitem__(self, key, value):
+		if key == 0: self.x = value
+		elif key == 1: self.y = value
+		else: raise IndexError
+		
+	def __add__(self, other):
+		x, y = other
+		return Vector2(self.x + x, self.y + y)
+
+	def __sub__(self, other):
+		x, y = other
+		return Vector2(self.x - x, self.y - y)
+		
+	def __mul__(self, other):
+		x, y = other
+		return Vector2(self.x * x, self.y * y)
+		
+	def __truediv__(self, other):
+		x, y = other
+		return Vector2(self.x / x, self.y / y)
+		
+	def __floordiv__(self, other):
+		x, y = other
+		return Vector2(self.x // x, self.y // y)
+
+	def __mod__(self, other):
+		x, y = other
+		return Vector2(self.x % x, self.y % y)
+		
+	def __divmod__(self, other):
+		return self // other, self % other
+		
+	def __iadd__(self, other):
+		x, y = other
+		self.x += x
+		self.y += y
+		return self
+		
+	def __isub__(self, other):
+		x, y = other
+		self.x -= x
+		self.y -= y
+		return self
+		
+	def __imul__(self, other):
+		x, y = other
+		self.x *= x
+		self.y *= y
+		return self
+		
+	def __itruediv__(self, other):
+		x, y = other
+		self.x /= x
+		self.y /= y
+		return self
+		
+	def __ifloordiv__(self, other):
+		x, y = other
+		self.x //= x
+		self.y //= y
+		return self
+		
+	def __imod__(self, other):
+		x, y = other
+		self.x %= x
+		self.y %= y
+		return self
+		
+	@classmethod
+	def from_tuple(cls, value):
+		x, y = value
+		return cls(x, y)
+		
+cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
+	cdef public object x
+	cdef public object y
+	cdef public object z
+
+	def __init__(self, x=0, y=0, z=0):
+		self.x = x
+		self.y = y
+		self.z = z
+		
+	def __repr__(self):
+		return "sf.Vector3({0})".format(self)
+
+	def __str__(self):
+		return "{0}x, {1}y, {2}z".format(self.x, self.y, self.z)
+		
+	def __richcmp__(Vector3 x, y, op):
+		x1, y1, z1 = x
+		try: x2, y2, z2 = y
+		except Exception: return False
+		
+		if op == 2: return x1 == x2 and y1 == y2 and z1 == z2
+		elif op == 3: return not (x1 == x2 and y1 == y2 and z1 == z2)
+		else: raise NotImplementedError
+
+	def __iter__(self):
+		return iter((self.x, self.y, self.z))
+
+	def __getitem__(self, key):
+		if key == 0: return self.x
+		elif key == 1: return self.y
+		elif key == 2: return self.z
+		else: raise IndexError
+
+	def __setitem__(self, key, value):
+		if key == 0: self.x = value
+		elif key == 1: self.y = value
+		elif key == 2: self.z = value
+		else: raise IndexError
+		
+	def __add__(self, other):
+		x, y, z = other
+		return Vector2(self.x + x, self.y + y, self.z + z)
+
+	def __sub__(self, other):
+		x, y, z = other
+		return Vector2(self.x - x, self.y - y, self.z - z)
+
+	def __mul__(self, other):
+		x, y, z = other
+		return Vector2(self.x * x, self.y * y, self.z * z)
+		
+	def __truediv__(self, other):
+		x, y, z = other
+		return Vector2(self.x / x, self.y / y, self.z / z)
+		
+	def __floordiv__(self, other):
+		x, y, z = other
+		return Vector2(self.x // x, self.y // y, self.z // z)
+
+	def __mod__(self, other):
+		x, y, z = other
+		return Vector2(self.x % x, self.y % y, self.z % z)
+		
+	def __divmod__(self, other):
+		return self // other, self % other
+		
+	def __iadd__(self, other):
+		x, y, z = other
+		self.x += x
+		self.y += y
+		self.z += z
+		return self
+		
+	def __isub__(self, other):
+		x, y, z = other
+		self.x -= x
+		self.y -= y
+		self.z -= z
+		return self
+		
+	def __imul__(self, other):
+		x, y, z = other
+		self.x *= x
+		self.y *= y
+		self.z *= z
+		return self
+		
+	def __itruediv__(self, other):
+		x, y, z = other
+		self.x /= x
+		self.y /= y
+		self.z /= z
+		return self
+		
+	def __ifloordiv__(self, other):
+		x, y, z = other
+		self.x //= x
+		self.y //= y
+		self.z //= z
+		return self
+		
+	def __imod__(self, other):
+		x, y, z = other
+		self.x %= x
+		self.y %= y
+		self.z %= z
+		return self
+
+	@classmethod
+	def from_tuple(cls, value):
+		x, y, z = value
+		return cls(x, y, z)
 
 
 cdef public class Time[type PyTimeType, object PyTimeObject]:

@@ -10,24 +10,11 @@
 
 import sfml.system as sf
 
-a = sf.Size()
-b = sf.Size(height=50)
-c = sf.Size(width=50)
-d = sf.Size(50, 100)
+print("# Constructors + __eq__ + __ne__")
+# TODO
 
-print(a)
-print(b)
-print(c)
-print(d)
+print("# Overload operators")
+#TODO
 
-assert type(a) == sf.Size
-assert type(b) == sf.Size
-assert type(c) == sf.Size
-assert type(d) == sf.Size
-
-# TODO: add overload operators tests
-assert a == (0, 0)
-assert b == sf.Position(0, 50)
-assert c == sf.Size(50, 0)
-assert d == [50, 100]
-
+print("# In-place operators")
+#TODO

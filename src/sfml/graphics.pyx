@@ -20,11 +20,6 @@ from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 from dsystem cimport const_Uint8_ptr
 
-from sfml.position import Position
-from sfml.size import Size
-from sfml.rectangle import Rectangle
-
-from sfml.system import SFMLException, pop_error_message, push_error_message
 
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 
 			'Image', 'Texture', 'Glyph', 'Font', 'Shader', 
@@ -32,11 +27,23 @@ __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
 			'Text', 'Shape', 'CircleShape', 'ConvexShape', 
 			'RectangleShape', 'Vertex', 'VertexArray', 'View', 
 			'RenderTarget', 'RenderTexture', 'RenderWindow', 
-			'HandledWindow']
+			'HandledWindow', 'Rectangle']
 			
 string_type = [bytes, unicode, str]
 numeric_type = [int, long, float, long]
 
+from sfml.system import SFMLException
+from sfml.system import pop_error_message, push_error_message
+
+cdef extern from "system.h":
+	cdef class sfml.system.Vector2 [object PyVector2Object]:
+		cdef public object x
+		cdef public object y
+			
+	cdef class sfml.system.Vector3 [object PyVector3Object]:
+		cdef public object x
+		cdef public object y
+		cdef public object z
 
 cdef extern from "window.h":
 	cdef class sfml.window.Window [object PyWindowObject]:
@@ -59,11 +66,16 @@ cdef Pixels wrap_pixels(const_Uint8_ptr p, unsigned int w, unsigned int h):
 	r.p_array, r.m_width, r.m_height = p, w, h
 	return r
 	
-########################################################################
-#################    DIRTY COPY FROM SYSTEM.PYX    #####################
-########################################################################
+# utility functions for sf.Vector2
+cdef dsystem.Vector2i vector2_to_vector2i(vector):
+	x, y = vector
+	return dsystem.Vector2i(x, y)
+	
+cdef dsystem.Vector2f vector2_to_vector2f(vector):
+	x, y = vector
+	return dsystem.Vector2f(x, y)
 
-
+# utility functions for sf.Rectangle
 cdef dsystem.FloatRect rectangle_to_floatrect(rectangle):
 	l, t, w, h = rectangle
 	return dsystem.FloatRect(l, t, w, h)
@@ -72,30 +84,12 @@ cdef dsystem.IntRect rectangle_to_intrect(rectangle):
 	l, t, w, h = rectangle
 	return dsystem.IntRect(l, t, w, h)
 
-cdef dsystem.Vector2i position_to_vector2i(position):
-	x, y = position
-	return dsystem.Vector2i(x, y)
-	
-cdef dsystem.Vector2f position_to_vector2f(position):
-	x, y = position
-	return dsystem.Vector2f(x, y)
-
-cdef dsystem.Vector2u size_to_vector2u(size):
-	w, h = size
-	return dsystem.Vector2u(w, h)
-	
-cdef dsystem.Vector2f size_to_vector2f(size):
-	w, h = size
-	return dsystem.Vector2f(w, h)
-
-cdef object intrect_to_rectangle(dsystem.IntRect* intrect):
+cdef Rectangle intrect_to_rectangle(dsystem.IntRect* intrect):
 	return Rectangle((intrect.left, intrect.top), (intrect.width, intrect.height))
 
-cdef object floatrect_to_rectangle(dsystem.FloatRect* floatrect):
+cdef Rectangle floatrect_to_rectangle(dsystem.FloatRect* floatrect):
 	return Rectangle((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
-	
-########################################################################
-########################################################################
+
 
 class BlendMode:
 	BLEND_ALPHA = dgraphics.blendmode.BlendAlpha
@@ -112,8 +106,104 @@ class PrimitiveType:
 	TRIANGLES_STRIP = dgraphics.primitivetype.TrianglesStrip
 	TRIANGLES_FAN = dgraphics.primitivetype.TrianglesFan
 	QUADS = dgraphics.primitivetype.Quads
+	
+	
+cdef class Rectangle:
+	cdef public Vector2 position
+	cdef public Vector2 size
 
+	def __init__(self, position=(0, 0), size=(0, 0)):
+		left, top = position
+		width, height = size
+		self.position = Vector2(left, top)
+		self.size = Vector2(width, height)
+		
+	def __repr__(self):
+		return "sf.Rectangle({0})".format(self)
 
+	def __str__(self):
+		return "{0}, {1}".format(self.position, self.size)
+
+	def __richcmp__(Rectangle x, y, op):
+		try: left, top, width, height = y
+		except Exception: return False
+		
+		if op == 2: return x.position == Vector2(left, top) and x.size == Vector2(width, height)
+		elif op == 3: return not (x.position == Vector2(left, top) and x.size == Vector2(width, height))
+		else: raise NotImplementedError
+
+	def __iter__(self):
+		return iter((self.left, self.top, self.width, self.height))
+
+	property left:
+		def __get__(self):
+			return self.position.x
+		
+		def __set__(self, left):
+			self.position.x = left
+			
+	property top:
+		def __get__(self):
+			return self.position.y
+		
+		def __set__(self, top):
+			self.position.y = top
+			
+	property width:
+		def __get__(self):
+			return self.size.x
+		
+		def __set__(self, width):
+			self.size.x = width
+			
+	property height:
+		def __get__(self):
+			return self.size.y
+		
+		def __set__(self, height):
+			self.size.y = height
+			
+	property center:
+		def __get__(self):
+			return self.position + self.size / 2
+		
+		def __set__(self, center):
+			raise NotImplementedError
+	
+	property right:
+		def __get__(self):
+			return self.left + self.width
+		
+		def __set__(self, right):
+			raise NotImplementedError
+			
+	property bottom:
+		def __get__(self):
+			return self.left + self.width
+		
+		def __set__(self, bottom):
+			raise NotImplemented
+
+	def contains(self, point):
+		x, y = point
+		return x >= self.left and x < self.right and y >= self.top and y < self.bottom
+		
+	def intersects(self, rectangle):
+		# make sure the rectangle is a rectangle (to get its right/bottom border)
+		l, t, w, h = rectangle
+		rectangle = Rectangle(l, t, w, h)
+		
+		# compute the intersection boundaries
+		left = max(self.left, rectangle.left)
+		top = max(self.top, rectangle.top)
+		right = min(self.right, rectangle.right)
+		bottom = min(self.bottom, rectangle.bottom)
+		
+		# if the intersection is valid (positive non zero area), then 
+		# there is an intersection
+		if left < right and top < bottom:
+			return Rectangle((left, top), (right-left, bottom-top))
+			
 cdef class Color:
 	BLACK = Color(0, 0, 0)
 	WHITE = Color(255, 255, 255)
@@ -243,8 +333,8 @@ cdef class Transform:
 			return wrap_transform(p)
 	
 	def transform_point(self, point):
-		cdef dsystem.Vector2f p = self.p_this.transformPoint(position_to_vector2f(point))
-		return Position(p.x, p.y)
+		cdef dsystem.Vector2f p = self.p_this.transformPoint(vector2_to_vector2f(point))
+		return Vector2(p.x, p.y)
 		
 	def transform_rectangle(self, rectangle):
 		cdef dsystem.FloatRect p = self.p_this.transformRect(rectangle_to_floatrect(rectangle))
@@ -255,22 +345,22 @@ cdef class Transform:
 		return self
 		
 	def translate(self, offset):
-		self.p_this.translate(position_to_vector2f(offset))
+		self.p_this.translate(vector2_to_vector2f(offset))
 		return self
 		
 	def rotate(self, float angle, center=None):
 		if not center:
 			self.p_this.rotate(angle)
 		else:
-			self.p_this.rotate(angle, position_to_vector2f(center))
+			self.p_this.rotate(angle, vector2_to_vector2f(center))
 			
 		return self
 		
 	def scale(self, factor, center=None):
 		if not center:
-			self.p_this.scale(position_to_vector2f(factor))
+			self.p_this.scale(vector2_to_vector2f(factor))
 		else:
-			self.p_this.scale(position_to_vector2f(factor), position_to_vector2f(center))
+			self.p_this.scale(vector2_to_vector2f(factor), vector2_to_vector2f(center))
 			
 		return self
 		
@@ -351,15 +441,15 @@ cdef class Image:
 	
 	property size:
 		def __get__(self):
-			return Size(self.p_this.getSize().x, self.p_this.getSize().y)
+			return Vector2(self.p_this.getSize().x, self.p_this.getSize().y)
 		
 	property width:
 		def __get__(self):
-			return self.size.width
+			return self.size.x
 	
 	property height:
 		def __get__(self):
-			return self.size.height
+			return self.size.y
 	
 	def create_mask_from_color(self, Color color, Uint8 alpha=0):
 		self.p_this.createMaskFromColor(color.p_this[0], alpha)
@@ -458,21 +548,21 @@ cdef class Texture:
 
 	property size:
 		def __get__(self):
-			return Size(self.p_this.getSize().x, self.p_this.getSize().y)
+			return Vector2(self.p_this.getSize().x, self.p_this.getSize().y)
 			
 		def __set__(self, size):
 			raise NotImplemented
 	
 	property width:
 		def __get__(self):
-			return self.size.width
+			return self.size.x
 			
 		def __set__(self, width):
 			raise NotImplemented
 	
 	property height:
 		def __get__(self):
-			return self.size.height
+			return self.size.y
 			
 		def __set__(self, height):
 			raise NotImplemented
@@ -562,16 +652,14 @@ cdef class Glyph:
 			return intrect_to_rectangle(&self.p_this.bounds)
 			
 		def __set__(self, bounds):
-			l, t, w, h = bounds
-			self.p_this.bounds = dsystem.IntRect(l, t, w, h)
+			self.p_this.bounds = rectangle_to_intrect(bounds)
 
 	property texture_rectangle:
 		def __get__(self):
 			return intrect_to_rectangle(&self.p_this.textureRect)
 			
 		def __set__(self, texture_rectangle):
-			l, t, w, h = texture_rectangle
-			self.p_this.textureRect = dsystem.IntRect(l, t, w, h)
+			self.p_this.textureRect = rectangle_to_intrect(texture_rectangle)
 
 
 cdef Glyph wrap_glyph(dgraphics.Glyph *p):
@@ -738,8 +826,8 @@ cdef class Shader:
 		if len(args) == 1:
 			self.set_currenttexturetype_parameter(args[0])
 		elif len(args) == 2:
-			if type(args[1]) in [Position, tuple]:
-				if type(args[1]) is Position:
+			if type(args[1]) in [Vector2, tuple]:
+				if type(args[1]) is Vector2:
 					self.set_vector2_paramater(args[0], args[1])
 					return
 				elif len(args[1]) == 2:
@@ -809,9 +897,10 @@ cdef class Shader:
 		encoded_name_temporary = name.encode('UTF-8')	
 		encoded_name = encoded_name_temporary
 		
-		self.p_this.setParameter(encoded_name, position_to_vector2f(vector))
+		x, y = vector
+		self.p_this.setParameter(encoded_name, dsystem.Vector2f(x, y))
 	
-	def set_vector3_paramater(self, name, tuple vector): 
+	def set_vector3_paramater(self, name, vector): 
 		cdef char* encoded_name
 		
 		encoded_name_temporary = name.encode('UTF-8')	
@@ -969,10 +1058,10 @@ cdef class Transformable:
 
 	property position:
 		def __get__(self):
-			return Position(self.p_this.getPosition().x, self.p_this.getPosition().y)
+			return Vector2(self.p_this.getPosition().x, self.p_this.getPosition().y)
 			
 		def __set__(self, position):
-			self.p_this.setPosition(position_to_vector2f(position))
+			self.p_this.setPosition(vector2_to_vector2f(position))
 		
 	property rotation:
 		def __get__(self):
@@ -983,26 +1072,26 @@ cdef class Transformable:
 		
 	property ratio:
 		def __get__(self):
-			return Position(self.p_this.getScale().x, self.p_this.getScale().y)
+			return Vector2(self.p_this.getScale().x, self.p_this.getScale().y)
 			
 		def __set__(self, factor):
-			self.p_this.setScale(position_to_vector2f(factor))
+			self.p_this.setScale(vector2_to_vector2f(factor))
 		
 	property origin:
 		def __get__(self):
-			return Position(self.p_this.getOrigin().x, self.p_this.getOrigin().y)
+			return Vector2(self.p_this.getOrigin().x, self.p_this.getOrigin().y)
 			
 		def __set__(self, origin):
-			self.p_this.setOrigin(position_to_vector2f(origin))
+			self.p_this.setOrigin(vector2_to_vector2f(origin))
 		
 	def move(self, offset):
-		self.p_this.move(position_to_vector2f(offset))
+		self.p_this.move(vector2_to_vector2f(offset))
 		
 	def rotate(self, float angle):
 		self.p_this.rotate(angle)
 
 	def scale(self, factor):
-		self.p_this.scale(position_to_vector2f(factor))
+		self.p_this.scale(vector2_to_vector2f(factor))
 				
 	property transform:
 		def __get__(self):
@@ -1026,10 +1115,10 @@ cdef class TransformableDrawable(Drawable):
 
 	property position:
 		def __get__(self):
-			return Position(self.p_transformable.getPosition().x, self.p_transformable.getPosition().y)
+			return Vector2(self.p_transformable.getPosition().x, self.p_transformable.getPosition().y)
 			
 		def __set__(self, position):
-			self.p_transformable.setPosition(position_to_vector2f(position))
+			self.p_transformable.setPosition(vector2_to_vector2f(position))
 		
 	property rotation:
 		def __get__(self):
@@ -1040,26 +1129,26 @@ cdef class TransformableDrawable(Drawable):
 		
 	property ratio:
 		def __get__(self):
-			return Position(self.p_transformable.getScale().x, self.p_transformable.getScale().y)
+			return Vector2(self.p_transformable.getScale().x, self.p_transformable.getScale().y)
 			
 		def __set__(self, factor):
-			self.p_transformable.setScale(position_to_vector2f(factor))
+			self.p_transformable.setScale(vector2_to_vector2f(factor))
 		
 	property origin:
 		def __get__(self):
-			return Position(self.p_transformable.getOrigin().x, self.p_transformable.getOrigin().y)
+			return Vector2(self.p_transformable.getOrigin().x, self.p_transformable.getOrigin().y)
 			
 		def __set__(self, origin):
-			self.p_transformable.setOrigin(position_to_vector2f(origin))
+			self.p_transformable.setOrigin(vector2_to_vector2f(origin))
 		
 	def move(self, offset):
-		self.p_transformable.move(position_to_vector2f(offset))
+		self.p_transformable.move(vector2_to_vector2f(offset))
 		
 	def rotate(self, float angle):
 		self.p_transformable.rotate(angle)
 		
 	def scale(self, factor):
-		self.p_transformable.scale(position_to_vector2f(factor))
+		self.p_transformable.scale(vector2_to_vector2f(factor))
 		
 	property transform:
 		def __get__(self):
@@ -1206,7 +1295,7 @@ cdef class Text(TransformableDrawable):
 
 	def find_character_pos(self, size_t index):
 		cdef dsystem.Vector2f p = self.p_this.findCharacterPos(index)
-		return Position(p.x, p.y)
+		return Vector2(p.x, p.y)
 
 
 cdef class Shape(TransformableDrawable):
@@ -1276,7 +1365,7 @@ cdef class Shape(TransformableDrawable):
 			return self.p_shape.getPointCount()
 			
 	def get_point(self, unsigned int index):
-		return Position(self.p_shape.getPoint(index).x, self.p_shape.getPoint(index).y)
+		return Vector2(self.p_shape.getPoint(index).x, self.p_shape.getPoint(index).y)
 
 
 cdef class CircleShape(Shape):
@@ -1327,14 +1416,14 @@ cdef class ConvexShape(Shape):
 			self.p_this.setPointCount(count)
 		
 	def set_point(self, unsigned int index, point):
-		self.p_this.setPoint(index, position_to_vector2f(point))
+		self.p_this.setPoint(index, vector2_to_vector2f(point))
 
 		
 cdef class RectangleShape(Shape):
 	cdef dgraphics.RectangleShape *p_this
 	
 	def __cinit__(self, size=(0, 0)):
-		self.p_this = new dgraphics.RectangleShape(size_to_vector2f(size))
+		self.p_this = new dgraphics.RectangleShape(vector2_to_vector2f(size))
 		self.p_drawable = <dgraphics.Drawable*>self.p_this
 		self.p_transformable = <dgraphics.Transformable*>self.p_this
 		self.p_shape = <dgraphics.Shape*>self.p_this
@@ -1344,10 +1433,10 @@ cdef class RectangleShape(Shape):
 
 	property size:
 		def __get__(self):
-			return Size(self.p_this.getSize().x, self.p_this.getSize().y)
+			return Vector2(self.p_this.getSize().x, self.p_this.getSize().y)
 			
 		def __set__(self, size):
-			self.p_this.setSize(size_to_vector2f(size))
+			self.p_this.setSize(vector2_to_vector2f(size))
 
 
 cdef class Vertex:
@@ -1367,7 +1456,7 @@ cdef class Vertex:
 		
 	property position:
 		def __get__(self):
-			return Position(self.p_this.position.x, self.p_this.position.y)
+			return Vector2(self.p_this.position.x, self.p_this.position.y)
 			
 		def __set__(self, position):
 			self.p_this.position.x, self.p_this.position.y = position
@@ -1383,7 +1472,7 @@ cdef class Vertex:
 
 	property tex_coords:
 		def __get__(self):
-			return Position(self.p_this.texCoords.x, self.p_this.texCoords.y)
+			return Vector2(self.p_this.texCoords.x, self.p_this.texCoords.y)
 			
 		def __set__(self, tex_coords):
 			self.p_this.texCoords.x, self.p_this.texCoords.y = tex_coords
@@ -1452,18 +1541,18 @@ cdef class View:
 	
 	property center:
 		def __get__(self):
-			return Position(self.p_this.getCenter().x, self.p_this.getCenter().y)
+			return Vector2(self.p_this.getCenter().x, self.p_this.getCenter().y)
 			
 		def __set__(self, center):
-			self.p_this.setCenter(position_to_vector2f(center))
+			self.p_this.setCenter(vector2_to_vector2f(center))
 			self._update_target()
 
 	property size:
 		def __get__(self):
-			return Size(self.p_this.getSize().x, self.p_this.getSize().y)
+			return Vector2(self.p_this.getSize().x, self.p_this.getSize().y)
 			
 		def __set__(self, size):
-			self.p_this.setSize(size_to_vector2f(size))
+			self.p_this.setSize(vector2_to_vector2f(size))
 			self._update_target()
 
 	property rotation:
@@ -1487,7 +1576,7 @@ cdef class View:
 		self._update_target()
 	
 	def move(self, offset):
-		self.p_this.move(position_to_vector2f(offset))
+		self.p_this.move(vector2_to_vector2f(offset))
 		self._update_target()
 
 	def rotate(self, float angle):
@@ -1566,8 +1655,8 @@ cdef class RenderTarget:
 		return intrect_to_rectangle(&p)
 		
 	def convert_coords(self, point, View view=None):
-		if not view: self.p_rendertarget.convertCoords(position_to_vector2i(point))
-		else: self.p_rendertarget.convertCoords(position_to_vector2i(point), view.p_this[0])
+		if not view: self.p_rendertarget.convertCoords(vector2_to_vector2i(point))
+		else: self.p_rendertarget.convertCoords(vector2_to_vector2i(point), view.p_this[0])
 			
 	def draw(self, Drawable drawable, RenderStates states=None):
 		if not states: self.p_rendertarget.draw(drawable.p_drawable[0])
@@ -1577,15 +1666,15 @@ cdef class RenderTarget:
 		
 	property size:
 		def __get__(self):
-			return Size(self.p_rendertarget.getSize().x, self.p_rendertarget.getSize().y)
+			return Vector2(self.p_rendertarget.getSize().x, self.p_rendertarget.getSize().y)
 		
 	property width:
 		def __get__(self):
-			return self.size.width
+			return self.size.x
 
 	property height:
 		def __get__(self):
-			return self.size.height
+			return self.size.y
 
 	def push_GL_states(self):
 		self.p_rendertarget.pushGLStates()
@@ -1648,8 +1737,8 @@ cdef class RenderWindow(Window):
 		return intrect_to_rectangle(&p)
 		
 	def convert_coords(self, point, View view=None):
-		if not view: self.p_this.convertCoords(position_to_vector2i(point))
-		else: self.p_this.convertCoords(position_to_vector2i(point), view.p_this[0])
+		if not view: self.p_this.convertCoords(vector2_to_vector2i(point))
+		else: self.p_this.convertCoords(vector2_to_vector2i(point), view.p_this[0])
 			
 	def draw(self, Drawable drawable, RenderStates states=None):
 		if not states: self.p_this.draw(drawable.p_drawable[0])
@@ -1659,15 +1748,15 @@ cdef class RenderWindow(Window):
 		
 	property size:
 		def __get__(self):
-			return Size(self.p_this.getSize().x, self.p_this.getSize().y)
+			return Vector2(self.p_this.getSize().x, self.p_this.getSize().y)
 		
 	property width:
 		def __get__(self):
-			return self.size.width
+			return self.size.x
 
 	property height:
 		def __get__(self):
-			return self.size.height
+			return self.size.y
 
 	def push_GL_states(self):
 		self.p_this.pushGLStates()

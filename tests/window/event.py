@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sfml.window as sf
+import sfml as sf
 
 window = sf.Window(sf.VideoMode(640, 480), "pySFML - Events")
 
@@ -25,7 +25,7 @@ while loop:
 			
 		elif event.type == sf.Event.RESIZED:
 			assert type(event) == sf.SizeEvent
-			assert type(event.size) == sf.Size
+			assert type(event.size) == sf.Vector2
 			print(event.size)
 			print(event.width)
 			print(event.height)

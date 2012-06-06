@@ -32,7 +32,7 @@ else:
 	audio_source = 'src/sfml/audio.cpp'
 	network_source = 'src/sfml/network.cpp'
 	
-x11 = Extension('sfml.graphics.x11', 
+x11 = Extension('sfml.x11', 
 				[x11_source],
 				language='c++',
 				libraries=['X11'])

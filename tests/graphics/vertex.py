@@ -8,21 +8,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sfml.graphics as sf
+import sfml as sf
 
 a = sf.Vertex()
 b = sf.Vertex((10, 20))
-c = sf.Vertex(sf.Position(20, 30))
+c = sf.Vertex(sf.Vector2(20, 30))
 d = sf.Vertex((40, 50), sf.Color.RED)
 e = sf.Vertex((50, 60), sf.Color.BLUE, (70, 80))
-f = sf.Vertex((90, 100), sf.Color.GREEN, sf.Position(110, 120))
+f = sf.Vertex((90, 100), sf.Color.GREEN, sf.Vector2(110, 120))
 
 print(a.position)
-assert a.position == sf.Position(0, 0)
+assert a.position == sf.Vector2(0, 0)
 a.position = (40, 50)
 print(a.position)
-assert a.position == sf.Position(40, 50)
-assert type(a.position) == sf.Position
+assert a.position == sf.Vector2(40, 50)
+assert type(a.position) == sf.Vector2
 
 print(a.color)
 a.color = sf.Color.CYAN
@@ -31,8 +31,8 @@ assert a.color == sf.Color.CYAN
 assert type(a.color) == sf.Color
 
 print(a.tex_coords)
-assert a.tex_coords == sf.Position(0, 0)
+assert a.tex_coords == sf.Vector2(0, 0)
 a.tex_coords = (40, 50)
 print(a.tex_coords)
-assert a.tex_coords == sf.Position(40, 50)
-assert type(a.tex_coords) == sf.Position
+assert a.tex_coords == sf.Vector2(40, 50)
+assert type(a.tex_coords) == sf.Vector2

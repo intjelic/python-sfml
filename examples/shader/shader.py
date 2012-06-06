@@ -115,7 +115,7 @@ class StormBlink(Effect):
 			r = randint(0, 32767) % 255
 			g = randint(0, 32767) % 255
 			b = randint(0, 32767) % 255
-			self.points.append(sf.Vertex(sf.Position(x, y), sf.Color(r, g, b)))
+			self.points.append(sf.Vertex(sf.Vector2(x, y), sf.Color(r, g, b)))
 			
 		try:
 			# load the shader

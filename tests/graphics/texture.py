@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sfml.graphics as sf
+import sfml as sf
 
 print("### sf.Texture() ###")
 
@@ -39,7 +39,7 @@ input()
 print("### sf.Texture.load_from_file() ###")
 b = sf.Texture.load_from_file("../data/background.jpg")
 c = sf.Texture.load_from_file("../data/background.jpg", sf.Rectangle((50, 150), (50, 50)))
-d = sf.Texture.load_from_file("../data/background.jpg", ((50, 150, 50, 50)))
+d = sf.Texture.load_from_file("../data/background.jpg", (50, 150, 50, 50))
 input()
 
 print("### sf.Texture.load_from_memory() ###")
@@ -51,14 +51,14 @@ print("### sf.Texture.load_from_image() ###")
 image = sf.Image.load_from_file("../data/background.jpg")
 f = sf.Texture.load_from_image(image)
 g = sf.Texture.load_from_image(image, sf.Rectangle((50, 150), (50, 50)))
-h = sf.Texture.load_from_image(image, ((50, 150, 50, 50)))
+h = sf.Texture.load_from_image(image, (50, 150, 50, 50))
 input()
 
 print("### sf.Texture.size ###")
-assert type(a.size) == sf.Size
-assert type(b.size) == sf.Size
-assert type(c.size) == sf.Size
-assert type(d.size) == sf.Size
+assert type(a.size) == sf.Vector2
+assert type(b.size) == sf.Vector2
+assert type(c.size) == sf.Vector2
+assert type(d.size) == sf.Vector2
 print(a.size)
 print(b.size)
 print(d.size)

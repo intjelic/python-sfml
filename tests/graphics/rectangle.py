@@ -8,14 +8,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sfml.system as sf
+import sfml as sf
 
 a = sf.Rectangle()
-b = sf.Rectangle(position=sf.Position(25, 50))
+b = sf.Rectangle(position=sf.Vector2(25, 50))
 c = sf.Rectangle(position=(25, 50))
-d = sf.Rectangle(size=sf.Size(75, 100))
+d = sf.Rectangle(size=sf.Vector2(75, 100))
 e = sf.Rectangle(size=(75, 100))
-f = sf.Rectangle(sf.Position(25, 50), sf.Size(75, 100))
+f = sf.Rectangle(sf.Vector2(25, 50), sf.Vector2(75, 100))
 g = sf.Rectangle((25, 50), (75, 100))
 
 print(a)

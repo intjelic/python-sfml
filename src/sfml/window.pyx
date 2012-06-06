@@ -19,9 +19,6 @@ from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 from dsystem cimport const_Uint8_ptr
 
-from sfml.position import Position
-from sfml.size import Size
-from sfml.rectangle import Rectangle
 
 __all__ = ['Style', 'Event', 'SizeEvent', 'KeyEvent', 'TextEvent', 
 			'MouseMoveEvent', 'MouseButtonEvent', 'MouseWheelEvent', 
@@ -29,15 +26,28 @@ __all__ = ['Style', 'Event', 'SizeEvent', 'KeyEvent', 'TextEvent',
 			'JoystickConnectEvent', 'VideoMode', 'ContextSettings', 
 			'Pixels', 'Window', 'Keyboard', 'Joystick', 'Mouse', 
 			'Context']
+
+cdef extern from "system.h":
+	cdef class sfml.system.Vector2 [object PyVector2Object]:
+		cdef public object x
+		cdef public object y
 			
-cdef dsystem.Vector2i position_to_vector2i(position):
-	x, y = position
+	cdef class sfml.system.Vector3 [object PyVector3Object]:
+		cdef public object x
+		cdef public object y
+		cdef public object z
+
+
+# utility functions for sf.Vector2
+cdef dsystem.Vector2i vector2_to_vector2i(vector):
+	x, y = vector
 	return dsystem.Vector2i(x, y)
 	
-cdef dsystem.Vector2u size_to_vector2u(size):
-	w, h = size
+cdef dsystem.Vector2u vector2_to_vector2u(vector):
+	w, h = vector
 	return dsystem.Vector2u(w, h)
 	
+
 cdef class Style:
 	NONE = dwindow.style.None
 	TITLEBAR = dwindow.style.Titlebar
@@ -155,7 +165,7 @@ cdef class SizeEvent(Event):
 		
 	property size:
 		def __get__(self):
-			return Size(self.width, self.height)
+			return Vector2(self.width, self.height)
 			
 		def __set__(self, size):
 			self.width, self.height = size
@@ -236,7 +246,7 @@ cdef class MouseMoveEvent(Event):
 		
 	property position:
 		def __get__(self):
-			return Position(self.x, self.y)
+			return Vector2(self.x, self.y)
 			
 		def __set__(self, position):
 			self.x, self.y = position
@@ -272,7 +282,7 @@ cdef class MouseButtonEvent(Event):
 
 	property position:
 		def __get__(self):
-			return Position(self.x, self.y)
+			return Vector2(self.x, self.y)
 
 		def __set__(self, position):
 			self.x, self.y = position
@@ -305,7 +315,7 @@ cdef class MouseWheelEvent(Event):
 
 	property position:
 		def __get__(self):
-			return Position(self.x, self.y)
+			return Vector2(self.x, self.y)
 			
 		def __set__(self, position):
 			self.x, self.y = position
@@ -336,15 +346,7 @@ cdef class JoystickMoveEvent(Event):
 		def __set__(self, float position):
 			self.p_this.joystickMove.position = position
 
-	property x:
-		def __get__(self): pass
-		def __set__(self, x): pass
-		
-	property y:
-		def __get__(self): pass
-		def __set__(self, y): pass
-		
-		
+
 cdef class JoystickButtonEvent(Event):
 	def __str__(self):
 		if self.type == Event.JOYSTICK_BUTTON_PRESSED:
@@ -365,8 +367,8 @@ cdef class JoystickButtonEvent(Event):
 			
 		def __set__(self, unsigned int button):
 			self.p_this.joystickButton.button = button
-	
-			
+
+
 cdef class JoystickConnectEvent(Event):
 	def __str__(self):
 		if self.type == Event.JOYSTICK_CONNECTED:
@@ -426,7 +428,7 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
 
 	property size:
 		def __get__(self):
-			return Size(self.p_this.width, self.p_this.height)
+			return Vector2(self.p_this.width, self.p_this.height)
 			
 		def __set__(self, value):
 			width, height = value
@@ -623,17 +625,17 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
 	property position:
 		def __get__(self):
-			return Position(self.p_window.getPosition().x, self.p_window.getPosition().y)
+			return Vector2(self.p_window.getPosition().x, self.p_window.getPosition().y)
 
 		def __set__(self, position):
-			self.p_window.setPosition(position_to_vector2i(position))
+			self.p_window.setPosition(vector2_to_vector2i(position))
 
 	property size:
 		def __get__(self):
-			return Size(self.p_window.getSize().x, self.p_window.getSize().y)
+			return Vector2(self.p_window.getSize().x, self.p_window.getSize().y)
 
 		def __set__(self, size):
-			self.p_window.setSize(size_to_vector2u(size))
+			self.p_window.setSize(vector2_to_vector2u(size))
 
 	property title:
 		def __set__(self, title):
@@ -873,7 +875,7 @@ cdef class Mouse:
 		if window is None: p = dwindow.mouse.getPosition()
 		else: p = dwindow.mouse.getPosition(window.p_window[0])
 
-		return Position(p.x, p.y)
+		return Vector2(p.x, p.y)
 
 	@classmethod
 	def set_position(cls, position, Window window=None):

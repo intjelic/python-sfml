@@ -18,38 +18,20 @@ from dsystem cimport Vector3f
 
 cimport dsystem, daudio
 
-from sfml.system import SFMLException, pop_error_message, push_error_message
-
-ctypedef fused Vector3:
-	Vector
-	tuple
-
-cdef class Vector:
-	cdef public object x
-	cdef public object y
-	cdef public object z
-	
-	def __init__(self, x=0, y=0, z=0):
-		self.x = x
-		self.y = y
-		self.z = z
+cdef extern from "system.h":
+	cdef class sfml.system.Vector3 [object PyVector3Object]:
+		cdef public object x
+		cdef public object y
+		cdef public object z
 		
-	def __repr__(self):
-		return "sf.Vector({0}[1:-1])".format(self)
+cdef Vector3 vector3f_to_vector3(dsystem.Vector3f* vector):
+	return Vector3(vector.x, vector.y, vector.z)
 
-	def __str__(self):
-		return "({0}x, {1}y, {2}z)".format(self.x, self.y, self.z)
+cdef dsystem.Vector3f vector3_to_vector3f(vector):
+	x, y, z = vector
+	return dsystem.Vector3f(x, y, z)
 
-	def __iter__(self):
-		return iter((self.x, self.y, self.z))
-
-cdef Vector vector3f_to_vector(Vector3f* v):
-	cdef Vector r = Vector.__new__(Vector)
-	r.x = v.x
-	r.y = v.y
-	r.z = v.z
-	return r
-	
+from sfml.system import SFMLException, pop_error_message, push_error_message
 	
 cdef class Listener:
 	def __init__(self):
@@ -66,20 +48,20 @@ cdef class Listener:
 	@classmethod
 	def get_position(cls):
 		cdef Vector3f v = daudio.listener.getPosition()
-		return vector3f_to_vector(&v)
+		return vector3f_to_vector3(&v)
 		
 	@classmethod
-	def set_position(cls, Vector3 position):
+	def set_position(cls, position):
 		x, y, z = position
 		daudio.listener.setPosition(x, y, z)
 
 	@classmethod
 	def get_direction(cls):
 		cdef Vector3f v = daudio.listener.getDirection()
-		return vector3f_to_vector(&v)
+		return vector3f_to_vector3(&v)
 
 	@classmethod
-	def set_direction(cls, Vector3 direction):
+	def set_direction(cls, direction):
 		x, y, z = direction
 		daudio.listener.setPosition(x, y, z)
 
@@ -239,9 +221,9 @@ cdef class SoundSource:
 	property position:
 		def __get__(self):
 			cdef Vector3f v = self.p_soundsource.getPosition()
-			return vector3f_to_vector(&v)
+			return vector3f_to_vector3(&v)
 
-		def __set__(self, object position):
+		def __set__(self, position):
 			x, y, z = position
 			self.p_soundsource.setPosition(x, y, z)
 
