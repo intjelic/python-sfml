@@ -191,7 +191,9 @@ cdef class SoundBuffer:
 
 	property duration:
 		def __get__(self):
-			return self.p_this.getDuration().asMilliseconds()
+			cdef dsystem.Time* p = new dsystem.Time()
+			p[0] = self.p_this.getDuration()
+			return wrap_time(p)
 
 cdef SoundBuffer wrap_soundbuffer(daudio.SoundBuffer *p, bint delete_this=True):
 	cdef SoundBuffer r = SoundBuffer.__new__(SoundBuffer)
