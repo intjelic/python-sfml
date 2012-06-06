@@ -18,11 +18,16 @@ from dsystem cimport Vector3f
 
 cimport dsystem, daudio
 
+from sfml.system import SFMLException, pop_error_message, push_error_message
+
 cdef extern from "system.h":
 	cdef class sfml.system.Vector3 [object PyVector3Object]:
 		cdef public object x
 		cdef public object y
 		cdef public object z
+		
+	cdef class sfml.system.Time [object PyTimeObject]:
+		cdef dsystem.Time *p_this
 		
 cdef Vector3 vector3f_to_vector3(dsystem.Vector3f* vector):
 	return Vector3(vector.x, vector.y, vector.z)
@@ -31,8 +36,12 @@ cdef dsystem.Vector3f vector3_to_vector3f(vector):
 	x, y, z = vector
 	return dsystem.Vector3f(x, y, z)
 
-from sfml.system import SFMLException, pop_error_message, push_error_message
-	
+cdef Time wrap_time(dsystem.Time* p):
+	cdef Time r = Time.__new__(Time)
+	r.p_this = p
+	return r
+
+
 cdef class Listener:
 	def __init__(self):
 		NotImplementedError("This class is not meant to be instanciated!")
@@ -291,10 +300,12 @@ cdef class Sound(SoundSource):
 
 	property playing_offset:
 		def __get__(self):
-			return self.p_this.getPlayingOffset().asMilliseconds()
+			cdef dsystem.Time* p = new dsystem.Time()
+			p[0] = self.p_this.getPlayingOffset()
+			return wrap_time(p)
 
-		def __set__(self, Uint32 time_offset):
-			self.p_this.setPlayingOffset(dsystem.milliseconds(time_offset))
+		def __set__(self, Time time_offset):
+			self.p_this.setPlayingOffset(time_offset[0])
 
 	property status:
 		def __get__(self):
@@ -307,7 +318,7 @@ cdef class SoundStream(SoundSource):
 	def __init__(self):
 		if self.__class__ == SoundStream:
 			raise NotImplementedError("SoundStream is abstract")
-			
+
 	def play(self):
 		self.p_soundstream.play()
 		
@@ -331,10 +342,12 @@ cdef class SoundStream(SoundSource):
 			
 	property playing_offset:
 		def __get__(self):
-			return self.p_soundstream.getPlayingOffset().asMilliseconds()
+			cdef dsystem.Time* p = new dsystem.Time()
+			p[0] = self.p_soundstream.getPlayingOffset()
+			return wrap_time(p)
 
-		def __set__(self, Uint32 time_offset):
-			self.p_soundstream.setPlayingOffset(dsystem.milliseconds(time_offset))
+		def __set__(self, Time time_offset):
+			self.p_soundstream.setPlayingOffset(time_offset[0])
 			
 	property loop:
 		def __get__(self):
@@ -377,7 +390,9 @@ cdef class Music(SoundStream):
 		
 	property duration:
 		def __get__(self):
-			return self.p_this.getDuration().asMilliseconds()
+			cdef dsystem.Time* p = new dsystem.Time()
+			p[0] = self.p_this.getDuration()
+			return wrap_time(p)
 
 
 cdef Music wrap_music(daudio.Music *p):
