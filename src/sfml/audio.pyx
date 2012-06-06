@@ -136,28 +136,16 @@ cdef class SoundBuffer:
 		del p
 		raise IOError(pop_error_message())
 
-	#@classmethod
-	#def load_from_samples(cls, list samples, unsigned int channels_count, unsigned int sample_rate):
-		#cdef declaudio.SoundBuffer *p_sb = new declaudio.SoundBuffer()
-		#cdef declaudio.Int16 *p_samples = <declaudio.Int16*>malloc(len(samples) * sizeof(declaudio.Int16))
-		#cdef declaudio.Int16 *p_temp = NULL
+	@classmethod
+	def load_from_samples(cls, Chunk samples, unsigned int channel_count, unsigned int sample_rate):
+		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
+		
+		if p.loadFromSamples(samples.m_samples, samples.m_sampleCount, channel_count, sample_rate):
+			return wrap_soundbuffer(p)
 
-		#if p_samples == NULL:
-			#raise SFMLException()
-		#else:
-			#p_temp = p_samples
-
-			#for sample in samples:
-				#p_temp[0] = <int>sample
-				#preinc(p_temp)
-
-			#if p_sb.LoadFromSamples(p_samples, len(samples), channels_count, sample_rate):
-				#free(p_samples)
-				#return wrap_sound_buffer_instance(p_sb, True)
-			#else:
-				#free(p_samples)
-				#raise SFMLException()
-
+		del p
+		raise IOError(pop_error_message())
+		
 	def save_to_file(self, filename):
 		cdef char* encoded_filename	
 			
@@ -166,21 +154,13 @@ cdef class SoundBuffer:
 		
 		self.p_this.saveToFile(encoded_filename)
 
-	#property samples:
-		#def __get__(self):
-			#cdef declaudio.Int16 *p = <Int16*>self.p_this.getSamples()
-			#cdef unsigned int i
-			#ret = []
-
-			#for i in range(self.p_this.GetSamplesCount()):
-				#ret.append(int(p[i]))
-
-			#return ret
-
-	property sample_count:
+	property samples:
 		def __get__(self):
-			return self.p_this.getSampleCount()
-
+			cdef Chunk r = Chunk.__new__(Chunk)
+			r.m_samples = <Int16*>self.p_this.getSamples()
+			r.m_sampleCount = self.p_this.getSampleCount()
+			return r
+			
 	property sample_rate:
 		def __get__(self):
 			return self.p_this.getSampleRate()
