@@ -229,6 +229,9 @@ cdef class Color:
 	def __str__(self):
 		return "{0}r, {1}g, {2}b, {3}a".format(self.r, self.g, self.b, self.a)
 		
+	def __iter__(self):
+		return iter((self.r, self.g, self.b, self.a))
+
 	def __richcmp__(Color x, Color y, int op):
 		if op == 2: return x.p_this[0] == y.p_this[0]
 		elif op == 3: return x.p_this[0] != y.p_this[0]
