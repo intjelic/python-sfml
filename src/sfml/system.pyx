@@ -363,7 +363,7 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 		p[0] = self.p_this[0]
 		return wrap_time(p)
 
-cdef Time wrap_time(dsystem.Time* p):
+cdef api object wrap_time(dsystem.Time* p):
 	cdef Time r = Time.__new__(Time)
 	r.p_this = p
 	return r

@@ -298,6 +298,10 @@ cdef class SoundStream(SoundSource):
 		if self.__class__ == SoundStream:
 			raise NotImplementedError("SoundStream is abstract")
 
+		elif self.__class__ not in [Music]:
+			self.p_soundstream = <daudio.SoundStream*> new daudio.DerivableSoundStream(<void*>self)
+			self.p_soundsource = <daudio.SoundSource*>self.p_soundstream
+			
 	def play(self):
 		self.p_soundstream.play()
 		
@@ -335,6 +339,13 @@ cdef class SoundStream(SoundSource):
 		def __set__(self, bint loop):
 			self.p_soundstream.setLoop(loop)
 
+	def initialize(self, unsigned int channel_count, unsigned int sample_rate):
+		if self.__class__ not in [Music]:
+			print("Initialization")
+			(<daudio.DerivableSoundStream*>self.p_soundstream).initialize(channel_count, sample_rate)
+			
+	def on_get_data(self, data): pass
+	def on_seek(self, time_offset): pass
 
 cdef class Music(SoundStream):
 	cdef daudio.Music *p_this
@@ -388,6 +399,7 @@ cdef class SoundRecorder:
 	def __init__(self):
 		if self.__class__ == SoundRecorder:
 			raise NotImplementedError("SoundRecorder is abstract")
+			
 		elif self.__class__ is not SoundBufferRecorder:
 			self.p_soundrecorder = <daudio.SoundRecorder*>new daudio.DerivableSoundRecorder(<void*>self)
 

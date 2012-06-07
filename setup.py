@@ -56,7 +56,7 @@ graphics = Extension('sfml.graphics',
 					libraries=['sfml-system', 'sfml-window', 'sfml-graphics'])
 
 audio = Extension('sfml.audio', 
-					[audio_source, 'src/sfml/derivablesoundrecorder.cpp'], 
+					[audio_source, 'src/sfml/derivablesoundrecorder.cpp', 'src/sfml/derivablesoundstream.cpp'], 
 					['include', 'src/sfml'], 
 					language='c++',
 					libraries=['sfml-system', 'sfml-audio'])
