@@ -29,6 +29,8 @@ __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
 string_type = [bytes, unicode, str]
 numeric_type = [int, long, float, long]
 
+import os, tempfile, struct, subprocess
+
 from sfml.system import SFMLException
 from sfml.system import pop_error_message, push_error_message
 
@@ -469,6 +471,19 @@ cdef class Image:
 		
 	def flip_vertically(self):
 		self.p_this.flipVertically()
+
+	def show(self, python="python"):
+		script_filename = os.path.dirname(__file__) + "/show.py"
+		temporaryfile_filename = tempfile.mkstemp()[1]
+		
+		with open(temporaryfile_filename, "wb") as temporaryfile:
+			temporaryfile.write(struct.pack("I", self.pixels.width))
+			temporaryfile.write(struct.pack("I", self.pixels.height))
+			temporaryfile.write(self.pixels.data)
+			
+		temporaryfile.close()
+		
+		subprocess.Popen([python, script_filename, temporaryfile_filename])
 
 	def copy(self):
 		cdef dgraphics.Image *p = new dgraphics.Image()
