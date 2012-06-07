@@ -81,9 +81,10 @@ cdef class IpAddress:
 		return wrap_ipaddress(p)
 
 	@classmethod
-	def get_public_address(self, Time timeout):
+	def get_public_address(self, Time timeout=None):
 		cdef dnetwork.IpAddress* p = new dnetwork.IpAddress()
-		p[0] = dnetwork.ipaddress.getPublicAddress(timeout.p_this[0])
+		if not timeout: p[0] = dnetwork.ipaddress.getPublicAddress()
+		else: p[0] = dnetwork.ipaddress.getPublicAddress(timeout.p_this[0])
 		return wrap_ipaddress(p)
 
 cdef wrap_ipaddress(dnetwork.IpAddress* p):
@@ -198,8 +199,11 @@ cdef class TcpSocket(Socket):
 		def __get__(self):
 			return self.p_this.getRemotePort()
 			
-	def connect(self, IpAddress remote_address, unsigned short remote_port, Uint32 timeout=0):
-		cdef dnetwork.socket.Status status = self.p_this.connect(remote_address.p_this[0], remote_port, dsystem.milliseconds(timeout))
+	def connect(self, IpAddress remote_address, unsigned short remote_port, Time timeout=None):
+		cdef dnetwork.socket.Status status
+		
+		if not timeout: status = self.p_this.connect(remote_address.p_this[0], remote_port)
+		else: status = self.p_this.connect(remote_address.p_this[0], remote_port, timeout.p_this[0])
 		
 		if status is not dnetwork.socket.Done:
 			if status is dnetwork.socket.NotReady:
@@ -316,8 +320,9 @@ cdef class SocketSelector:
 	def clear(self):
 		self.p_this.clear()
 		
-	def wait(self, Uint32 timeout=0):
-		return self.p_this.wait(dsystem.milliseconds(timeout))
+	def wait(self, Time timeout=None):
+		if not timeout: return self.p_this.wait()
+		else: return self.p_this.wait(timeout.p_this[0])
 		
 	def is_ready(self, Socket socket):
 		return self.p_this.isReady(socket.p_socket[0])
@@ -689,7 +694,8 @@ cdef class Http:
 	def __dealloc__(self):
 		del self.p_this
 
-	def send_request(self, HttpRequest request, Uint32 timeout=0):
+	def send_request(self, HttpRequest request, Time timeout=None):
 		cdef dnetwork.http.Response* p = new dnetwork.http.Response()
-		p[0] = self.p_this.sendRequest(request.p_this[0], dsystem.milliseconds(timeout))
+		if not timeout: p[0] = self.p_this.sendRequest(request.p_this[0])
+		else: p[0] = self.p_this.sendRequest(request.p_this[0], timeout.p_this[0])
 		return wrap_httpresponse(p)

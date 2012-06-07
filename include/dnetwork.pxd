@@ -62,6 +62,7 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		void add(Socket&)
 		void remove(Socket&)
 		void clear()
+		bint wait()
 		bint wait(Time)
 		bint isReady(Socket&)
 
@@ -94,4 +95,5 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		Http(string&, unsigned short)
 		void setHost(string&)
 		void setHost(string&, unsigned short)
+		http.Response sendRequest(http.Request&)
 		http.Response sendRequest(http.Request&, Time)
