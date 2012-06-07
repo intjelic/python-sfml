@@ -18,9 +18,6 @@ cimport dsystem, dwindow, dgraphics
 from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
-from dsystem cimport const_Uint8_ptr
-
-
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 
 			'Image', 'Texture', 'Glyph', 'Font', 'Shader', 
 			'RenderStates', 'Drawable', 'Transformable', 'Sprite', 
@@ -56,12 +53,12 @@ cdef extern from "window.h":
 		cdef dwindow.ContextSettings *p_this
 		
 	cdef class sfml.window.Pixels [object PyPixelsObject]:
-		cdef const_Uint8_ptr p_array
+		cdef Uint8          *p_array
 		cdef unsigned int    m_width
 		cdef unsigned int    m_height
 
 
-cdef Pixels wrap_pixels(const_Uint8_ptr p, unsigned int w, unsigned int h):
+cdef Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 	cdef Pixels r = Pixels.__new__(Pixels)
 	r.p_array, r.m_width, r.m_height = p, w, h
 	return r
@@ -403,7 +400,7 @@ cdef class Image:
 	def create_from_pixels(cls, Pixels pixels):
 		cdef dgraphics.Image *p
 		
-		if pixels.p_array != None:
+		if pixels.p_array != NULL:
 			p = new dgraphics.Image()
 			p.create(pixels.m_width, pixels.m_height, pixels.p_array)
 			return wrap_image(p)
@@ -465,7 +462,7 @@ cdef class Image:
 	property pixels:
 		def __get__(self):
 			if self.p_this.getPixelsPtr() != None:
-				return wrap_pixels(self.p_this.getPixelsPtr(), self.width, self.height)
+				return wrap_pixels(<Uint8*>self.p_this.getPixelsPtr(), self.width, self.height)
 		
 	def flip_horizontally(self):
 		self.p_this.flipHorizontally()
@@ -482,6 +479,7 @@ cdef Image wrap_image(dgraphics.Image *p):
 	cdef Image r = Image.__new__(Image)
 	r.p_this = p
 	return r
+
 
 cdef class Texture:
 	NORMALIZED = dgraphics.texture.Normalized

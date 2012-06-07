@@ -17,8 +17,6 @@ cimport dsystem, dwindow
 from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
-from dsystem cimport const_Uint8_ptr
-
 
 __all__ = ['Style', 'Event', 'SizeEvent', 'KeyEvent', 'TextEvent', 
 			'MouseMoveEvent', 'MouseButtonEvent', 'MouseWheelEvent', 
@@ -535,17 +533,29 @@ cdef ContextSettings wrap_contextsettings(dwindow.ContextSettings *v):
 
 
 cdef public class Pixels[type PyPixelsType, object PyPixelsObject]:
-	cdef const_Uint8_ptr p_array
+	cdef Uint8*          p_array
 	cdef unsigned int    m_width
 	cdef unsigned int    m_height
 	
 	def __init__(self):
-		raise UserWarning("Not meant to be constructed")
+		raise UserWarning("This class is not meant to be used directly")
 	
 	def __getitem__(self, unsigned int index):
 		return self.p_this[index]
+		
+	property width:
+		def __get__(self):
+			return self.m_width
+			
+	property height:
+		def __get__(self):
+			return self.m_height
+			
+	property data:
+		def __get__(self):
+			return (<char*>self.p_array)[:self.width*self.height*4]
 
-cdef public Pixels wrap_pixels(const_Uint8_ptr p, unsigned int w, unsigned int h):
+cdef public Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 	cdef Pixels r = Pixels.__new__(Pixels)
 	r.p_array, r.m_width, r.m_height = p, w, h
 	return r
