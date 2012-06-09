@@ -121,7 +121,7 @@ cdef class Rectangle:
 		return "sf.Rectangle({0})".format(self)
 
 	def __str__(self):
-		return "{0}, {1}".format(self.position, self.size)
+		return "{0}x, {1}y, {2}w, {3}h".format(self.left, self.top, self.width, self.height)
 
 	def __richcmp__(Rectangle x, y, op):
 		try: left, top, width, height = y
