@@ -18,13 +18,13 @@ from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 
-__all__ = ['Style', 'Event', 'SizeEvent', 'KeyEvent', 'TextEvent', 
-			'MouseMoveEvent', 'MouseButtonEvent', 'MouseWheelEvent', 
-			'JoystickMoveEvent', 'JoystickButtonEvent', 
-			'JoystickConnectEvent', 'VideoMode', 'ContextSettings', 
-			'Pixels', 'Window', 'Keyboard', 'Joystick', 'Mouse', 
-			'Context']
-
+__all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event', 
+			'CloseEvent', 'ResizeEvent', 'FocusEvent', 'TextEvent', 
+			'KeyEvent', 'MouseWheelEvent', 'MouseButtonEvent', 
+			'MouseMoveEvent', 'MouseEvent', 'JoystickButtonEvent', 
+			'JoystickMoveEvent', 'JoystickConnectEvent', 'Pixels', 
+			'Window', 'Keyboard', 'Joystick', 'Mouse', 'Context']
+			
 cdef extern from "system.h":
 	cdef class sfml.system.Vector2 [object PyVector2Object]:
 		cdef public object x
@@ -55,25 +55,14 @@ cdef class Style:
 	DEFAULT = dwindow.style.Default
 
 cdef class Event:
-	CLOSED = dwindow.event.Closed
-	RESIZED = dwindow.event.Resized
-	LOST_FOCUS = dwindow.event.LostFocus
-	GAINED_FOCUS = dwindow.event.GainedFocus
-	TEXT_ENTERED = dwindow.event.TextEntered
-	KEY_PRESSED = dwindow.event.KeyPressed
-	KEY_RELEASED = dwindow.event.KeyReleased
-	MOUSE_WHEEL_MOVED = dwindow.event.MouseWheelMoved
-	MOUSE_BUTTON_PRESSED = dwindow.event.MouseButtonPressed
-	MOUSE_BUTTON_RELEASED = dwindow.event.MouseButtonReleased
-	MOUSE_MOVED = dwindow.event.MouseMoved
-	MOUSE_ENTERED = dwindow.event.MouseEntered
-	MOUSE_LEFT = dwindow.event.MouseLeft
-	JOYSTICK_BUTTON_PRESSED = dwindow.event.JoystickButtonPressed
-	JOYSTICK_BUTTON_RELEASED = dwindow.event.JoystickButtonReleased
-	JOYSTICK_MOVED = dwindow.event.JoystickMoved
-	JOYSTICK_CONNECTED = dwindow.event.JoystickConnected
-	JOYSTICK_DISCONNECTED = dwindow.event.JoystickDisconnected
-	COUNT = dwindow.event.Count
+	PRESSED = True
+	RELEASED = False
+	GAINED = True
+	LOST = False
+	ENTERED = True
+	LEFT = False
+	CONNECTED = True
+	DISCONNECTED = False
 
 	cdef dwindow.Event *p_this
 
@@ -86,17 +75,6 @@ cdef class Event:
 	def __repr__(self):
 		return ("sf.Event({0})".format(self))
 
-	def __str__(self):
-		if self.type == Event.CLOSED:
-			return "The window requested to be closed"
-		elif self.type == Event.LOST_FOCUS:
-			return "The window lost the focus"
-		elif self.type == Event.GAINED_FOCUS:
-			return "The window gained the focus"
-		elif self.type == Event.MOUSE_ENTERED:
-			return "The mouse cursor entered the area of the window"
-		elif self.type == Event.MOUSE_LEFT:
-			return "The mouse cursor left the area of the window"
 
 	property type:
 		def __get__(self):
@@ -106,44 +84,53 @@ cdef class Event:
 			self.p_this.type = type
 
 cdef Event wrap_event(dwindow.Event *p):
-	cdef Event event = None
+	cdef Event event
 	
 	if p.type == dwindow.event.Closed:
-		pass
+		event = CloseEvent.__new__(CloseEvent)
 	elif p.type == dwindow.event.Resized:
-		event = SizeEvent.__new__(SizeEvent)
+		event = ResizeEvent.__new__(ResizeEvent)
 	elif p.type == dwindow.event.LostFocus:
-		pass
+		event = wrap_focusevent(p, Event.LOST)
 	elif p.type == dwindow.event.GainedFocus:
-		pass
+		event = wrap_focusevent(p, Event.GAINED)
 	elif p.type == dwindow.event.TextEntered:
 		event = TextEvent.__new__(TextEvent)
-	elif p.type == dwindow.event.KeyPressed or p.type == dwindow.event.KeyReleased:
-		event = KeyEvent.__new__(KeyEvent)
+	elif p.type == dwindow.event.KeyPressed:
+		event = wrap_keyevent(p, Event.PRESSED)
+	elif p.type == dwindow.event.KeyReleased:
+		event = wrap_keyevent(p, Event.RELEASED)
 	elif p.type == dwindow.event.MouseWheelMoved:
 		event = MouseWheelEvent.__new__(MouseWheelEvent)
-	elif p.type == dwindow.event.MouseButtonPressed or p.type == dwindow.event.MouseButtonReleased:
-		event = MouseButtonEvent.__new__(MouseButtonEvent)
+	elif p.type == dwindow.event.MouseButtonPressed:
+		event = wrap_mousebuttonevent(p, Event.PRESSED)
+	elif p.type == dwindow.event.MouseButtonReleased:
+		event = wrap_mousebuttonevent(p, Event.RELEASED)
 	elif p.type == dwindow.event.MouseMoved:
 		event = MouseMoveEvent.__new__(MouseMoveEvent)
 	elif p.type == dwindow.event.MouseEntered:
-		pass
+		event = wrap_mouseevent(p, Event.ENTERED)
 	elif p.type == dwindow.event.MouseLeft:
-		pass
-	elif p.type == dwindow.event.JoystickButtonPressed or p.type == dwindow.event.JoystickButtonReleased:
-		event = JoystickButtonEvent.__new__(JoystickButtonEvent)
+		event = wrap_mouseevent(p, Event.LEFT)
+	elif p.type == dwindow.event.JoystickButtonPressed:
+		event = wrap_joystickbuttonevent(p, Event.PRESSED)
+	elif p.type == dwindow.event.JoystickButtonReleased:
+		event = wrap_joystickbuttonevent(p, Event.RELEASED)
 	elif p.type == dwindow.event.JoystickMoved:
 		event = JoystickMoveEvent.__new__(JoystickMoveEvent)
-	elif p.type == dwindow.event.JoystickConnected or p.type == dwindow.event.JoystickDisconnected:
-		event = JoystickConnectEvent.__new__(JoystickConnectEvent)
+	elif p.type == dwindow.event.JoystickConnected:
+		event = wrap_joystickconnectevent(p, Event.CONNECTED)
+	elif p.type == dwindow.event.JoystickDisconnected:
+		event = wrap_joystickconnectevent(p, Event.DISCONNECTED)
 
-	if not event: event = Event.__new__(Event)
-	
 	event.p_this = p
 	return event
 
-
-cdef class SizeEvent(Event):
+cdef class CloseEvent(Event):
+	def __str__(self):
+		return "The window requested to be closed"
+		
+cdef class ResizeEvent(Event):
 	def __str__(self):
 		return "The window was resized"
 		
@@ -167,15 +154,68 @@ cdef class SizeEvent(Event):
 			
 		def __set__(self, size):
 			self.width, self.height = size
+			
+cdef class FocusEvent(Event):
+	cdef public bint state
+	
+	def __str__(self):
+		if self.gained: return "The window gained the focus"
+		if self.lost: return "The window lost the focus"
+		
+	property gained:
+		def __get__(self):
+			return self.state
+			
+		def __set__(self, bint gained):
+			self.state = gained
+		
+	property lost:
+		def __get__(self):
+			return not self.state
+			
+		def __set__(self, bint lost):
+			self.state = not lost
+
+cdef FocusEvent wrap_focusevent(dwindow.Event *p, bint state):
+	cdef FocusEvent r = FocusEvent.__new__(FocusEvent)
+	r.p_this = p
+	r.state = state
+	return r
+	
+
+cdef class TextEvent(Event):
+	def __str__(self):
+		return "A character was entered"
+		
+	property unicode:
+		def __get__(self):
+			return self.p_this.text.unicode
+			
+		def __set__(self, Uint32 unicode):
+			self.p_this.text.unicode = unicode
 
 
 cdef class KeyEvent(Event):
+	cdef public bint state
+	
 	def __str__(self):
-		if self.type == Event.KEY_PRESSED:
-			return "A key was pressed"
-		elif self.type == Event.KEY_RELEASED:
-			return "A key was released"
+		if self.pressed: return "A key was pressed"
+		if self.released: return "A key was released"
 		
+	property pressed:
+		def __get__(self):
+			return self.state
+			
+		def __set__(self, bint pressed):
+			self.state = pressed
+		
+	property released:
+		def __get__(self):
+			return not self.state
+			
+		def __set__(self, bint released):
+			self.state = not released
+
 	property code:
 		def __get__(self):
 			return self.p_this.key.code
@@ -211,79 +251,11 @@ cdef class KeyEvent(Event):
 		def __set__(self, bint system):
 			self.p_this.key.system = system
 
-
-cdef class TextEvent(Event):
-	def __str__(self):
-		return "A character was entered"
-		
-	property unicode:
-		def __get__(self):
-			return self.p_this.text.unicode
-			
-		def __set__(self, Uint32 unicode):
-			self.p_this.text.unicode = unicode
-
-
-cdef class MouseMoveEvent(Event):
-	def __str__(self):
-		return "The mouse cursor moved"
-		
-	property x:
-		def __get__(self):
-			return self.p_this.mouseMove.x
-			
-		def __set__(self, int x):
-			self.p_this.mouseMove.x = x
-		
-	property y:
-		def __get__(self):
-			return self.p_this.mouseMove.y
-			
-		def __set__(self, int y):
-			self.p_this.mouseMove.y = y
-		
-	property position:
-		def __get__(self):
-			return Vector2(self.x, self.y)
-			
-		def __set__(self, position):
-			self.x, self.y = position
-
-
-cdef class MouseButtonEvent(Event):
-	def __str__(self):
-		if self.type == Event.MOUSE_BUTTON_PRESSED:
-			return "A mouse button was pressed"
-		elif self.type == Event.MOUSE_BUTTON_RELEASED:
-			return "A mouse button was released"
-
-	property button:
-		def __get__(self):
-			return self.p_this.mouseButton.button
-
-		def __set__(self, dwindow.mouse.Button button):
-			self.p_this.mouseButton.button = button
-
-	property x:
-		def __get__(self):
-			return self.p_this.mouseButton.x
-
-		def __set__(self, int x):
-			self.p_this.mouseButton.x = x
-
-	property y:
-		def __get__(self):
-			return self.p_this.mouseButton.y
-
-		def __set__(self, int y):
-			self.p_this.mouseButton.y = y
-
-	property position:
-		def __get__(self):
-			return Vector2(self.x, self.y)
-
-		def __set__(self, position):
-			self.x, self.y = position
+cdef KeyEvent wrap_keyevent(dwindow.Event *p, bint state):
+	cdef KeyEvent r = KeyEvent.__new__(KeyEvent)
+	r.p_this = p
+	r.state = state
+	return r
 
 
 cdef class MouseWheelEvent(Event):
@@ -319,6 +291,158 @@ cdef class MouseWheelEvent(Event):
 			self.x, self.y = position
 
 
+cdef class MouseButtonEvent(Event):
+	cdef public bint state
+	
+	def __str__(self):
+		if self.pressed: return "A mouse button was pressed"
+		if self.released: return "A mouse button was released"
+		
+	property pressed:
+		def __get__(self):
+			return self.state
+			
+		def __set__(self, bint pressed):
+			self.state = pressed
+		
+	property released:
+		def __get__(self):
+			return not self.state
+			
+		def __set__(self, bint released):
+			self.state = not released
+
+	property button:
+		def __get__(self):
+			return self.p_this.mouseButton.button
+
+		def __set__(self, dwindow.mouse.Button button):
+			self.p_this.mouseButton.button = button
+
+	property x:
+		def __get__(self):
+			return self.p_this.mouseButton.x
+
+		def __set__(self, int x):
+			self.p_this.mouseButton.x = x
+
+	property y:
+		def __get__(self):
+			return self.p_this.mouseButton.y
+
+		def __set__(self, int y):
+			self.p_this.mouseButton.y = y
+
+	property position:
+		def __get__(self):
+			return Vector2(self.x, self.y)
+
+		def __set__(self, position):
+			self.x, self.y = position
+
+cdef MouseButtonEvent wrap_mousebuttonevent(dwindow.Event *p, bint state):
+	cdef MouseButtonEvent r = MouseButtonEvent.__new__(MouseButtonEvent)
+	r.p_this = p
+	r.state = state
+	return r
+	
+	
+cdef class MouseMoveEvent(Event):
+	def __str__(self):
+		return "The mouse cursor moved"
+		
+	property x:
+		def __get__(self):
+			return self.p_this.mouseMove.x
+			
+		def __set__(self, int x):
+			self.p_this.mouseMove.x = x
+		
+	property y:
+		def __get__(self):
+			return self.p_this.mouseMove.y
+			
+		def __set__(self, int y):
+			self.p_this.mouseMove.y = y
+		
+	property position:
+		def __get__(self):
+			return Vector2(self.x, self.y)
+			
+		def __set__(self, position):
+			self.x, self.y = position
+
+
+cdef class MouseEvent(Event):
+	cdef public bint state
+	
+	def __str__(self):
+		if self.entered: return "The mouse cursor entered the area of the window"
+		if self.left: return "The mouse cursor left the area of the window"
+		
+	property entered:
+		def __get__(self):
+			return self.state
+			
+		def __set__(self, bint entered):
+			self.state = entered
+		
+	property left:
+		def __get__(self):
+			return not self.state
+			
+		def __set__(self, bint left):
+			self.state = not left
+
+cdef MouseEvent wrap_mouseevent(dwindow.Event *p, bint state):
+	cdef MouseEvent r = MouseEvent.__new__(MouseEvent)
+	r.p_this = p
+	r.state = state
+	return r
+
+
+cdef class JoystickButtonEvent(Event):
+	cdef public bint state
+	
+	def __str__(self):
+		if self.pressed: return "A joystick button was pressed"
+		if self.released: return "A joystick button was released"
+		
+	property pressed:
+		def __get__(self):
+			return self.state
+			
+		def __set__(self, bint pressed):
+			self.state = pressed
+		
+	property released:
+		def __get__(self):
+			return not self.state
+			
+		def __set__(self, bint released):
+			self.state = not released
+			
+	property joystick_id:
+		def __get__(self):
+			return self.p_this.joystickButton.joystickId
+			
+		def __set__(self, unsigned int joystick_id):
+			self.p_this.joystickButton.joystickId = joystick_id
+			
+	property button:
+		def __get__(self):
+			return self.p_this.joystickButton.button
+			
+		def __set__(self, unsigned int button):
+			self.p_this.joystickButton.button = button
+
+cdef JoystickButtonEvent wrap_joystickbuttonevent(dwindow.Event *p, bint state):
+	cdef JoystickButtonEvent r = JoystickButtonEvent.__new__(JoystickButtonEvent)
+	r.p_this = p
+	r.state = state
+	return r
+
+
 cdef class JoystickMoveEvent(Event):
 	def __str__(self):
 		return "The joystick moved along an axis"
@@ -345,41 +469,39 @@ cdef class JoystickMoveEvent(Event):
 			self.p_this.joystickMove.position = position
 
 
-cdef class JoystickButtonEvent(Event):
-	def __str__(self):
-		if self.type == Event.JOYSTICK_BUTTON_PRESSED:
-			return "A joystick button was pressed"
-		elif self.type == Event.JOYSTICK_BUTTON_RELEASED:
-			return "A joystick button was released"
-		
-	property joystick_id:
-		def __get__(self):
-			return self.p_this.joystickButton.joystickId
-			
-		def __set__(self, unsigned int joystick_id):
-			self.p_this.joystickButton.joystickId = joystick_id
-			
-	property button:
-		def __get__(self):
-			return self.p_this.joystickButton.button
-			
-		def __set__(self, unsigned int button):
-			self.p_this.joystickButton.button = button
-
-
 cdef class JoystickConnectEvent(Event):
+	cdef public bint state
+	
 	def __str__(self):
-		if self.type == Event.JOYSTICK_CONNECTED:
-			return "A joystick was connected"
-		elif self.type == Event.JOYSTICK_DISCONNECTED:
-			return "A joystick was disconnected"
+		if self.connected: return "A joystick was connected"
+		if self.disconnected: return "A joystick was disconnected"
 		
+	property connected:
+		def __get__(self):
+			return self.state
+			
+		def __set__(self, bint connected):
+			self.state = connected
+		
+	property disconnected:
+		def __get__(self):
+			return not self.state
+			
+		def __set__(self, bint disconnected):
+			self.state = not disconnected
+			
 	property joystick_id:
 		def __get__(self):
 			return self.p_this.joystickConnect.joystickId
 			
 		def __set__(self, unsigned int joystick_id):
 			self.p_this.joystickConnect.joystickId = joystick_id
+
+cdef JoystickConnectEvent wrap_joystickconnectevent(dwindow.Event *p, bint state):
+	cdef JoystickConnectEvent r = JoystickConnectEvent.__new__(JoystickConnectEvent)
+	r.p_this = p
+	r.state = state
+	return r
 
 
 cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:

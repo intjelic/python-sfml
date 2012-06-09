@@ -61,9 +61,10 @@ def main(song):
     loop = True
     while loop:
         for event in window.events:
-            if event.type == sf.Event.CLOSED:
+            if type(event) is sf.CloseEvent:
                 loop = False
-            elif event.type == sf.Event.KEY_PRESSED:
+                
+            elif type(event) is sf.KeyEvent and event.pressed:
                 if event.code is sf.Keyboard.UP:
                     hears_position.y -= 5
                     sf.Listener.set_position(hears_position)

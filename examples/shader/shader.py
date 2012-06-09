@@ -249,11 +249,10 @@ if __name__ == "__main__":
 		for event in window.events:
 			
 			# close window: exit
-			if event.type is sf.Event.CLOSED:
+			if type(event) is sf.CloseEvent:
 				window.close()
 				
-			if event.type is sf.Event.KEY_PRESSED:
-				
+			if type(event) is sf.KeyEvent and event.pressed:
 				# escapte key: exit
 				if event.code == sf.Keyboard.ESCAPE:
 					window.close()
