@@ -589,14 +589,46 @@ cdef class Texture:
 		p[0] = self.p_this.copyToImage()
 		return wrap_image(p)
 	
-	def update(self): raise NotImplemented
-	
-	def update_from_pixels(self, Pixels pixels, area=None):
-		if not area:
+	def update(self, *args, **kwargs):
+		if len(args) == 0:
+			raise UserWarning("No arguments provided. It requires at least one.")
+			
+		if len(args) > 2:
+			raise UserWarning("Too much arguments provided. It requires at most two.")
+			
+		if type(args[0]) is Pixels:
+			if len(args) == 2:
+				if type(args[1]) in [Vector2, tuple]:
+					self.update_from_pixels(args[0], args[1])
+				else: raise UserWarning("The second argument must be either a sf.Vector2 or a tuple")
+			else:
+				self.update_from_pixels(args[0])
+				
+		elif type(args[0]) is Image:
+			if len(args) == 2:
+				if type(args[1]) in [Vector2, tuple]:
+					self.update_from_image(args[0], args[1])
+				else: raise UserWarning("The second argument must be either a sf.Vector2 or a tuple")
+			else:
+				self.update_from_image(args[0])
+				
+		elif isinstance(args[0], Window):
+			if len(args) == 2:
+				if type(args[1]) in [Vector2, tuple]:
+					self.update_from_window(args[0], args[1])
+				else: raise UserWarning("The second argument must be either a sf.Vector2 or a tuple")
+			else:
+				self.update_from_window(args[0])
+				
+		else: raise UserWarning("The first argument must be either sf.Pixels, sf.Image or sf.Window")
+
+
+	def update_from_pixels(self, Pixels pixels, position=None):
+		if not position:
 			self.p_this.update(pixels.p_array)
 		else:
-			l, t, w, h = area
-			self.p_this.update(pixels.p_array, w, h, l, t)
+			x, y = position
+			self.p_this.update(pixels.p_array, pixels.m_width, pixels.m_height, <unsigned int>x, <unsigned int>y)
 			
 	def update_from_image(self, Image image, position=None):
 		if not position:
