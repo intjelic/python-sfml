@@ -395,7 +395,8 @@ cdef class Image:
 	def create(cls, unsigned int width, unsigned int height, Color color=None):
 		cdef dgraphics.Image *p = new dgraphics.Image()
 		if not color: p.create(width, height)
-		else: raise NotImplementedError("Not implemented due to a bug in Cython, see task #74 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
+		else: p.create(width, height, color.p_this[0])
+		#else: raise NotImplementedError("Not implemented due to a bug in Cython, see task #74 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
 		return wrap_image(p)
 
 	@classmethod
@@ -463,7 +464,7 @@ cdef class Image:
 	
 	property pixels:
 		def __get__(self):
-			if self.p_this.getPixelsPtr() != None:
+			if self.p_this.getPixelsPtr():
 				return wrap_pixels(<Uint8*>self.p_this.getPixelsPtr(), self.width, self.height)
 		
 	def flip_horizontally(self):
@@ -601,17 +602,15 @@ cdef class Texture:
 		if not position:
 			self.p_this.update(image.p_this[0])
 		else:
-			#x, y = position
-			#self.p_this.update(image.p_this[0], x, y)
-			raise NotImplementedError("Not implemented due to a bug in Cython, see task #76 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
-		
+			x, y = position
+			self.p_this.update(image.p_this[0], <unsigned int>x, <unsigned int>y)
+
 	def update_from_window(self, Window window, position=None):
 		if not position:
 			self.p_this.update(window.p_window[0])
 		else:
-			#x, y = position
-			#self.p_this.update(window.p_this[0], x, y)
-			raise NotImplementedError("Not implemented due to a bug in Cython, see task #77 in the bug tracker: http://openhelbreath.net/python-sfml2/flyspray/")
+			x, y = position
+			self.p_this.update(window.p_window[0], <unsigned int>x, <unsigned int>y)
 
 	def bind(self, dgraphics.texture.CoordinateType coordinate_type=dgraphics.texture.Normalized):
 		self.p_this.bind(coordinate_type)
