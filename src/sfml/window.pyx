@@ -134,20 +134,6 @@ cdef class ResizeEvent(Event):
 	def __str__(self):
 		return "The window was resized"
 		
-	property width:
-		def __get__(self):
-			return self.p_this.size.width
-			
-		def __set__(self, unsigned int width):
-			self.p_this.size.width = width
-		
-	property height:
-		def __get__(self):
-			return self.p_this.size.height
-			
-		def __set__(self, unsigned int height):
-			self.p_this.size.height = height
-		
 	property size:
 		def __get__(self):
 			return Vector2(self.width, self.height)
@@ -269,20 +255,6 @@ cdef class MouseWheelEvent(Event):
 		def __set__(self, int delta):
 			self.p_this.mouseWheel.delta = delta
 
-	property x:
-		def __get__(self):
-			return self.p_this.mouseWheel.x
-			
-		def __set__(self, int x):
-			self.p_this.mouseWheel.x = x
-
-	property y:
-		def __get__(self):
-			return self.p_this.mouseWheel.y
-
-		def __set__(self, int y):
-			self.p_this.mouseWheel.y = y
-
 	property position:
 		def __get__(self):
 			return Vector2(self.x, self.y)
@@ -319,20 +291,6 @@ cdef class MouseButtonEvent(Event):
 		def __set__(self, dwindow.mouse.Button button):
 			self.p_this.mouseButton.button = button
 
-	property x:
-		def __get__(self):
-			return self.p_this.mouseButton.x
-
-		def __set__(self, int x):
-			self.p_this.mouseButton.x = x
-
-	property y:
-		def __get__(self):
-			return self.p_this.mouseButton.y
-
-		def __set__(self, int y):
-			self.p_this.mouseButton.y = y
-
 	property position:
 		def __get__(self):
 			return Vector2(self.x, self.y)
@@ -350,20 +308,6 @@ cdef MouseButtonEvent wrap_mousebuttonevent(dwindow.Event *p, bint state):
 cdef class MouseMoveEvent(Event):
 	def __str__(self):
 		return "The mouse cursor moved"
-		
-	property x:
-		def __get__(self):
-			return self.p_this.mouseMove.x
-			
-		def __set__(self, int x):
-			self.p_this.mouseMove.x = x
-		
-	property y:
-		def __get__(self):
-			return self.p_this.mouseMove.y
-			
-		def __set__(self, int y):
-			self.p_this.mouseMove.y = y
 		
 	property position:
 		def __get__(self):
