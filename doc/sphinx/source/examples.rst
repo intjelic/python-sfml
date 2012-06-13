@@ -1,11 +1,6 @@
 Examples
 ========
-As this is a fast release and I don't have much time to write some 
-tutorials or provide more official example, here is a page where you'll
-find the official examples' source code source AND many piece of code I wrote to
-see if everything worked.
-
-You won't find any explaination but they should work.
+Here, you'll find the examples scritps code and various pieces of code.
 
 Official examples source code
 -----------------------------

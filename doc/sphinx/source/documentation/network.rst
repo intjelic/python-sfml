@@ -3,6 +3,11 @@ Network
 
 .. module:: sf
 
+.. contents:: :local:
+
+IpAddress
+^^^^^^^^^
+
 .. class:: IpAddress()
 
    Encapsulate an IPv4 network address.
@@ -31,7 +36,7 @@ Network
    other types of network addresses.
 
    .. py:data:: NONE
-
+   
       Value representing an empty/invalid address. 
 
    .. py:data:: LOCAL_HOST
@@ -113,7 +118,7 @@ Network
 
       :rtype: :class:`sf.IpAddress`
       
-   .. classmethod:: get_public_address(time=0)
+   .. classmethod:: get_public_address([time])
          
       Get the computer's public address.
 
@@ -128,9 +133,12 @@ Network
       limit if you don't want your program to be possibly stuck waiting 
       in case there is a problem; this limit is deactivated by default.
 
-      :param integer time: Maximum time to wait (in milliseconds)
+      :param sf.Time time: Maximum time to wait
       :rtype: :class:`sf.IpAddress`
 
+
+Socket
+^^^^^^
 
 .. py:class:: Socket()
 
@@ -185,10 +193,9 @@ Network
 
       :type: bool
       
-.. py:exception:: SocketException(Exception)
-.. py:exception:: SocketNotReady(SocketException)
-.. py:exception:: SocketDisconnect(SocketException)
-.. py:exception:: SocketError(SocketException)
+
+TcpSocket
+^^^^^^^^^
 
 .. py:class:: TcpSocket(Socket)
 
@@ -278,7 +285,7 @@ Network
 
       :type: integer
       
-   .. py:method:: connect(remote_address, remote_port[, timeout=0])
+   .. py:method:: connect(remote_address, remote_port[, timeout])
    
       Connect the socket to a remote peer.
       
@@ -298,7 +305,7 @@ Network
       
       :param sf.IpAddress remote_address: Address of the remote peer 
       :param integer remote_port: Port of the remote peer 
-      :param integer timeout: Optional maximum time to wait (in milliseconds)
+      :param sf.Time timeout: Optional maximum time to wait
 
    .. py:method:: disconnect()
    
@@ -345,6 +352,9 @@ Network
       :return: A sequence of bytes
       :rtype: bytes
 
+
+UdpSocket
+^^^^^^^^^
 
 .. py:class:: UdpSocket(Socket)
       
@@ -495,6 +505,10 @@ Network
       :return: A tuple with the sequence of bytes received, the remote address and the port used.
       :rtype: tuple (bytes, sf.IpAddress, integer)
       
+
+TcpListener
+^^^^^^^^^^^
+
 .. py:class:: TcpListener(Socket)
 
    :class:`Socket` that listens to new TCP connections.
@@ -591,6 +605,16 @@ Network
       :return: :class:`Socket` that holds the new connection
       :rtype: :class:`sf.TcpSocket`
 
+SocketException
+^^^^^^^^^^^^^^^
+
+.. py:exception:: SocketException(Exception)
+.. py:exception:: SocketNotReady(SocketException)
+.. py:exception:: SocketDisconnect(SocketException)
+.. py:exception:: SocketError(SocketException)
+
+SocketSelector
+^^^^^^^^^^^^^^
 
 .. py:class:: SocketSelector()
 
@@ -619,6 +643,10 @@ Network
       This function must be used after a call to wait(), to know which sockets are ready to receive data. If a socket is ready, a call to receive() will never block because we know that there is data available to read.
       Note that if this function returns true for a TcpListener, this means that it is ready to accept a new connection.
 
+
+
+Ftp
+^^^
 
 .. py:class:: FtpResponse()
 
@@ -827,6 +855,10 @@ Network
    
    .. py:method:: upload()
 
+
+
+Html
+^^^^
 
 .. py:class:: HttpRequest()
 

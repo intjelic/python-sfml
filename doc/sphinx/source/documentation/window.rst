@@ -3,9 +3,14 @@ Window
 
 .. module:: sf
 
+.. contents:: :local:
+
+Style
+^^^^^
+
 .. class:: Style
 
-   This class define the following constants:
+   This class defines the following constants:
    
    +------------+--------------------------------------------------------------------------+
    | Style      | Description                                                              |
@@ -23,6 +28,9 @@ Window
    | DEFAULT    | Default window style.                                                    |
    +------------+--------------------------------------------------------------------------+
 
+Event
+^^^^^
+
 .. class:: Event
 
 	Defines a system event and its parameters.
@@ -31,176 +39,111 @@ Window
 	happened.
 
 	Events are retrieved using the :func:`sf.Window.poll_event` and 
-	:func:`sf.Window.wait_event` functions.
+	:func:`sf.Window.wait_event` functions. You can also retreive the 
+	current pending event list via the property :attr:`sf.Window.event`.
 
-	A sf.Event instance contains the type of the event (mouse moved, 
-	key pressed, window closed, ...) as well as the details about this 
-	particular event. Please note that the event parameters are defined 
-	in a union, which means that only the member matching the type of 
-	the event will be properly filled; all other members will have 
-	undefined values and must not be read if the type of the event 
-	doesn't match. For example, if you received a KeyPressed event, 
-	then you must read the event.key member, all other members such as 
-	event.MouseMove or event.text will have undefined values.
+	A :class:`sf.Event` instance contains the data of the event.
 
 	Usage example::
 	
 		for event in window.events:
 			# request for closing the window
-			if event.type == sf.Event.CLOSED:
+			if type(event) is sf.CloseEvent:
 				window.close()
 			
 			# the escape key was pressed
-			if event.type == sf.Event.KEY_PRESSED and event.key.code == sf.Keyboard.ESCAPE:
+			if type(event) is sf.KeyEvent and event.code is sf.Keyboard.ESCAPE:
 				window.close()
 				
 			# the window was resized
-			if event.type == sf.Event.RESIZED:
+			if type(event) is sf.ResizeEvent:
 				do_something_with_the_new_size(event.size)
 				
 			# ...
 			
 
-   +--------------------------+--------------------------------------------------+
-   | Event                    | Description                                      |
-   +==========================+==================================================+
-   | CLOSED                   | The window requested to be closed.               |
-   +--------------------------+--------------------------------------------------+
-   | RESIZED                  | The window was resized.                          |
-   +--------------------------+--------------------------------------------------+
-   | LOST_FOCUS               | The window lost the focus.                       |
-   +--------------------------+--------------------------------------------------+
-   | GAINED_FOCUS             | The window gained the focus.                     |
-   +--------------------------+--------------------------------------------------+
-   | TEXT_ENTERED             | A character was entered.                         |
-   +--------------------------+--------------------------------------------------+
-   | KEY_PRESSED              | A key was pressed.                               |
-   +--------------------------+--------------------------------------------------+
-   | KEY_RELEASED             | A key was released.                              |
-   +--------------------------+--------------------------------------------------+
-   | MOUSE_WHEEL_MOVED        | The mouse wheel was scrolled.                    |
-   +--------------------------+--------------------------------------------------+
-   | MOUSE_BUTTON_PRESSED     | A mouse button was pressed.                      |
-   +--------------------------+--------------------------------------------------+
-   | MOUSE_BUTTON_RELEASED    | A mouse button was released.                     |
-   +--------------------------+--------------------------------------------------+
-   | MOUSE_MOVED              | The mouse cursor moved.                          |
-   +--------------------------+--------------------------------------------------+
-   | MOUSE_ENTERED            | The mouse cursor entered the area of the window. |
-   +--------------------------+--------------------------------------------------+
-   | MOUSE_LEFT               | The mouse cursor left the area of the window.    |
-   +--------------------------+--------------------------------------------------+
-   | JOYSTICK_BUTTON_PRESSED  | A joystick button was pressed.                   |
-   +--------------------------+--------------------------------------------------+
-   | JOYSTICK_BUTTON_RELEASED | A joystick button was released.                  |
-   +--------------------------+--------------------------------------------------+
-   | JOYSTICK_MOVED           | The joystick moved along an axis.                |
-   +--------------------------+--------------------------------------------------+
-   | JOYSTICK_CONNECTED       | A joystick was connected.                        |
-   +--------------------------+--------------------------------------------------+
-   | JOYSTICK_DISCONNECTED    | A joystick was disconnected.                     |
-   +--------------------------+--------------------------------------------------+
-   | COUNT                    | The total number of event types.                 |
-   +--------------------------+--------------------------------------------------+
+.. class:: CloseEvent(Event)
 
-   .. attribute:: type
 
-		Type of the event
-
-.. class:: SizeEvent
-
-   :class:`Event` that handles parameters when its type is 
-   :const:`RESIZED`
+.. class:: ReizeEvent(Event)
    
 	.. attribute:: size
-      
-      New size, in pixels.
-      
-	.. attribute:: width
-   
-      New width, in pixels.
-      
-	.. attribute:: height
-   
-      New height, in pixels.
-	
-.. class:: KeyEvent
-   
-   :class:`Event` that handles parameters when its type is either
-   :const:`KEY_PRESSED` or :const:`KEY_RELEASED`
-   
-   .. attribute:: code
 
-      Code of the key that has been pressed.
-      
-      :type: integer (:class:`sf.Keyboard`'s constante)
-   .. attribute:: alt
 
-      Is the Alt key pressed?
+.. class:: FocusEvent(Event)
 
-      :type: bool
+   .. attribute:: lost
+   .. attribute:: gained
 
-   .. attribute:: control
 
-      Is the Control key pressed?
-
-      :type: bool
-
-   .. attribute:: shift
-
-      Is the Shift key pressed?
-
-      :type: bool
-
-   .. attribute:: system
-
-      Is the System key pressed?
-
-      :type: bool
-
-.. class:: TextEvent
+.. class:: TextEvent(Event)
 
 	.. attribute:: unicode
 
-.. class:: MouseMoveEvent
 
-	.. attribute:: x
-	.. attribute:: y
-	.. attribute:: position
-	
-.. class:: MouseButtonEvent
+.. class:: KeyEvent(Event)
+   
+   .. attribute:: pressed
+   .. attribute:: released
+   .. attribute:: code
+   .. attribute:: alt
+   .. attribute:: control
+   .. attribute:: shift
+   .. attribute:: system
 
-	.. attribute:: button
-	.. attribute:: x
-	.. attribute:: y
-	.. attribute:: position
-	
+
 .. class:: MouseWheelEvent
 
 	.. attribute:: delta
-	.. attribute:: x
-	.. attribute:: y
 	.. attribute:: position
-	
+
+
+.. class:: MouseButtonEvent
+
+	.. attribute:: pressed
+	.. attribute:: released
+	.. attribute:: button
+	.. attribute:: position
+
+
+.. class:: MouseMoveEvent
+
+	.. attribute:: position
+
+
+.. class:: MouseEvent
+
+   .. attribute:: entered
+   .. attribute:: left
+
+
 .. class:: JoystickMoveEvent
 
 	.. attribute:: joystick_id
 	.. attribute:: axis
 	.. attribute:: position
-	.. attribute:: x
-	.. attribute:: y
-	
+
+
 .. class:: JoystickButtonEvent
 
+	.. attribute:: pressed
+	.. attribute:: released
 	.. attribute:: joystick_id
 	.. attribute:: button
 
+
 .. class:: JoystickConnectEvent
 
+	.. attribute:: connected
+	.. attribute:: disconnected
 	.. attribute:: joystick_id
 
 
-.. class:: VideoMode(width, height[, bits_per_pixel=32])
+VideoMode
+^^^^^^^^^
+
+
+.. class:: VideoMode
 
 	:class:`VideoMode` defines a video mode (width, height, bpp)
 
@@ -241,11 +184,19 @@ Window
 		window = sf.Window(sf.VideoMode(1024, 768, bpp), "pySFML Window")
 
 
+   .. py:method:: VideoMode(width, height[, bits_per_pixel=32])
+   
+      Construct the video mode with its attributes. 
+      
+      :param integer width: Width in pixels
+      :param integer height: Height in pixels 
+      :param integer bits_per_pixel: Pixel depths in bits per pixel
+      
    .. py:attribute:: size
    
 		Video mode size, in pixels.
 		
-		:type: :class:`sf.system.Size`
+		:type: :class:`sf.Vector2`
    	
    .. py:attribute:: width
    
@@ -269,7 +220,7 @@ Window
    
 		Get the current desktop video mode.
 		
-		:type: :class:`sf.window.VideoMode`
+		:type: :class:`sf.VideoMode`
    
    .. py:classmethod:: get_fullscreen_modes()
          
@@ -283,6 +234,8 @@ Window
 		always give the best mode (higher width, height and 
 		bits-per-pixel).
 
+		:rtype: list of :class:`VideoMode`
+		
    .. py:method:: is_valid()
 
       Tell whether or not the video mode is valid.
@@ -291,6 +244,11 @@ Window
       fullscreen windows; otherwise any video mode can be used with no 
       restriction.
 
+		:rtype: bool
+
+
+ContextSettings
+^^^^^^^^^^^^^^^
 
 .. class:: ContextSettings(int depth=0, int stencil=0, int antialiasing=0, int major=2, int minor=0)
 
@@ -330,6 +288,51 @@ Window
       Minor number of the context version to create.
    
 
+Pixels
+^^^^^^
+
+.. py:class:: Pixels
+
+	Utility class to manipulate pixels, more precisely, an array of 
+	unsigned char that represents an image.
+	
+	This could have been handled with the built-in type "bytes" for 
+	python3 or a simple string coded on 8-bits for python2 but as an 
+	image has two dimensions, it has to tell its width (and its height) 
+	too.
+	
+	Usage examples::
+	
+		image = sf.Image.load_from_file("icon.png")
+		window = sf.Window(sf.VideoMode(640, 480), "pySFML")
+
+		window.icon = image.pixels
+
+		x, y, w, h = 86, 217, image.size
+		pixels = image.pixels
+
+		assert pixels[w*y+x+0] == image[x, y].r
+		assert pixels[w*y+x+1] == image[x, y].g
+		assert pixels[w*y+x+2] == image[x, y].b
+		assert pixels[w*y+x+3] == image[x, y].a
+
+	.. py:attribute:: width
+	
+		Get its width.
+		
+	.. py:attribute:: height
+	
+		Get its height.
+		
+	.. py:attribute:: data
+	
+		Return a copy of the data inside.
+		
+		:rtype: bytes or string
+
+
+Window
+^^^^^^
 
 .. class:: Window
 	
@@ -400,10 +403,14 @@ Window
       :param sf.Style style: Window style
       :param sf.ContextSettings settings: Additional settings for the underlying OpenGL context
 
-
-   .. method:: create_empty()
-   .. method:: create_from_handle()
-   .. method:: recreate()
+   .. method:: recreate(mode, title[, style[, settings]])
+   
+      Recreate the window.
+      
+      :param sf.VideoMode mode: Video mode to use (defines the width, height and depth of the rendering area of the window)
+      :param string title: Title of the window
+      :param sf.Style style: Window style
+      :param sf.ContextSettings settings: Additional settings for the underlying OpenGL context
 
    .. method:: close()
 
@@ -478,13 +485,13 @@ Window
       ignored for windows created from the handle of a 
       child window/control).
       
-      :type: :class:`sf.Position`
+      :type: :class:`sf.Vector2`
 
    .. attribute:: size
    
       Return or change the size of the rendering region of the window. 
 
-      :type: :class:`sf.Size`
+      :type: :class:`sf.Vector2`
       
    .. attribute:: icon
    
@@ -653,11 +660,14 @@ Window
       Reimplemented in :class:`sf.RenderWindow`
       
 
+Keyboard
+^^^^^^^^
+
 .. class:: Keyboard
 
    Give access to the real-time state of the keyboard.
 
-   :class:`sf.Keyboard provides an interface to the state of the 
+   :class:`sf.Keyboard` provides an interface to the state of the 
    keyboard.
 
    It only contains class methods (a single keyboard is assumed), so 
@@ -896,6 +906,10 @@ Window
       :param key: Key to check
       :type key: integer (:class:`sf.Keyboard`'s constant)
       
+
+Joystick
+^^^^^^^^
+
 .. class:: Joystick
 
    Give access to the real-time state of the joysticks.
@@ -1038,6 +1052,9 @@ Window
       joysticks states are not updated automatically.
 
 
+Mouse
+^^^^^
+
 .. class:: Mouse
 
    Give access to the real-time state of the mouse.
@@ -1073,7 +1090,7 @@ Window
       # or: position = sf.Mouse.get_position()
 
       # set mouse position relative to a window
-      sf.Mouse.set_position(sf.Position(100, 200), window)
+      sf.Mouse.set_position(sf.Vector2(100, 200), window)
 
    +--------------+------------------------------------+
    | Button       | Description                        |
@@ -1117,9 +1134,12 @@ Window
       This function sets the current position of the mouse cursor, 
       relative to the given window.
 
-      :param sf.Position position: New position of the mouse 
+      :param sf.Vector2 position: New position of the mouse 
       :param sf.Window relativ_to: Reference window
 
+
+Context
+^^^^^^^
 
 .. class:: Context
 

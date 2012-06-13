@@ -3,6 +3,10 @@ Graphics
 
 .. module:: sf
 
+.. contents:: :local:
+
+BlendMode
+^^^^^^^^^
 
 .. py:class:: BlendMode
 
@@ -25,6 +29,9 @@ Graphics
       
       Pixel = Source. 
       
+PrimitiveType
+^^^^^^^^^^^^^
+
 .. py:class:: PrimitiveType
 
    Empty class that defines some constants. The are the types of 
@@ -62,6 +69,118 @@ Graphics
    
       List of individual quads. 
 
+
+Rectangle
+^^^^^^^^^
+
+.. class:: Rectangle
+
+   Utility class for manipulating 2D axis aligned rectangles.
+
+   A rectangle is defined by its top-left corner and its size.
+
+   It is a very simple class defined for convenience, so its member 
+   variables (left, top, width and height) are public and can be 
+   accessed directly via attributes, just like :class:`sf.Vector2`.
+
+   Unlike SFML, :class:`sf.Rectangle` does define functions to emulate 
+   the properties that are not directly members (such as right, bottom, 
+   center, etc.).
+
+   :class:`sf.Rectangle` uses the usual rules for its boundaries:
+
+      * The left and top edges are included in the rectangle's area
+      * The right (left + width) and bottom (top + height) edges are excluded from the rectangle's area
+
+   This means that sf.Rectangle((0, 0), (1, 1)) and 
+   sf.Rectangle((1, 1), (1, 1)) don't intersect.
+
+   Usage example::
+
+      # define a rectangle, located at (0, 0) with a size of 20x5
+      r1 = sf.Rectangle(sf.Vector2(0, 0), sf.Vector2(20, 5))
+      # or r1 = sf.Rectangle((0, 0), (20, 5))
+
+      # define another rectangle, located at (4, 2) with a size of 18x10
+      position = sf.Vector2(4, 2)
+      size = sf.Vector2(18, 10)
+
+      r2 = sf.Rectangle(position, size)
+
+      # test intersections with the point (3, 1)
+      b1 = r1.contains(sf.Vector2(3, 1)); # True
+      b2 = r2.contains((3, 1)); # False
+
+      # test the intersection between r1 and r2
+      result = r1.intersects(r2) # True
+
+      # as there's an intersection, the result is not None but sf.Rectangle(4, 2, 16, 3)
+      assert result == sf.Rectangle((4, 2), (16, 3))
+      
+   .. method:: Rectangle(position=(0, 0), size=(0, 0))
+      
+      Construct a :class:`sf.Rectangle`
+
+   .. attribute:: position
+   
+      Top-left coordinate of the rectangle.
+      
+   .. attribute:: size
+   
+      Position of the rectangle.
+   
+   .. attribute:: left
+      
+      Left coordinate of the rectangle. This attribute is provided as a
+      shortcut to sf.Rectangle.position.x
+      
+   .. attribute:: top
+   
+      Top coordinate of the rectangle. This attribute is provided as a
+      shortcut to sf.Rectangle.position.y
+      
+   .. attribute:: width
+   
+      Width of the rectangle. This attribute is provided as a
+      shortcut to sf.Rectangle.size.width
+      
+   .. attribute:: height
+   
+      Height of the rectangle. This attribute is provided as a
+      shortcut to sf.Rectangle.position.height
+
+   .. attribute:: center
+
+      The center of the rectangle.
+      
+   .. attribute:: rigth
+   
+      The right coordinate of the rectangle.
+      
+   .. attribute:: bottom
+   
+      The bottom coordinate of the rectangle.
+      
+   .. method:: contains(point)
+
+      Check if a point is inside the rectangle's area. 
+      
+      :param sf.Vector2 point: Point to test
+      :rtype: bool
+      
+   .. method:: intersects(rectangle)
+
+      Check the intersection between two rectangles.
+
+      This overload returns the overlapped rectangle if an intersection 
+      is found.
+      
+      :param sf.Rectangle rectangle: Rectangle to test 
+      :return: Rectangle filled with the intersection or None
+      :rtype: :class:`sf.Rectangle` or None
+
+Color
+^^^^^
 
 .. py:class:: Color
 
@@ -101,7 +220,7 @@ Graphics
          transparent = sf.Color.TRANSPARENT
    
       Colors can also be added and modulated (multiplied) using the 
-      overloaded operators + and *. 
+      overloaded operators + and \*. 
 
    .. py:method:: Color(r, g, b[, a=255])
    
@@ -163,6 +282,9 @@ Graphics
    .. py:attribute:: a
    
       Alpha (opacity) component.
+
+Transform
+^^^^^^^^^
 
 .. py:class:: Transform
 
@@ -240,9 +362,9 @@ Graphics
       Transform a 2D point.
       
       :param point: Point to transform
-      :type point: :class:`sf.Position` or tuple
+      :type point: :class:`sf.Vector2` or tuple
       :return: Transformed point
-      :rtype: :class:`sf.Position`
+      :rtype: :class:`sf.Vector2`
       
    .. py:method:: transform_rectangle(rectangle)
 
@@ -281,10 +403,10 @@ Graphics
       chained. ::
       
          transform = sf.Transform()
-         transform.translate(sf.Position(100, 200)).rotate(45)
+         transform.translate(sf.Vector2(100, 200)).rotate(45)
          
       :param offset: Translation offset to apply
-      :type offset: :class:`sf.Position` or tuple
+      :type offset: :class:`sf.Vector2` or tuple
       :return: Return itself
       :rtype: :class:`sf.Transform`
          
@@ -305,7 +427,7 @@ Graphics
          
       :param float angle: Rotation angle, in degrees
       :param center: Center of rotation
-      :type center: :class:`sf.Position` or tuple
+      :type center: :class:`sf.Vector2` or tuple
       :return: Return itself
       :rtype: :class:`sf.Transform`
          
@@ -325,37 +447,14 @@ Graphics
          transform.scale((2, 1), (8, 3)).rotate(45)
 
       :param factor: Scaling factors 
-      :type factor: :class:`sf.Position` or tuple
+      :type factor: :class:`sf.Vector2` or tuple
       :param center: Center of scaling
-      :type center: :class:`sf.Position` or tuple
+      :type center: :class:`sf.Vector2` or tuple
       :return: Return itself
       :rtype: :class:`sf.Transform`
 
-
-.. py:class:: Pixels
-
-	Utility class to manipulate pixels, more precisely, an array of 
-	unsigned char that represents an image.
-	
-	This could have been handled with the built-in type "bytes" for 
-	python3 or a simple string coded on 8-bits for python2 but as an 
-	image has two dimensions, it has to tell its width (and its height) 
-	too.
-	
-	Usage examples::
-	
-		image = sf.Image.load_from_file("icon.png")
-		window = sf.Window(sf.VideoMode(640, 480), "pySFML")
-
-		window.icon = image.pixels
-
-		x, y, w, h = 86, 217, image.size
-		pixels = image.pixels
-
-		assert pixels[w*y+x+0] == image[x, y].r
-		assert pixels[w*y+x+1] == image[x, y].g
-		assert pixels[w*y+x+2] == image[x, y].b
-		assert pixels[w*y+x+3] == image[x, y].a
+Image
+^^^^^
 
 .. py:class:: Image
 
@@ -460,7 +559,7 @@ Graphics
    
       Return the size of the image.
       
-      :type: :class:`sf.Size`
+      :type: :class:`sf.Vector2`
       
    .. py:attribute:: width
    
@@ -501,7 +600,7 @@ Graphics
       
       :param sf.Image source: Source image to copy
       :param dest: Coordinate of the destination position
-      :type dest: :class:`sf.Position` or None
+      :type dest: :class:`sf.Vector2` or None
       :param source_rect: Sub-rectangle of the source image to copy
       :type source_rect: :class:`sf.Rectangle` or tuple
       :param bool apply_alpha: Should the copy take in account the source transparency ?
@@ -550,6 +649,14 @@ Graphics
          image[0,0]   = sf.Color(10, 20, 30)  # create tuple implicitly
          image[(0,0)] = sf.Color(10, 20, 30)  # create tuple explicitly
 
+   .. py:method:: show()
+   
+      This function starts an external thread that displays the current 
+      content of the image in a window. It's a very handy feature for 
+      debugging purpose only.
+      
+Texture
+^^^^^^^
 
 .. py:class:: Texture
 
@@ -735,7 +842,7 @@ Graphics
    
       Return the size of the texture. 
       
-      :type: :class:`sf.Size`
+      :type: :class:`sf.Vector2`
       
    .. py:attribute:: width
    
@@ -761,13 +868,8 @@ Graphics
       :return: Image containing the texture's pixels
       :type: :class:`sf.Image`
       
-   .. py:method:: update()
-   
-      .. note::
-      
-         Not implemented yet. It will be in the next release.
-         
-   .. py:method:: update_from_pixels(pixel[, area])
+   .. py:method:: update(*args, **kwargs)
+   .. py:method:: update_from_pixels(pixel[, position])
    .. py:method:: update_from_image(image[, position])
    .. py:method:: update_from_window(window[, position])
    
@@ -838,6 +940,8 @@ Graphics
       :rtype: integer
 
 
+Glyph
+^^^^^
 
 .. py:class:: Glyph
 
@@ -879,6 +983,8 @@ Graphics
       
       :rtype: :class:`sf.Rectangle`
    
+Font
+^^^^
 
 .. py:class:: Font
 
@@ -1041,9 +1147,11 @@ Graphics
       :return: Reference to the built-in default font 
       :rtype: :class:`sf.Font`
 
+Shader
+^^^^^^
 
 .. py:class:: Shader
-   
+
    :class:`Shader` class (vertex and fragment)
 
    Shaders are programs written using a specific language, executed 
@@ -1071,15 +1179,16 @@ Graphics
        * vectors (2, 3 or 4 components)
        * textures
        * transforms (matrices)
-
+       
    .. py:method:: Shader()
    
       The default constructor is not meant to be called. It will raise
       :exc:`NotImplementedError` with a message telling you that you 
       must use a specific constructor.
       
-      Those specific constructors are: :func:`load_from_file` and 
-      :func:`load_from_memory`.
+      Those specific constructors are: :func:`load_from_file`,
+      :func:`load_vertex_from_file`, :func:`load_fragment_from_file`, 
+      :func:`load_vertex_from_memory` and :func:`load_fragment_from_memory`.
       
    .. py:classmethod:: load_from_file(vertex_filename, fragment_filename)
 
@@ -1201,7 +1310,9 @@ Graphics
       to use the shader with a custom OpenGL rendering instead of a 
       pySFML drawable.
       
-      
+RenderStates
+^^^^^^^^^^^^
+
 .. py:class:: RenderStates
 
    Define the states used for drawing to a :class:`RenderTarget`.
@@ -1274,6 +1385,9 @@ Graphics
       Shader.
          
          
+Drawable
+^^^^^^^^
+
 .. py:class:: Drawable
        
    Abstract base class for objects that can be drawn to a render target.
@@ -1319,6 +1433,8 @@ Graphics
       :param sf.RenderTarget target: Render target to draw to
       :param sf.RenderStates states: Current render states
 
+Transformable
+^^^^^^^^^^^^^
 
 .. py:class:: Transformable
 
@@ -1390,7 +1506,7 @@ Graphics
       :func:`move` to apply an offset based on the previous position 
       instead. The default position of a transformable object is (0, 0).
 
-      :rtype: :class:`sf.Position`
+      :rtype: :class:`sf.Vector2`
       
    .. py:attribute:: rotation
    
@@ -1410,7 +1526,7 @@ Graphics
       :func:`scale` to add a factor based on the previous scale 
       instead. The default scale of a transformable object is (1, 1).
    
-      :rtype: :class:`sf.Position`
+      :rtype: :class:`sf.Vector2`
       
    .. py:attribute:: origin
    
@@ -1422,7 +1538,7 @@ Graphics
       and ignore all transformations (position, scale, rotation). The 
       default origin of a transformable object is (0, 0).
 
-      :rtype: :class:`sf.Position`
+      :rtype: :class:`sf.Vector2`
       
    .. py:method:: move(offset)
    
@@ -1434,7 +1550,7 @@ Graphics
       
          object.position = object.position + offset
          
-      :param sf.Position offset: Offset
+      :param sf.Vector2 offset: Offset
 
    .. py:method:: rotate(angle)
    
@@ -1468,6 +1584,8 @@ Graphics
       
       :rtype: :class:`sf.Transform`
       
+Sprite
+^^^^^^
 
 .. py:class:: Sprite(sf.Drawable, sf.Transformable)
 
@@ -1486,7 +1604,7 @@ Graphics
    :class:`sf.Sprite` works in combination with the :class:`sf.Texture` 
    class, which loads and provides the pixel data of a given texture.
 
-   The separation of :class:`sf..Sprite` and :class:`sf.Texture` allows 
+   The separation of :class:`sf.Sprite` and :class:`sf.Texture` allows 
    more flexibility and better performances: indeed a 
    :class:`sf.Texture` is a heavy resource, and any operation on it is 
    slow (often too slow for real-time applications). On the other side, 
@@ -1508,7 +1626,7 @@ Graphics
       sprite = sf.Sprite(texture)
       sprite.texture_rectangle = sf.Rectangle((10, 10), (50, 30))
       sprite.color = sf.Color(255, 255, 255, 200)
-      sprite.position = sf.Position(100, 25)
+      sprite.position = sf.Vector2(100, 25)
 
       # draw it
       window.draw(sprite)
@@ -1580,8 +1698,10 @@ Graphics
       
       :rtype: :class:`sf.Rectangle`
 
+Text
+^^^^
 
-.. py:class:: Text
+.. py:class:: Text(sf.Drawable, sf.Transformable)
 
       Graphical text that can be drawn to a render target.
 
@@ -1634,9 +1754,14 @@ Graphics
       Note that you don't need to load a font to draw text, pySFML 
       comes with a built-in font that is implicitely used by default.
       
-   .. py:method:: Text()
-   
-      F
+   .. py:method:: Text([string[, font[, character_size=30]]])
+         
+      Construct the string, and optionally from a string, font and size.
+      
+      :param string: Text assigned to the string 
+      :type string: bytes or string
+      :param sf.Font font: Font used to draw the string 
+      :param integer character_size: Base size of characters, in pixels 
       
    .. py:data:: REGULAR
    
@@ -1654,9 +1779,91 @@ Graphics
    
       Underlined characters. 
 
+   .. py:attribute:: string
+   
+      Set/get the text's string.
+      
+      :rtype: bytes or string
+   
+   .. py:attribute:: font
+   
+      Set/get the text's font.
+
+      The font argument refers to a font that must exist as long as the 
+      text uses it. Indeed, the text doesn't store its own copy of the 
+      font, but rather keeps a reference to the one that you set to 
+      this attribute. If the font is destroyed and the text tries to 
+      use it, the behaviour is undefined. Texts have a valid font by 
+      default, which the built-in :meth:`Font.get_default_font`.
+
+      :rtype: :class:`sf.Font`
+      
+   .. py:attribute:: character_size
+   
+      Set/get the character size.
+
+      The default size is 30.
+      
+      :rtype: integer
+
+   .. py:attribute:: style
+   
+      Set/get the text's style.
+
+      You can pass a combination of one or more styles, for example 
+      :data:`sf.Text.BOLD` | :data:`sf.Text.ITALIC`. The default style is :data:`sf.Text.REGULAR`.
+
+      :rtype: integer
+      
+   .. py:attribute:: color
+   
+      Set/get the global color of the text.
+
+      By default, the text's color is opaque white.
+
+      :rtype: :class:`sf.Color`
+      
+   .. py:attribute:: local_bounds
+   
+      Get the local bounding rectangle of the entity.
+
+      The returned rectangle is in local coordinates, which means that 
+      it ignores the transformations (translation, rotation, scale, 
+      ...) that are applied to the entity. In other words, this 
+      property returns the bounds of the entity in the entity's 
+      coordinate system.
+
+      :rtype: :class:`sf.Rectangle`
+      
+   .. py:attribute:: global_bounds
+         
+      Get the global bounding rectangle of the entity.
+
+      The returned rectangle is in global coordinates, which means that 
+      it takes in account the transformations (translation, rotation, 
+      scale, ...) that are applied to the entity. In other words, this 
+      property returns the bounds of the text in the global 2D world's 
+      coordinate system.
+
+      :rtype: :class:`sf.Rectangle`
+      
+   .. py:method:: find_character_pos(index)
+         
+      Return the position of the index-th character.
+
+      This function computes the visual position of a character from 
+      its index in the string. The returned position is in global 
+      coordinates (translation, rotation, scale and origin are 
+      applied). If index is out of range, the position of the end of 
+      the string is returned.
+      
+      :param integer index: Index of the character
+      :return: Position of the character
+      :rtype: :class:`sf.Vector2`
 
 
-
+Shape
+^^^^^
 
 .. py:class:: Shape(sf.Drawable, sf.Transformable)
 
@@ -1683,11 +1890,11 @@ Graphics
        * the fill/outline colors can be :const:`sf.Color.TRANSPARENT`
        * the outline thickness can be zero
    
-   
-
 
    .. py:method:: Shape()
    
+      Shape is abstract, it would raise an error :exc:`NotImplementedError`
+      
    .. py:attribute:: texture
          
       Change or get the source texture of the shape.
@@ -1771,6 +1978,8 @@ Graphics
       
       :rtype: :class:`sf.Rectangle`
       
+CircleShape
+^^^^^^^^^^^
 
 .. py:class:: CircleShape(sf.Shape)
 
@@ -1826,8 +2035,10 @@ Graphics
 
       :param integer index: Index of the point to get, in range [0 .. :attr:`point_count` - 1]
       :return: Index-th point of the shape 
-      :rtype: :class:`sf.Position`
+      :rtype: :class:`sf.Vector2`
 
+ConvexShape
+^^^^^^^^^^^
 
 .. py:class:: ConvexShape(sf.Shape)
 
@@ -1874,8 +2085,8 @@ Graphics
       The result is undefined if index is out of the valid range.
 
       :param integer index: Index of the point to get, in range [0 .. :attr:`point_count` - 1]
-      :return: Position of the index-th point of the polygon
-      :rtype: :class:`sf.Position`
+      :return: Vector2 of the index-th point of the polygon
+      :rtype: :class:`sf.Vector2`
       
    .. py:method:: set_point(index, point)
    
@@ -1887,9 +2098,12 @@ Graphics
       if index is out of the valid range.
       
       :param integer index: Index of the point to change, in range [0 .. :attr:`point_count` - 1]
-      :param sf.Position point: New position of the point
+      :param sf.Vector2 point: New position of the point
 
    
+RectangleShape
+^^^^^^^^^^^^^^
+
 .. py:class:: RectangleShape(sf.Shape)
 
    Specialized shape representing a rectangle.
@@ -1912,13 +2126,13 @@ Graphics
    
       Default constructor.
       
-      :param sf.Size size: Size of the rectangle
+      :param sf.Vector2 size: Size of the rectangle
       
    .. py:attribute:: size
    
       Set/get the size of the rectangle.
       
-      :rtype: :class:`sf.Size`
+      :rtype: :class:`sf.Vector2`
       
    .. py:attribute:: point_count
 
@@ -1933,10 +2147,13 @@ Graphics
       The result is undefined if *index* is out of the valid range.
 
       :param integer index: Index of the point to get, in range [0 .. :attr:`point_count` - 1]
-      :return: Position of the index-th point of the shape
-      :rtype: :class:`sf.Position`
+      :return: Vector2 of the index-th point of the shape
+      :rtype: :class:`sf.Vector2`
       
    
+Vertex
+^^^^^^
+
 .. py:class:: Vertex
 
    Define a point with color and texture coordinates.
@@ -1961,10 +2178,10 @@ Graphics
    Example ::
 
       # define a 100x100 square, red, with a 10x10 texture mapped on it
-      sf.Vertex(sf.Position(  0,   0), sf.Color.RED, sf.Position( 0,  0))
-      sf.Vertex(sf.Position(  0, 100), sf.Color.RED, sf.Position( 0, 10))
-      sf.Vertex(sf.Position(100, 100), sf.Color.RED, sf.Position(10, 10))
-      sf.Vertex(sf.Position(100,   0), sf.Color.RED, sf.Position(10,  0))
+      sf.Vertex(sf.Vector2(  0,   0), sf.Color.RED, sf.Vector2( 0,  0))
+      sf.Vertex(sf.Vector2(  0, 100), sf.Color.RED, sf.Vector2( 0, 10))
+      sf.Vertex(sf.Vector2(100, 100), sf.Color.RED, sf.Vector2(10, 10))
+      sf.Vertex(sf.Vector2(100,   0), sf.Color.RED, sf.Vector2(10,  0))
 
       # all arguments are optional
       sf.Vertex()
@@ -1982,15 +2199,15 @@ Graphics
       Construct the vertex from its position, color and texture 
       coordinates.
       
-      :param sf.Position position: :class:`Vertex` position
+      :param sf.Vector2 position: :class:`Vertex` position
       :param sf.Color color: :class:`Vertex` color
-      :param sf.Position tex_coords: :class:`Vertex` texture coordinates
+      :param sf.Vector2 tex_coords: :class:`Vertex` texture coordinates
       
    .. py:attribute:: position
 
       2D position of the vertex 
       
-      :rtype: :class:`sf.Position`
+      :rtype: :class:`sf.Vector2`
       
    .. py:attribute:: color
 
@@ -2002,8 +2219,11 @@ Graphics
 
       Coordinates of the texture's pixel to map to the vertex. 
       
-      :rtype: :class:`sf.Position`
-      
+      :rtype: :class:`sf.Vector2`
+    
+VertexArray
+^^^^^^^^^^^
+
 .. py:class:: VertexArray(sf.Drawable)
 
    Define a set of one or more 2D primitives.
@@ -2092,7 +2312,151 @@ Graphics
       vertices of the array.
       
       :rtype: :class:`sf.Rectangle`
+     
+
+View
+^^^^
+
+.. class:: View
+
+   2D camera that defines what region is shown on screen
+
+   :class:`sf.View` defines a camera in the 2D scene.
+
+   This is a very powerful concept: you can scroll, rotate or zoom the 
+   entire scene without altering the way that your drawable objects are 
+   drawn.
+
+   A view is composed of a source rectangle, which defines what part of 
+   the 2D scene is shown, and a target viewport, which defines where the 
+   contents of the source rectangle will be displayed on the render target 
+   (window or texture).
+
+   The viewport allows to map the scene to a custom part of the render 
+   target, and can be used for split-screen or for displaying a minimap, 
+   for example. If the source rectangle has not the same size as the 
+   viewport, its contents will be stretched to fit in.
+
+   To apply a view, you have to assign it to the render target. Then, 
+   every objects drawn in this render target will be affected by the view 
+   until you use another view.
+
+   Usage example::
+
+      view = sf.View()
+
+      # initialize the view to a rectangle located at (100, 100) and with a size of 400x200
+      view.reset(sf.Rectangle((100, 100), (400, 200)))
+
+      # rotate it by 45 degrees
+      view.rotate(45)
+
+      # set its target viewport to be half of the window
+      view.viewport = sf.Rectangle((0, 0), (0.5, 1))
+
+      # apply it
+      window.view = view
+
+      # render stuff
+      window.draw(some_sprites)
+
+      # set the default view back
+      window.view = window.default_view
+
+      # render stuff not affected by the view
+      window.draw(some_text)
       
+   .. method:: View([rectangle])
+   
+      Construct the view, and optionally from a rectangle. 
+   
+      :param sf.Rectangle rectangle: Rectangle defining the zone to display
+      
+   .. attribute:: center
+   
+      Set/get the center of the view.
+      
+      :rtype: :class:`sf.Vector2`
+      
+   .. attribute:: size
+   
+      Set/get the size of the view. 
+      
+      :rtype: :class:`sf.Vector2`
+      
+   .. attribute:: rotation
+
+      Set/get the orientation of the view.
+
+      The default rotation of a view is 0 degree.
+
+      :rtype: float
+      
+   .. attribute:: viewport
+
+      Set/get the target viewport.
+
+      The viewport is the rectangle into which the contents of the view 
+      are displayed, expressed as a factor (between 0 and 1) of the 
+      size of the :class:`RenderTarget` to which the view is applied. 
+      For example, a view which takes the left side of the target would 
+      be defined with *view.viewport = (0, 0, 0.5, 1)*. By default, a 
+      view has a viewport which covers the entire target.
+
+   .. method:: reset(rectangle)
+   
+      Reset the view to the given rectangle.
+
+      Note that this function resets the rotation angle to 0.
+
+      :param sf.Rectangle rectangle: Rectangle defining the zone to display
+      
+   .. method:: move(offset)
+   
+      Move the view relatively to its current position. 
+   
+      :param sf.Vector2 offset: Move offset
+      
+   .. method:: rotate(angle)
+   
+      Rotate the view relatively to its current orientation. 
+
+      :param float angle: Angle to rotate, in degrees
+      
+   .. method:: zoom(factor)
+   
+      Resize the view rectangle relatively to its current size.
+
+      Resizing the view simulates a zoom, as the zone displayed on 
+      screen grows or shrinks. factor is a multiplier:
+
+          * 1 keeps the size unchanged
+          * > 1 makes the view bigger (objects appear smaller)
+          * < 1 makes the view smaller (objects appear bigger)
+
+      :param float factor: Zoom factor to apply
+      
+   .. attribute:: transform
+   
+      Get the projection transform of the view.
+
+      This function is meant for internal use only.
+
+      :return: Projection transform defining the view
+      :rtype: :class:`sf.Transform`
+      
+   .. attribute:: inverse_transform
+
+      Get the inverse projection transform of the view.
+
+      This function is meant for internal use only.
+
+      :return: Inverse of the projection transform defining the view
+      :rtype: :class:`sf.Transform`
+      
+RenderTarget
+^^^^^^^^^^^^
+
 .. py:class:: RenderTarget
 
    Base class for all render targets (window, texture, ...)
@@ -2193,7 +2557,7 @@ Graphics
    
       Return the size of the rendering region of the target. 
       
-      :rtype: :class:`sf.Size`
+      :rtype: :class:`sf.Vector2`
       
    .. py:attribute:: width
    
@@ -2239,7 +2603,7 @@ Graphics
    
       Restore the previously saved OpenGL render states and matrices.
 
-      See the description of :func:`push_GL_states to get a detailed 
+      See the description of :func:`push_GL_states` to get a detailed 
       description of these functions.
 
    .. py:method:: reset_GL_states()
@@ -2260,7 +2624,10 @@ Graphics
          window.draw(...)
          glPopAttrib(...)
          # OpenGL code here...
-         
+      
+RenderWindow
+^^^^^^^^^^^^
+
 .. py:class:: RenderWindow(sf.Window, sf.RenderTarget)
 
    :class:`Window` that can serve as a target for 2D drawing.
@@ -2315,7 +2682,10 @@ Graphics
       :return: Image containing the captured contents 
       :rtype: :class:`sf.Image`
 
-.. py:class:: RenderWindow(sf.RenderTarget)
+RenderTexture
+^^^^^^^^^^^^^
+
+.. py:class:: RenderTexture(sf.RenderTarget)
 
    Target for off-screen 2D rendering into an texture.
 
@@ -2382,16 +2752,16 @@ Graphics
       :param integer depth_buffer: Do you want this render-texture to have a depth buffer?
       :rtype: :class:`sf.RenderTexture`
       
-   .. py:attribute: smooth
+   .. py:attribute:: smooth
    
       Enable or disable texture smoothing.
 
-      This function is similar to :func:`Texture.smooth`. This 
+      This prpoerty is similar to :attr:`Texture.smooth`. This 
       parameter is disabled by default.
 
       :rtype: bool
       
-   .. py:attribute: active
+   .. py:attribute:: active
    
       Activate of deactivate the render-texture for rendering.
 
@@ -2404,7 +2774,7 @@ Graphics
 
       :rtype: bool
       
-   .. py:method: display()
+   .. py:method:: display()
    
       Update the contents of the target texture.
 
@@ -2413,7 +2783,7 @@ Graphics
       the end of rendering. Not calling it may leave the texture in an 
       undefined state.
 
-   .. py:attribute: texture   
+   .. py:attribute:: texture   
    
       Get a read-only reference to the target texture.
 
@@ -2424,108 +2794,14 @@ Graphics
       instance, so that it is possible to call this function once and 
       keep a reference to the texture even after it is modified.
 
+      :rtype: :class:`sf.Texture`
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.. class:: View( )
-
-   2D camera that defines what region is shown on screen
-
-   sf.View defines a camera in the 2D scene.
-
-   This is a very powerful concept: you can scroll, rotate or zoom the entire scene without altering the way that your drawable objects are drawn.
-
-   A view is composed of a source rectangle, which defines what part of the 2D scene is shown, and a target viewport, which defines where the contents of the source rectangle will be displayed on the render target (window or texture).
-
-   The viewport allows to map the scene to a custom part of the render target, and can be used for split-screen or for displaying a minimap, for example. If the source rectangle has not the same size as the viewport, its contents will be stretched to fit in.
-
-   To apply a view, you have to assign it to the render target. Then, every objects drawn in this render target will be affected by the view until you use another view.
-
-   Usage example::
-
-      window = sf.RenderWindow()
-      view = sf.View()
-
-      # initialize the view to a rectangle located at (100, 100) and with a size of 400x200
-      view.reset(sf.Rectangle(100, 100, 400, 200))
-
-      # rotate it by 45 degrees
-      view.rotate(45)
-
-      # set its target viewport to be half of the window and apply it
-      view.viewport = sf.Rectangle(0, 0, 0.5, 1) # or a tuple (0, 0, 0.5, 1)
-      window.view = view
-
-      # render stuff
-      window.draw(some_sprite);
-
-      # set the default view back
-      window.view = window.default_view
-
-      # render stuff not affected by the view
-      window.draw(some_text);
-
-   .. attribute:: center
-   
-      The center of the view.
       
-   .. attribute:: size
+HandledWindow
+^^^^^^^^^^^^^
    
-      The size of the view.
-      
-   .. attribute:: rotation
-   
-      The orientation of the view.
-      
-   .. attribute:: viewport 
-   
-      The target viewport.
+.. class:: HandledWindow(sf.RenderTarget)
 
-      The viewport is the rectangle into which the contents of the view are displayed, expressed as a factor (between 0 and 1) of the size of the RenderTarget to which the view is applied. For example, a view which takes the left side of the target would be defined with view.viewport = (0, 0, 0.5, 1). By default, a view has a viewport which covers the entire target.
-      
-   .. method:: reset()
-   
-      Reset the view to the given rectangle.
-
-      Note that this function resets the rotation angle to 0
-      
-   .. method:: move(offset)
-         
-      Move the view relatively to its current position. 
-      
-   .. method:: rotate((float angle)
-   
-      Rotate the view relatively to its current orientation.
-      
-   .. method:: zoom(float factor)
-   
-      Resize the view rectangle relatively to its current size.
-
-      Resizing the view simulates a zoom, as the zone displayed on screen grows or shrinks. factor is a multiplier:
-
-          1 keeps the size unchanged
-          > 1 makes the view bigger (objects appear smaller)
-          < 1 makes the view smaller (objects appear bigger)
-
-   .. classmethod:: from_center_and_size(center, size)
-
-      *center* and *size* can be either tuples or :class:`Vector2f`.
-
-   .. classmethod:: from_rect(rect)
-
-   .. attribute:: width
-   .. attribute:: height
-   
+   .. method:: HandledWindow()
+   .. method:: create(window_handle[, settings])
+   .. method:: display()

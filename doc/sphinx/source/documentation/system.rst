@@ -3,7 +3,10 @@ System
 
 .. module:: sf
 
-.. py:exception:: SFMLException(Exception)
+.. contents:: :local:
+
+Time
+^^^^
 
 .. py:class:: Time
 
@@ -50,7 +53,7 @@ System
    .. py:data:: ZERO
       
       Predefined "zero" time value. 
-   
+
    .. py:attribute:: seconds
    
       Return the time value as a number of seconds.
@@ -76,6 +79,9 @@ System
       :rtype: :class:`sf.Time`
 
 
+sleep
+^^^^^
+
 .. py:function:: sleep(duration)
 
    Make the current thread sleep for a given duration.
@@ -85,6 +91,10 @@ System
    
    :param sf.Time duration: Time to sleep
    
+
+Clock
+^^^^^
+
 .. py:class:: Clock
 
    Utility class that measures the elapsed time.
@@ -104,16 +114,24 @@ System
       # ...
       time2 = clock.restart()
 
-   The sf.Time value returned by the clock can then be converted to a 
+   The :class:`sf.Time` value returned by the clock can then be converted to a 
    number of seconds, milliseconds or even microseconds.
 
+   .. py:method:: Clock()
+   
+      Construct a :class:`sf.Clock`
+      
+      The clock starts automatically after being constructed. 
+      
    .. py:attribute:: elapsed_time
          
       Get the elapsed time.
 
       This attribute returns the time elapsed since the last call to 
-      :funct:`restart()` (or the construction of the instance if 
+      :func:`restart()` (or the construction of the instance if 
       :func:`restart()` has not been called).
+      
+      :rype: :class:`sf.Time`
                   
    .. py:method:: restart()
    
@@ -123,6 +141,10 @@ System
                   
       :rtype: :class:`sf.Time`
    
+
+seconds
+^^^^^^^
+
 .. py:function:: seconds(amount)
 
    Construct a time value from a number of seconds. 
@@ -131,6 +153,10 @@ System
    :return: Time value constructed from the amount of seconds
    :rtype: :class:`sf.Time`
    
+
+milliseconds
+^^^^^^^^^^^^
+
 .. py:function:: milliseconds(amount)
 
    Construct a time value from a number of milliseconds. 
@@ -139,6 +165,10 @@ System
    :return: Time value constructed from the amount of milliseconds
    :rtype: :class:`sf.Time`
    
+
+microseconds
+^^^^^^^^^^^^
+
 .. py:function:: microseconds(amount)
 
    Construct a time value from a number of microseconds. 
@@ -147,178 +177,95 @@ System
    :return: Time value constructed from the amount of microseconds
    :rtype: :class:`sf.Time`
    
-   
-.. class:: Position
 
-   Utility class for manipulating 2-dimensional position. This class is
+Vector2
+^^^^^^^
+
+.. class:: Vector2
+
+   Utility class for manipulating 2-dimensional vectors. This class is
    equivalent to the template class sf::Vector2<T> in SFML.
 
-   :class:`sf.Position` is a simple class that defines a mathematical 
-   vector with two coordinates (x and y).
+   :class:`sf.Vector2` is a simple class that defines a mathematical 
+   vector with two coordinates (:attr:`x` and :attr:`y`).
 
    It can be used to represent anything that has two dimensions: a 
    size, a point, a velocity, etc.
 
-   :class:`sf.Position` supports arithmetic operations (+, -, /, *) 
+   :class:`sf.Vector2` supports arithmetic operations (+, -, /, *) 
    and comparisons (==, !=).
-   
+
    Usage example::
-   
-      p1 = sf.Position(16.5, 24)
-      p1.x = 18.2
-      y = p1.y
 
-      p2 = p1 * (5, 1)
-      p3 = p1 + p2
+      v1 = sf.Vector2(16.5, 24)
+      v1.x = 18
+      y = v1.y
 
-      different = p2 != p3
+      v2 = v1 * 5
+
+      v3 = v1 + v2
+
+   For 3-dimensional vectors, see :class:`sf.Vector3`
       
-   .. note::
-   
-      For 3-dimensional vectors, see :class:`sf.Vector`
-      
-   .. method:: Position(x=0, y=0)
-   
-      Construct a :class:`sf.Position`
-   
+   .. method:: Vector2(x=0, y=0)
+
+      Construct a :class:`sf.Vector2`
+
    .. attribute:: x
-   
+
       X coordinate of the vector.
       
    .. attribute:: y
-   
+
       Y coordinate of the vector.
 
-.. class:: Size
 
-   Utility class for manipulating 2-dimensional size. This class has no
-   direct equivalent in SFML. This can be emulated in C++ by using a
-   sf::Vector2<unsigned int>.
+Vector3
+^^^^^^^
 
-   :class:`sf.Size` is a simple class that defines a size and therefore
-   can't be negative neither it's width xor it's height.
+.. class:: Vector3
 
-   :class:`sf.Size` also supports arithmetic operations (+, -, /, *) 
-   and comparisons (==, !=).
-   
-   .. method:: Size(width=0, height=0)
-   
-      Construct a :class:`sf.Size`
-      
-      :param integer width: It's width.
-      :param integer height: It's height
-      
-   .. attribute:: width
-      
-      It's width.
-      
-   .. attribute:: height
-   
-      It's height.
-   
-.. class:: Rectangle
+   Utility class for manipulating 3-dimensional vectors.
 
-   Utility class for manipulating 2D axis aligned rectangles.
+   :class:`sf.Vector3` is a simple class that defines a mathematical 
+   vector with three coordinates (:attr:`x`, :attr:`y` and :attr:`z`).
 
-   A rectangle is defined by its top-left corner and its size.
+   It can be used to represent anything that has three dimensions: a 
+   size, a point, a velocity, etc.
 
-   It is a very simple class defined for convenience, so its member 
-   variables (left, top, width and height) are public and can be 
-   accessed directly via attributes, just like :class:`sf.Position` 
-   and :class:`sf.Size`
-
-   Unlike SFML, :class:`sf.Rectangle` does define functions to emulate 
-   the properties that are not directly members (such as right, bottom, 
-   center, etc.), it rather only provides intersection functions.
-
-   :class:`sf.Rectangle` uses the usual rules for its boundaries:
-
-      * The left and top edges are included in the rectangle's area
-      * The right (left + width) and bottom (top + height) edges are excluded from the rectangle's area
-
-   This means that sf.Rectangle((0, 0), (1, 1)) and 
-   sf.Rectangle((1, 1), (1, 1)) don't intersect.
+   :class:`sf.Vector3` supports arithmetic operations (+, -, /, *) and 
+   comparisons (==, !=).
 
    Usage example::
-
-      # define a rectangle, located at (0, 0) with a size of 20x5
-      r1 = sf.Rectangle(sf.Position(0, 0), sf.Size(20, 5))
-      # or r1 = sf.Rectangle((0, 0), (20, 5))
-
-      # define another rectangle, located at (4, 2) with a size of 18x10
-      position = sf.Position(4, 2)
-      size = sf.Size(18, 10)
-
-      r2 = sf.Rectangle(position, size)
-
-      # test intersections with the point (3, 1)
-      b1 = r1.contains(sf.Position(3, 1)); # True
-      b2 = r2.contains((3, 1)); # False
-
-      # test the intersection between r1 and r2
-      result = r1.intersects(r2) # True
-
-      # as there's an intersection, the result is not None but sf.Rectangle(4, 2, 16, 3)
-      assert result == sf.Rectangle((4, 2), (16, 3))
-      
-   .. method:: Rectangle(position=(0, 0), size=(0, 0))
-      
-      Construct a :class:`sf.Rectangle`
-
-   .. attribute:: position
    
-      Top-left coordinate of the rectangle.
-      
-   .. attribute:: size
-   
-      Size of the rectangle.
-   
-   .. attribute:: left
-      
-      Left coordinate of the rectangle. This attribute is provided as a
-      shortcut to sf.Rectangle.position.x
-      
-   .. attribute:: top
-   
-      Top coordinate of the rectangle. This attribute is provided as a
-      shortcut to sf.Rectangle.position.y
-      
-   .. attribute:: width
-   
-      Width of the rectangle. This attribute is provided as a
-      shortcut to sf.Rectangle.size.width
-      
-   .. attribute:: height
-   
-      Height of the rectangle. This attribute is provided as a
-      shortcut to sf.Rectangle.position.height
+      v1 = sf.Vector3(16.8, 24, -8)
+      v1.x = 18.2
+      y = v1.y
+      z = v1.z
 
-   .. attributes:: center
+      v2 = v1 * 5
 
-      The center of the rectangle.
-      
-   .. attribute:: rigth
-   
-      The right coordinate of the rectangle.
-      
-   .. attribute:: bottom
-   
-      The bottom coordinate of the rectangle.
-      
-   .. method:: contains(point)
+      v3 = v1 + v2
 
-      Check if a point is inside the rectangle's area. 
-      
-      :param sf.Position point: Point to test
-      :rtype: bool
-      
-   .. method:: intersects(rectangle)
+      different = v2 is not v3
 
-      Check the intersection between two rectangles.
+   .. method:: Vector3(x=0, y=0, z=0)
 
-      This overload returns the overlapped rectangle if an intersection 
-      is found.
+      Construct a :class:`sf.Vector3`
+
+   .. attribute:: x
+
+      X coordinate of the vector.
       
-      :param sf.Rectangle rectangle: Rectangle to test 
-      :return: Rectangle filled with the intersection or None
-      :rtype: :class:`sf.Rectangle` or None
+   .. attribute:: y
+
+      Y coordinate of the vector.
+
+   .. attribute:: z
+
+      Z coordinate of the vector.
+
+SFMLException
+^^^^^^^^^^^^^
+
+.. py:exception:: SFMLException(Exception)
