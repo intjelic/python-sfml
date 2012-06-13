@@ -219,6 +219,19 @@ Vector2
 
       Y coordinate of the vector.
 
+   .. py:function:: copy()
+   
+      Python always works by reference, unless you explicitly ask for 
+      a copy, that's why this method is provided.
+      
+      :return: Return a copy.
+      :rtype: :class:`sf.Vector2`
+
+   .. py:classmethod: from_tuple(tuple)
+
+      Construct the vector from a tuple.
+      
+      :rtype: :class:`sf.Vector2`
 
 Vector3
 ^^^^^^^
@@ -265,6 +278,20 @@ Vector3
 
       Z coordinate of the vector.
 
+   .. py:function:: copy()
+   
+      Python always works by reference, unless you explicitly ask for 
+      a copy, that's why this method is provided.
+      
+      :return: Return a copy.
+      :rtype: :class:`sf.Vector3`
+
+   .. py:classmethod: from_tuple(tuple)
+
+      Construct the vector from a tuple.
+      
+      :rtype: :class:`sf.Vector3`
+      
 SFMLException
 ^^^^^^^^^^^^^
 

@@ -171,6 +171,11 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 			
 		return self
 		
+	def copy(self):
+		cdef Vector2 p = Vector2.__new__(Vector2)
+		p.x, p.y = self
+		return p
+	
 	@classmethod
 	def from_tuple(cls, value):
 		x, y = value
@@ -285,6 +290,11 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		self.z %= z
 		return self
 
+	def copy(self):
+		cdef Vector3 p = Vector3.__new__(Vector3)
+		p.x, p.y, p.z = self
+		return p
+		
 	@classmethod
 	def from_tuple(cls, value):
 		x, y, z = value

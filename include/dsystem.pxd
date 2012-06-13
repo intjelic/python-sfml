@@ -14,9 +14,6 @@ cdef extern from "<string>" namespace "std":
 	cdef cppclass string:
 		char* c_str()
 
-cdef extern from *:
-	ctypedef unsigned char* const_Uint8_ptr "const unsigned char*"
-
 cdef extern from "error.hpp":
 	void replace_error_handler()
 	string get_last_error_message()
