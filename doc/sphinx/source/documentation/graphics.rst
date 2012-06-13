@@ -179,6 +179,14 @@ Rectangle
       :return: Rectangle filled with the intersection or None
       :rtype: :class:`sf.Rectangle` or None
 
+   .. method:: copy()
+   
+      Python always works by reference, unless you explicitly ask for 
+      a copy, that's why this method is provided.
+      
+      :return: Return a copy.
+      :rtype: :class:`sf.Rectangle`
+      
 Color
 ^^^^^
 

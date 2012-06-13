@@ -203,6 +203,12 @@ cdef class Rectangle:
 		if left < right and top < bottom:
 			return Rectangle((left, top), (right-left, bottom-top))
 			
+	def copy(self):
+		cdef Rectangle p = Rectangle.__new__(Rectangle)
+		p.position = self.position.copy()
+		p.size = self.size.copy()
+		return p
+		
 cdef class Color:
 	BLACK = Color(0, 0, 0)
 	WHITE = Color(255, 255, 255)
@@ -1580,9 +1586,10 @@ cdef class View:
 	cdef RenderWindow     m_renderwindow
 	cdef RenderTarget     m_rendertarget
 	
-	def __init__(self):
-		self.p_this = new dgraphics.View()
-		
+	def __init__(self, rectangle=None):
+		if not rectangle: self.p_this = new dgraphics.View()
+		else: self.p_this = new dgraphics.View(rectangle_to_floatrect(rectangle))
+
 	def __dealloc__(self):
 		del self.p_this
 	
@@ -1749,11 +1756,11 @@ cdef class RenderWindow(Window):
 		encoded_title = encoded_title_temporary
 			
 		if self.__class__ is not RenderWindow:
+			if not settings: self.p_this = <dgraphics.RenderWindow*>new dgraphics.DerivableRenderWindow(mode.p_this[0], encoded_title, style)
+			else: self.p_this = <dgraphics.RenderWindow*>new dgraphics.DerivableRenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])			
+		else:
 			if not settings: self.p_this = new dgraphics.RenderWindow(mode.p_this[0], encoded_title, style)
 			else: self.p_this = new dgraphics.RenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
-		else:
-			if not settings: self.p_this = <dgraphics.RenderWindow*>new dgraphics.DerivableRenderWindow(mode.p_this[0], encoded_title, style)
-			else: self.p_this = <dgraphics.RenderWindow*>new dgraphics.DerivableRenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
 			
 		self.p_window = <dwindow.Window*>self.p_this
 
@@ -1791,7 +1798,8 @@ cdef class RenderWindow(Window):
 		if not states: self.p_this.draw(drawable.p_drawable[0])
 		else: self.p_this.draw(drawable.p_drawable[0], states.p_this[0])
 		
-	def draw_vertex(self): pass
+	def draw_vertex(self):
+		raise NotImplemented
 		
 	property size:
 		def __get__(self):
