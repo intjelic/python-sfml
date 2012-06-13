@@ -9,16 +9,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sfml as sf
-from rendertarget import test_rendertarget
 
-window = sf.RenderWindow(sf.VideoMode(640, 480), "pySFML - sf.Shape")
-window.clear(sf.Color.WHITE)
-window.display()
+assert type(sf.Mouse.get_position()) == sf.Vector2
+
+window = sf.RenderWindow(sf.VideoMode(640, 480), "pySFML2 - sf.Mouse")
+
+window.position = (200, 200)
+
+assert type(sf.Mouse.get_position(window)) == sf.Vector2
+
 input()
-
-test_rendertarget(window)
-
-image = window.capture()
-assert type(image) == sf.Image
-image.save_to_file("result/renderwindow-capture.png")
+sf.Mouse.set_position((0, 0))
 input()
+sf.Mouse.set_position((500, 500))

@@ -10,7 +10,7 @@
 
 import sfml as sf
 
-print("sf.Listener constructors")
+print("sf.Listener constructor")
 
 try:
 	listener = sf.Listener()

@@ -1,20 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-# pySFML2 - Cython SFML Wrapper for Python
-# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>
-#
-# This software is released under the GPLv3 license.
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+v1 = sf.Vector3(16.8, 24, -8)
+v1.x = 18.2
+y = v1.y
+z = v1.z
 
-import sfml.system as sf
+v2 = v1 * 5
 
-print("# Constructors + __eq__ + __ne__")
-# TODO
+v3 = v1 + v2
 
-print("# Overload operators")
-#TODO
-
-print("# In-place operators")
-#TODO
+different = v2 is not v3

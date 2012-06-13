@@ -26,10 +26,10 @@ class MyDrawable(sf.Drawable):
 		sprite = sf.Sprite(self.texture)
 		target.draw(sprite, states)		
 		
-
+print("### sf.Drawable constructor ###")
 try:
 	mydrawable = sf.Drawable()
-	raise UserWarning("Shouldn't work!!!")
+	raise UserWarning("sf.Drawable is not supposed to be directly used!")
 except NotImplementedError:
 	print("This error was expected")
 input()

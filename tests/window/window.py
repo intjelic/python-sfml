@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sfml.window as sf
+import sfml as sf
 
 window = sf.Window(sf.VideoMode(800, 600), "pySFML Window")
 
@@ -22,7 +22,7 @@ while loop:
 		print(event)
 		print(type(event))
 		
-		if event.type == sf.Event.CLOSED:
+		if type(event) == sf.CloseEvent:
 			loop = False
 
 input()
@@ -37,20 +37,22 @@ print(event)
 print(type(event))
 input()
 
-#print("### sf.Window.position ###")
-#print(window.position)
-#window.position = sf.Position(0, 0)
-#window.position = (200, 200)
-#for event in window.events: pass
-#print(window.position)
-#assert window.position == sf.Position(200, 200)
+print("### sf.Window.position ###")
+assert type(window.position) == sf.Vector2
+window.position = (50, 50)
+print(window.position)
+#assert window.position == sf.Vector2(50, 50)
+window.position = sf.Vector2(200, 200)
+#assert window.position == (200, 200)
+assert type(window.position) == sf.Vector2
 
-#print("### sf.Window.size ###")
-#print(window.size)
-#window.size = sf.Size(512, 512)
-#window.size = (300, 300)
-#for event in window.events: pass
-#assert window.size == sf.Size(300, 300)
+print("### sf.Window.size ###")
+assert type(window.size) == sf.Vector2
+window.size = (50, 50)
+#assert window.size == sf.Vector2(50, 50)
+window.size = sf.Vector2(200, 200)
+#assert window.size == (200, 200)
+assert type(window.size) == sf.Vector2
 
 print("### sf.Window.title ###")
 #print(window.title)
@@ -58,8 +60,8 @@ window.title = "pySFML - New title"
 #assert window.title == "pySFML - New title"
 
 print("### sf.Window.icon ###")
-#image = sf.Image.load_from_file("data/icon.png")
-
+icon = sf.Image.load_from_file("data/windows_icon.jpg")
+window.icon = icon.pixels
 
 print("### sf.Window.visible ###")
 print(window.visible)
@@ -133,7 +135,7 @@ while loop:
 	for event in mywindow.events:
 		print(event)
 		
-		if event.type == sf.Event.CLOSED:
+		if type(event) is sf.CloseEvent:
 			loop = False
 		
 input()

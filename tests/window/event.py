@@ -15,50 +15,70 @@ window = sf.Window(sf.VideoMode(640, 480), "pySFML - Events")
 loop = True
 while loop:
 	for event in window.events:
-		
-		if event.type is not sf.Event.MOUSE_MOVED:
-			print(event)
-		
-		if event.type == sf.Event.CLOSED:
-			assert type(event) == sf.Event
-			loop = False
-			
-		elif event.type == sf.Event.RESIZED:
-			assert type(event) == sf.SizeEvent
-			assert type(event.size) == sf.Vector2
-			print(event.size)
-			print(event.width)
-			print(event.height)
-			
-		elif event.type == sf.Event.LOST_FOCUS:
-			assert type(event) == sf.Event
-			
-		elif event.type == sf.Event.GAINED_FOCUS:
-			assert type(event) == sf.Event
-			
-		elif event.type == sf.Event.TEXT_ENTERED:
-			assert type(event) == sf.TextEvent
-			print(type(event.unicode))
-			print(event.unicode)
-			
-		elif event.type == sf.Event.KEY_PRESSED:
-			assert type(event) == sf.KeyEvent
-			print(event.code)
-			print(event.alt)
-			print(event.control)
-			print(event.shift)
-			print(event.system)
 
-		elif event.type == sf.Event.KEY_RELEASED:
-			assert type(event) == sf.KeyEvent
-			print(event.code)
-			print(event.alt)
-			print(event.control)
-			print(event.shift)
-			print(event.system)
+		if type(event) is sf.CloseEvent:
+			print(event)
+			loop = False
+
+		elif type(event) is sf.ResizeEvent:
+			assert type(event.size) == sf.Vector2
+			assert type(event.width) == int
+			assert type(event.height) == int
+			print(event)
 			
-		
+		elif type(event) is sf.FocusEvent:
+			assert type(event.gained) == bool
+			assert type(event.lost) == bool
+			assert event.gained != event.lost
+			print(event)
+			 
+		elif type(event) is sf.TextEvent:
+			pass
 			
+		elif type(event) is sf.KeyEvent:
+			assert type(event.pressed) == bool
+			assert type(event.released) == bool
+			assert event.pressed != event.released
+			print(event)
 			
+		elif type(event) is sf.MouseWheelEvent:
+			assert type(event.delta) == float
+			assert type(event.x) == int
+			assert type(event.y) == int
+			assert type(event.position) == sf.Vector2
 			
+		elif type(event) is sf.MouseButtonEvent:
+			assert type(event.pressed) == bool
+			assert type(event.released) == bool
+			assert event.pressed != event.released
+			print(event)
 			
+		elif type(event) is sf.MouseMoveEvent:
+			assert type(event.x) == int
+			assert type(event.y) == int
+			assert type(event.position) == sf.Vector2
+			print(event)
+			
+		elif type(event) is sf.MouseEvent:
+			assert type(event.entered) == bool
+			assert type(event.left) == bool
+			assert event.entered != event.left
+			print(event)
+			
+		elif type(event) is sf.JoystickButtonEvent:
+			assert type(event.connected) == bool
+			assert type(event.disconnected) == bool
+			assert event.connected != event.disconnected
+			print(event)
+			
+		elif type(event) is sf.JoystickMoveEvent:
+			assert type(event.joystick_id) == int
+			assert type(event.axis) == int
+			assert type(event.position) == float
+			print(event)
+			
+		elif type(event) is sf.JoystickConnectEvent:
+			assert type(event.connected) == bool
+			assert type(event.disconnected) == bool
+			assert event.connected != event.disconnected
+			print(event)

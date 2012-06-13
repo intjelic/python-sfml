@@ -9,16 +9,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sfml as sf
-from rendertarget import test_rendertarget
 
-window = sf.RenderWindow(sf.VideoMode(640, 480), "pySFML - sf.Shape")
-window.clear(sf.Color.WHITE)
-window.display()
-input()
-
-test_rendertarget(window)
-
-image = window.capture()
-assert type(image) == sf.Image
-image.save_to_file("result/renderwindow-capture.png")
-input()
+context = sf.Context()
+context.active = True
+context.active = False

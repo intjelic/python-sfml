@@ -13,7 +13,7 @@ import sfml as sf
 window = sf.RenderWindow(sf.VideoMode(640, 480), "pySFML - sf.Text")
 window.clear(sf.Color.RED)
 window.display()
-input("### TEST GLYPH : BEGING ###")
+input("### TEST GLYPH : BEGIN ###")
 
 glyph = sf.Glyph()
 
