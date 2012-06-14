@@ -296,3 +296,5 @@ SFMLException
 ^^^^^^^^^^^^^
 
 .. py:exception:: SFMLException(Exception)
+
+   Main exception defined for all SFML functions/methods that may fail.

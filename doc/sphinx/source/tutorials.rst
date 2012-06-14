@@ -2,15 +2,15 @@
 
 Tutorials
 =========
-A few knowledge is required to aprehend the binding from a SFML2 
-background. After reading this tutorial, you should be able to start 
-coding serious project.
+Some knowledge is required to help understand the binding from an SFML2 
+background. After reading this tutorial you should be able to start 
+coding serious projects.
 
 .. contents:: :local:
 
 System
 ------
-To manipulate vectors, you use sf.Vector2 or sf.Vector3 and unlike in 
+To manipulate vectors you use sf.Vector2 or sf.Vector3 and unlike in 
 C++ they have no specific type. It means you can set a float, an 
 integer or whatever inside. ::
 
@@ -20,9 +20,9 @@ integer or whatever inside. ::
    vector.z = Decimal(0.333333333)
    x, y, z = vector # you can unpack the vector
    
-To manipulate time, there's no major difference. Instead of getting 
+To manipulate time there's no major difference. Instead of getting 
 the seconds, milliseconds or microseconds via a method named 
-*asSomething*, you do it via a property ::
+*asSomething* you do it via a property ::
 
    t1 = sf.milliseconds(500)
    print(t1.seconds)
@@ -40,7 +40,7 @@ the seconds, milliseconds or microseconds via a method named
    
 Events
 ------
-The way you handle events in pySFML2 is far different from how 
+The way you handle events in pySFML2 is very different from how 
 you do it in SFML2 or even from how you do it in the official binding.
 
 Here, instead of having a property type, you must check it with the 
@@ -49,7 +49,7 @@ integrated function `type`  ::
    for event in window.events:
        if type(event) is ...: # do something
 
-Checking the type that way will return the event class. You can compare 
+Checking the type this way will return the event class. You can compare 
 it to the 12 events that pySFML2 define.::
 
    sf.Event
@@ -66,7 +66,7 @@ it to the 12 events that pySFML2 define.::
    + sf.JoystickMoveEvent
    + sf.JoystickConnectEvent
 
-Once you know the type of the event, you can get the data inside.::
+Once you know the type of the event you can get the data inside.::
 
    if type(event) is sf.MouseMoveEvent:
        x, y = event.position
@@ -91,7 +91,7 @@ Exception
 ---------
 There's a main exception defined for all pySFML2 methods/functions that 
 may fail: `sf.SFMLException`. If you use one of these method and if you 
-want to do a specific job in case they really fail, you can handle them 
+want to do a specific task in case of failure, you can handle them 
 
 with a **try... except** statement. ::
 
@@ -112,8 +112,8 @@ traditional **IOError**::
 
 Rectangle
 ---------
-Altought unpacking a rectangle will give you four integer/float 
-(respectively its left, its top, its width and its height), its 
+Although unpacking a rectangle will give you four integers/floats 
+(respectively its left, its top, its width and its height) its 
 constructor takes two :class:`sf.Vector2`; its position and its size. ::
 
    rectangle = mytext.local_bounds
@@ -125,10 +125,10 @@ constructor takes two :class:`sf.Vector2`; its position and its size. ::
    rectangle = sf.Rectangle(position, size)
    
 
-This has been implemented like that because you may want to create a 
-rectangle at any time and the variable you have in hand can be either 
+This has been implemented as such because you may want to create a 
+rectangle at any time and the variable you have in hand can either be 
 four variables representing the top, the left, the width or two 
-variables representing the position and the size. In both case you can 
+variables representing the position and the size. In both cases you can 
 create a rectangle in one line! ::
 
    left, top, width, height = 5, 10, 150, 160
@@ -141,8 +141,8 @@ create a rectangle in one line! ::
    position, size = (5, 10), (150, 160)
    rectangle = sf.Rectangle(position, size)
    
-Making the rectangle to require four numeric values in its constructor 
-would have involved more lines to write if you had only a position and a 
+Making the rectangle require four numeric values in its constructor 
+would have involved writing more lines if you had only a position and a 
 size in hand ::
 
     x, y = position
@@ -152,7 +152,7 @@ size in hand ::
 
 Drawable
 --------
-To create your own drawable, just inherit a class from 
+To create your own drawable just inherit a class from 
 :class:`sf.Drawable`. ::
 
    class MyDrawable(sf.Drawable):
@@ -163,11 +163,11 @@ To create your own drawable, just inherit a class from
            target.draw(body)
            target.draw(clothes)
            
-As Python does not allow to subclass from two built-in types at the 
+As Python doesn't allow you to subclass from two built-in types at the 
 same time, pySFML2 provides `sf.TransformableDrawable` which is both 
-a :class:`sf.Drawable` and :class:`sf.Transformable`. That way, your 
-class inherit from properties such `position`, `rotation`, etc and their 
-methods `move()`, `rotate()`, etc. ::
+a :class:`sf.Drawable` and :class:`sf.Transformable`. That way your 
+class inherits from properties such `position`, `rotation` etc and their 
+methods `move()`, `rotate()` etc. ::
 
    class MyDrawable(sf.TransformableDrawable):
        def __init__(self):
@@ -195,19 +195,19 @@ Using the audio module should be very simple since there's no
 differences with the original API. Just note that the class 
 :class:`Chunk` allows you to manipulate an array of sf::Int16 which 
 represents the audio samples. So far this class is pretty basic and 
-offers an access to each sample via the operator [] and you can get 
-the data in a `string` for Python 2 or in a `bytes` for Python 3 via 
+offers access to each sample via the operator [] and you can get 
+the data in a `string` for Python 2 or in `bytes` for Python 3 via 
 :attr:`sf.Chunk.data`.
 
 HandledWindow
 -------------
 This extra class allows you to have a window handled by an external API 
-such PyQt4. This class is pretty straight forward and you should just 
+such as PyQt4. This class is pretty straight forward and you should just 
 follow the cookbook for integrating.
 
 Socket
 ------
-There's no systematic STATUS to check. When something goes wrong, an 
+There's no systematic STATUS to check. When something goes wrong an 
 error is raised and you just have to handle it. ::
 
    try:
@@ -216,5 +216,3 @@ error is raised and you just have to handle it. ::
    except sf.SocketError:
        socket.close()
        exit(1)
-       
-

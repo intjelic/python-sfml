@@ -1,7 +1,7 @@
 Installation
 ============
-You'll find here all the necessary explaination to install the binding 
-on your favorite platform. Unfortunattely, procedure for **Mac OSX** and 
+Here you'll find all the necessary explainations for installing the binding 
+on your favorite platform. Unfortunately the procedures for the **Mac OSX** and 
 **Fedora** packages are not available yet.
 
 .. contents:: :local:
@@ -21,8 +21,8 @@ Compillation for this platform is not available yet.
 Mac OSX
 -------
 This platform is not supported yet. If you download the source and if 
-you know a bit Cython, you should be able to compile the source but 
-I advise you to wait the next release which will have Mac OSX 
+you know a bit of Cython, you should be able to compile the source but 
+I advise you to wait for the next release which will have Mac OSX 
 supported.
 
 Ubuntu
@@ -51,7 +51,7 @@ Packages are available via launchpad depot, just type ::
       * pysfml2-examples
 
    Once example packages are installed you may want to launch them to 
-   see if the library works well with your graphic card. To do that  
+   see if the library works well with your graphics card. To do that  
    just run the following commands. ::
 
       sfml2-sound # will run the example 'sound'
@@ -59,7 +59,7 @@ Packages are available via launchpad depot, just type ::
       sfml2-x11
       sfml2-voip
 
-      pysfml2-sound # will run the same example but it is actually a python script that use the binding
+      pysfml2-sound # will run the same example but it's actually a python script that uses the binding
       pysfml2-pong
       pysfml2-sockets
       pysfml2-spacial-music # not an official sfml example
@@ -74,16 +74,16 @@ release. Meanwhile you'll have to compile by yourself.
 Compilation
 -----------
 
-   .. note:: The following instructions work only on Linux platforms as I use an internal version of setup.py to compile on Windows.
+   .. note:: The following instructions only work on the Linux platforms as I use an internal version of setup.py to compile on Windows.
 
 To compile you must have `sfml2-rc <http://openhelbreath.net/python-sfml2/downloads/sfml2-rc.tar.gz>`_ 
 and `cython <http://cython.org/>`_ installed on your computer.
 
 Download the source tarball `here <http://openhelbreath.net/python-sfml2/downloads/python-sfml2-1.1.tar.gz>`_. 
-Then, just type the following for python 2::
+Then just type the following for python 2::
 
    sudo python setup.py install
    
-Or this, for python 3::
+Or this for python 3::
 
    sudo python3 setup.py install

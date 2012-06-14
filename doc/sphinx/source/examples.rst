@@ -1,9 +1,9 @@
 Examples
 ========
-Here, you'll find the examples scritps code and various pieces of code.
+Here you'll find the example scritps' code and various other pieces of code.
 
-Official examples source code
------------------------------
+Official examples' source code
+------------------------------
 
 .. toctree::
    :maxdepth: 1
