@@ -13,7 +13,7 @@ spacial_music.py ::
 		try:
 			music = sf.Music.open_from_file(song)
 			
-		except sf.SFMLException as error:
+		except IOError as error:
 			print("An error occured during the loading data process:\n" + str(error))
 			exit()
 
@@ -25,28 +25,27 @@ spacial_music.py ::
 		# by default, the music is not relative to the listener
 		#music.relative_to_listener = True
 		
-		hears_position = (25, 25, 0)
-		speaker_position = (350, 348, 0)
+		hears_position = sf.Vector3(25, 25, 0)
+		speaker_position = sf.Vector3(350, 348, 0)
 		
-		x, y, z = hears_position
-		sf.Listener.set_position((x, y, z))
+		sf.Listener.set_position(hears_position)
 		music.position = speaker_position
 		
 		try:
 			hears_texture = sf.Texture.load_from_file("data/head_kid.png")
 			speaker_texture = sf.Texture.load_from_file("data/speaker.gif")
 			
-		except sf.SFMLException as error:
+		except IOError as error:
 			print("An error occured during the loading data process:\n" + str(error))
 			exit()
 			
 		hears = sf.Sprite(hears_texture)
-		x, y, z = hears_position
-		hears.position = (x, y)
+		x, y, _ = hears_position
+		hears.position = sf.Vector2(x, y)
 		
 		speaker = sf.Sprite(speaker_texture)
-		x, y, z = speaker_position
-		speaker.position = (x, y)
+		x, y, _ = speaker_position
+		speaker.position = sf.Vector2(x, y)
 		
 		music.min_distance = 200
 		music.attenuation = 1
@@ -57,39 +56,36 @@ spacial_music.py ::
 		loop = True
 		while loop:
 			for event in window.events:
-				if event.type == sf.Event.CLOSED:
+				if type(event) is sf.CloseEvent:
 					loop = False
-				elif event.type == sf.Event.KEY_PRESSED:
+					
+				elif type(event) is sf.KeyEvent and event.pressed:
 					if event.code is sf.Keyboard.UP:
-						x, y, z = hears_position
-						y -= 5
+						hears_position.y -= 5
+						sf.Listener.set_position(hears_position)
 						
-						hears_position = (x, y, z)
-						sf.Listener.set_position((x, y, z))
+						x, y, _ = hears_position
 						hears.position = (x, y)
 						
 					elif event.code is sf.Keyboard.DOWN:
-						x, y, z = hears_position
-						y += 5
+						hears_position.y += 5
+						sf.Listener.set_position(hears_position)
 						
-						hears_position = (x, y, z)
-						sf.Listener.set_position((x, y, z))
+						x, y, _ = hears_position
 						hears.position = (x, y)
 						
 					elif event.code is sf.Keyboard.LEFT:
-						x, y, z = hears_position
-						x -= 5
+						hears_position.x -= 5
+						sf.Listener.set_position(hears_position)
 						
-						hears_position = (x, y, z)
-						sf.Listener.set_position((x, y, z))
+						x, y, _ = hears_position
 						hears.position = (x, y)
 						
 					elif event.code is sf.Keyboard.RIGHT:
-						x, y, z = hears_position
-						x += 5
+						hears_position.x += 5
+						sf.Listener.set_position(hears_position)
 						
-						hears_position = (x, y, z)
-						sf.Listener.set_position((x, y, z))
+						x, y, _ = hears_position
 						hears.position = (x, y)
 
 

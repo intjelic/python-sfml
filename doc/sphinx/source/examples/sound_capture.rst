@@ -30,7 +30,7 @@ sound_capture.py ::
 
 		# display captured sound informations
 		print("Sound information:")
-		print("{0} seconds".format(buffer.duration/1000))
+		print("{0} seconds".format(buffer.duration))
 		print("{0} samples / seconds".format(buffer.sample_rate))
 		print("{0} channels".format(buffer.channel_count))
 

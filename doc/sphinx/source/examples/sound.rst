@@ -47,5 +47,3 @@ sound.py ::
 		play_music()
 
 		input("Press enter to exit...")
-		
-
