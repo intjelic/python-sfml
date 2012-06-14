@@ -24,7 +24,7 @@ __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
 			'Text', 'Shape', 'CircleShape', 'ConvexShape', 
 			'RectangleShape', 'Vertex', 'VertexArray', 'View', 
 			'RenderTarget', 'RenderTexture', 'RenderWindow', 
-			'HandledWindow', 'Rectangle']
+			'HandledWindow', 'Rectangle', 'TransformableDrawable']
 			
 string_type = [bytes, unicode, str]
 numeric_type = [int, long, float, long]
@@ -1838,6 +1838,8 @@ cdef class RenderTexture(RenderTarget):
 		
 		self.p_this.create(width, height, depthBuffer)
 		
+		self.m_texture = wrap_texture(<dgraphics.Texture*>&self.p_this.getTexture(), False)
+		
 	def __dealloc__(self):
 		del self.p_this
 	
@@ -1857,7 +1859,6 @@ cdef class RenderTexture(RenderTarget):
 	
 	property texture:
 		def __get__(self):
-			self.m_texture.p_this = <dgraphics.Texture*>(&self.p_this.getTexture())
 			return self.m_texture
 
 cdef class HandledWindow(RenderTarget):

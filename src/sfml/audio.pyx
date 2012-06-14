@@ -11,9 +11,12 @@
 #from libc.stdlib cimport malloc, free
 #from cython.operator cimport preincrement as preinc, dereference as deref
 
+cimport cython
+from libc.stdlib cimport malloc, free
+from libc.string cimport memcpy
+
 from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
-
 from dsystem cimport Vector3f
 
 cimport dsystem, daudio
@@ -77,23 +80,33 @@ cdef class Listener:
 cdef class Chunk:
 	cdef Int16* m_samples
 	cdef size_t m_sampleCount
+	cdef bint   delete_this
 
+	def __init__(self):
+		self.m_samples = NULL
+		self.m_sampleCount = 0
+		self.delete_this = True
+		
 	def __len__(self):
 		return self.m_sampleCount
 		
 	def __getitem__(self, size_t key):
 		return self.m_samples[key]
 
-	#def as_bytes(self):
-		#cdef object r 
-		#if PY_VERSION_HEX >= 0x03000000:
-			#r = PyBytes_FromStringAndSize(<char*>self.m_samples, 2*self.m_samplecount)
-		#else:
-			#r = PyString_FromStringAndSize(<char*>self.m_samples, 2*self.m_samplecount)
+	def __setitem__(self, size_t key, Int16 other):
+		self.m_samples[key] = other
+
+	property data:
+		def __get__(self):
+			return (<char*>self.m_samples)[:len(self)*2]
+		
+		def __set__(self, char* data):
+			if self.delete_this:
+				self.m_samples = <Int16*>malloc(len(data))
+				memcpy(self.m_samples, data, len(data))
+				self.m_sampleCount = len(data) // 2
 			
-		#return r
-		
-		
+
 cdef api object wrap_chunk(Int16* samples, unsigned int sample_count):
 	cdef Chunk r = Chunk.__new__(Chunk)
 	r.m_samples = samples

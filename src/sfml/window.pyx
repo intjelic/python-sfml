@@ -122,7 +122,7 @@ cdef Event wrap_event(dwindow.Event *p):
 		event = wrap_joystickconnectevent(p, Event.CONNECTED)
 	elif p.type == dwindow.event.JoystickDisconnected:
 		event = wrap_joystickconnectevent(p, Event.DISCONNECTED)
-
+		
 	event.p_this = p
 	return event
 
@@ -142,7 +142,7 @@ cdef class ResizeEvent(Event):
 			self.width, self.height = size
 			
 cdef class FocusEvent(Event):
-	cdef public bint state
+	cdef bint state
 	
 	def __str__(self):
 		if self.gained: return "The window gained the focus"
@@ -182,7 +182,7 @@ cdef class TextEvent(Event):
 
 
 cdef class KeyEvent(Event):
-	cdef public bint state
+	cdef bint state
 	
 	def __str__(self):
 		if self.pressed: return "A key was pressed"
@@ -264,7 +264,7 @@ cdef class MouseWheelEvent(Event):
 
 
 cdef class MouseButtonEvent(Event):
-	cdef public bint state
+	cdef bint state
 	
 	def __str__(self):
 		if self.pressed: return "A mouse button was pressed"
@@ -318,7 +318,7 @@ cdef class MouseMoveEvent(Event):
 
 
 cdef class MouseEvent(Event):
-	cdef public bint state
+	cdef bint state
 	
 	def __str__(self):
 		if self.entered: return "The mouse cursor entered the area of the window"
@@ -346,7 +346,7 @@ cdef MouseEvent wrap_mouseevent(dwindow.Event *p, bint state):
 
 
 cdef class JoystickButtonEvent(Event):
-	cdef public bint state
+	cdef bint state
 	
 	def __str__(self):
 		if self.pressed: return "A joystick button was pressed"
@@ -414,7 +414,7 @@ cdef class JoystickMoveEvent(Event):
 
 
 cdef class JoystickConnectEvent(Event):
-	cdef public bint state
+	cdef bint state
 	
 	def __str__(self):
 		if self.connected: return "A joystick was connected"
@@ -667,6 +667,15 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
 		raise StopIteration
 
+	def recreate(self, VideoMode mode, title, Uint32 style=dwindow.style.Default, ContextSettings settings=None):
+		cdef char* encoded_title
+		
+		encoded_title_temporary = title.encode(u"ISO-8859-1")
+		encoded_title = encoded_title_temporary
+		
+		if not settings: self.p_window.create(mode.p_this[0], encoded_title, style)
+		else: self.p_window.create(mode.p_this[0], encoded_title, style, settings.p_this[0])
+		
 	def close(self):
 		self.p_window.close()
 

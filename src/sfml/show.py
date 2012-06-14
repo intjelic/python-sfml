@@ -75,7 +75,7 @@ sprite = sf.Sprite(texture)
 while window.opened:
 	
 	for event in window.events:
-		if event.type == sf.Event.CLOSED:
+		if type(event) is sf.CloseEvent:
 			window.close()
 			break
 

@@ -70,7 +70,7 @@ class QSFMLCanvas(QWidget):
 			# to ensure that SFML will get an updated view of the windows
 			# create the SFML window with the widget handle
 			if platform.system() == 'Linux':
-				import sfml.graphics.x11 as x11
+				import sfml.x11 as x11
 				display = sip.unwrapinstance(QX11Info.display())
 				x11.flush_screen(display)
 				
