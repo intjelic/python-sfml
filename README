@@ -1,20 +1,29 @@
-This is a non-official python binding for SFML2.
-
-This binding was forked from the official python binding created by 
-Bastien Leonard 16th of November 2011. It has since then widely 
-improved and I decided to share my work under a new license: GPLv3.
-
-This version (1.0) is a fast release and is compatible with the first 
+This is the version 1.1 of a non-official python binding for SFML2 
+released under the GPLv3 license. This version is based on the first 
 release candidate of SFML2.
 
-For all information about the project (installing, compiling source, 
-documentation), you may want to loop up 
-http://openhelbreath.net/python-sfml2/0.1/doc/
+This binding is complete as it provides all classes found in SFML and 
+all its features. The module is split into five distinct sub-modules: 
+system, window, graphics, audio and network.
 
-The bug-tracker is temporarily read-only  so if you want to report 
-issues, you can do it on the github page of the project itself, I'll 
+Unlike the official one this binding provides the network module in 
+order to be exauhstive altought its use is discouraged since the 
+standard python library has already has one.
+
+Examples, tutorials and complete documentation come along to help 
+you with using pySFML2.
+
+A python binding really is the perfect way to sketch a software using 
+SFML.
+
+By combining the strength of SFML with the ease of the python language,
+we can provide an amazing tool to build quickly multimedia software.
+
+The bug-tracker is temporarily read-only. If you find bugs then please 
+report them on the forum or via the issues tab on the github page, I'll 
 add them.
 
 Website: http://openhelbreath.net/python-sfml2/
+Documentation: http://openhelbreath.net/python-sfml2/documentation.html
 Bugtracker: http://openhelbreath.net/python-sfml2/flyspray/
 Github: https://github.com/Sonkun/python-sfml2
