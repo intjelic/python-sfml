@@ -2599,13 +2599,13 @@ RenderTarget
          window.pop_GL_states()
          # OpenGL code here...
          
-      Note that this function is quite expensive: it saves all the 
+      Note that this function is quite expensive, as it saves all the 
       possible OpenGL states and matrices, even the ones you don't care 
       about. Therefore it should be used wisely. It is provided for 
       convenience, but the best results will be achieved if you handle 
       OpenGL states yourself (because you know which states have really 
       changed, and need to be saved and restored). Take a look at the 
-      :func:`reset_GL_states function if you do so.
+      :func:`reset_GL_states` function if you do so.
 
    .. py:method:: pop_GL_states()
    

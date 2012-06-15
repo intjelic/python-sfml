@@ -1,4 +1,4 @@
 PyQt4
 -----
 
-.. literalinclude:: /../../../examples/qsfl_canvas/qsfml_canvas.py
+.. literalinclude:: /../../../examples/pyqt4/qsfml_canvas.py

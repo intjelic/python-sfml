@@ -112,7 +112,7 @@ SoundBuffer
    to a :class:`sf.Texture`.
 
    A sound buffer can be loaded from a file (see 
-   :func:`load_from_file()' for the complete list of supported 
+   :func:`load_from_file()` for the complete list of supported 
    formats), from memory or directly from an array of samples. It can 
    also be saved back to a file.
 
@@ -761,7 +761,7 @@ SoundRecorder
    
       Start the capture.
 
-      The *sample_rate parameter defines the number of audio samples 
+      The *sample_rate* parameter defines the number of audio samples 
       captured per second. The higher, the better the quality (for 
       example, 44100 samples/sec is CD quality). This function uses its 
       own thread so that it doesn't block the rest of the program while 

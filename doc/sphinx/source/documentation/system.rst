@@ -189,10 +189,10 @@ Vector2
    :class:`sf.Vector2` is a simple class that defines a mathematical 
    vector with two coordinates (:attr:`x` and :attr:`y`).
 
-   It can be used to represent anything that has two dimensions: a 
-   size, a point, a velocity, etc.
+   It can be used to represent anything that has two dimensions: a size, a 
+   point, a velocity, etc.
 
-   :class:`sf.Vector2` supports arithmetic operations (+, -, /, *) 
+   :class:`sf.Vector2` supports arithmetic operations (+, -, /, \*) 
    and comparisons (==, !=).
 
    Usage example::
@@ -246,7 +246,7 @@ Vector3
    It can be used to represent anything that has three dimensions: a 
    size, a point, a velocity, etc.
 
-   :class:`sf.Vector3` supports arithmetic operations (+, -, /, *) and 
+   :class:`sf.Vector3` supports arithmetic operations (+, -, /, \*) and 
    comparisons (==, !=).
 
    Usage example::
