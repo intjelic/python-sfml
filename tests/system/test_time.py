@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-# pySFML2 - Cython SFML Wrapper for Python
-# Copyright 2012, Edwin Marshall <emarshall85@gmail.com>
-#
-# This software is released under the GPLv3 license.
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
 import sfml.system as sf
@@ -58,25 +51,38 @@ class TestOverloadedOperators(unittest.TestCase):
     def setUp(self):
         self.t1 = sf.seconds(5)
         self.t2 = sf.milliseconds(5000)
-        self.t3 = sf.microseconds(5000000)
 
-    def test_addition(self):
-        t = self.t3 + self.t2 + self.t1
-        self.assertEqual(t.seconds, 15)
+    def test_add(self):
+        t = self.t1 + self.t2
+        self.assertEqual(t.seconds, 10)
 
-    def test_subtraction(self):
-        t = self.t3 - self.t2 - self.t1
-        self.assertEqual(t.seconds, -5)
+    def test_sub(self):
+        t = self.t1 - self.t2
+        self.assertEqual(t.seconds, 0)
 
-    @unittest.skip("Not Implemented")
-    def test_multiplication(self):
-        t = self.t3 * self.t2 * self.t1
-        self.assertEqual(t.seconds, 125)
+    def test_mul(self):
+        t = self.t1 * self.t2
+        self.assertEqual(t.seconds, 25)
 
-    @unittest.skip("Not Implemented")
-    def test_division(self):
-        t = self.t3 / self.t2 / self.t1
-        self.assertEqual(t.seconds, 0.20)
+    def test_div(self):
+        t = self.t1 / self.t2
+        self.assertEqual(t.seconds, 1)
+
+    def test_iadd(self):
+        self.t1 += self.t2
+        self.assertEqual(self.t1.seconds, 10)
+
+    def test_isub(self):
+        self.t1 -= self.t2
+        self.assertEqual(self.t1.seconds, 0)
+
+    def test_imul(self):
+        self.t1 *= self.t2
+        self.assertEqual(self.t1.seconds, 25)
+
+    def test_idiv(self):
+        self.t1 /= self.t2
+        self.assertEqual(self.t1.seconds, 1)
 
 
 if __name__ == '__main__':
