@@ -12,7 +12,7 @@ IpAddress
 
    Encapsulate an IPv4 network address.
    
-   :class:`sf.IpAddress` is an utility class for manipulating network 
+   :class:`sfml.IpAddress` is an utility class for manipulating network 
    addresses.
    
    It provides a set of class methods and conversion attributes to 
@@ -21,18 +21,18 @@ IpAddress
 
    Usage example::
    
-      ip0 = sf.IpAddress()                             # an invalid address
-      ip1 = sf.IpAddress.NONE                          # an invalid address (same as ip0)
-      ip2 = sf.IpAddress.from_string("127.0.0.1")      # the local host address
-      ip3 = sf.IpAddress.BROADCAST                     # the broadcast address
-      ip4 = sf.IpAddress.from_bytes(192, 168, 1, 56)   # a local address
-      ip5 = sf.IpAddress.from_string("my_computer")    # a local address created from a network name
-      ip6 = sf.IpAddress.from_string("89.54.1.169")    # a distant address
-      ip7 = sf.IpAddress.from_string("www.google.com") # a distant address created from a network name
-      ip8 = sf.IpAddress.get_local_address()           # my address on the local network
-      ip9 = sf.IpAddress.get_public_address()          # my address on the internet
+      ip0 = sfml.IpAddress()                             # an invalid address
+      ip1 = sfml.IpAddress.NONE                          # an invalid address (same as ip0)
+      ip2 = sfml.IpAddress.from_string("127.0.0.1")      # the local host address
+      ip3 = sfml.IpAddress.BROADCAST                     # the broadcast address
+      ip4 = sfml.IpAddress.from_bytes(192, 168, 1, 56)   # a local address
+      ip5 = sfml.IpAddress.from_string("my_computer")    # a local address created from a network name
+      ip6 = sfml.IpAddress.from_string("89.54.1.169")    # a distant address
+      ip7 = sfml.IpAddress.from_string("www.google.com") # a distant address created from a network name
+      ip8 = sfml.IpAddress.get_local_address()           # my address on the local network
+      ip9 = sfml.IpAddress.get_public_address()          # my address on the internet
 
-   Note that :class:`sf.IpAddress` currently doesn't support IPv6 nor 
+   Note that :class:`sfml.IpAddress` currently doesn't support IPv6 nor 
    other types of network addresses.
 
    .. py:data:: NONE
@@ -57,7 +57,7 @@ IpAddress
       or a network name (ex: "localhost").
       
       :param string string: IP address or network name
-      :rtype: :class:`sf.IpAddress`
+      :rtype: :class:`sfml.IpAddress`
       
    .. classmethod:: from_integer(integer)
    
@@ -68,7 +68,7 @@ IpAddress
       if you got that representation from :attr:`IpAddress.integer`.
 
       :param integer integer: 4 bytes of the address packed into a 32-bits integer
-      :rtype: :class:`sf.IpAddress`
+      :rtype: :class:`sfml.IpAddress`
 
    .. classmethod:: from_bytes(b0, b1, b2, b3)
       
@@ -82,7 +82,7 @@ IpAddress
       :param integer b1: Second byte of the address 
       :param integer b2: Third byte of the address 
       :param integer b3: Fourth byte of the address 
-      :rtype: sf.network.IpAddress
+      :rtype: sfml.network.IpAddress
       
    .. attribute:: string
          
@@ -102,7 +102,7 @@ IpAddress
       address, and should be used for optimization purposes only (like 
       sending the address through a socket). The integer produced by 
       this function can then be converted back to a 
-      :class:`sf.IpAddress` with the proper constructor.
+      :class:`sfml.IpAddress` with the proper constructor.
 
       :type: integer
       
@@ -116,7 +116,7 @@ IpAddress
       :func:`get_public_address`, this function is fast and may be used 
       safely anywhere.
 
-      :rtype: :class:`sf.IpAddress`
+      :rtype: :class:`sfml.IpAddress`
       
    .. classmethod:: get_public_address([time])
          
@@ -133,8 +133,8 @@ IpAddress
       limit if you don't want your program to be possibly stuck waiting 
       in case there is a problem; this limit is deactivated by default.
 
-      :param sf.Time time: Maximum time to wait
-      :rtype: :class:`sf.IpAddress`
+      :param sfml.Time time: Maximum time to wait
+      :rtype: :class:`sfml.IpAddress`
 
 
 Socket
@@ -231,8 +231,8 @@ TcpSocket
       
          # --- the client ---
          # create a socket and connect it to 192.168.1.50 on port 55001
-         socket = sf.TcpSocket()
-         socket.connect(sf.IpAddress.from_string("192.168.1.50"), 55001)
+         socket = sfml.TcpSocket()
+         socket.connect(sfml.IpAddress.from_string("192.168.1.50"), 55001)
 
 
          # send a message to the connected host
@@ -246,7 +246,7 @@ TcpSocket
 
          # --- the server ---
          # create a listener to wait for incoming connections on port 55001
-         listener = sf.TcpListener()
+         listener = sfml.TcpListener()
          listener.listen(55001)
 
          # wait for a connection
@@ -273,9 +273,9 @@ TcpSocket
       The address of the connected peer.
       
       It the socket is not connected, its value 
-      :const:`sf.IpAddress.NONE`.
+      :const:`sfml.IpAddress.NONE`.
       
-      :type: :class:`sf.IpAddress`
+      :type: :class:`sfml.IpAddress`
       
    .. py:attribute:: remote_port
    
@@ -291,21 +291,21 @@ TcpSocket
       
       This method raises an exception if something bad happened. 
       If the TCP socket has been disconnected, it will raise 
-      sf.SocketDisconnected. 
+      sfml.SocketDisconnected. 
       If the socket is not ready to send/receive data yet, it will raise
-      sf.SocketNotReady. 
-      If an unexpected error happened, it will raise sf.SocketError. 
+      sfml.SocketNotReady. 
+      If an unexpected error happened, it will raise sfml.SocketError. 
       You may want to catch any of them in one except statement, in 
-      this case, you'll use sf.SocketException which is their base.
+      this case, you'll use sfml.SocketException which is their base.
       
       In blocking mode, this function may take a while, especially if 
       the remote peer is not reachable. The last parameter allows you 
       to stop trying to connect after a given timeout. If the socket 
       was previously connected, it is first disconnected.
       
-      :param sf.IpAddress remote_address: Address of the remote peer 
+      :param sfml.IpAddress remote_address: Address of the remote peer 
       :param integer remote_port: Port of the remote peer 
-      :param sf.Time timeout: Optional maximum time to wait
+      :param sfml.Time timeout: Optional maximum time to wait
 
    .. py:method:: disconnect()
    
@@ -322,12 +322,12 @@ TcpSocket
 
       This method raises an exception if something bad happened. 
       If the TCP socket has been disconnected, it will raise 
-      sf.SocketDisconnected. 
+      sfml.SocketDisconnected. 
       If the socket is not ready to send/receive data yet, it will raise
-      sf.SocketNotReady. 
-      If an unexpected error happened, it will raise sf.SocketError. 
+      sfml.SocketNotReady. 
+      If an unexpected error happened, it will raise sfml.SocketError. 
       You may want to catch any of them in one except statement, in 
-      this case, you'll use sf.SocketException which is their base.
+      this case, you'll use sfml.SocketException which is their base.
       
       :param bytes data: The sequence of bytes to send 
       
@@ -337,12 +337,12 @@ TcpSocket
       
       This method raises an exception if something bad happened. 
       If the TCP socket has been disconnected, it will raise 
-      sf.SocketDisconnected. 
+      sfml.SocketDisconnected. 
       If the socket is not ready to send/receive data yet, it will raise
-      sf.SocketNotReady. 
-      If an unexpected error happened, it will raise sf.SocketError. 
+      sfml.SocketNotReady. 
+      If an unexpected error happened, it will raise sfml.SocketError. 
       You may want to catch any of them in one except statement, in 
-      this case, you'll use sf.SocketException which is their base.
+      this case, you'll use sfml.SocketException which is their base.
       
       In blocking mode, this function will wait until some bytes are actually received. This function will fail if the socket is not connected.
       
@@ -383,7 +383,7 @@ UdpSocket
    low-level functions process a raw sequence of bytes. The high-level
    method is not implemented.
    
-   It is important to note that :class:`sf.UdpSocket` is unable to send 
+   It is important to note that :class:`sfml.UdpSocket` is unable to send 
    datagrams bigger than :attr:`MAX_DATAGRAM_SIZE`. In this case, it 
    returns an error and doesn't send anything.
 
@@ -396,12 +396,12 @@ UdpSocket
    
       # --- the client ---
       # create a socket and bind it to the port 55001
-      socket = sf.UdpSocket()
+      socket = sfml.UdpSocket()
       socket.bind(55001)
 
       # send a message to 192.168.1.50 on port 55002
-      message = "Hi, I am {0}".format(sf.IpAddress.get_local_address().string)
-      socket.send(message.encode('utf-8'), sf.IpAddress.from_string("192.168.1.50"), 55002)
+      message = "Hi, I am {0}".format(sfml.IpAddress.get_local_address().string)
+      socket.send(message.encode('utf-8'), sfml.IpAddress.from_string("192.168.1.50"), 55002)
 
       # receive an answer (most likely from 192.168.1.50, but could be anyone else)
       answer, sender, port = socket.receive(1024)
@@ -409,7 +409,7 @@ UdpSocket
 
       # --- the server ---
       # create a socket and bind it to the port 55002
-      socket = sf.UdpSocket()
+      socket = sfml.UdpSocket()
       socket.bind(55002)
 
       # receive a message from anyone
@@ -444,12 +444,12 @@ UdpSocket
       
       This method raises an exception if something bad happened. 
       If the TCP socket has been disconnected, it will raise 
-      sf.SocketDisconnected. 
+      sfml.SocketDisconnected. 
       If the socket is not ready to send/receive data yet, it will raise
-      sf.SocketNotReady. 
-      If an unexpected error happened, it will raise sf.SocketError. 
+      sfml.SocketNotReady. 
+      If an unexpected error happened, it will raise sfml.SocketError. 
       You may want to catch any of them in one except statement, in 
-      this case, you'll use sf.SocketException which is their base.
+      this case, you'll use sfml.SocketException which is their base.
       
       :param integer port: Port to bind the socket to
       
@@ -471,15 +471,15 @@ UdpSocket
 
       This method raises an exception if something bad happened. 
       If the TCP socket has been disconnected, it will raise 
-      sf.SocketDisconnected. 
+      sfml.SocketDisconnected. 
       If the socket is not ready to send/receive data yet, it will raise
-      sf.SocketNotReady. 
-      If an unexpected error happened, it will raise sf.SocketError. 
+      sfml.SocketNotReady. 
+      If an unexpected error happened, it will raise sfml.SocketError. 
       You may want to catch any of them in one except statement, in 
-      this case, you'll use sf.SocketException which is their base.
+      this case, you'll use sfml.SocketException which is their base.
       
       :param bytes data: The sequence of bytes to send 
-      :param sf.IpAddress remote_address: Address of the receiver 
+      :param sfml.IpAddress remote_address: Address of the receiver 
       :param integer port: Port of the receiver to send the data to
       
    .. py:method:: receive(size)
@@ -488,12 +488,12 @@ UdpSocket
 
       This method raises an exception if something bad happened. 
       If the TCP socket has been disconnected, it will raise 
-      sf.SocketDisconnected. 
+      sfml.SocketDisconnected. 
       If the socket is not ready to send/receive data yet, it will raise
-      sf.SocketNotReady. 
-      If an unexpected error happened, it will raise sf.SocketError. 
+      sfml.SocketNotReady. 
+      If an unexpected error happened, it will raise sfml.SocketError. 
       You may want to catch any of them in one except statement, in 
-      this case, you'll use sf.SocketException which is their base.
+      this case, you'll use sfml.SocketException which is their base.
       
       In blocking mode, this function will wait until some bytes are 
       actually received. Be careful to use a buffer which is large 
@@ -503,7 +503,7 @@ UdpSocket
          
       :param integer size: Maximum number of bytes that can be received
       :return: A tuple with the sequence of bytes received, the remote address and the port used.
-      :rtype: tuple (bytes, sf.IpAddress, integer)
+      :rtype: tuple (bytes, sfml.IpAddress, integer)
       
 
 TcpListener
@@ -519,14 +519,14 @@ TcpListener
    This is all it can do.
 
    When a new connection is received, you must call accept and the 
-   listener returns a new instance of :class:`sf.TcpSocket` that is 
+   listener returns a new instance of :class:`sfml.TcpSocket` that is 
    properly initialized and can be used to communicate with the new 
    client.
 
    Listener sockets are specific to the TCP protocol, UDP sockets are 
    connectionless and can therefore communicate directly. As a 
    consequence, a listener socket will always return the new 
-   connections as sf.TcpSocket instances.
+   connections as sfml.TcpSocket instances.
 
    A listener is automatically closed on destruction, like all other 
    types of socket. However if you want to stop listening before the 
@@ -535,7 +535,7 @@ TcpListener
    Usage example::
    
       # create a listener socket and make it wait for new connections on port 55001
-      listener = sf.TcpListener()
+      listener = sfml.TcpListener()
       listener.listen(55001)
 
       # endless loop that waits for new connections
@@ -543,7 +543,7 @@ TcpListener
          try:
             client = listener.accept()
             
-         except sf.SocketException as error:
+         except sfml.SocketException as error:
             print("An error occured! Error: {0}".format(error))
             exit()
             
@@ -570,12 +570,12 @@ TcpListener
 
       This method raises an exception if something bad happened. 
       If the TCP socket has been disconnected, it will raise 
-      sf.SocketDisconnected. 
+      sfml.SocketDisconnected. 
       If the socket is not ready to send/receive data yet, it will raise
-      sf.SocketNotReady. 
-      If an unexpected error happened, it will raise sf.SocketError. 
+      sfml.SocketNotReady. 
+      If an unexpected error happened, it will raise sfml.SocketError. 
       You may want to catch any of them in one except statement, in 
-      this case, you'll use sf.SocketException which is their base.
+      this case, you'll use sfml.SocketException which is their base.
       
       :param integer port: Port to listen for new connections
       
@@ -595,15 +595,15 @@ TcpListener
       
       This method raises an exception if something bad happened. 
       If the TCP socket has been disconnected, it will raise 
-      sf.SocketDisconnected. 
+      sfml.SocketDisconnected. 
       If the socket is not ready to send/receive data yet, it will raise
-      sf.SocketNotReady. 
-      If an unexpected error happened, it will raise sf.SocketError. 
+      sfml.SocketNotReady. 
+      If an unexpected error happened, it will raise sfml.SocketError. 
       You may want to catch any of them in one except statement, in 
-      this case, you'll use sf.SocketException which is their base.
+      this case, you'll use sfml.SocketException which is their base.
       
       :return: :class:`Socket` that holds the new connection
-      :rtype: :class:`sf.TcpSocket`
+      :rtype: :class:`sfml.TcpSocket`
 
 SocketException
 ^^^^^^^^^^^^^^^
@@ -794,10 +794,10 @@ Ftp
       Usage example::
          
          # create a new FTP client
-         ftp = sf.Ftp()
+         ftp = sfml.Ftp()
 
          # connect to the server
-         response = ftp.connect(sf.IpAddress.from_string("ftp.myserver.com"))
+         response = ftp.connect(sfml.IpAddress.from_string("ftp.myserver.com"))
          if response.ok: print("Connected")
 
          # log in
@@ -813,7 +813,7 @@ Ftp
          if response.ok: print("Created new directory")
 
          # upload a file to this new directory
-         response = ftp.upload("local-path/file.txt", "files", sf.Ftp.ASCII)
+         response = ftp.upload("local-path/file.txt", "files", sfml.Ftp.ASCII)
          if response.ok: print("File uploaded")
 
          # disconnect from the server (optional)

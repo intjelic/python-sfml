@@ -49,7 +49,7 @@ a function/methods expects. By consequence, if you pass a wrong
 argument, it means there was an error earlier"
 
 For an extension module this is not the case and if you pass a 
-:class:`sf.Transform` when a :class:`sf.Color` is expected, an exception **will**
+:class:`sfml.Transform` when a :class:`sfml.Color` is expected, an exception **will**
 be raised. Incidentally, having a precise type makes things execute much faster 
 sincethe  python interpreter doesn't have to check whether the argument type 
 you just passed is right or not at runtime.

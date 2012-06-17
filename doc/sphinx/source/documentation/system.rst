@@ -12,7 +12,7 @@ Time
 
    Represents a time value.
 
-   :class:`sf.Time` encapsulates a time value in a flexible way.
+   :class:`sfml.Time` encapsulates a time value in a flexible way.
 
    It allows to define a time value either as a number of seconds, 
    milliseconds or microseconds. It also works the other way round: 
@@ -32,23 +32,23 @@ Time
 
    Usage example::
    
-      t1 = sf.seconds(0.1)
+      t1 = sfml.seconds(0.1)
       milli = t1.milliseconds
 
-      t2 = sf.milliseconds(30)
+      t2 = sfml.milliseconds(30)
       micro = t2.microseconds
 
-      t3 = sf.microseconds(-800000)
+      t3 = sfml.microseconds(-800000)
       sec = t3.seconds
 
       def update(elapsed):
          position += speed * elapsed.seconds
          
-      update(sf.milliseconds(100))
+      update(sfml.milliseconds(100))
 
    .. py:method:: Time()
    
-      Construct a :class:`sf.Time` equivalent to :const:`ZERO`
+      Construct a :class:`sfml.Time` equivalent to :const:`ZERO`
    
    .. py:data:: ZERO
       
@@ -76,7 +76,7 @@ Time
       a copy, that's why this method is provided.
       
       :return: Return a copy.
-      :rtype: :class:`sf.Time`
+      :rtype: :class:`sfml.Time`
 
 
 sleep
@@ -86,10 +86,10 @@ sleep
 
    Make the current thread sleep for a given duration.
 
-   sf.sleep is the best way to block a program or one of its threads, 
+   sfml.sleep is the best way to block a program or one of its threads, 
    as it doesn't consume any CPU power.
    
-   :param sf.Time duration: Time to sleep
+   :param sfml.Time duration: Time to sleep
    
 
 Clock
@@ -99,7 +99,7 @@ Clock
 
    Utility class that measures the elapsed time.
 
-   sf.Clock is a lightweight class for measuring time.
+   sfml.Clock is a lightweight class for measuring time.
 
    It provides the most precise time that the underlying OS can achieve 
    (generally microseconds or nanoseconds). It also ensures 
@@ -108,18 +108,18 @@ Clock
 
    Usage example::
 
-      clock = sf.Clock()
+      clock = sfml.Clock()
       # ...
       time1 = clock.elapsed_time
       # ...
       time2 = clock.restart()
 
-   The :class:`sf.Time` value returned by the clock can then be converted to a 
+   The :class:`sfml.Time` value returned by the clock can then be converted to a 
    number of seconds, milliseconds or even microseconds.
 
    .. py:method:: Clock()
    
-      Construct a :class:`sf.Clock`
+      Construct a :class:`sfml.Clock`
       
       The clock starts automatically after being constructed. 
       
@@ -131,7 +131,7 @@ Clock
       :func:`restart()` (or the construction of the instance if 
       :func:`restart()` has not been called).
       
-      :rype: :class:`sf.Time`
+      :rype: :class:`sfml.Time`
                   
    .. py:method:: restart()
    
@@ -139,7 +139,7 @@ Clock
 
       This function puts the time counter back to zero. It also returns the time elapsed since the clock was started.
                   
-      :rtype: :class:`sf.Time`
+      :rtype: :class:`sfml.Time`
    
 
 seconds
@@ -151,7 +151,7 @@ seconds
    
    :param float amount: Number of seconds
    :return: Time value constructed from the amount of seconds
-   :rtype: :class:`sf.Time`
+   :rtype: :class:`sfml.Time`
    
 
 milliseconds
@@ -163,7 +163,7 @@ milliseconds
    
    :param int amount: Number of milliseconds
    :return: Time value constructed from the amount of milliseconds
-   :rtype: :class:`sf.Time`
+   :rtype: :class:`sfml.Time`
    
 
 microseconds
@@ -175,7 +175,7 @@ microseconds
    
    :param int amount: Number of microseconds
    :return: Time value constructed from the amount of microseconds
-   :rtype: :class:`sf.Time`
+   :rtype: :class:`sfml.Time`
    
 
 Vector2
@@ -186,18 +186,18 @@ Vector2
    Utility class for manipulating 2-dimensional vectors. This class is
    equivalent to the template class sf::Vector2<T> in SFML.
 
-   :class:`sf.Vector2` is a simple class that defines a mathematical 
+   :class:`sfml.Vector2` is a simple class that defines a mathematical 
    vector with two coordinates (:attr:`x` and :attr:`y`).
 
    It can be used to represent anything that has two dimensions: a size, a 
    point, a velocity, etc.
 
-   :class:`sf.Vector2` supports arithmetic operations (+, -, /, \*) 
+   :class:`sfml.Vector2` supports arithmetic operations (+, -, /, \*) 
    and comparisons (==, !=).
 
    Usage example::
 
-      v1 = sf.Vector2(16.5, 24)
+      v1 = sfml.Vector2(16.5, 24)
       v1.x = 18
       y = v1.y
 
@@ -205,11 +205,11 @@ Vector2
 
       v3 = v1 + v2
 
-   For 3-dimensional vectors, see :class:`sf.Vector3`
+   For 3-dimensional vectors, see :class:`sfml.Vector3`
       
    .. method:: Vector2(x=0, y=0)
 
-      Construct a :class:`sf.Vector2`
+      Construct a :class:`sfml.Vector2`
 
    .. attribute:: x
 
@@ -225,13 +225,13 @@ Vector2
       a copy, that's why this method is provided.
       
       :return: Return a copy.
-      :rtype: :class:`sf.Vector2`
+      :rtype: :class:`sfml.Vector2`
 
    .. py:classmethod: from_tuple(tuple)
 
       Construct the vector from a tuple.
       
-      :rtype: :class:`sf.Vector2`
+      :rtype: :class:`sfml.Vector2`
 
 Vector3
 ^^^^^^^
@@ -240,18 +240,18 @@ Vector3
 
    Utility class for manipulating 3-dimensional vectors.
 
-   :class:`sf.Vector3` is a simple class that defines a mathematical 
+   :class:`sfml.Vector3` is a simple class that defines a mathematical 
    vector with three coordinates (:attr:`x`, :attr:`y` and :attr:`z`).
 
    It can be used to represent anything that has three dimensions: a 
    size, a point, a velocity, etc.
 
-   :class:`sf.Vector3` supports arithmetic operations (+, -, /, \*) and 
+   :class:`sfml.Vector3` supports arithmetic operations (+, -, /, \*) and 
    comparisons (==, !=).
 
    Usage example::
    
-      v1 = sf.Vector3(16.8, 24, -8)
+      v1 = sfml.Vector3(16.8, 24, -8)
       v1.x = 18.2
       y = v1.y
       z = v1.z
@@ -264,7 +264,7 @@ Vector3
 
    .. method:: Vector3(x=0, y=0, z=0)
 
-      Construct a :class:`sf.Vector3`
+      Construct a :class:`sfml.Vector3`
 
    .. attribute:: x
 
@@ -284,13 +284,13 @@ Vector3
       a copy, that's why this method is provided.
       
       :return: Return a copy.
-      :rtype: :class:`sf.Vector3`
+      :rtype: :class:`sfml.Vector3`
 
    .. py:classmethod: from_tuple(tuple)
 
       Construct the vector from a tuple.
       
-      :rtype: :class:`sf.Vector3`
+      :rtype: :class:`sfml.Vector3`
       
 SFMLException
 ^^^^^^^^^^^^^
