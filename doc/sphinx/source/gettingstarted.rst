@@ -93,7 +93,7 @@ Many classes are unpackable ::
 	x, y = sfml.Vector2(5, 10)
 	x, y, z = sfml.Vector3(5, 10, 15)
 
-	size, bpp = sfml.VideoMode((640, 480), 32)
+	size, bpp = sfml.VideoMode(640, 480, 32)
 	depth_bits, stencil_bits, antialiasing, minor_version, major_version = sfml.ContextSettings()
 
 	r, g, b, a = sfml.Color.CYAN
