@@ -13,7 +13,7 @@ Your first script
 -----------------
 Here is the official short example to show you how simple using pySFML is. ::
 
-	import sfml as sf
+	import sfml
 
 
 	# create the main window
