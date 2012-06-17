@@ -35,6 +35,7 @@ else:
 
 x11 = Extension('sfml.x11',
 				[x11_source],
+				['include', 'src/sfml'],
 				language='c++',
 				libraries=['X11'])
 
