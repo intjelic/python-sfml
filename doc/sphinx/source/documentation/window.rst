@@ -35,29 +35,29 @@ Event
 
 	Defines a system event and its parameters.
 
-	sf.Event holds all the informations about a system event that just 
+	sf.Event holds all the information about a system event that just 
 	happened.
 
 	Events are retrieved using the :func:`sf.Window.poll_event` and 
 	:func:`sf.Window.wait_event` functions. You can also retreive the 
 	current pending event list via the property :attr:`sf.Window.event`.
 
-	A :class:`sf.Event` instance contains the data of the event.
+	An :class:`sfml.Event` instance contains the data of the event.
 
 	Usage example::
 	
 		for event in window.events:
 			# request for closing the window
-			if type(event) is sf.CloseEvent:
+                        if event == sf.CloseEvent:
 				window.close()
 			
 			# the escape key was pressed
-			if type(event) is sf.KeyEvent and event.code is sf.Keyboard.ESCAPE:
-				window.close()
+                        if event == sf.KeyEvent and event.code is sf.Keyboard.ESCAPE:
+                             window.close()
 				
 			# the window was resized
-			if type(event) is sf.ResizeEvent:
-				do_something_with_the_new_size(event.size)
+                        if event == sf.ResizeEvent:
+                             do_something_with_the_new_size(event.size)
 				
 			# ...
 			
