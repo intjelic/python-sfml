@@ -10,8 +10,19 @@
 
 import sys
 import os
-from distutils.core import setup
+from distutils.core import setup, Command
 from distutils.extension import Extension
+
+class Test(Command):
+	user_options = []
+	def initialize_options(self): pass
+	def finalize_options(self): pass
+
+	def run(self):
+		import sys, subprocess
+		errno = subprocess.call([sys.executable, '-m',
+								 'unittest', 'discover', '-s', 'tests'])
+
 
 USE_CYTHON = os.environ.get('USE_CYTHON', False)
 
@@ -91,7 +102,8 @@ kwargs = dict(name='pySFML2',
 						'Programming Language :: Cython',
 						'Topic :: Games/Entertainment',
 						'Topic :: Multimedia',
-						'Topic :: Software Development :: Libraries :: Python Modules'])
+						'Topic :: Software Development :: Libraries :: Python Modules'],
+			cmdclass = {'test': Test})
 
 if major == 2:
 	kwargs.update(author='Jonathan De Wachter'.decode())
