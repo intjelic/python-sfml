@@ -75,6 +75,14 @@ cdef class Event:
 	def __repr__(self):
 		return ("sf.Event({0})".format(self))
 
+	def __richcmp__(self, other, int op):
+		if op == 2:
+			return isinstance(self, other)
+		elif op == 3:
+			return not isinstance(self, other)
+		else:
+			return NotImplemented
+
 
 	property type:
 		def __get__(self):
