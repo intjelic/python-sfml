@@ -223,27 +223,27 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		
 	def __add__(self, other):
 		x, y, z = other
-		return Vector2(self.x + x, self.y + y, self.z + z)
+		return Vector3(self.x + x, self.y + y, self.z + z)
 
 	def __sub__(self, other):
 		x, y, z = other
-		return Vector2(self.x - x, self.y - y, self.z - z)
+		return Vector3(self.x - x, self.y - y, self.z - z)
 
 	def __mul__(self, other):
 		x, y, z = other
-		return Vector2(self.x * x, self.y * y, self.z * z)
+		return Vector3(self.x * x, self.y * y, self.z * z)
 		
 	def __truediv__(self, other):
 		x, y, z = other
-		return Vector2(self.x / x, self.y / y, self.z / z)
+		return Vector3(self.x / x, self.y / y, self.z / z)
 		
 	def __floordiv__(self, other):
 		x, y, z = other
-		return Vector2(self.x // x, self.y // y, self.z // z)
+		return Vector3(self.x // x, self.y // y, self.z // z)
 
 	def __mod__(self, other):
 		x, y, z = other
-		return Vector2(self.x % x, self.y % y, self.z % z)
+		return Vector3(self.x % x, self.y % y, self.z % z)
 		
 	def __divmod__(self, other):
 		return self // other, self % other
