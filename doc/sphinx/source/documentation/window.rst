@@ -1,7 +1,7 @@
 Window
 ======
 
-.. module:: sf
+.. module:: sfml
 
 .. contents:: :local:
 
@@ -35,28 +35,28 @@ Event
 
 	Defines a system event and its parameters.
 
-	sf.Event holds all the informations about a system event that just 
+	sfml.Event holds all the informations about a system event that just 
 	happened.
 
-	Events are retrieved using the :func:`sf.Window.poll_event` and 
-	:func:`sf.Window.wait_event` functions. You can also retreive the 
-	current pending event list via the property :attr:`sf.Window.event`.
+	Events are retrieved using the :func:`sfml.Window.poll_event` and 
+	:func:`sfml.Window.wait_event` functions. You can also retreive the 
+	current pending event list via the property :attr:`sfml.Window.event`.
 
-	A :class:`sf.Event` instance contains the data of the event.
+	A :class:`sfml.Event` instance contains the data of the event.
 
 	Usage example::
 	
 		for event in window.events:
 			# request for closing the window
-			if type(event) is sf.CloseEvent:
+			if type(event) is sfml.CloseEvent:
 				window.close()
 			
 			# the escape key was pressed
-			if type(event) is sf.KeyEvent and event.code is sf.Keyboard.ESCAPE:
+			if type(event) is sfml.KeyEvent and event.code is sfml.Keyboard.ESCAPE:
 				window.close()
 				
 			# the window was resized
-			if type(event) is sf.ResizeEvent:
+			if type(event) is sfml.ResizeEvent:
 				do_something_with_the_new_size(event.size)
 				
 			# ...
@@ -150,7 +150,7 @@ VideoMode
 	A video mode is defined by a width and a height (in pixels) and a depth 
 	(in bits per pixel).
 
-	Video modes are used to setup windows (sf.Window) at creation time.
+	Video modes are used to setup windows (sfml.Window) at creation time.
 
 	The main usage of video modes is for fullscreen mode: indeed you must 
 	use one of the valid video modes allowed by the OS (which are defined 
@@ -173,15 +173,15 @@ VideoMode
 		
 		# display the list of all the video modes available for fullscreen
 		i = 0
-		modes = sf.VideoMode.get_fullscreen_modes()
+		modes = sfml.VideoMode.get_fullscreen_modes()
 		for mode in modes:
 			print("Mode #{0}: {1}".format(i, mode))
 			i += 1
 			
 		# create a window with the same pixel depth as the desktop
-		desktop = sf.VideoMode.get_desktop_mode()
+		desktop = sfml.VideoMode.get_desktop_mode()
 		width, bpp = desktop
-		window = sf.Window(sf.VideoMode(1024, 768, bpp), "pySFML Window")
+		window = sfml.Window(sfml.VideoMode(1024, 768, bpp), "pySFML Window")
 
 
    .. py:method:: VideoMode(width, height[, bits_per_pixel=32])
@@ -196,7 +196,7 @@ VideoMode
    
 		Video mode size, in pixels.
 		
-		:type: :class:`sf.Vector2`
+		:type: :class:`sfml.Vector2`
    	
    .. py:attribute:: width
    
@@ -220,7 +220,7 @@ VideoMode
    
 		Get the current desktop video mode.
 		
-		:type: :class:`sf.VideoMode`
+		:type: :class:`sfml.VideoMode`
    
    .. py:classmethod:: get_fullscreen_modes()
          
@@ -264,7 +264,7 @@ ContextSettings
 
    major_version and minor_version define the version of the OpenGL context that you want. Only versions greater or equal to 3.0 are relevant; versions lesser than 3.0 are all handled the same way (i.e. you can use any version < 3.0 if you don't want an OpenGL 3 context).
 
-   Please note that these values are only a hint. No failure will be reported if one or more of these values are not supported by the system; instead, SFML will try to find the closest valid match. You can then retrieve the settings that the window actually used to create its context, with sf.Window.settings.
+   Please note that these values are only a hint. No failure will be reported if one or more of these values are not supported by the system; instead, SFML will try to find the closest valid match. You can then retrieve the settings that the window actually used to create its context, with sfml.Window.settings.
 
 
    .. attribute:: depth_bits
@@ -303,8 +303,8 @@ Pixels
 	
 	Usage examples::
 	
-		image = sf.Image.load_from_file("icon.png")
-		window = sf.Window(sf.VideoMode(640, 480), "pySFML")
+		image = sfml.Image.load_from_file("icon.png")
+		window = sfml.Window(sfml.VideoMode(640, 480), "pySFML")
 
 		window.icon = image.pixels
 
@@ -338,32 +338,32 @@ Window
 	
 	Window that serves as a target for OpenGL rendering.
 
-	:class:`sf.Window` is the main class of the Window module.
+	:class:`sfml.Window` is the main class of the Window module.
 
 	It defines an OS window that is able to receive an OpenGL rendering.
 
-	A :class:`sf.Window` can create its own new window, or be embedded into 
+	A :class:`sfml.Window` can create its own new window, or be embedded into 
 	an already existing control using the create(handle) function. This can 
 	be useful for embedding an OpenGL rendering area into a view which is 
 	part of a bigger GUI with existing windows, controls, etc. It can also 
 	serve as embedding an OpenGL rendering area into a window created by 
 	another (probably richer) GUI library like Qt or wxWidgets.
 
-	The :class:`sf.Window` class provides a simple interface for 
+	The :class:`sfml.Window` class provides a simple interface for 
 	manipulating the window: move, resize, show/hide, control mouse cursor, 
 	etc. It also provides event handling through its :func:`poll_event` and 
 	:func:`wait_event` functions.
 
 	Note that OpenGL experts can pass their own parameters (antialiasing 
 	level, bits for the depth and stencil buffers, etc.) to the OpenGL 
-	context attached to the window, with the :class:`sf.ContextSettings` 
+	context attached to the window, with the :class:`sfml.ContextSettings` 
 	structure which is passed as an optional argument when creating the 
 	window.
 
 	Usage example::
 
 		# declare and create a new window
-		window = sf.Window(sf.VideoMode(800, 600), "pySFML Window")
+		window = sfml.Window(sfml.VideoMode(800, 600), "pySFML Window")
 
 		# limit the framerate to 60 frames per second (this step is optional)
 		window.framerate_limit = 60
@@ -373,7 +373,7 @@ Window
 			# event processing
 			for event in window.events:
 				# request for closing the window
-				if event.type == sf.Event.CLOSED:
+				if event.type == sfml.Event.CLOSED:
 					window.close()
 
 				# activate the window for OpenGL rendering
@@ -391,32 +391,32 @@ Window
       This creates the window with the size and pixel depth defined in 
       mode. An optional style can be passed to customize the look and 
       behaviour of the window (borders, title bar, resizable, closable, 
-      ...). If style contains :const:`sf.Style.FULLSCREEN`, then mode 
+      ...). If style contains :const:`sfml.Style.FULLSCREEN`, then mode 
       must be a valid video mode.
 
       The fourth parameter is an optional structure specifying advanced 
       OpenGL context settings such as antialiasing, depth-buffer bits, 
       etc.
 
-      :param sf.VideoMode mode: Video mode to use (defines the width, height and depth of the rendering area of the window)
+      :param sfml.VideoMode mode: Video mode to use (defines the width, height and depth of the rendering area of the window)
       :param string title: Title of the window
-      :param sf.Style style: Window style
-      :param sf.ContextSettings settings: Additional settings for the underlying OpenGL context
+      :param sfml.Style style: Window style
+      :param sfml.ContextSettings settings: Additional settings for the underlying OpenGL context
 
    .. method:: recreate(mode, title[, style[, settings]])
    
       Recreate the window.
       
-      :param sf.VideoMode mode: Video mode to use (defines the width, height and depth of the rendering area of the window)
+      :param sfml.VideoMode mode: Video mode to use (defines the width, height and depth of the rendering area of the window)
       :param string title: Title of the window
-      :param sf.Style style: Window style
-      :param sf.ContextSettings settings: Additional settings for the underlying OpenGL context
+      :param sfml.Style style: Window style
+      :param sfml.ContextSettings settings: Additional settings for the underlying OpenGL context
 
    .. method:: close()
 
       Close the window and destroy all the attached resources.
 
-      After calling this function, the :class:`sf.Window` instance 
+      After calling this function, the :class:`sfml.Window` instance 
       remains valid and you can call :func:`recreate` to recreate the 
       window. All other functions such as :func:`poll_event` or 
       :func:`display` will still work (i.e. you don't have to test 
@@ -442,7 +442,7 @@ Window
       settings were not supported. In this case, SFML chose the closest 
       match.
 
-      :type: :class:`sf.ContextSettings`
+      :type: :class:`sfml.ContextSettings`
       
    .. attribute:: events
    
@@ -461,7 +461,7 @@ Window
       process every pending event. 
       
       :return: Returns an event if any otherwhise None
-      :rtype: :class:`sf.Event` or None
+      :rtype: :class:`sfml.Event` or None
 
    .. method:: wait_event()
    
@@ -475,7 +475,7 @@ Window
       as long as no new event is received.
       
       :return: Returns an event or None if an error occured.
-      :rtype: :class:`sf.Event` or None
+      :rtype: :class:`sfml.Event` or None
 
    .. attribute:: position
 
@@ -485,13 +485,13 @@ Window
       ignored for windows created from the handle of a 
       child window/control).
       
-      :type: :class:`sf.Vector2`
+      :type: :class:`sfml.Vector2`
 
    .. attribute:: size
    
       Return or change the size of the rendering region of the window. 
 
-      :type: :class:`sf.Vector2`
+      :type: :class:`sfml.Vector2`
       
    .. attribute:: icon
    
@@ -499,7 +499,7 @@ Window
       
       The OS default icon is used by default.
       
-      :type: :class:`sf.Pixels`
+      :type: :class:`sfml.Pixels`
 
    .. attribute:: visible
 
@@ -575,7 +575,7 @@ Window
       call to :func:`display` to ensure that the current frame lasted 
       long enough to match the framerate limit. pySFML will try to 
       match the given limit as much as it can, but since it internally 
-      uses :func:`sf.sleep`, whose precision depends on the underlying 
+      uses :func:`sfml.sleep`, whose precision depends on the underlying 
       OS, the results may be a little unprecise as well (for example, 
       you can get 65 FPS when requesting 60).
 
@@ -615,7 +615,7 @@ Window
 
          Get the OS-specific handle of the window.
 
-         The type of the returned handle is :class`sf.WindowHandle`, which 
+         The type of the returned handle is :class`sfml.WindowHandle`, which 
          is a typedef to the handle type defined by the OS. You shouldn't 
          need to use this function, unless you have very specific stuff to 
          implement that SFML doesn't support, or implement a temporary 
@@ -630,15 +630,15 @@ Window
 
       Usage examples::
       
-         class MyWindow(sf.Window):
+         class MyWindow(sfml.Window):
             def __init__(self):
-               sf.Window.__init__(self, sf.VideoMode(640, 480), "pySFML")
+               sfml.Window.__init__(self, sfml.VideoMode(640, 480), "pySFML")
                
             def on_create(self):
                print("Window created or recreated...")
                do_something()
                
-      Reimplemented in :class:`sf.RenderWindow`
+      Reimplemented in :class:`sfml.RenderWindow`
       
    .. method:: on_resize
 
@@ -649,15 +649,15 @@ Window
 
       Usage examples::
       
-         class MyWindow(sf.Window):
+         class MyWindow(sfml.Window):
             def __init__(self):
-               sf.Window.__init__(self, sf.VideoMode(640, 480), "pySFML")
+               sfml.Window.__init__(self, sfml.VideoMode(640, 480), "pySFML")
                
             def on_resize(self):
                print("Window size changed")
                do_something()
                
-      Reimplemented in :class:`sf.RenderWindow`
+      Reimplemented in :class:`sfml.RenderWindow`
       
 
 Keyboard
@@ -667,7 +667,7 @@ Keyboard
 
    Give access to the real-time state of the keyboard.
 
-   :class:`sf.Keyboard` provides an interface to the state of the 
+   :class:`sfml.Keyboard` provides an interface to the state of the 
    keyboard.
 
    It only contains class methods (a single keyboard is assumed), so 
@@ -676,7 +676,7 @@ Keyboard
    This class allows users to query the keyboard state at any time and 
    directly, without having to deal with a window and its events. 
    Compared to the :const:`KEY_PRESSED` and :const:`KEY_RELEASED` 
-   events, :class:`sf.Keyboard` can retrieve the state of a key at any 
+   events, :class:`sfml.Keyboard` can retrieve the state of a key at any 
    time (you don't need to store and update a boolean on your side in 
    order to know if a key is pressed or released), and you always get 
    the real state of the keyboard, even if keys are pressed or released 
@@ -684,11 +684,11 @@ Keyboard
 
    Usage example::
    
-      if sf.Keyboard.is_key_pressed(sf.Keyboard.LEFT)
+      if sfml.Keyboard.is_key_pressed(sfml.Keyboard.LEFT)
          # move left...
-      else if sf.Keyboard.is_key_pressed(sf.Keyboard.RIGHT):
+      else if sfml.Keyboard.is_key_pressed(sfml.Keyboard.RIGHT):
          # move right...
-      else if sf.Keyboard.is_key_pressed(sf.Keyboard.ESCAPE):
+      else if sfml.Keyboard.is_key_pressed(sfml.Keyboard.ESCAPE):
          # quit...
 
    +------------+-----------------------------------------------------------------------------+
@@ -904,7 +904,7 @@ Keyboard
       Check if a key is pressed.
       
       :param key: Key to check
-      :type key: integer (:class:`sf.Keyboard`'s constant)
+      :type key: integer (:class:`sfml.Keyboard`'s constant)
       
 
 Joystick
@@ -914,7 +914,7 @@ Joystick
 
    Give access to the real-time state of the joysticks.
 
-   :class:`sf.Joystick` provides an interface to the state of the 
+   :class:`sfml.Joystick` provides an interface to the state of the 
    joysticks.
 
    It only contains class methods, so it's not meant to be instanciated. 
@@ -925,7 +925,7 @@ Joystick
    and directly, without having to deal with a window and its events. 
    Compared to the :const:`JOYSTICK_MOVED`, 
    :const:`JOYSTICK_BUTTON_PRESSED` and 
-   :const:`JOYSTICK_BUTTON_RELEASED` events, :class:`sf.Joystick` can 
+   :const:`JOYSTICK_BUTTON_RELEASED` events, :class:`sfml.Joystick` can 
    retrieve the state of axes and buttons of joysticks at any time (you 
    don't need to store and update a boolean on your side in order to 
    know if a button is pressed or released), and you always get the 
@@ -934,9 +934,9 @@ Joystick
 
    SFML supports:
 
-       * 8 joysticks (:const:`sf.Joystick.COUNT`)
-       * 32 buttons per joystick (:const:`sf.Joystick.BUTTON_COUNT`)
-       * 8 axes per joystick (:const:`sf.Joystick.AXIS_COUNT`)
+       * 8 joysticks (:const:`sfml.Joystick.COUNT`)
+       * 32 buttons per joystick (:const:`sfml.Joystick.BUTTON_COUNT`)
+       * 8 axes per joystick (:const:`sfml.Joystick.AXIS_COUNT`)
 
    Unlike the keyboard or mouse, the state of joysticks is sometimes 
    not directly available (depending on the OS), therefore an 
@@ -945,24 +945,24 @@ Joystick
    handling, this is done automatically, you don't need to call 
    anything. But if you have no window, or if you want to check 
    joysticks state before creating one, you must call 
-   :func:`sf.Joystick.update` explicitely.
+   :func:`sfml.Joystick.update` explicitely.
 
    Usage example::
 
       # is joystick #0 connected ?
-      connected = sf.Joystick.is_connected(0)
+      connected = sfml.Joystick.is_connected(0)
 
       # how many button does joystick #0 support ?
-      buttons = sf.Joystick.get_button_count(0)
+      buttons = sfml.Joystick.get_button_count(0)
 
       # does joystick # define a X axis ?
-      has_X = sf.Joystick.has_axis(0, sf.Joystick.X)
+      has_X = sfml.Joystick.has_axis(0, sfml.Joystick.X)
 
       # is button #2 pressed on joystick #0 ?
-      pressed = sf.Joystick.is_button_pressed(0, 2)
+      pressed = sfml.Joystick.is_button_pressed(0, 2)
 
       # what's the current position of the Y axis on joystick #0?
-      position = sf.Joystick.get_axis_position(0, sf.Joystick.Y)
+      position = sfml.Joystick.get_axis_position(0, sfml.Joystick.Y)
 
    +-------+--------------------------------------+
    | Axis  | Description                          |
@@ -1059,7 +1059,7 @@ Mouse
 
    Give access to the real-time state of the mouse.
 
-   :class:`sf.Mouse` provides an interface to the state of the mouse.
+   :class:`sfml.Mouse` provides an interface to the state of the mouse.
 
    It only contains class methods (a single mouse is assumed), so it's 
    not meant to be instanciated.
@@ -1067,7 +1067,7 @@ Mouse
    This class allows users to query the mouse state at any time and 
    directly, without having to deal with a window and its events. 
    Compared to the :const:`MOUSE_MOVED`, :const:`MOUSE_BUTTON_PRESSED` and 
-   :const:`MOUSE_BUTTON_RELEASED` events, :const: sf.Mouse` can retrieve 
+   :const:`MOUSE_BUTTON_RELEASED` events, :const: sfml.Mouse` can retrieve 
    the state of the cursor and the buttons at any time (you don't need 
    to store and update a boolean on your side in order to know if a 
    button is pressed or released), and you always get the real state of 
@@ -1082,15 +1082,15 @@ Mouse
 
    Usage example::
    
-      if sf.Mouse.is_button_pressed(sf.Mouse.LEFT):
+      if sfml.Mouse.is_button_pressed(sfml.Mouse.LEFT):
          # left click...
          
       # get global mouse position
-      position = sf.Mouse.position
-      # or: position = sf.Mouse.get_position()
+      position = sfml.Mouse.position
+      # or: position = sfml.Mouse.get_position()
 
       # set mouse position relative to a window
-      sf.Mouse.set_position(sf.Vector2(100, 200), window)
+      sfml.Mouse.set_position(sfml.Vector2(100, 200), window)
 
    +--------------+------------------------------------+
    | Button       | Description                        |
@@ -1113,7 +1113,7 @@ Mouse
       Check if a mouse button is pressed. 
       
       :param integer button: Button to check
-      :type button: integer (a :class:`sf.Mouse`'s constant)
+      :type button: integer (a :class:`sfml.Mouse`'s constant)
       :rtype: bool
 
 
@@ -1124,7 +1124,7 @@ Mouse
       This function returns the current position of the mouse cursor, 
       relative to the given window.
 
-      :param sf.Window relativ_to: Reference window
+      :param sfml.Window relativ_to: Reference window
       :rtype: bool
          
    .. classmethod:: set_position(position[, relativ_to])
@@ -1134,8 +1134,8 @@ Mouse
       This function sets the current position of the mouse cursor, 
       relative to the given window.
 
-      :param sf.Vector2 position: New position of the mouse 
-      :param sf.Window relativ_to: Reference window
+      :param sfml.Vector2 position: New position of the mouse 
+      :param sfml.Window relativ_to: Reference window
 
 
 Context
@@ -1154,7 +1154,7 @@ Context
    Note that a context is only active in its current thread, if you 
    create a new thread it will have no valid context by default.
 
-   To use a :class:`sf.Context` instance, just construct it and let it 
+   To use a :class:`sfml.Context` instance, just construct it and let it 
    live as long as you need a valid context. No explicit activation is 
    needed, all it has to do is to exist. Its destructor will take care 
    of deactivating and freeing all the attached resources.
@@ -1162,11 +1162,11 @@ Context
    Usage example::
    
       def thread_function():
-         context = sf.Context()
+         context = sfml.Context()
          # from now on, you have a valid context
          
          # you can make OpenGL calls
          glClear(GL_DEPTH_BUFFER_BIT)
 
       # the context is automatically deactivated and destroyed by the 
-      # sf.Context destructor
+      # sfml.Context destructor

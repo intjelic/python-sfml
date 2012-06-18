@@ -17,23 +17,23 @@ v0.9 -> v1.0
 
 v1.0 -> v1.1
 ------------
-* sf.Position moved to built-in type and is renamed sf.Vector2
-* sf.Size removed
-* sf.Vector3 added
+* sfml.Position moved to built-in type and is renamed sfml.Vector2
+* sfml.Size removed
+* sfml.Vector3 added
 * Full variable/method/function/class name are clean
 * Error message handler implemented
-* open/load functions raises IOError and not sf.SFMLException
-* sf.Shader's constants (VERTEX and FRAGMENT) removed
-* sf.Shader's constructors implemented
-* sf.Shader.set_parameter implemented
-* sf.Texture.update() implemented
-* sf.Vertex implemented
-* sf.VertexArray implemented
+* open/load functions raises IOError and not sfml.SFMLException
+* sfml.Shader's constants (VERTEX and FRAGMENT) removed
+* sfml.Shader's constructors implemented
+* sfml.Shader.set_parameter implemented
+* sfml.Texture.update() implemented
+* sfml.Vertex implemented
+* sfml.VertexArray implemented
 * Shader example added
 * Pong example added
-* sf.Color are unpackable
-* Network module uses sf.Time
-* Audio module uses sf.Time
+* sfml.Color are unpackable
+* Network module uses sfml.Time
+* Audio module uses sfml.Time
 * Image.show() is implemented and platform-independant
 * SoundStream and SoundRecorder can be subclassed
 
