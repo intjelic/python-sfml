@@ -38,54 +38,69 @@ the seconds, milliseconds or microseconds via a method named
    
    sfml.sleep(time)
    
-Events
-------
-The way you handle events in pySFML2 is very different from how 
-you do it in SFML2 or even from how you do it in the official binding.
+   
+Event
+-----
+The way you handle events in pySFML2 is slightly different from how 
+you do it in SFML2 or the official binding.
 
-Here, instead of having a property type, you must check it with the 
-integrated function `type`  ::
+Here, rather than checking that the `type` property matches an event type, you
+check that event is an instance of a particular event class. While you could do
+this using python's builtin `type` or `isinstance` functions, The Event class
+implements rich comparison operators to make things simpler::
 
-   for event in window.events:
-       if type(event) is ...: # do something
+  for event in window.events:
+      if event == ...: # provide an event class name
 
-Checking the type this way will return the event class. You can compare 
-it to the 12 events that pySFML2 define.::
+Available event classes and their pysfml2-cython equivalents are shown below:
 
-   sfml.Event
-   + sfml.CloseEvent
-   + sfml.ResizeEvent
-   + sfml.FocusEvent
-   + sfml.TextEvent
-   + sfml.KeyEvent
-   + sfml.MouseWheelEvent	
-   + sfml.MouseButtonEvent 
-   + sfml.MouseMoveEvent
-   + sfml.MouseEvent
-   + sfml.JoystickButtonEvent
-   + sfml.JoystickMoveEvent
-   + sfml.JoystickConnectEvent
+========================= ===================================
+python-sfml2              pysfml2-cython                     
+========================= ===================================
+sfml.CloseEvent           sfml.Event.CLOSED
+sfml.ResizeEvent          sfml.Event.RESIZED
+sfml.FocusEvent           sfml.Event.LOST_FOCUS
+                          sfml.Event.GAINED_FOCUS
+sfml.TextEvent            sfml.Event.TEXT_ENTERED
+sfml.KeyEvent             sfml.Event.KEY_PRESSED
+                          sfml.Event.KEY_RELEASED
+sfml.MouseWheelEvent      sfml.Event.MOUSE_WHEEL_MOVED
+sfml.MouseButtonEvent     sfml.Event.MOUSE_BUTTON_PRESSED
+                          sfml.Event.MOUSE_BUTTON_RELEASED
+sfml.MouseMoveEvent       sfml.Event.MOUSE_MOVED
+sfml.MouseEvent           sfml.Event.MOUSE_ENTERED   
+                          sfml.Event.MOUSE_LEFT
+sfml.JoystickButtonEvent  sfml.Event.JOYSTICK_BUTTON_PRESSED
+                          sfml.Event.JOYSTICK_BUTTON_RELEASED
+sfml.JoystickMoveEvent    sfml.Event.JOYSTICK_MOVED
+sfml.JoystickConnectEvent sfml.Event.JOYSTICK_CONNECTED
+                          sfml.Event.JOYSTICK_DISCONNECTED
+========================= ===================================
 
 Once you know the type of the event you can get the data inside.::
 
-   if type(event) is sfml.MouseMoveEvent:
+   if event == sf.MouseMoveEvent:
        x, y = event.position
 
-For events like sfml.KeyEvent, sfml.MouseButtonEvent, etc which can have 
+For events like sf.KeyEvent, sf.MouseButtonEvent, etc. which can have 
 two "states", you'll have to check it via their properties.::
 
-   if type(event) is sfml.KeyEvent:
-       if event.pressed: ...
-       if event.released: ...
+   if event == sf.KeyEvent:
+       if event.pressed: 
+           ...
+       elif event.released: 
+           ...
 
-   if type(event) is sfml.KeyEvent and event.pressed:
+   if event == sf.KeyEvent and event.pressed:
        ...
        
-   if type(event) is sfml.FocusEvent:
-       if event.gained: ...
-       if event.lost: ...
+   if event == sf.FocusEvent:
+       if event.gained: 
+           ...
+       if event.lost: 
+           ...
 
-Look up the doc to know more about events.
+Read the :doc:`documentation/window` for information about events.
 
 Exception
 ---------

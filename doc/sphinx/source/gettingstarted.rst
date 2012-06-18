@@ -41,7 +41,8 @@ Here is the official short example to show you how simple using pySFML is. ::
 		# process events
 		for event in window.events:
 			# close window: exit
-			if type(event) is sfml.CloseEvent:
+
+			if event == sf.CloseEvent:
 				window.close()
 
 		window.clear() # clear screen
@@ -100,7 +101,7 @@ Many classes are unpackable ::
 	left, top, width, height = sfml.Rectangle((5, 10), (15, 20))
 
 sfml.Image.show()
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
 For debugging purpose pySFML provides a show() function. This allows 
 you to see how an image will look after modification. This is to be 

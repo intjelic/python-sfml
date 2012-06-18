@@ -6,7 +6,7 @@ struct PyContextSettingsObject;
 struct PyPixelsObject;
 struct PyWindowObject;
 
-/* "sfml/window.pyx":451
+/* "sfml/window.pyx":459
  * 
  * 
  * cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:             # <<<<<<<<<<<<<<
@@ -19,7 +19,7 @@ struct PyVideoModeObject {
   int delete_this;
 };
 
-/* "sfml/window.pyx":542
+/* "sfml/window.pyx":550
  * 
  * 
  * cdef public class ContextSettings[type PyContextSettingsType, object PyContextSettingsObject]:             # <<<<<<<<<<<<<<
@@ -31,7 +31,7 @@ struct PyContextSettingsObject {
   sf::ContextSettings *p_this;
 };
 
-/* "sfml/window.pyx":601
+/* "sfml/window.pyx":609
  * 
  * 
  * cdef public class Pixels[type PyPixelsType, object PyPixelsObject]:             # <<<<<<<<<<<<<<
@@ -45,7 +45,7 @@ struct PyPixelsObject {
   unsigned int m_height;
 };
 
-/* "sfml/window.pyx":630
+/* "sfml/window.pyx":638
  * 
  * 
  * cdef public class Window[type PyWindowType, object PyWindowObject]:             # <<<<<<<<<<<<<<
