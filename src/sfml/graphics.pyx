@@ -488,8 +488,6 @@ cdef class Image:
 			temporaryfile.write(struct.pack("I", self.pixels.height))
 			temporaryfile.write(self.pixels.data)
 			
-		temporaryfile.close()
-		
 		subprocess.Popen([python, script_filename, temporaryfile_filename])
 
 	def copy(self):
