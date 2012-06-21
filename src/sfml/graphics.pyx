@@ -178,7 +178,7 @@ cdef class Rectangle:
 			
 	property bottom:
 		def __get__(self):
-			return self.left + self.width
+			return self.top + self.height
 		
 		def __set__(self, bottom):
 			raise NotImplemented
