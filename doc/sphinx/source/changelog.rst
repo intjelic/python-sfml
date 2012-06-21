@@ -1,25 +1,25 @@
-Changes Logs
-============
+Change Log
+===========
 
 These lists are **not exhaustive**.
 
 v0.9 -> v1.0
 ------------
-* System module updated to the new API interface
-* Window module updated to the new API interface
-* Graphics module updated to the new API interface
-* Audio module updated to the new API interface
-* Network module updated to the new API interface
+* :mod:`sfml.system` module updated to the new API interface
+* :mod:`sfml.window` module updated to the new API interface
+* :mod:`sfml.graphics` module updated to the new API interface
+* :mod: `sfml.audio` module updated to the new API interface
+* :mod: `sfml.network` module updated to the new API interface
 * Code entirely clean and follow convention
 
-* Audio module imports the system module with him
+* :mod: `sfml.audio` module imports :mod:`sfml.system` system module with it
 * The official ftp example implemented
 
 v1.0 -> v1.1
 ------------
-* sfml.system.Position moved to built-in type and is renamed sfml.system.Vector2
-* sfml.system.Size removed
-* sfml.system.Vector3 added
+* `sfml.system.Position` moved to built-in type and renamed `sfml.system.Vector2`
+* `sfml.system.Size` removed; use `sfml.system.Vector2` instead
+* `sfml.system.Vector3` added
 * Full variable/method/function/class name are clean
 * Error message handler implemented
 * open/load functions raises IOError and not sfml.system.SFMLException

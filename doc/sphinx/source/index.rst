@@ -25,4 +25,4 @@ Contents:
    examples
    tutorials
    documentation
-   changeslogs
+   changelog
