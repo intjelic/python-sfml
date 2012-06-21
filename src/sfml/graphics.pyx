@@ -30,6 +30,7 @@ string_type = [bytes, unicode, str]
 numeric_type = [int, long, float, long]
 
 import os, tempfile, struct, subprocess
+from copy import copy, deepcopy
 
 from sfml.system import SFMLException
 from sfml.system import pop_error_message, push_error_message
@@ -134,6 +135,18 @@ cdef class Rectangle:
 	def __iter__(self):
 		return iter((self.left, self.top, self.width, self.height))
 
+	def __copy__(self):
+		cdef Rectangle p = Rectangle.__new__(Rectangle)
+		p.position = copy(self.position)
+		p.size = copy(self.size)
+		return p
+		
+	def __deepcopy__(self):
+		cdef Rectangle p = Rectangle.__new__(Rectangle)
+		p.position = copy(self.position)
+		p.size = copy(self.size)
+		return p
+		
 	property left:
 		def __get__(self):
 			return self.position.x
@@ -203,6 +216,7 @@ cdef class Rectangle:
 		if left < right and top < bottom:
 			return Rectangle((left, top), (right-left, bottom-top))
 			
+		
 	def copy(self):
 		cdef Rectangle p = Rectangle.__new__(Rectangle)
 		p.position = self.position.copy()
@@ -397,6 +411,16 @@ cdef class Image:
 	def __setitem__(self, tuple k, Color v):
 		self.p_this.setPixel(k[0], k[1], v.p_this[0])
 
+	def __copy__(self):
+		cdef dgraphics.Image *p = new dgraphics.Image()
+		p[0] = self.p_this[0]
+		return wrap_image(p)
+		
+	def __deepcopy__(self):
+		cdef dgraphics.Image *p = new dgraphics.Image()
+		p[0] = self.p_this[0]
+		return wrap_image(p)
+		
 	@classmethod
 	def create(cls, unsigned int width, unsigned int height, Color color=None):
 		cdef dgraphics.Image *p = new dgraphics.Image()
@@ -516,6 +540,16 @@ cdef class Texture:
 	def __dealloc__(self):
 		if self.delete_this: del self.p_this
 
+	def __copy__(self):
+		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		p[0] = self.p_this[0]
+		return wrap_texture(p)
+		
+	def __deepcopy__(self):
+		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		p[0] = self.p_this[0]
+		return wrap_texture(p)
+		
 	@classmethod
 	def create(cls, unsigned int width, unsigned int height):
 		cdef dgraphics.Texture *p = new dgraphics.Texture()

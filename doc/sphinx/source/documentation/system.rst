@@ -72,9 +72,11 @@ Time
 
    .. py:function:: copy()
    
+      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
+   
       Python always works by reference, unless you explicitly ask for 
       a copy, that's why this method is provided.
-      
+
       :return: Return a copy.
       :rtype: :class:`sfml.Time`
 
@@ -220,10 +222,12 @@ Vector2
       Y coordinate of the vector.
 
    .. py:function:: copy()
-   
+      
+      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
+         
       Python always works by reference, unless you explicitly ask for 
       a copy, that's why this method is provided.
-      
+
       :return: Return a copy.
       :rtype: :class:`sfml.Vector2`
 
@@ -280,6 +284,8 @@ Vector3
 
    .. py:function:: copy()
    
+      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
+      
       Python always works by reference, unless you explicitly ask for 
       a copy, that's why this method is provided.
       

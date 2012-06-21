@@ -181,6 +181,8 @@ Rectangle
 
    .. method:: copy()
    
+      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
+   
       Python always works by reference, unless you explicitly ask for 
       a copy, that's why this method is provided.
       
@@ -640,6 +642,8 @@ Image
       
    .. py:method:: copy()
    
+      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
+      
       Python always works by reference, unless you explicitly ask for 
       a copy, that's why this method is provided.
 
@@ -932,7 +936,9 @@ Texture
       :type: bool
       
    .. py:method:: copy()
-   
+
+      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
+      
       Python always works by reference, unless you explicitly ask for 
       a copy, that's why this method is provided.
 

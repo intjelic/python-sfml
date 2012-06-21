@@ -171,6 +171,16 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 			
 		return self
 		
+	def __copy__(self):
+		cdef Vector2 p = Vector2.__new__(Vector2)
+		p.x, p.y = self
+		return p
+		
+	def __deepcopy__(self):
+		cdef Vector2 p = Vector2.__new__(Vector2)
+		p.x, p.y = self
+		return p
+		
 	def copy(self):
 		cdef Vector2 p = Vector2.__new__(Vector2)
 		p.x, p.y = self
@@ -290,6 +300,16 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		self.z %= z
 		return self
 
+	def __copy__(self):
+		cdef Vector3 p = Vector3.__new__(Vector3)
+		p.x, p.y, p.z = self
+		return p
+		
+	def __deepcopy__(self):
+		cdef Vector3 p = Vector3.__new__(Vector3)
+		p.x, p.y, p.z = self
+		return p
+		
 	def copy(self):
 		cdef Vector3 p = Vector3.__new__(Vector3)
 		p.x, p.y, p.z = self
@@ -368,6 +388,16 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 	def reset(self):
 		self.milliseconds = 0
 
+	def __copy__(self):
+		cdef dsystem.Time* p = new dsystem.Time()
+		p[0] = self.p_this[0]
+		return wrap_time(p)
+		
+	def __deepcopy__(self):
+		cdef dsystem.Time* p = new dsystem.Time()
+		p[0] = self.p_this[0]
+		return wrap_time(p)
+		
 	def copy(self):
 		cdef dsystem.Time* p = new dsystem.Time()
 		p[0] = self.p_this[0]
