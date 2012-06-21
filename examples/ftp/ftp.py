@@ -8,6 +8,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
 import os
 import sfml.network as sf
 
@@ -22,7 +23,7 @@ server = sf.Ftp()
 response = server.connect(address)
 print(response)
 if not response.ok: exit()
-    
+
 # ask for user name and password
 user = input("User name: ")
 password = input("Password: ")
@@ -46,10 +47,10 @@ while True:
 	print("7. Remove file")
 	print("8. Download file")
 	print("9. Upload file")
-	print("0. Disconnect", end ="\n\n")
+	print("0. Disconnect", end="\n\n")
 
 	choice = int(input("Your choice: "))
-	
+
 	os.system('clear')
 
 	if choice == 1:
@@ -107,7 +108,7 @@ while True:
 		# wrong choice
 		print("Invalid choice!")
 		os.system('clear')
-		
+
 	if choice == 0:
 		break
 
