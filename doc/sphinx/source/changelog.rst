@@ -12,7 +12,7 @@ v0.9 -> v1.0
 * :mod: `sfml.network` module updated to the new API interface
 * Code entirely clean and follow convention
 
-* :mod: `sfml.audio` module imports :mod:`sfml.system` system module with it
+* :mod:`sfml.audio` module imports :mod:`sfml.system` system module with it
 * The official ftp example implemented
 
 v1.0 -> v1.1
