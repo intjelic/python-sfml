@@ -8,7 +8,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
 import os
 import sfml.network as sf
 
@@ -47,7 +46,7 @@ while True:
 	print("7. Remove file")
 	print("8. Download file")
 	print("9. Upload file")
-	print("0. Disconnect", end="\n\n")
+	print("0. Disconnect\n\n")
 
 	choice = int(input("Your choice: "))
 

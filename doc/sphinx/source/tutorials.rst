@@ -1,3 +1,6 @@
+.. highlight:: python
+   :linenothreshold: 1
+
 .. _tutorials-reference:
 
 Tutorials

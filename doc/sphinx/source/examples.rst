@@ -1,5 +1,8 @@
-Examples-NG
-===========
+.. highlight:: python
+   :linenothreshold: 1
+
+Examples
+========
 .. contents:: :local:
 
 Ftp
