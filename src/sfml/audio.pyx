@@ -139,9 +139,31 @@ cdef class SoundBuffer:
 		
 		del p
 		raise IOError(pop_error_message())
+		
+	@classmethod
+	def from_file(cls, filename):
+		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
+		cdef char* encoded_filename
+		
+		encoded_filename_temporary = filename.encode('UTF-8')	
+		encoded_filename = encoded_filename_temporary
+		
+		if p.loadFromFile(encoded_filename): return wrap_soundbuffer(p)
+		
+		del p
+		raise IOError(pop_error_message())
 
 	@classmethod
 	def load_from_memory(cls, bytes data):
+		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
+		
+		if p.loadFromMemory(<char*>data, len(data)): return wrap_soundbuffer(p)
+
+		del p
+		raise IOError(pop_error_message())
+		
+	@classmethod
+	def from_memory(cls, bytes data):
 		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
 		
 		if p.loadFromMemory(<char*>data, len(data)): return wrap_soundbuffer(p)
@@ -159,7 +181,25 @@ cdef class SoundBuffer:
 		del p
 		raise IOError(pop_error_message())
 		
+	@classmethod
+	def from_samples(cls, Chunk samples, unsigned int channel_count, unsigned int sample_rate):
+		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
+		
+		if p.loadFromSamples(samples.m_samples, samples.m_sampleCount, channel_count, sample_rate):
+			return wrap_soundbuffer(p)
+
+		del p
+		raise IOError(pop_error_message())
+		
 	def save_to_file(self, filename):
+		cdef char* encoded_filename	
+			
+		encoded_filename_temporary = filename.encode('UTF-8')	
+		encoded_filename = encoded_filename_temporary
+		
+		self.p_this.saveToFile(encoded_filename)
+		
+	def to_file(self, filename):
 		cdef char* encoded_filename	
 			
 		encoded_filename_temporary = filename.encode('UTF-8')	
@@ -381,9 +421,31 @@ cdef class Music(SoundStream):
 		
 		del p
 		raise IOError(pop_error_message())
+		
+	@classmethod
+	def from_file(cls, filename):
+		cdef daudio.Music *p = new daudio.Music()
+		cdef char* encoded_filename	
+
+		encoded_filename_temporary = filename.encode('UTF-8')	
+		encoded_filename = encoded_filename_temporary
+		
+		if p.openFromFile(encoded_filename): return wrap_music(p)
+		
+		del p
+		raise IOError(pop_error_message())
 
 	@classmethod
 	def open_from_memory(cls, bytes data):
+		cdef daudio.Music *p = new daudio.Music()
+
+		if p.openFromMemory(<char*>data, len(data)): return wrap_music(p)
+
+		del p
+		raise IOError(pop_error_message())
+		
+	@classmethod
+	def from_memory(cls, bytes data):
 		cdef daudio.Music *p = new daudio.Music()
 
 		if p.openFromMemory(<char*>data, len(data)): return wrap_music(p)

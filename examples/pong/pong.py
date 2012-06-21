@@ -25,7 +25,7 @@ window = sf.RenderWindow(sf.VideoMode(w, h), "pySFML - Pong")
 window.vertical_synchronization = True
 
 # load the sounds used in the game
-ball_sound_buffer = sf.SoundBuffer.load_from_file("data/ball.wav")
+ball_sound_buffer = sf.SoundBuffer.from_file("data/ball.wav")
 ball_sound = sf.Sound(ball_sound_buffer)
 
 # create the left paddle
@@ -53,7 +53,7 @@ ball.fill_color = sf.Color.WHITE
 ball.origin = (ball_radius / 2, ball_radius / 2)
 
 # load the font
-font = sf.Font.load_from_file("data/sansation.ttf")
+font = sf.Font.from_file("data/sansation.ttf")
 
 # initialize the pause message
 pause_message = sf.Text()

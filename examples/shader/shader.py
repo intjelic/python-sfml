@@ -52,7 +52,7 @@ class Pixelate(Effect):
 			self.sprite = sf.Sprite(self.texture)
 			
 			# load the shader
-			self.shader = sf.Shader.load_fragment_from_file("data/pixelate.frag")
+			self.shader = sf.Shader.from_file(fragment="data/pixelate.frag")
 			self.shader.set_parameter("texture")
 			
 		except IOError as error:
@@ -81,7 +81,7 @@ class WaveBlur(Effect):
 		
 		try:
 			# load the shader
-			self.shader = sf.Shader.load_from_file("data/wave.vert", "data/blur.frag")
+			self.shader = sf.Shader.from_file("data/wave.vert", "data/blur.frag")
 			
 		except IOError as error:
 			print("An error occured: {0}".format(error))
@@ -119,7 +119,7 @@ class StormBlink(Effect):
 			
 		try:
 			# load the shader
-			self.shader = sf.Shader.load_from_file("data/storm.vert", "data/blink.frag")
+			self.shader = sf.Shader.from_file("data/storm.vert", "data/blink.frag")
 			
 		except IOError as error:
 			print("An error occured: {0}".format(error))
@@ -166,7 +166,7 @@ class Edge(Effect):
 			self.entities.append(sprite)
 			
 		# load the shader
-		self.shader = sf.Shader.load_fragment_from_file("data/edge.frag")
+		self.shader = sf.Shader.from_file(fragment="data/edge.frag")
 		self.shader.set_parameter("texture")
 		
 		return True

@@ -12,7 +12,7 @@ import sfml as sf
 
 def play_sound():
 	# load a sound buffer from a wav file
-	buffer = sf.SoundBuffer.load_from_file("data/canary.wav")
+	buffer = sf.SoundBuffer.from_file("data/canary.wav")
 
 	# display sound informations
 	print("canary.wav:")
@@ -31,7 +31,7 @@ def play_sound():
 
 def play_music():
 	# load an ogg music file    
-	music = sf.Music.open_from_file("data/orchestral.ogg")
+	music = sf.Music.from_file("data/orchestral.ogg")
 
 	# display music informations
 	print("orchestral.ogg:")

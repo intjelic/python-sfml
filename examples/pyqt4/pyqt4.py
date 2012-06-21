@@ -25,8 +25,8 @@ class MyCyanCanvas(QSFMLCanvas):
         QSFMLCanvas.__init__(self, parent, position, size)
      
     def onInit(self):
-        self.image = sf.Image.load_from_file("data/head_kid.png")
-        self.texture = sf.Texture.load_from_image(self.image)
+        self.image = sf.Image.from_file("data/head_kid.png")
+        self.texture = sf.Texture.from_image(self.image)
         self.sprite = sf.Sprite(self.texture)
         self.sprite.position = self.texture.size // (2, 2)
         

@@ -47,7 +47,7 @@ def main():
 		filename = input("Choose the file to create: ")
 		
 		# save the buffer
-		buffer.save_to_file(filename);
+		buffer.to_file(filename);
 	else:
 		# create a sound instance and play it
 		sound = sf.Sound(buffer)

@@ -16,7 +16,7 @@ def main(song):
     
     # load a song and make sure it can be spacialized
     try:
-        music = sf.Music.open_from_file(song)
+        music = sf.Music.from_file(song)
         
     except IOError as error:
         print("An error occured during the loading data process:\n" + str(error))
@@ -37,8 +37,8 @@ def main(song):
     music.position = speaker_position
     
     try:
-        hears_texture = sf.Texture.load_from_file("data/head_kid.png")
-        speaker_texture = sf.Texture.load_from_file("data/speaker.gif")
+        hears_texture = sf.Texture.from_file("data/head_kid.png")
+        speaker_texture = sf.Texture.from_file("data/speaker.gif")
         
     except IOError as error:
         print("An error occured during the loading data process:\n" + str(error))
