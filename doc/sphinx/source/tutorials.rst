@@ -10,11 +10,11 @@ coding serious projects.
 
 System
 ------
-To manipulate vectors you use sfml.Vector2 or sfml.Vector3 and unlike in 
+To manipulate vectors you use sfml.system.Vector2 or sfml.system.Vector3 and unlike in 
 C++ they have no specific type. It means you can set a float, an 
 integer or whatever inside. ::
 
-   vector = sfml.Vector3()
+   vector = sfml.system.Vector3()
    vector.x = 5.56 # set a float
    vector.y = -4 # set an integer
    vector.z = Decimal(0.333333333)
@@ -28,7 +28,7 @@ the seconds, milliseconds or microseconds via a method named
    print(t1.seconds)
    print(t1.microseconds)
    
-   clock = sfml.Clock()
+   clock = sfml.system.Clock()
    print(clock.elapsed_time)
    t2 = clock.restart()
    
@@ -105,7 +105,7 @@ Read the :doc:`documentation/window` for information about events.
 Exception
 ---------
 There's a main exception defined for all pySFML2 methods/functions that 
-may fail: `sfml.SFMLException`. If you use one of these method and if you 
+may fail: `sfml.system.SFMLException`. If you use one of these method and if you 
 want to do a specific task in case of failure, you can handle them 
 
 with a **try... except** statement. ::
@@ -113,15 +113,15 @@ with a **try... except** statement. ::
    try:
        # huge texture, will fail for sure 
        # (except maybe if you read that in 2075 and if your processor works with light speed)
-       texture = sfml.Texture.create(987654321, 987654321)
-   except sfml.SFMLException as error:
+       texture = sfml.graphics.Texture.create(987654321, 987654321)
+   except sfml.system.SFMLException as error:
        print(error) # print the error
        exit(1) # maybe quit ?
        
-Note that load/open methods DO NOT raise a :exc:`sfml.SFMLException` but a 
+Note that load/open methods DO NOT raise a :exc:`sfml.system.SFMLException` but a 
 traditional **IOError**::
 
-   try: music = sfml.Music.open_from_file("song.ogg")
+   try: music = sfml.audio.Music.open_from_file("song.ogg")
    except IOError: exit(1)
 
 
@@ -129,15 +129,15 @@ Rectangle
 ---------
 Although unpacking a rectangle will give you four integers/floats 
 (respectively its left, its top, its width and its height) its 
-constructor takes two :class:`sfml.Vector2`; its position and its size. ::
+constructor takes two :class:`sfml.system.Vector2`; its position and its size. ::
 
    rectangle = mytext.local_bounds
    left, top, width, height = rectangle
    
 ::
    
-   position, size = sfml.Vector2(5, 10), sfml.Vector2(150, 160)
-   rectangle = sfml.Rectangle(position, size)
+   position, size = sfml.system.Vector2(5, 10), sfml.system.Vector2(150, 160)
+   rectangle = sfml.graphics.Rectangle(position, size)
    
 
 This has been implemented as such because you may want to create a 
@@ -147,14 +147,14 @@ variables representing the position and the size. In both cases you can
 create a rectangle in one line! ::
 
    left, top, width, height = 5, 10, 150, 160
-   rectangle = sfml.Rectangle((left, top), (width, height))
+   rectangle = sfml.graphics.Rectangle((left, top), (width, height))
    # or
-   rectangle = sfml.Rectangle(sfml.Vector2(left, top), sfml.Vector2(width, height))
+   rectangle = sfml.graphics.Rectangle(sfml.system.Vector2(left, top), sfml.system.Vector2(width, height))
    
 ::
 
    position, size = (5, 10), (150, 160)
-   rectangle = sfml.Rectangle(position, size)
+   rectangle = sfml.graphics.Rectangle(position, size)
    
 Making the rectangle require four numeric values in its constructor 
 would have involved writing more lines if you had only a position and a 
@@ -162,31 +162,31 @@ size in hand ::
 
     x, y = position
     w, h = size
-    rectangle = sfml.Rectangle(x, y, w, h) # two more lines for that... BAD
+    rectangle = sfml.graphics.Rectangle(x, y, w, h) # two more lines for that... BAD
     
 
 Drawable
 --------
 To create your own drawable just inherit a class from 
-:class:`sfml.Drawable`. ::
+:class:`sfml.graphics.Drawable`. ::
 
-   class MyDrawable(sfml.Drawable):
+   class MyDrawable(sfml.graphics.Drawable):
        def __init__(self):
-           sfml.Drawable.__init__(self)
+           sfml.graphics.Drawable.__init__(self)
            
        def draw(self, target, states):
            target.draw(body)
            target.draw(clothes)
            
 As Python doesn't allow you to subclass from two built-in types at the 
-same time, pySFML2 provides `sfml.TransformableDrawable` which is both 
-a :class:`sfml.Drawable` and :class:`sfml.Transformable`. That way your 
+same time, pySFML2 provides `sfml.graphics.TransformableDrawable` which is both 
+a :class:`sfml.graphics.Drawable` and :class:`sfml.graphics.Transformable`. That way your 
 class inherits from properties such `position`, `rotation` etc and their 
 methods `move()`, `rotate()` etc. ::
 
-   class MyDrawable(sfml.TransformableDrawable):
+   class MyDrawable(sfml.graphics.TransformableDrawable):
        def __init__(self):
-           sfml.Drawable.__init__(self)
+           sfml.graphics.Drawable.__init__(self)
            
        def draw(self, target, states):
            target.draw(body)
@@ -196,8 +196,8 @@ methods `move()`, `rotate()` etc. ::
    mydrawable.position = (20, 30) # we have properties \o/
    
 .. note::
-   You can choose between inheriting from sfml.TransformableDrawable and 
-   having a :class:`sfml.Transformable` in its internal attribute, and 
+   You can choose between inheriting from sfml.graphics.TransformableDrawable and 
+   having a :class:`sfml.graphics.Transformable` in its internal attribute, and 
    just before drawing, combine the transformable with the current 
    state ::
       
@@ -212,7 +212,7 @@ differences with the original API. Just note that the class
 represents the audio samples. So far this class is pretty basic and 
 offers access to each sample via the operator [] and you can get 
 the data in a `string` for Python 2 or in `bytes` for Python 3 via 
-:attr:`sfml.Chunk.data`.
+:attr:`sfml.audio.Chunk.data`.
 
 HandledWindow
 -------------
@@ -228,6 +228,6 @@ error is raised and you just have to handle it. ::
    try:
        socket.send(b'hello world')
        
-   except sfml.SocketError:
+   except sfml.network.SocketError:
        socket.close()
        exit(1)

@@ -12,7 +12,7 @@ Time
 
    Represents a time value.
 
-   :class:`sfml.Time` encapsulates a time value in a flexible way.
+   :class:`sfml.system.Time` encapsulates a time value in a flexible way.
 
    It allows to define a time value either as a number of seconds, 
    milliseconds or microseconds. It also works the other way round: 
@@ -48,7 +48,7 @@ Time
 
    .. py:method:: Time()
    
-      Construct a :class:`sfml.Time` equivalent to :const:`ZERO`
+      Construct a :class:`sfml.system.Time` equivalent to :const:`ZERO`
    
    .. py:data:: ZERO
       
@@ -76,7 +76,7 @@ Time
       a copy, that's why this method is provided.
       
       :return: Return a copy.
-      :rtype: :class:`sfml.Time`
+      :rtype: :class:`sfml.system.Time`
 
 
 sleep
@@ -89,7 +89,7 @@ sleep
    sfml.sleep is the best way to block a program or one of its threads, 
    as it doesn't consume any CPU power.
    
-   :param sfml.Time duration: Time to sleep
+   :param sfml.system.Time duration: Time to sleep
    
 
 Clock
@@ -99,7 +99,7 @@ Clock
 
    Utility class that measures the elapsed time.
 
-   sfml.Clock is a lightweight class for measuring time.
+   sfml.system.Clock is a lightweight class for measuring time.
 
    It provides the most precise time that the underlying OS can achieve 
    (generally microseconds or nanoseconds). It also ensures 
@@ -108,18 +108,18 @@ Clock
 
    Usage example::
 
-      clock = sfml.Clock()
+      clock = sfml.system.Clock()
       # ...
       time1 = clock.elapsed_time
       # ...
       time2 = clock.restart()
 
-   The :class:`sfml.Time` value returned by the clock can then be converted to a 
+   The :class:`sfml.system.Time` value returned by the clock can then be converted to a 
    number of seconds, milliseconds or even microseconds.
 
    .. py:method:: Clock()
    
-      Construct a :class:`sfml.Clock`
+      Construct a :class:`sfml.system.Clock`
       
       The clock starts automatically after being constructed. 
       
@@ -131,7 +131,7 @@ Clock
       :func:`restart()` (or the construction of the instance if 
       :func:`restart()` has not been called).
       
-      :rype: :class:`sfml.Time`
+      :rype: :class:`sfml.system.Time`
                   
    .. py:method:: restart()
    
@@ -139,7 +139,7 @@ Clock
 
       This function puts the time counter back to zero. It also returns the time elapsed since the clock was started.
                   
-      :rtype: :class:`sfml.Time`
+      :rtype: :class:`sfml.system.Time`
    
 
 seconds
@@ -151,7 +151,7 @@ seconds
    
    :param float amount: Number of seconds
    :return: Time value constructed from the amount of seconds
-   :rtype: :class:`sfml.Time`
+   :rtype: :class:`sfml.system.Time`
    
 
 milliseconds
@@ -163,7 +163,7 @@ milliseconds
    
    :param int amount: Number of milliseconds
    :return: Time value constructed from the amount of milliseconds
-   :rtype: :class:`sfml.Time`
+   :rtype: :class:`sfml.system.Time`
    
 
 microseconds
@@ -175,7 +175,7 @@ microseconds
    
    :param int amount: Number of microseconds
    :return: Time value constructed from the amount of microseconds
-   :rtype: :class:`sfml.Time`
+   :rtype: :class:`sfml.system.Time`
    
 
 Vector2
@@ -186,18 +186,18 @@ Vector2
    Utility class for manipulating 2-dimensional vectors. This class is
    equivalent to the template class sf::Vector2<T> in SFML.
 
-   :class:`sfml.Vector2` is a simple class that defines a mathematical 
+   :class:`sfml.system.Vector2` is a simple class that defines a mathematical 
    vector with two coordinates (:attr:`x` and :attr:`y`).
 
    It can be used to represent anything that has two dimensions: a size, a 
    point, a velocity, etc.
 
-   :class:`sfml.Vector2` supports arithmetic operations (+, -, /, \*) 
+   :class:`sfml.system.Vector2` supports arithmetic operations (+, -, /, \*) 
    and comparisons (==, !=).
 
    Usage example::
 
-      v1 = sfml.Vector2(16.5, 24)
+      v1 = sfml.system.Vector2(16.5, 24)
       v1.x = 18
       y = v1.y
 
@@ -205,11 +205,11 @@ Vector2
 
       v3 = v1 + v2
 
-   For 3-dimensional vectors, see :class:`sfml.Vector3`
+   For 3-dimensional vectors, see :class:`sfml.system.Vector3`
       
    .. method:: Vector2(x=0, y=0)
 
-      Construct a :class:`sfml.Vector2`
+      Construct a :class:`sfml.system.Vector2`
 
    .. attribute:: x
 
@@ -225,13 +225,13 @@ Vector2
       a copy, that's why this method is provided.
       
       :return: Return a copy.
-      :rtype: :class:`sfml.Vector2`
+      :rtype: :class:`sfml.system.Vector2`
 
    .. py:classmethod: from_tuple(tuple)
 
       Construct the vector from a tuple.
       
-      :rtype: :class:`sfml.Vector2`
+      :rtype: :class:`sfml.system.Vector2`
 
 Vector3
 ^^^^^^^
@@ -240,18 +240,18 @@ Vector3
 
    Utility class for manipulating 3-dimensional vectors.
 
-   :class:`sfml.Vector3` is a simple class that defines a mathematical 
+   :class:`sfml.system.Vector3` is a simple class that defines a mathematical 
    vector with three coordinates (:attr:`x`, :attr:`y` and :attr:`z`).
 
    It can be used to represent anything that has three dimensions: a 
    size, a point, a velocity, etc.
 
-   :class:`sfml.Vector3` supports arithmetic operations (+, -, /, \*) and 
+   :class:`sfml.system.Vector3` supports arithmetic operations (+, -, /, \*) and 
    comparisons (==, !=).
 
    Usage example::
    
-      v1 = sfml.Vector3(16.8, 24, -8)
+      v1 = sfml.system.Vector3(16.8, 24, -8)
       v1.x = 18.2
       y = v1.y
       z = v1.z
@@ -264,7 +264,7 @@ Vector3
 
    .. method:: Vector3(x=0, y=0, z=0)
 
-      Construct a :class:`sfml.Vector3`
+      Construct a :class:`sfml.system.Vector3`
 
    .. attribute:: x
 
@@ -284,13 +284,13 @@ Vector3
       a copy, that's why this method is provided.
       
       :return: Return a copy.
-      :rtype: :class:`sfml.Vector3`
+      :rtype: :class:`sfml.system.Vector3`
 
    .. py:classmethod: from_tuple(tuple)
 
       Construct the vector from a tuple.
       
-      :rtype: :class:`sfml.Vector3`
+      :rtype: :class:`sfml.system.Vector3`
       
 SFMLException
 ^^^^^^^^^^^^^
