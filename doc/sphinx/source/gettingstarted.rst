@@ -42,7 +42,7 @@ Here is the official short example to show you how simple using pySFML is. ::
 		for event in window.events:
 			# close window: exit
 
-			if event == sf.CloseEvent:
+			if event == sfml.window.CloseEvent:
 				window.close()
 
 		window.clear() # clear screen

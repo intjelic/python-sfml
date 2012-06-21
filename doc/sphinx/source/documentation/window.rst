@@ -35,7 +35,7 @@ Event
 
 	Defines a system event and its parameters.
 
-	sf.Event holds all the information about a system event that just
+	sfml.window.Event holds all the information about a system event that just
 	happened.
 
 	Events are retrieved using the :func:`sfml.graphics.Window.poll_event` and 
@@ -48,15 +48,15 @@ Event
 	
 		for event in window.events:
 			# request for closing the window
-			if event == sf.CloseEvent:
+			if event == sfml.window.CloseEvent:
 				window.close()
 
 			# the escape key was pressed
-			if event == sf.KeyEvent and event.code is sf.Keyboard.ESCAPE:
+			if event == sfml.window.KeyEvent and event.code is sfm.window.Keyboard.ESCAPE:
 				window.close()
 
 			# the window was resized
-			if event == sf.ResizeEvent:
+			if event == sfml.window.ResizeEvent:
 				do_something_with_the_new_size(event.size)
 
 			# ...

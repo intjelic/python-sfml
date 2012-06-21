@@ -79,22 +79,22 @@ sfml.JoystickConnectEvent sfml.Event.JOYSTICK_CONNECTED
 
 Once you know the type of the event you can get the data inside.::
 
-   if event == sf.MouseMoveEvent:
+   if event == sfml.window.MouseMoveEvent:
        x, y = event.position
 
-For events like sf.KeyEvent, sf.MouseButtonEvent, etc. which can have 
+For events like sfml.window.KeyEvent, sfml.window.MouseButtonEvent, etc. which can have 
 two "states", you'll have to check it via their properties.::
 
-   if event == sf.KeyEvent:
+   if event == sfml.window.KeyEvent:
        if event.pressed: 
            ...
        elif event.released: 
            ...
 
-   if event == sf.KeyEvent and event.pressed:
+   if event == sfml.window.KeyEvent and event.pressed:
        ...
        
-   if event == sf.FocusEvent:
+   if event == sfml.window.FocusEvent:
        if event.gained: 
            ...
        if event.lost: 
