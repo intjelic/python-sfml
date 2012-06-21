@@ -1,7 +1,7 @@
 Network
 =======
 
-.. module:: sf
+.. module:: sfml
 
 .. contents:: :local:
 

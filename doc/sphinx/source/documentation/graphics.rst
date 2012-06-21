@@ -1,7 +1,7 @@
 Graphics
 ========
 
-.. module:: sf
+.. module:: sfml
 
 .. contents:: :local:
 

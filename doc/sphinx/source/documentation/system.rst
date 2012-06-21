@@ -1,7 +1,7 @@
 System
 ======
 
-.. module:: sf
+.. module:: sfml
 
 .. contents:: :local:
 

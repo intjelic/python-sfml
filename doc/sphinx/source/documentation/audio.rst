@@ -1,6 +1,6 @@
 Audio
 =====
-.. module:: sf
+.. module:: sfml
 
 .. contents:: :local:
 

@@ -1,7 +1,7 @@
 Window
 ======
 
-.. module:: sfml
+.. module:: sfmlml
 
 .. contents:: :local:
 
