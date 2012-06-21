@@ -35,7 +35,7 @@ PrimitiveType
 .. py:class:: PrimitiveType
 
    Empty class that defines some constants. The are the types of 
-   primitives that a :class:`sfml.graphics.VertexArray` can render.
+   primitives that an :class:`sfml.graphics.VertexArray` can render.
 
    :const:`POINTS` and :class:`LINES` have no area, therefore their 
    thickness will always be 1 pixel, regarldess the current transform 
@@ -119,7 +119,7 @@ Rectangle
       
    .. method:: Rectangle(position=(0, 0), size=(0, 0))
       
-      Construct a :class:`sfml.graphics.Rectangle`
+      Construct an :class:`sfml.graphics.Rectangle`
 
    .. attribute:: position
    
@@ -477,7 +477,7 @@ Image
    :class:`sfml.graphics.Image` can handle a unique internal representation of 
    pixels, which is RGBA 32 bits. This means that a pixel must be 
    composed of 8 bits red, green, blue and alpha channels -- just like 
-   a :class:`sfml.graphics.Color`. All the functions that return an array of 
+   an :class:`sfml.graphics.Color`. All the functions that return an array of 
    pixels follow this rule, and all parameters that you pass to 
    :class:`sfml.graphics.Image` functions (such as :func:`load_from_pixels`) must 
    use this representation as well.
@@ -679,7 +679,7 @@ Texture
    to a texture (the graphics card can access both directly).
 
    Being stored in the graphics card memory has some drawbacks. A 
-   texture cannot be manipulated as freely as a :class:`sfml.graphics.Image`, you 
+   texture cannot be manipulated as freely as an :class:`sfml.graphics.Image`, you 
    need to prepare the pixels first and then upload them to the texture 
    in a single operation (see :func:`Texture.update`).
 
@@ -692,7 +692,7 @@ Texture
    or a memory. The necessary shortcuts are defined so that you don't 
    need an image first for the most common cases. However, if you want 
    to perform some modifications on the pixels before creating the 
-   final texture, you can load your file to a :class:`sfml.graphics.Image`, do 
+   final texture, you can load your file to an :class:`sfml.graphics.Image`, do 
    whatever you need with the pixels, and then call 
    :func:`Texture.load_from_image`.
 
@@ -706,7 +706,7 @@ Texture
    Like :class:`sfml.graphics.Image`, :class:`sfml.graphics.Texture` can handle a unique 
    internal representation of pixels, which is RGBA 32 bits. This means 
    that a pixel must be composed of 8 bits red, green, blue and alpha 
-   channels -- just like a :class:`sfml.graphics.Color`.
+   channels -- just like an :class:`sfml.graphics.Color`.
 
    Usage example:
        
@@ -1004,7 +1004,7 @@ Font
       See the :func:`load_from_file` function for the complete list of 
       supported formats.
 
-      Once it is loaded, a :class:`sfml.graphics.Font` instance provides three 
+      Once it is loaded, an :class:`sfml.graphics.Font` instance provides three 
       types of informations about the font:
 
           * Global metrics, such as the line spacing
@@ -1016,18 +1016,18 @@ Font
       :class:`sfml.graphics.Text` class, which is able to properly output text 
       with several options such as character size, style, color, 
       position, rotation, etc. This separation allows more flexibility 
-      and better performances: indeed a :class:`sfml.graphics.Font` is a heavy 
+      and better performances: indeed an :class:`sfml.graphics.Font` is a heavy 
       resource, and any operation on it is slow (often too slow for 
-      real-time applications). On the other side, a :class:`sfml.graphics.Text` is 
+      real-time applications). On the other side, an :class:`sfml.graphics.Text` is 
       a lightweight object which can combine the glyphs data and 
-      metrics of a :class:`sfml.graphics.Font` to display any text on a render 
+      metrics of an :class:`sfml.graphics.Font` to display any text on a render 
       target. Note that it is also possible to bind several 
       :class:`sfml.graphics.Text` instances to the same :class:`sfml.graphics.Font`.
 
       It is important to note that the :class:`sfml.graphics.Text` instance 
       doesn't copy the font that it uses, it only keeps a reference to 
-      it. Thus, a :class:`sfml.graphics.Font` must not be destructed while it is 
-      used by a :class:`sfml.graphics.Text`.
+      it. Thus, an :class:`sfml.graphics.Font` must not be destructed while it is 
+      used by an :class:`sfml.graphics.Text`.
 
       Usage example::
 
@@ -1401,7 +1401,7 @@ Drawable
    Abstract base class for objects that can be drawn to a render target.
 
    :class:`sfml.graphics.Drawable` is a very simple base class that allows objects 
-   of derived classes to be drawn to a :class:`sfml.graphics.RenderTarget`.
+   of derived classes to be drawn to an :class:`sfml.graphics.RenderTarget`.
 
    All you have to do in your derived class is to override the draw 
    virtual function.
@@ -1467,7 +1467,7 @@ Transformable
    hides these variables and the composed transform behind an easy to 
    use interface. You can set or get any of the individual components 
    without worrying about the others. It also provides the composed 
-   transform (as a :class:`sfml.graphics.Transform`), and keeps it up-to-date.
+   transform (as an :class:`sfml.graphics.Transform`), and keeps it up-to-date.
 
    In addition to the position, rotation and scale, 
    :class:`sfml.graphics.Transformable` provides an "origin" component, which 
@@ -1616,14 +1616,14 @@ Sprite
    more flexibility and better performances: indeed a 
    :class:`sfml.graphics.Texture` is a heavy resource, and any operation on it is 
    slow (often too slow for real-time applications). On the other side, 
-   a :class:`sfml.graphics.Sprite` is a lightweight object which can use the pixel 
-   data of a :class:`sfml.graphics.Texture` and draw it with its own 
+   an :class:`sfml.graphics.Sprite` is a lightweight object which can use the pixel 
+   data of an :class:`sfml.graphics.Texture` and draw it with its own 
    transformation/color/blending attributes.
 
    It is important to note that the :class:`sfml.graphics.Sprite` instance doesn't 
    copy the texture that it uses, it only keeps a reference to it. 
-   Thus, a :class:`sfml.graphics.Texture` must not be destroyed while it is used 
-   by a :class:`sfml.graphics.Sprite`.
+   Thus, an :class:`sfml.graphics.Texture` must not be destroyed while it is used 
+   by an :class:`sfml.graphics.Sprite`.
    
    Usage examples::
    
@@ -1733,13 +1733,13 @@ Text
       a heavy resource, and any operation on it is slow (often too slow 
       for real-time applications). On the other side, a 
       :class:`sfml.graphics.Text` is a lightweight object which can combine the 
-      glyphs data and metrics of a :class:`sfml.graphics.Font` to display any text 
+      glyphs data and metrics of an :class:`sfml.graphics.Font` to display any text 
       on a render target.
 
       It is important to note that the :class:`sfml.graphics.Text` instance 
       doesn't copy the font that it uses, it only keeps a reference to 
-      it. Thus, a :class:`sfml.graphics.Font` must not be destructed while it is 
-      used by a :class:`sfml.graphics.Text`.
+      it. Thus, an :class:`sfml.graphics.Font` must not be destructed while it is 
+      used by an :class:`sfml.graphics.Text`.
 
       Usage example::
 
@@ -2654,7 +2654,7 @@ RenderWindow
    On top of that, :class:`sfml.graphics.RenderWindow` adds more features related 
    to 2D drawing with the graphics module (see its base class 
    :class:`sfml.graphics.RenderTarget` for more details). Here is a typical 
-   rendering and event loop with a :class:`sfml.graphics.RenderWindow`
+   rendering and event loop with an :class:`sfml.graphics.RenderWindow`
 
    .. py:method:: RenderWindow(mode, title[, style[, settings]])
 
@@ -2683,7 +2683,7 @@ RenderWindow
       This is a slow operation, whose main purpose is to make 
       screenshots of the application. If you want to update an image 
       with the contents of the window and then use it for drawing, you 
-      should rather use a :class:`sfml.graphics.Texture` and its 
+      should rather use an :class:`sfml.graphics.Texture` and its 
       :func:`update_window` function. You can also draw things directly 
       to a texture with the :class:`sfml.graphics.RenderTexture` class.
 
@@ -2777,7 +2777,7 @@ RenderTexture
       future OpenGL rendering operations (so you shouldn't care about 
       it if you're not doing direct OpenGL stuff). Only one context can 
       be current in a thread, so if you want to draw OpenGL geometry to 
-      another render target (like a :class:`sfml.graphics.RenderWindow`) don't 
+      another render target (like an :class:`sfml.graphics.RenderWindow`) don't 
       forget to activate it again.
 
       :rtype: bool

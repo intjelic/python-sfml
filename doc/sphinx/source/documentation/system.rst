@@ -48,7 +48,7 @@ Time
 
    .. py:method:: Time()
    
-      Construct a :class:`sfml.system.Time` equivalent to :const:`ZERO`
+      Construct an :class:`sfml.system.Time` equivalent to :const:`ZERO`
    
    .. py:data:: ZERO
       
@@ -119,7 +119,7 @@ Clock
 
    .. py:method:: Clock()
    
-      Construct a :class:`sfml.system.Clock`
+      Construct an :class:`sfml.system.Clock`
       
       The clock starts automatically after being constructed. 
       
@@ -209,7 +209,7 @@ Vector2
       
    .. method:: Vector2(x=0, y=0)
 
-      Construct a :class:`sfml.system.Vector2`
+      Construct an :class:`sfml.system.Vector2`
 
    .. attribute:: x
 
@@ -264,7 +264,7 @@ Vector3
 
    .. method:: Vector3(x=0, y=0, z=0)
 
-      Construct a :class:`sfml.system.Vector3`
+      Construct an :class:`sfml.system.Vector3`
 
    .. attribute:: x
 

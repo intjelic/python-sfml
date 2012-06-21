@@ -108,8 +108,8 @@ SoundBuffer
    the sound at a given time. The sound is then restituted by playing 
    these samples at a high rate (for example, 44100 samples per second 
    is the standard rate used for playing CDs). In short, audio samples 
-   are like texture pixels, and a :class:`sfml.audio.SoundBuffer` is similar 
-   to a :class:`sfml.graphics.Texture`.
+   are like texture pixels, and an :class:`sfml.audio.SoundBuffer` is similar 
+   to an :class:`sfml.graphics.Texture`.
 
    A sound buffer can be loaded from a file (see 
    :func:`load_from_file()` for the complete list of supported 
@@ -124,7 +124,7 @@ SoundBuffer
    more flexibility and better performances: indeed a 
    :class:`sfml.audio.SoundBuffer` is a heavy resource, and any operation on 
    it is slow (often too slow for real-time applications). On the 
-   other side, a :class:`sfml.audio.Sound` is a lightweight object, which can 
+   other side, an :class:`sfml.audio.Sound` is a lightweight object, which can 
    use the audio data of a sound buffer and change the way it is 
    played without actually modifying that data. Note that it is also 
    possible to bind several :class:`sfml.audio.Sound` instances to the same 
@@ -132,8 +132,8 @@ SoundBuffer
 
    It is important to note that the :class:`sfml.audio.Sound` instance doesn't 
    copy the buffer that it uses, it only keeps a reference to it. 
-   Thus, a :class:`sfml.audio.SoundBuffer` must not be destructed while it is 
-   used by a :class:`sfml.audio.Sound` (i.e. never write a function that uses 
+   Thus, an :class:`sfml.audio.SoundBuffer` must not be destructed while it is 
+   used by an :class:`sfml.audio.Sound` (i.e. never write a function that uses 
    a local :class:`sfml.audio.SoundBuffer` instance for loading a sound).
 
    Usage example::
@@ -159,7 +159,7 @@ SoundBuffer
 
    .. method:: SoundBuffer([buffer])
 
-      If you try to instantiate a :class:`sfml.audio.SoundBuffer` directly, it 
+      If you try to instantiate an :class:`sfml.audio.SoundBuffer` directly, it 
       will raise an error saying that you have to use its specific 
       constructors: `load_from_file`, `load_from_memory` or 
       `load_from_samples`
@@ -433,7 +433,7 @@ Sound
 
       Get the current status of the sound (stopped, paused, playing)
       
-      :rtype: a :class:`sfml.audio.SoundSource`'s contant
+      :rtype: an :class:`sfml.audio.SoundSource`'s contant
 
 SoundStream
 ^^^^^^^^^^^
@@ -569,7 +569,7 @@ SoundStream
    
       Get the current status of the stream (stopped, paused, playing) 
 
-      :rtype: a :class:`sfml.audio.SoundSource`'s contant
+      :rtype: an :class:`sfml.audio.SoundSource`'s contant
 
    .. method::initialize(channel_count, sample_rate)
    
@@ -621,7 +621,7 @@ Music
    of loading it entirely, you avoid saturating the memory and have 
    almost no loading delay.
 
-   Apart from that, a :class:`sfml.audio.Music` has almost the same features as 
+   Apart from that, an :class:`sfml.audio.Music` has almost the same features as 
    the :class:`sfml.audio.SoundBuffer` / :class:`sfml.audio.Sound` pair: you can 
    play/pause/stop it, request its parameters (channels, sample rate), 
    change the way it is played (pitch, volume, 3D position, ...), etc.
@@ -649,7 +649,7 @@ Music
 
    .. method:: Music()
    
-      If you try to instantiate a :class:`sfml.audio.Music` directly, it will 
+      If you try to instantiate an :class:`sfml.audio.Music` directly, it will 
       raise an error saying that you must use its specific constructors: 
       :meth:`open_from_file` or :meth:`open_from_memory`.
       
@@ -831,7 +831,7 @@ SoundBufferRecorder
    data into a sound buffer.
 
    :class:`sfml.audio.SoundBufferRecorder` allows to access a recorded sound 
-   through a :class:`sfml.audio.SoundBuffer`, so that it can be played, saved 
+   through an :class:`sfml.audio.SoundBuffer`, so that it can be played, saved 
    to a file, etc.
 
    It has the same simple interface as its base class (:meth:`start`, 
@@ -860,7 +860,7 @@ SoundBufferRecorder
    
    .. method:: SoundBufferRecorder()
    
-      Construct a :class:`sfml.audio.SoundBufferRecorder`
+      Construct an :class:`sfml.audio.SoundBufferRecorder`
       
    .. attribute:: buffer
 

@@ -180,7 +180,7 @@ To create your own drawable just inherit a class from
            
 As Python doesn't allow you to subclass from two built-in types at the 
 same time, pySFML2 provides `sfml.graphics.TransformableDrawable` which is both 
-a :class:`sfml.graphics.Drawable` and :class:`sfml.graphics.Transformable`. That way your 
+an :class:`sfml.graphics.Drawable` and :class:`sfml.graphics.Transformable`. That way your 
 class inherits from properties such `position`, `rotation` etc and their 
 methods `move()`, `rotate()` etc. ::
 
@@ -197,7 +197,7 @@ methods `move()`, `rotate()` etc. ::
    
 .. note::
    You can choose between inheriting from sfml.graphics.TransformableDrawable and 
-   having a :class:`sfml.graphics.Transformable` in its internal attribute, and 
+   having an :class:`sfml.graphics.Transformable` in its internal attribute, and 
    just before drawing, combine the transformable with the current 
    state ::
       

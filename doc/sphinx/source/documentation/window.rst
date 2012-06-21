@@ -1113,7 +1113,7 @@ Mouse
       Check if a mouse button is pressed. 
       
       :param integer button: Button to check
-      :type button: integer (a :class:`sfml.window.Mouse`'s constant)
+      :type button: integer (an :class:`sfml.window.Mouse`'s constant)
       :rtype: bool
 
 
@@ -1154,7 +1154,7 @@ Context
    Note that a context is only active in its current thread, if you 
    create a new thread it will have no valid context by default.
 
-   To use a :class:`sfml.window.Context` instance, just construct it and let it 
+   To use an :class:`sfml.window.Context` instance, just construct it and let it 
    live as long as you need a valid context. No explicit activation is 
    needed, all it has to do is to exist. Its destructor will take care 
    of deactivating and freeing all the attached resources.
