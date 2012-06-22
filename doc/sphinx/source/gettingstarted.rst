@@ -11,44 +11,47 @@ with the documentation at hand.
 
 Your first script
 -----------------
-Here is the official short example to show you how simple using pySFML is. ::
+Here is the official short example to show you how simple using pySFML is.
 
-	import sfml
+.. code-block:: python
+   :linenos:
+
+   import sfml
 
 
-	# create the main window
-	window = sfml.RenderWindow(sfml.VideoMode(640, 480), "pySFML Window")
+   # create the main window
+   window = sfml.graphics.RenderWindow(sfml.window.VideoMode(640, 480), "pySFML Window")
 
-	try:
-		# load a sprite to display
-		texture = sfml.Texture.load_from_file("cute_image.png")
-		sprite = sfml.Sprite(texture)
+   try:
+   # load a sprite to display
+   texture = sfml.graphics.Texture.load_from_file("cute_image.png")
+   sprite = sfml.graphics.Sprite(texture)
 
-		# create some graphical text to display
-		font = sfml.Font.load_from_file("arial.ttf")
-		text = sfml.Text("Hello SFML", font, 50)
+   # create some graphical text to display
+   font = sfml.graphics.Font.load_from_file("arial.ttf")
+   text = sfml.graphics.Text("Hello SFML", font, 50)
 
-		# load music to play
-		music = sfml.Music.open_from_file("nice_music.ogg")
+   # load music to play
+   music = sfml.audio.Music.open_from_file("nice_music.ogg")
 
-	except IOError: exit(1)
+   except IOError: exit(1)
 
-	# play the music
-	music.play()
+   # play the music
+   music.play()
 
-	# start the game loop
-	while window.opened:
-		# process events
-		for event in window.events:
-			# close window: exit
+   # start the game loop
+   while window.opened:
+      # process events
+	  for event in window.events:
+	  # close window: exit
 
-			if event == sf.CloseEvent:
-				window.close()
+	  if event == sfml.window.CloseEvent:
+         window.close()
 
-		window.clear() # clear screen
-		window.draw(sprite) # draw the sprite
-		window.draw(text) # draw the string
-		window.display() # update the window
+   window.clear() # clear screen
+   window.draw(sprite) # draw the sprite
+   window.draw(text) # draw the string
+   window.display() # update the window
 
 As you can see the interface remains the same as SFML2 but it has been pythonized.
 
@@ -58,11 +61,11 @@ Open a terminal and run the python interpreter. Now you can play.
 For example: try these commands::
 
    >>> import sfml as sf
-   >>> w = sfml.RenderWindow(sfml.VideoMode(640, 480), "My first pySFML Window - or not ?")
-   >>> w.clear(sfml.Color.BLUE)
+   >>> w = sfml.graphics.RenderWindow(sfml.window.VideoMode(640, 480), "My first pySFML Window - or not ?")
+   >>> w.clear(sfml.graphics.Color.BLUE)
    >>> w.display()
    >>> w.size = (800, 600)
-   >>> w.clear(sfml.Color.GREEN)
+   >>> w.clear(sfml.graphics.Color.GREEN)
    >>> w.display()
    >>> w.title = "Yes, it's my first PySFML Window"
    >>> w.display()
@@ -89,36 +92,42 @@ tricks.
 
 Unpacking
 ^^^^^^^^^
-Many classes are unpackable ::
+Many classes are unpackable 
 
-	x, y = sfml.Vector2(5, 10)
-	x, y, z = sfml.Vector3(5, 10, 15)
+.. code-block:: python
+   :linenos:
 
-	size, bpp = sfml.VideoMode(640, 480, 32)
-	depth_bits, stencil_bits, antialiasing, minor_version, major_version = sfml.ContextSettings()
+	x, y = sfml.system.Vector2(5, 10)
+	x, y, z = sfml.system.Vector3(5, 10, 15)
 
-	r, g, b, a = sfml.Color.CYAN
-	left, top, width, height = sfml.Rectangle((5, 10), (15, 20))
+	size, bpp = sfml.window.VideoMode(640, 480, 32)
+	depth_bits, stencil_bits, antialiasing, minor_version, major_version = sfml.window.ContextSettings()
+
+	r, g, b, a = sfml.graphics.Color.CYAN
+	left, top, width, height = sfml.graphics.Rectangle((5, 10), (15, 20))
 
 sfml.Image.show()
 ^^^^^^^^^^^^^^^^^
 
 For debugging purpose pySFML provides a show() function. This allows 
 you to see how an image will look after modification. This is to be 
-sure all operations made on the pictre were effective. ::
+sure all operations made on the pictre were effective.
 
-   image = sfml.Image.load_from_image("image.png")
-   image.create_mask_from_color(sfml.Color.BLUE)
+.. code-block:: python
+   :linenos:
+
+   image = sfml.graphics.Image.load_from_image("image.png")
+   image.create_mask_from_color(sfml.graphics.Color.BLUE)
    image.show()
    
-   texture = sfml.Texture.load_from_image(image)
+   texture = sfml.graphics.Texture.load_from_image(image)
    texture.update(window, (50, 60))
    texture.copy_to_image().show()
    
 Attach an icon to a Window
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Easily attach an icon to your window :: 
+Easily attach an icon to your window ::
 
-	icon = sfml.Image.load_from_file("data/icon.bmp")
+	icon = sfml.graphics.Image.load_from_file("data/icon.bmp")
 	window.icon = icon.pixels
