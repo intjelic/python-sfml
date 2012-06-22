@@ -27,11 +27,11 @@ class TestIpAddress(unittest.TestCase):
 
         self.assertEqual(str(ip), str(self.local_ip))
 
-    @unittest.skip("need a better assertion")
     def test_from_url(self):
         ip = sf.IpAddress.from_string('www.google.com')
-
-        self.assertEqual(str(ip), str(self.remote_ip))
+        ip_bytes = str(self.remote_ip).split('.')
+        remote_bytes = str(self.remote_ip).split('.')
+        self.assertEqual(ip_bytes[:2], remote_bytes[:2])
 
     def test_local_address(self):
         ip = sf.IpAddress.get_local_address()
