@@ -11,44 +11,47 @@ with the documentation at hand.
 
 Your first script
 -----------------
-Here is the official short example to show you how simple using pySFML is. ::
+Here is the official short example to show you how simple using pySFML is.
 
-	import sfml
+.. code-block:: python
+   :linenos:
+
+   import sfml
 
 
-	# create the main window
-	window = sfml.graphics.RenderWindow(sfml.window.VideoMode(640, 480), "pySFML Window")
+   # create the main window
+   window = sfml.graphics.RenderWindow(sfml.window.VideoMode(640, 480), "pySFML Window")
 
-	try:
-		# load a sprite to display
-		texture = sfml.graphics.Texture.load_from_file("cute_image.png")
-		sprite = sfml.graphics.Sprite(texture)
+   try:
+   # load a sprite to display
+   texture = sfml.graphics.Texture.load_from_file("cute_image.png")
+   sprite = sfml.graphics.Sprite(texture)
 
-		# create some graphical text to display
-		font = sfml.graphics.Font.load_from_file("arial.ttf")
-		text = sfml.graphics.Text("Hello SFML", font, 50)
+   # create some graphical text to display
+   font = sfml.graphics.Font.load_from_file("arial.ttf")
+   text = sfml.graphics.Text("Hello SFML", font, 50)
 
-		# load music to play
-		music = sfml.audio.Music.open_from_file("nice_music.ogg")
+   # load music to play
+   music = sfml.audio.Music.open_from_file("nice_music.ogg")
 
-	except IOError: exit(1)
+   except IOError: exit(1)
 
-	# play the music
-	music.play()
+   # play the music
+   music.play()
 
-	# start the game loop
-	while window.opened:
-		# process events
-		for event in window.events:
-			# close window: exit
+   # start the game loop
+   while window.opened:
+      # process events
+	  for event in window.events:
+	  # close window: exit
 
-			if event == sfml.window.CloseEvent:
-				window.close()
+	  if event == sfml.window.CloseEvent:
+         window.close()
 
-		window.clear() # clear screen
-		window.draw(sprite) # draw the sprite
-		window.draw(text) # draw the string
-		window.display() # update the window
+   window.clear() # clear screen
+   window.draw(sprite) # draw the sprite
+   window.draw(text) # draw the string
+   window.display() # update the window
 
 As you can see the interface remains the same as SFML2 but it has been pythonized.
 
@@ -89,7 +92,10 @@ tricks.
 
 Unpacking
 ^^^^^^^^^
-Many classes are unpackable ::
+Many classes are unpackable 
+
+.. code-block:: python
+   :linenos:
 
 	x, y = sfml.system.Vector2(5, 10)
 	x, y, z = sfml.system.Vector3(5, 10, 15)
@@ -105,7 +111,10 @@ sfml.Image.show()
 
 For debugging purpose pySFML provides a show() function. This allows 
 you to see how an image will look after modification. This is to be 
-sure all operations made on the pictre were effective. ::
+sure all operations made on the pictre were effective.
+
+.. code-block:: python
+   :linenos:
 
    image = sfml.graphics.Image.load_from_image("image.png")
    image.create_mask_from_color(sfml.graphics.Color.BLUE)
@@ -118,7 +127,7 @@ sure all operations made on the pictre were effective. ::
 Attach an icon to a Window
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Easily attach an icon to your window :: 
+Easily attach an icon to your window ::
 
 	icon = sfml.graphics.Image.load_from_file("data/icon.bmp")
 	window.icon = icon.pixels

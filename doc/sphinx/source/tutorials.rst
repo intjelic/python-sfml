@@ -1,5 +1,5 @@
 .. highlight:: python
-   :linenothreshold: 1
+   :linenothreshold: 5
 
 .. _tutorials-reference:
 
@@ -52,33 +52,40 @@ check that event is an instance of a particular event class. While you could do
 this using python's builtin `type` or `isinstance` functions, The Event class
 implements rich comparison operators to make things simpler::
 
-  for event in window.events:
+   for event in window.events:
       if event == ...: # provide an event class name
 
 Available event classes and their pysfml2-cython equivalents are shown below:
 
-========================= ===================================
-python-sfml2              pysfml2-cython                     
-========================= ===================================
-sfml.CloseEvent           sfml.Event.CLOSED
-sfml.ResizeEvent          sfml.Event.RESIZED
-sfml.FocusEvent           sfml.Event.LOST_FOCUS
-                          sfml.Event.GAINED_FOCUS
-sfml.TextEvent            sfml.Event.TEXT_ENTERED
-sfml.KeyEvent             sfml.Event.KEY_PRESSED
-                          sfml.Event.KEY_RELEASED
-sfml.MouseWheelEvent      sfml.Event.MOUSE_WHEEL_MOVED
-sfml.MouseButtonEvent     sfml.Event.MOUSE_BUTTON_PRESSED
-                          sfml.Event.MOUSE_BUTTON_RELEASED
-sfml.MouseMoveEvent       sfml.Event.MOUSE_MOVED
-sfml.MouseEvent           sfml.Event.MOUSE_ENTERED   
-                          sfml.Event.MOUSE_LEFT
-sfml.JoystickButtonEvent  sfml.Event.JOYSTICK_BUTTON_PRESSED
-                          sfml.Event.JOYSTICK_BUTTON_RELEASED
-sfml.JoystickMoveEvent    sfml.Event.JOYSTICK_MOVED
-sfml.JoystickConnectEvent sfml.Event.JOYSTICK_CONNECTED
-                          sfml.Event.JOYSTICK_DISCONNECTED
-========================= ===================================
++---------------------------+-------------------------------------+
+| python-sfml2              | pysfml2-cython                      | 
++===========================+=====================================+
+| sfml.CloseEvent           | sfml.Event.CLOSED                   |
++---------------------------+-------------------------------------+
+| sfml.ResizeEvent          | sfml.Event.RESIZED                  |
++---------------------------+-------------------------------------+
+| sfml.FocusEvent           | sfml.Event.LOST_FOCUS               |
+|                           | sfml.Event.GAINED_FOCUS             |
++---------------------------+-------------------------------------+
+| sfml.TextEvent            | sfml.Event.TEXT_ENTERED             |
+| sfml.KeyEvent             | sfml.Event.KEY_PRESSED              |
+|                           | sfml.Event.KEY_RELEASED             |
++---------------------------+-------------------------------------+
+| sfml.MouseWheelEvent      | sfml.Event.MOUSE_WHEEL_MOVED        |
+| sfml.MouseButtonEvent     | sfml.Event.MOUSE_BUTTON_PRESSED     |
+|                           | sfml.Event.MOUSE_BUTTON_RELEASED    |
++---------------------------+-------------------------------------+
+| sfml.MouseMoveEvent       | sfml.Event.MOUSE_MOVED              |
+| sfml.MouseEvent           | sfml.Event.MOUSE_ENTERED            | 
+|                           | sfml.Event.MOUSE_LEFT               |
++---------------------------+-------------------------------------+
+| sfml.JoystickButtonEvent  | sfml.Event.JOYSTICK_BUTTON_PRESSED  |
+|                           | sfml.Event.JOYSTICK_BUTTON_RELEASED |
++---------------------------+-------------------------------------+
+| sfml.JoystickMoveEvent    | sfml.Event.JOYSTICK_MOVED           |
+| sfml.JoystickConnectEvent | sfml.Event.JOYSTICK_CONNECTED       |
+|                           | sfml.Event.JOYSTICK_DISCONNECTED    |
++---------------------------+-------------------------------------+
 
 Once you know the type of the event you can get the data inside.::
 

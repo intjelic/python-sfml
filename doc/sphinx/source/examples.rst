@@ -1,5 +1,5 @@
 .. highlight:: python
-   :linenothreshold: 1
+   :linenothreshold: 5
 
 Examples
 ========
