@@ -17,8 +17,8 @@ v0.9 -> v1.0
 
 v1.0 -> v1.1
 ------------
-* :class:`sfml.system.Position` moved to built-in type and renamed `sfml.system.Vector2`
-* :class:`sfml.system.Size` removed; use `sfml.system.Vector2` instead
+* :class:`sfml.system.Position` moved to built-in type and renamed :class:`sfml.system.Vector2`
+* :class:`sfml.system.Size` removed; use :class:`sfml.system.Vector2` instead
 * :class:`sfml.system.Vector3` added
 * Full variable/method/function/class name are clean
 * Error message handler implemented
