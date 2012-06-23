@@ -18,26 +18,11 @@
 *.sql
 *.sqlite
 
-doc/sphinx/build/
+build
 
-install2
-install3
+install*
 
 trash/
 
-sfml/system/__pycache__/
-sfml/system/system.cpp
-
-sfml/window/__pycache__/
-sfml/window/window.cpp
-
-sfml/graphics/__pycache__/
-sfml/graphics/graphics.cpp
-
-sfml/audio/__pycache__/
-sfml/audio/audio.cpp
-
-sfml/network/__pycache__/
-sfml/network/network.cpp
-
-build/
+__pycache__
+*.cpp
