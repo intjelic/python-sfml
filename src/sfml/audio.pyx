@@ -11,6 +11,7 @@
 #from libc.stdlib cimport malloc, free
 #from cython.operator cimport preincrement as preinc, dereference as deref
 
+from warnings import warn
 cimport cython
 from libc.stdlib cimport malloc, free
 from libc.string cimport memcpy
@@ -128,19 +129,6 @@ cdef class SoundBuffer:
 	def __str__(self): pass
 
 	@classmethod
-	def load_from_file(cls, filename):
-		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
-		cdef char* encoded_filename
-		
-		encoded_filename_temporary = filename.encode('UTF-8')	
-		encoded_filename = encoded_filename_temporary
-		
-		if p.loadFromFile(encoded_filename): return wrap_soundbuffer(p)
-		
-		del p
-		raise IOError(pop_error_message())
-		
-	@classmethod
 	def from_file(cls, filename):
 		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
 		cdef char* encoded_filename
@@ -154,14 +142,10 @@ cdef class SoundBuffer:
 		raise IOError(pop_error_message())
 
 	@classmethod
-	def load_from_memory(cls, bytes data):
-		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
-		
-		if p.loadFromMemory(<char*>data, len(data)): return wrap_soundbuffer(p)
+	def load_from_file(cls, filename):
+		warn('Please use SoundBuffer.from_file() instead.', DeprecationWarning)
+		cls.from_file(filename)
 
-		del p
-		raise IOError(pop_error_message())
-		
 	@classmethod
 	def from_memory(cls, bytes data):
 		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
@@ -172,15 +156,10 @@ cdef class SoundBuffer:
 		raise IOError(pop_error_message())
 
 	@classmethod
-	def load_from_samples(cls, Chunk samples, unsigned int channel_count, unsigned int sample_rate):
-		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
-		
-		if p.loadFromSamples(samples.m_samples, samples.m_sampleCount, channel_count, sample_rate):
-			return wrap_soundbuffer(p)
+	def load_from_memory(cls, bytes data):
+		warn('Please use SoundBuffer.from_memory() instead.', DeprecationWarning)
+		cls.from_memory(data)
 
-		del p
-		raise IOError(pop_error_message())
-		
 	@classmethod
 	def from_samples(cls, Chunk samples, unsigned int channel_count, unsigned int sample_rate):
 		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
@@ -190,14 +169,11 @@ cdef class SoundBuffer:
 
 		del p
 		raise IOError(pop_error_message())
-		
-	def save_to_file(self, filename):
-		cdef char* encoded_filename	
-			
-		encoded_filename_temporary = filename.encode('UTF-8')	
-		encoded_filename = encoded_filename_temporary
-		
-		self.p_this.saveToFile(encoded_filename)
+
+	@classmethod
+	def load_from_samples(cls, Chunk samples, unsigned int channel_count, unsigned int sample_rate):
+		warn('Please use SoundBuffer.from_samples() instead.', DeprecationWarning)
+		cls.from_samples(samples, channel_count, sample_rate)
 		
 	def to_file(self, filename):
 		cdef char* encoded_filename	
@@ -206,6 +182,10 @@ cdef class SoundBuffer:
 		encoded_filename = encoded_filename_temporary
 		
 		self.p_this.saveToFile(encoded_filename)
+
+	def save_to_file(self, filename):
+		warn('Please use SoundBuffer.to_file() instead.', DeprecationWarning)
+		self.to_file(filename)
 
 	property samples:
 		def __get__(self):
@@ -410,19 +390,6 @@ cdef class Music(SoundStream):
 		del self.p_this
 
 	@classmethod
-	def open_from_file(cls, filename):
-		cdef daudio.Music *p = new daudio.Music()
-		cdef char* encoded_filename	
-
-		encoded_filename_temporary = filename.encode('UTF-8')	
-		encoded_filename = encoded_filename_temporary
-		
-		if p.openFromFile(encoded_filename): return wrap_music(p)
-		
-		del p
-		raise IOError(pop_error_message())
-		
-	@classmethod
 	def from_file(cls, filename):
 		cdef daudio.Music *p = new daudio.Music()
 		cdef char* encoded_filename	
@@ -436,14 +403,10 @@ cdef class Music(SoundStream):
 		raise IOError(pop_error_message())
 
 	@classmethod
-	def open_from_memory(cls, bytes data):
-		cdef daudio.Music *p = new daudio.Music()
+	def open_from_file(cls, filename):
+		warn('Please use Music.from_file instead.', DeprecationWarning)
+		cls.from_file(filename)
 
-		if p.openFromMemory(<char*>data, len(data)): return wrap_music(p)
-
-		del p
-		raise IOError(pop_error_message())
-		
 	@classmethod
 	def from_memory(cls, bytes data):
 		cdef daudio.Music *p = new daudio.Music()
@@ -452,6 +415,11 @@ cdef class Music(SoundStream):
 
 		del p
 		raise IOError(pop_error_message())
+
+	@classmethod
+	def open_from_memory(cls, bytes data):
+		warn('Please use Music.from_memory instead.', DeprecationWarning)
+		cls.from_memory(data)
 		
 	property duration:
 		def __get__(self):
