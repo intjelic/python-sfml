@@ -178,7 +178,11 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return self
 
 	def __idiv__(self, other):
-		if all([type(i) in [int, long] for i in other]):
+		if type(other) in [int, long]:
+			return self.__ifloordiv__(other)
+		elif type(other) in [float, complex]:
+			return self.__itruediv__(other)
+		elif all([type(i) in [int, long] for i in other]):
 			return self.__ifloordiv__(other)
 		else:
 			return self.__itruediv__(other)
@@ -245,83 +249,145 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		else: raise IndexError
 		
 	def __add__(self, other):
-		return Vector3(self[0] + other[0], 
-					   self[1] + other[1], self[2] + other[2])
+		if type(other) in [int, float, long, complex]:
+			return Vector3(self[0] + other, 
+						   self[1] + other, self[2] + other)
+		else:
+			return Vector3(self[0] + other[0], 
+						   self[1] + other[1], self[2] + other[2])
 
 	def __sub__(self, other):
-		return Vector3(self[0] - other[0], 
-					   self[1] - other[1], self[2] - other[2])
+		if type(other) in [int, float, long, complex]:
+			return Vector3(self[0] - other, 
+						   self[1] - other, self[2] - other)
+		else:
+			return Vector3(self[0] - other[0], 
+						   self[1] - other[1], self[2] - other[2])
 
 	def __mul__(self, other):
-		return Vector3(self[0] * other[0], 
-					   self[1] * other[1], self[2] * other[2])
+		if type(other) in [int, float, long, complex]:
+			return Vector3(self[0] * other, 
+						   self[1] * other, self[2] * other)
+		else:
+			return Vector3(self[0] * other[0], 
+						   self[1] * other[1], self[2] * other[2])
 		
 	def __truediv__(self, other):
-		return Vector3(self[0] / other[0], 
-					   self[1] / other[1], self[2] / other[2])
+		if type(other) in [int, float, long, complex]:
+			return Vector3(self[0] / other, 
+						   self[1] / other, self[2] / other)
+		else:
+			return Vector3(self[0] / other[0], 
+						   self[1] / other[1], self[2] / other[2])
 		
 	def __floordiv__(self, other):
-		return Vector3(self[0] // other[0], 
-					   self[1] // other[1], self[2] // other[2])
+		if type(other) in [int, float, long, complex]:
+			return Vector3(self[0] // other, 
+						   self[1] // other, self[2] // other)
+		else:
+			return Vector3(self[0] // other[0], 
+						   self[1] // other[1], self[2] // other[2])
 
 	def __div__(self, other):
-		if all([type(i) in [int, long] for i in other]):
+		if type(other) in [int, long]:
+			return self.__floordiv__(other)
+		elif type(other) in [float, complex]:
+			return self.__truediv__(other)
+		elif all([type(i) in [int, long] for i in other]):
 			return self.__floordiv__(other)
 		else:
 			return self.__truediv__(other)
 
 	def __mod__(self, other):
-		return Vector3(self[0] % other[0], 
-					   self[1] % other[1], self[2] % other[2])
+		if type(other) in [int, float, long, complex]:
+			return Vector3(self[0] % other, 
+						   self[1] % other, self[2] % other)
+		else:
+			return Vector3(self[0] % other[0], 
+						   self[1] % other[1], self[2] % other[2])
 		
 	def __divmod__(self, other):
 		return self // other, self % other
 		
 	def __iadd__(self, other):
-		self[0] += other[0]
-		self[1] += other[1]
-		self[2] += other[2]
+		if type(other) in [int, float, long, complex]:
+			self[0] += other
+			self[1] += other
+			self[2] += other
+		else:
+			self[0] += other[0]
+			self[1] += other[1]
+			self[2] += other[2]
 
 		return self
 		
 	def __isub__(self, other):
-		self[0] -= other[0]
-		self[1] -= other[1]
-		self[2] -= other[2]
+		if type(other) in [int, float, long, complex]:
+			self[0] -= other
+			self[1] -= other
+			self[2] -= other
+		else:
+			self[0] -= other[0]
+			self[1] -= other[1]
+			self[2] -= other[2]
 
 		return self
 		
 	def __imul__(self, other):
-		self[0] *= other[0]
-		self[1] *= other[1]
-		self[2] *= other[2]
+		if type(other) in [int, float, long, complex]:
+			self[0] *= other
+			self[1] *= other
+			self[2] *= other
+		else:
+			self[0] *= other[0]
+			self[1] *= other[1]
+			self[2] *= other[2]
 
 		return self
 		
 	def __itruediv__(self, other):
-		self[0] /= other[0]
-		self[1] /= other[1]
-		self[2] /= other[2]
+		if type(other) in [int, float, long, complex]:
+			self[0] /= other
+			self[1] /= other
+			self[2] /= other
+		else:
+			self[0] /= other[0]
+			self[1] /= other[1]
+			self[2] /= other[2]
 
 		return self
 		
 	def __ifloordiv__(self, other):
-		self[0] //= other[0]
-		self[1] //= other[1]
-		self[2] //= other[2]
+		if type(other) in [int, float, long, complex]:
+			self[0] //= other
+			self[1] //= other
+			self[2] //= other
+		else:
+			self[0] //= other[0]
+			self[1] //= other[1]
+			self[2] //= other[2]
 
 		return self
 
 	def __div__(self, other):
-		if all([type(i) in [int, long] for i in other]):
+		if type(other) in [int, long]:
+			return self.__ifloordiv__(other)
+		elif type(other) in [float, complex]:
+			return self.__itruediv__(other)
+		elif all([type(i) in [int, long] for i in other]):
 			return self.__ifloordiv__(other)
 		else:
 			return self.__itruediv__(other)
 		
 	def __imod__(self, other):
-		self[0] %= other[0]
-		self[1] %= other[1]
-		self[2] %= other[2]
+		if type(other) in [int, float, long, complex]:
+			self[0] %= other
+			self[1] %= other
+			self[2] %= other
+		else:
+			self[0] %= other[0]
+			self[1] %= other[1]
+			self[2] %= other[2]
 
 		return self
 
