@@ -79,59 +79,106 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		else: raise IndexError
 		
 	def __add__(self, other):
-		return Vector2(self[0] + other[0], self[1] + other[1])
+		if type(other) in [int, float, long, complex]:
+			return Vector2(self[0] + other, self[1] + other)
+		else:
+			return Vector2(self[0] + other[0], self[1] + other[1])
 
 	def __sub__(self, other):
-		return Vector2(self[0] - other[0], self[1] - other[1])
+		if type(other) in [int, float, long, complex]:
+			return Vector2(self[0] - other, self[1] - other)
+		else:
+			return Vector2(self[0] - other[0], self[1] - other[1])
 		
 	def __mul__(self, other):
-		return Vector2(self[0] * other[0], self[1] * other[1])
+		if type(other) in [int, float, long, complex]:
+			return Vector2(self[0] * other, self[1] * other)
+		else:
+			return Vector2(self[0] * other[0], self[1] * other[1])
 		
 	def __truediv__(self, other):
-		return Vector2(self[0] / other[0], self[1] / other[1])
+		if type(other) in [int, float, long, complex]:
+			return Vector2(self[0] / other, self[1] / other)
+		else:
+			return Vector2(self[0] / other[0], self[1] / other[1])
 			
 	def __floordiv__(self, other):
-		return Vector2(self[0] // other[0], self[1] // other[1])
+		if type(other) in [int, float, long, complex]:
+			return Vector2(self[0] // other, self[1] // other)
+		else:
+			return Vector2(self[0] // other[0], self[1] // other[1])
 
 	def __div__(self, other):
-		if all([type(i) in [int, long] for i in other]):
+		if type(other) in [int, long]:
+			return self.__floordiv__(other)
+		elif type(other) in [float, complex]:
+			return self.__truediv__(other)
+		elif all([type(i) in [int, long] for i in other]):
 			return self.__floordiv__(other)
 		else:
 			return self.__truediv__(other)
 
 	def __mod__(self, other):
-		return Vector2(self[0] % other[0], self[1] % other[1])
+		if type(other) in [int, float, long, complex]:
+			return Vector2(self[0] % other, self[1] % other)
+		else:
+			return Vector2(self[0] % other[0], self[1] % other[1])
 		
 	def __divmod__(self, other):
-		return Vector2((self[0] // other[0], self[0] % other[0]),
-					   (self[1] // other[0], self[1] % other[1]))
+		if type(other) in [int, float, long, complex]:
+			return Vector2((self[0] // other, self[0] % other),
+						   (self[1] // other, self[1] % other))
+		else:
+			return Vector2((self[0] // other[0], self[0] % other[0]),
+						   (self[1] // other[0], self[1] % other[1]))
 		
 	def __iadd__(self, other):
-		self[0] += other[0]
-		self[1] += other[1]
+		if type(other) in [int, float, long, complex]:
+			self[0] += other
+			self[1] += other
+		else:
+			self[0] += other[0]
+			self[1] += other[1]
 
 		return self
 		
 	def __isub__(self, other):
-		self[0] -= other[0]
-		self[1] -= other[1]
+		if type(other) in [int, float, long, complex]:
+			self[0] -= other
+			self[1] -= other
+		else:
+			self[0] -= other[0]
+			self[1] -= other[1]
 
 		return self
 		
 	def __imul__(self, other):
-		self[0] *= other[0]
-		self[1] *= other[1]
+		if type(other) in [int, float, long, complex]:
+			self[0] *= other
+			self[1] *= other
+		else:
+			self[0] *= other[0]
+			self[1] *= other[1]
 
 		return self
 		
 	def __itruediv__(self, other):
-		self[0] /= other[0]
-		self[1] /= other[1]
+		if type(other) in [int, float, long, complex]:
+			self[0] /= other
+			self[1] /= other
+		else:
+			self[0] /= other[0]
+			self[1] /= other[1]
+
 		return self
 		
 	def __ifloordiv__(self, other):
-		self[0] //= other[0]
-		self[1] //= other[1]
+		if type(other) in [int, float, long, complex]:
+			self[0] //= other
+			self[1] //= other
+		else:
+			self[0] //= other[0]
+			self[1] //= other[1]
 			
 		return self
 
@@ -142,8 +189,12 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 			return self.__itruediv__(other)
 		
 	def __imod__(self, other):
-		self[0] %= other[0]
-		self[1] %= other[1]
+		if type(other) in [int, float, long, complex]:
+			self[0] %= other
+			self[1] %= other
+		else:
+			self[0] %= other[0]
+			self[1] %= other[1]
 			
 		return self
 		
