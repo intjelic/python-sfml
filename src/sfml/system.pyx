@@ -9,6 +9,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import division
+from copy import deepcopy
+from warnings import warn
 
 cimport cython
 from libcpp.string cimport string
@@ -134,7 +136,6 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		else:
 			self[0] += other[0]
 			self[1] += other[1]
-
 		return self
 		
 	def __isub__(self, other):
@@ -144,7 +145,6 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		else:
 			self[0] -= other[0]
 			self[1] -= other[1]
-
 		return self
 		
 	def __imul__(self, other):
@@ -154,7 +154,6 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		else:
 			self[0] *= other[0]
 			self[1] *= other[1]
-
 		return self
 		
 	def __itruediv__(self, other):
@@ -164,7 +163,6 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		else:
 			self[0] /= other[0]
 			self[1] /= other[1]
-
 		return self
 		
 	def __ifloordiv__(self, other):
@@ -174,7 +172,6 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		else:
 			self[0] //= other[0]
 			self[1] //= other[1]
-			
 		return self
 
 	def __idiv__(self, other):
@@ -194,7 +191,6 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		else:
 			self[0] %= other[0]
 			self[1] %= other[1]
-			
 		return self
 		
 	def __copy__(self):
@@ -204,8 +200,20 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		
 	def __deepcopy__(self):
 		cdef Vector2 p = Vector2.__new__(Vector2)
-		p.x, p.y = self
+		p.x, p.y = deepcopy(self.x), deepcopy(self.y)
 		return p
+
+	def copy(self):
+		warn("Please use python's builtin copy.copy() function instead.",
+			 DeprecationWarning)
+		return self.__copy__()
+
+	@classmethod
+	def from_tuple(cls, value):
+		warn("Please use python's builtin argument unpacking feature instead: "
+			 "Vector2(*tuple).", DeprecationWarning)
+
+		return cls(value[0], value[1])
 
 
 cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
@@ -318,7 +326,6 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[0] += other[0]
 			self[1] += other[1]
 			self[2] += other[2]
-
 		return self
 		
 	def __isub__(self, other):
@@ -330,7 +337,6 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[0] -= other[0]
 			self[1] -= other[1]
 			self[2] -= other[2]
-
 		return self
 		
 	def __imul__(self, other):
@@ -342,7 +348,6 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[0] *= other[0]
 			self[1] *= other[1]
 			self[2] *= other[2]
-
 		return self
 		
 	def __itruediv__(self, other):
@@ -354,7 +359,6 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[0] /= other[0]
 			self[1] /= other[1]
 			self[2] /= other[2]
-
 		return self
 		
 	def __ifloordiv__(self, other):
@@ -366,7 +370,6 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[0] //= other[0]
 			self[1] //= other[1]
 			self[2] //= other[2]
-
 		return self
 
 	def __div__(self, other):
@@ -388,7 +391,6 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[0] %= other[0]
 			self[1] %= other[1]
 			self[2] %= other[2]
-
 		return self
 
 	def __copy__(self):
@@ -398,9 +400,21 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		
 	def __deepcopy__(self):
 		cdef Vector3 p = Vector3.__new__(Vector3)
-		p.x, p.y, p.z = self
+		p.x, p.y, p.z = deepcopy(self.x), deepcopy(self.y), deepcopy(self.z)
 		return p
+
+	def copy(self):
+		warn("Please use python's builtin copy.copy() function instead.",
+			 DeprecationWarning)
+		return self.__copy__()
 		
+	@classmethod
+	def from_tuple(cls, value):
+		warn("Please use python's builtin argument unpacking feature instead: "
+			 "Vector3(*tuple).", DeprecationWarning)
+
+		return cls(value[0], value[1], value[3])
+
 
 cdef public class Time[type PyTimeType, object PyTimeObject]:
 	ZERO = wrap_time(<dsystem.Time*>&dsystem.time.Zero)
