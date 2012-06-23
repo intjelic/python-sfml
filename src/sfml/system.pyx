@@ -125,12 +125,7 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 			return Vector2(self[0] % other[0], self[1] % other[1])
 		
 	def __divmod__(self, other):
-		if type(other) in [int, float, long, complex]:
-			return Vector2((self[0] // other, self[0] % other),
-						   (self[1] // other, self[1] % other))
-		else:
-			return Vector2((self[0] // other[0], self[0] % other[0]),
-						   (self[1] // other[0], self[1] % other[1]))
+		return self // other, self % other
 		
 	def __iadd__(self, other):
 		if type(other) in [int, float, long, complex]:
@@ -280,9 +275,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 					   self[1] % other[1], self[2] % other[2])
 		
 	def __divmod__(self, other):
-		return Vector3((self[0] // other[0], self[0] % other[0]), 
-					   (self[1] // other[1], self[1] % other[1]),
-					   (self[2] // other[2], self[2] % other[2]))
+		return self // other, self % other
 		
 	def __iadd__(self, other):
 		self[0] += other[0]
