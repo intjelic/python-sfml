@@ -144,6 +144,7 @@ cdef class SoundBuffer:
 	@classmethod
 	def load_from_file(cls, filename):
 		warn('Please use Soundbuffer.from_file(filename) instead.', 
+			 DeprecationWarning)
 		return cls.from_file(filename)
 
 	@classmethod

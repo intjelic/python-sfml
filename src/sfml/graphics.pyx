@@ -846,7 +846,7 @@ cdef class Font:
 	@classmethod
 	def load_from_file(cls, filename):
 		warn('Please use Font.from_file(data) instead.', DeprecationWarning)
-		return self.from_file(filename)
+		return cls.from_file(filename)
 
 	@classmethod
 	def from_memory(cls, bytes data):
@@ -906,33 +906,34 @@ cdef class Shader:
 		cdef char* encoded_vertex_filename
 		cdef char* encoded_fragment_filename
 		
-		if vertex is None and fragment is None:
-			raise TypeError("This method takes at least 1 argument (0 given)")
-			
-		if vertex and fragment:
+		if vertex:
 			encoded_vertex_filename_temporary = vertex.encode('utf-8')	
 			encoded_vertex_filename = encoded_vertex_filename_temporary
-							
+
+		if fragment:
 			encoded_fragment_filename_temporary = fragment.encode('utf-8')	
 			encoded_fragment_filename = encoded_fragment_filename_temporary
-		
+
+		if vertex and fragment:
 			if p.loadFromFile(encoded_vertex_filename, encoded_fragment_filename):
 				return wrap_shader(p)
-			
-			del p
-			raise IOError(pop_error_message())
-		
-		if vertex: 
-			return Shader.vertex_from_file(vertex)
-			
+		elif vertex:
+			if p.loadFromFile(encoded_vertex_filename, dgraphics.shader.Vertex):
+				return wrap_shader(p)
 		elif fragment:
-			return Shader.fragment_from_file(fragment)
+			if p.loadFromFile(encoded_fragment_filename, dgraphics.shader.Fragment):
+				return wrap_shader(p)
+		else:
+			raise TypeError("This method takes at least 1 argument (0 given)")
 			
+		del p
+		raise IOError(pop_error_message())
+		
 	@classmethod
 	def load_from_file(cls, vertex, fragment):
 		warn('Please use Shader.from_file(vertex, fragment) instead.', 
 			 DeprecationWarning)
-		return self.from_file(vertex, fragment)
+		return cls.from_file(vertex, fragment)
 
 	@classmethod
 	def load_vertex_from_file(cls, filename):
@@ -946,6 +947,7 @@ cdef class Shader:
 			 DeprecationWarning)
 		return cls.from_file(vertex=filename)
 
+	
 	@classmethod
 	def load_fragment_from_file(cls, filename):
 		warn('Please use Shader.from_file(fragment=filename) instead.', 
@@ -956,7 +958,7 @@ cdef class Shader:
 	def fragment_from_file(cls, filename):
 		warn('Please use Shader.from_file(fragment=filename) instead.', 
 			 DeprecationWarning)
-		retun cls.from_file(fragment=filename)
+		return cls.from_file(fragment=filename)
 		
 	@classmethod
 	def from_memory(cls, char* vertex=NULL, char* fragment=NULL):
