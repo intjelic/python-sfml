@@ -30,7 +30,7 @@ def play_sound():
 		sf.sleep(sf.milliseconds(100))
 
 def play_music():
-	# load an ogg music file
+	# load an ogg music file    
 	music = sf.Music.from_file("data/orchestral.ogg")
 
 	# display music informations
@@ -49,6 +49,6 @@ def play_music():
 
 if __name__ == "__main__":
 	play_sound()
-	#play_music()
+	play_music()
 
 	input("Press enter to exit...")
