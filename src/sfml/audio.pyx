@@ -143,8 +143,8 @@ cdef class SoundBuffer:
 
 	@classmethod
 	def load_from_file(cls, filename):
-		warn('Please use SoundBuffer.from_file() instead.', DeprecationWarning)
-		cls.from_file(filename)
+		warn('Please use Soundbuffer.from_file(filename) instead.', 
+		return cls.from_file(filename)
 
 	@classmethod
 	def from_memory(cls, bytes data):
@@ -157,8 +157,9 @@ cdef class SoundBuffer:
 
 	@classmethod
 	def load_from_memory(cls, bytes data):
-		warn('Please use SoundBuffer.from_memory() instead.', DeprecationWarning)
-		cls.from_memory(data)
+		warn('Please use Soundbuffer.from_memory(data) instead.', 
+			 DeprecationWarning)
+		return cls.from_memory(data)
 
 	@classmethod
 	def from_samples(cls, Chunk samples, unsigned int channel_count, unsigned int sample_rate):
@@ -172,8 +173,9 @@ cdef class SoundBuffer:
 
 	@classmethod
 	def load_from_samples(cls, Chunk samples, unsigned int channel_count, unsigned int sample_rate):
-		warn('Please use SoundBuffer.from_samples() instead.', DeprecationWarning)
-		cls.from_samples(samples, channel_count, sample_rate)
+		warn('Please use Soundbuffer.from_samples(samples, channel_count, sample_rate) instead.', 
+			 DeprecationWarning)
+		return cls.from_samples(samples, channel_count, sample_rate)
 		
 	def to_file(self, filename):
 		cdef char* encoded_filename	
@@ -184,8 +186,8 @@ cdef class SoundBuffer:
 		self.p_this.saveToFile(encoded_filename)
 
 	def save_to_file(self, filename):
-		warn('Please use SoundBuffer.to_file() instead.', DeprecationWarning)
-		self.to_file(filename)
+		warn('Please use Music.to_file(filename) instead.', DeprecationWarning)
+		return self.to_file(filename)
 
 	property samples:
 		def __get__(self):
@@ -403,11 +405,6 @@ cdef class Music(SoundStream):
 		raise IOError(pop_error_message())
 
 	@classmethod
-	def open_from_file(cls, filename):
-		warn('Please use Music.from_file instead.', DeprecationWarning)
-		cls.from_file(filename)
-
-	@classmethod
 	def from_memory(cls, bytes data):
 		cdef daudio.Music *p = new daudio.Music()
 
@@ -418,8 +415,8 @@ cdef class Music(SoundStream):
 
 	@classmethod
 	def open_from_memory(cls, bytes data):
-		warn('Please use Music.from_memory instead.', DeprecationWarning)
-		cls.from_memory(data)
+		warn('Please use Music.from_memory(data) instead.', DeprecationWarning)
+		return cls.from_memory(data)
 		
 	property duration:
 		def __get__(self):

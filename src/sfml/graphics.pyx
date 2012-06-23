@@ -8,6 +8,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from warnings import warn
+
 cimport cython
 from cython.operator cimport dereference as deref
 from cython.operator cimport preincrement as inc
@@ -436,17 +438,6 @@ cdef class Image:
 		return wrap_image(p)
 
 	@classmethod
-	def create_from_pixels(cls, Pixels pixels):
-		cdef dgraphics.Image *p
-		
-		if pixels.p_array != NULL:
-			p = new dgraphics.Image()
-			p.create(pixels.m_width, pixels.m_height, pixels.p_array)
-			return wrap_image(p)
-			
-		raise SFMLException("sf.Pixels's array points on NULL - It would create an empty image")
-		
-	@classmethod
 	def from_pixels(cls, Pixels pixels):
 		cdef dgraphics.Image *p
 		
@@ -458,19 +449,10 @@ cdef class Image:
 		raise SFMLException("sf.Pixels's array points on NULL - It would create an empty image")
 
 	@classmethod
-	def load_from_file(cls, filename):
-		cdef dgraphics.Image *p = new dgraphics.Image()
-		cdef char* encoded_filename	
+	def create_from_pixels(cls, Pixels pixels):
+		warn('Please use Image.from_pixels(pixels) instead.', DeprecationWarning)
+		return cls.from_pixels(pixels)
 
-		encoded_filename_temporary = filename.encode('UTF-8')	
-		encoded_filename = encoded_filename_temporary
-
-		if p.loadFromFile(encoded_filename):
-			return wrap_image(p)
-			
-		del p
-		raise IOError(pop_error_message())
-		
 	@classmethod
 	def from_file(cls, filename):
 		cdef dgraphics.Image *p = new dgraphics.Image()
@@ -486,15 +468,10 @@ cdef class Image:
 		raise IOError(pop_error_message())
 
 	@classmethod
-	def load_from_memory(cls, bytes data):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+	def load_from_file(cls, filename):
+		warn('Please use Image.from_file(filename) instead.', DeprecationWarning)
+		return cls.from_file(filename)
 
-		if p.loadFromMemory(<char*>data, len(data)):
-			return wrap_image(p)
-			
-		del p
-		raise IOError(pop_error_message())
-		
 	@classmethod
 	def from_memory(cls, bytes data):
 		cdef dgraphics.Image *p = new dgraphics.Image()
@@ -505,14 +482,11 @@ cdef class Image:
 		del p
 		raise IOError(pop_error_message())
 
-	def save_to_file(self, filename):
-		cdef char* encoded_filename	
-			
-		encoded_filename_temporary = filename.encode('UTF-8')	
-		encoded_filename = encoded_filename_temporary
+	@classmethod
+	def load_from_memory(cls, bytes data):
+		warn('Please use Image.from_memory(data) instead.', DeprecationWarning)
+		return cls.from_memory(data)
 
-		if not self.p_this.saveToFile(encoded_filename): raise IOError(pop_error_message())
-	
 	def to_file(self, filename):
 		cdef char* encoded_filename	
 			
@@ -520,6 +494,11 @@ cdef class Image:
 		encoded_filename = encoded_filename_temporary
 
 		if not self.p_this.saveToFile(encoded_filename): raise IOError(pop_error_message())
+
+	def save_to_file(self, filename):
+		warn('Please use Image.to_file(filename) instead.', DeprecationWarning)
+		return self.to_file(filename)
+
 	
 	property size:
 		def __get__(self):
@@ -569,6 +548,7 @@ cdef class Image:
 		cdef dgraphics.Image *p = new dgraphics.Image()
 		p[0] = self.p_this[0]
 		return wrap_image(p)
+
 
 cdef Image wrap_image(dgraphics.Image *p):
 	cdef Image r = Image.__new__(Image)
@@ -620,23 +600,6 @@ cdef class Texture:
 		raise SFMLException()
 
 	@classmethod
-	def load_from_file(cls, filename, area=None):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
-		cdef char* encoded_filename
-		
-		encoded_filename_temporary = filename.encode('UTF-8')	
-		encoded_filename = encoded_filename_temporary
-		
-		if not area:
-			if p.loadFromFile(encoded_filename): return wrap_texture(p)
-		else:
-			l, t, w, h = area
-			if p.loadFromFile(encoded_filename, dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
-			
-		del p
-		raise IOError(pop_error_message())
-		
-	@classmethod
 	def from_file(cls, filename, area=None):
 		cdef dgraphics.Texture *p = new dgraphics.Texture()
 		cdef char* encoded_filename
@@ -654,18 +617,10 @@ cdef class Texture:
 		raise IOError(pop_error_message())
 
 	@classmethod
-	def load_from_memory(cls, bytes data, area=None):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
-		
-		if not area:
-			if p.loadFromMemory(<char*>data, len(data)): return wrap_texture(p)
-		else:
-			l, t, w, h = area
-			if p.loadFromMemory(<char*>data, len(data), dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
-	
-		del p
-		raise IOError(pop_error_message())
-		
+	def load_from_file(cls, filename, area=None):
+		warn('Please use Texture.from_file(filename, area) instead.', DeprecationWarning)
+		return cls.from_file(filename, area)
+
 	@classmethod
 	def from_memory(cls, bytes data, area=None):
 		cdef dgraphics.Texture *p = new dgraphics.Texture()
@@ -678,19 +633,11 @@ cdef class Texture:
 	
 		del p
 		raise IOError(pop_error_message())
-		
+
 	@classmethod
-	def load_from_image(cls, Image image, area=None):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
-		
-		if not area:
-			if p.loadFromImage(image.p_this[0]): return wrap_texture(p)
-		else:
-			l, t, w, h = area
-			if p.loadFromImage(image.p_this[0], dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
-		
-		del p
-		raise IOError(pop_error_message())
+	def load_from_memory(cls, bytes data, area=None):
+		warn('Please use Texture.from_memory(data, area) instead.', DeprecationWarning)
+		return cls.from_memory(data, area)
 		
 	@classmethod
 	def from_image(cls, Image image, area=None):
@@ -704,6 +651,11 @@ cdef class Texture:
 		
 		del p
 		raise IOError(pop_error_message())
+
+	@classmethod
+	def load_from_image(cls, Image image, area=None):
+		warn('Please use Texture.from_image(image, area) instead.', DeprecationWarning)
+		return cls.from_image(image, area)
 
 	property size:
 		def __get__(self):
@@ -735,6 +687,10 @@ cdef class Texture:
 		cdef dgraphics.Image *p = new dgraphics.Image()
 		p[0] = self.p_this.copyToImage()
 		return wrap_image(p)
+
+	def copy_to_image(self):
+		warn('Please use Texture.to_image() instead.', DeprecationWarning)
+		return self.to_image()
 	
 	def update(self, *args, **kwargs):
 		if len(args) == 0:
@@ -874,20 +830,6 @@ cdef class Font:
 		if self.delete_this: del self.p_this
 
 	@classmethod
-	def load_from_file(cls, filename):
-		cdef dgraphics.Font *p = new dgraphics.Font()
-		cdef char* encoded_filename	
-
-		encoded_filename_temporary = filename.encode('UTF-8')	
-		encoded_filename = encoded_filename_temporary
-
-		if p.loadFromFile(encoded_filename):
-			return wrap_font(p)
-
-		del p
-		raise IOError(pop_error_message())
-	
-	@classmethod
 	def from_file(cls, filename):
 		cdef dgraphics.Font *p = new dgraphics.Font()
 		cdef char* encoded_filename	
@@ -902,15 +844,10 @@ cdef class Font:
 		raise IOError(pop_error_message())
 	
 	@classmethod
-	def load_from_memory(cls, bytes data):
-		cdef dgraphics.Font *p = new dgraphics.Font()
+	def load_from_file(cls, filename):
+		warn('Please use Font.from_file(data) instead.', DeprecationWarning)
+		return self.from_file(filename)
 
-		if p.loadFromMemory(<char*>data, len(data)):
-			return wrap_font(p)
-			
-		del p
-		raise IOError(pop_error_message())
-		
 	@classmethod
 	def from_memory(cls, bytes data):
 		cdef dgraphics.Font *p = new dgraphics.Font()
@@ -920,6 +857,11 @@ cdef class Font:
 			
 		del p
 		raise IOError(pop_error_message())
+
+	@classmethod
+	def load_from_memory(cls, bytes data):
+		warn('Please use Font.from_memory(data) instead.', DeprecationWarning)
+		return cls.from_memory(data)
 
 	def get_glyph(self, Uint32 code_point, unsigned int character_size, bint bold):
 		cdef dgraphics.Glyph *p = new dgraphics.Glyph()
@@ -987,78 +929,34 @@ cdef class Shader:
 			return Shader.fragment_from_file(fragment)
 			
 	@classmethod
-	def load_from_file(cls, vertex_filename, fragment_filename):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
-		cdef char* encoded_vertex_filename
-		cdef char* encoded_fragment_filename
-		
-		encoded_vertex_filename_temporary = vertex_filename.encode('utf-8')	
-		encoded_vertex_filename = encoded_vertex_filename_temporary
-						
-		encoded_fragment_filename_temporary = fragment_filename.encode('utf-8')	
-		encoded_fragment_filename = encoded_fragment_filename_temporary
-	
-		if p.loadFromFile(encoded_vertex_filename, encoded_fragment_filename):
-			return wrap_shader(p)
-		
-		del p
-		raise IOError(pop_error_message())
-		
+	def load_from_file(cls, vertex, fragment):
+		warn('Please use Shader.from_file(vertex, fragment) instead.', 
+			 DeprecationWarning)
+		return self.from_file(vertex, fragment)
+
 	@classmethod
 	def load_vertex_from_file(cls, filename):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
-		cdef char* encoded_filename
-		
-		encoded_filename_temporary = filename.encode('utf-8')	
-		encoded_filename = encoded_filename_temporary
-		
-		if p.loadFromFile(encoded_filename, dgraphics.shader.Vertex):
-			return wrap_shader(p)
-		
-		del p
-		raise IOError(pop_error_message())
+		warn('Please use Shader.from_file(vertex=filename) instead.', 
+			 DeprecationWarning)
+		return cls.from_file(vertex=filename)
 		
 	@classmethod
 	def vertex_from_file(cls, filename):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
-		cdef char* encoded_filename
-		
-		encoded_filename_temporary = filename.encode('utf-8')	
-		encoded_filename = encoded_filename_temporary
-		
-		if p.loadFromFile(encoded_filename, dgraphics.shader.Vertex):
-			return wrap_shader(p)
-		
-		del p
-		raise IOError(pop_error_message())
+		warn('Please use Shader.from_file(vertex=filename) instead.', 
+			 DeprecationWarning)
+		return cls.from_file(vertex=filename)
 
 	@classmethod
 	def load_fragment_from_file(cls, filename):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
-		cdef char* encoded_filename
-		
-		encoded_filename_temporary = filename.encode('utf-8')	
-		encoded_filename = encoded_filename_temporary
-		
-		if p.loadFromFile(encoded_filename, dgraphics.shader.Fragment):
-			return wrap_shader(p)
-		
-		del p
-		raise IOError(pop_error_message())
+		warn('Please use Shader.from_file(fragment=filename) instead.', 
+			 DeprecationWarning)
+		return cls.from_file(fragment=filename)
 		
 	@classmethod
 	def fragment_from_file(cls, filename):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
-		cdef char* encoded_filename
-		
-		encoded_filename_temporary = filename.encode('utf-8')	
-		encoded_filename = encoded_filename_temporary
-		
-		if p.loadFromFile(encoded_filename, dgraphics.shader.Fragment):
-			return wrap_shader(p)
-		
-		del p
-		raise IOError(pop_error_message())
+		warn('Please use Shader.from_file(fragment=filename) instead.', 
+			 DeprecationWarning)
+		retun cls.from_file(fragment=filename)
 		
 	@classmethod
 	def from_memory(cls, char* vertex=NULL, char* fragment=NULL):
@@ -1081,53 +979,28 @@ cdef class Shader:
 
 	@classmethod
 	def load_from_memory(cls, char* vertex, char* fragment):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
-
-		if p.loadFromMemory(vertex, fragment):
-			return wrap_shader(p)
-			
-		del p
-		raise IOError(pop_error_message())
+		warn('Please use Shader.from_memory(vertex, fragment) instead.', DeprecationWarning)
+		return cls.from_memory(vertex, fragment)
 		
 	@classmethod
 	def load_vertex_from_memory(cls, char* vertex):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
-
-		if p.loadFromMemory(vertex, dgraphics.shader.Vertex):
-			return wrap_shader(p)
-			
-		del p
-		raise IOError(pop_error_message())
+		warn('Please use Shader.from_memory(vertex=vertex) instead.', DeprecationWarning)
+		return cls.from_memory(vertex=vertex)
 		
 	@classmethod
 	def vertex_from_memory(cls, char* vertex):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
-
-		if p.loadFromMemory(vertex, dgraphics.shader.Vertex):
-			return wrap_shader(p)
-			
-		del p
-		raise IOError(pop_error_message())
+		warn('Please use Shader.from_memory(vertex=vertex) instead.', DeprecationWarning)
+		return cls.from_memory(vertex=vertex)
 		
 	@classmethod
 	def load_fragment_from_memory(cls, char* fragment):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
-
-		if p.loadFromMemory(fragment, dgraphics.shader.Fragment):
-			return wrap_shader(p)
-			
-		del p
-		raise IOError(pop_error_message())
+		warn('Please use Shader.from_memory(fragment=fragment) instead.', DeprecationWarning)
+		return cls.from_memory(fragment=fragment)
 		
 	@classmethod
 	def fragment_from_memory(cls, char* fragment):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
-
-		if p.loadFromMemory(fragment, dgraphics.shader.Fragment):
-			return wrap_shader(p)
-			
-		del p
-		raise IOError(pop_error_message())
+		warn('Please use Shader.from_memory(fragment=fragment) instead.', DeprecationWarning)
+		return cls.from_memory(fragment=fragment)
 
 	def set_parameter(self, *args, **kwargs):
 		if len(args) == 0:
