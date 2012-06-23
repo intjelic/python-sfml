@@ -156,7 +156,7 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		cdef Vector2 p = Vector2.__new__(Vector2)
 		p.x, p.y = self
 		return p
-		
+
 
 cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 	cdef public object x
@@ -199,72 +199,86 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		else: raise IndexError
 		
 	def __add__(self, other):
-		x, y, z = other
-		return Vector3(self.x + x, self.y + y, self.z + z)
+		return Vector3(self[0] + other[0], 
+					   self[1] + other[1], self[2] + other[2])
 
 	def __sub__(self, other):
-		x, y, z = other
-		return Vector3(self.x - x, self.y - y, self.z - z)
+		return Vector3(self[0] - other[0], 
+					   self[1] - other[1], self[2] - other[2])
 
 	def __mul__(self, other):
-		x, y, z = other
-		return Vector3(self.x * x, self.y * y, self.z * z)
+		return Vector3(self[0] * other[0], 
+					   self[1] * other[1], self[2] * other[2])
 		
 	def __truediv__(self, other):
-		x, y, z = other
-		return Vector3(self.x / x, self.y / y, self.z / z)
+		return Vector3(self[0] / other[0], 
+					   self[1] / other[1], self[2] / other[2])
 		
 	def __floordiv__(self, other):
-		x, y, z = other
-		return Vector3(self.x // x, self.y // y, self.z // z)
+		return Vector3(self[0] // other[0], 
+					   self[1] // other[1], self[2] // other[2])
+
+	def __div__(self, other):
+		if all([type(i) in [int, long] for i in other]):
+			return self.__floordiv__(other)
+		else:
+			return self.__truediv__(other)
 
 	def __mod__(self, other):
-		x, y, z = other
-		return Vector3(self.x % x, self.y % y, self.z % z)
+		return Vector3(self[0] % other[0], 
+					   self[1] % other[1], self[2] % other[2])
 		
 	def __divmod__(self, other):
-		return self // other, self % other
+		return Vector3((self[0] // other[0], self[0] % other[0]), 
+					   (self[1] // other[1], self[1] % other[1]),
+					   (self[2] // other[2], self[2] % other[2]))
 		
 	def __iadd__(self, other):
-		x, y, z = other
-		self.x += x
-		self.y += y
-		self.z += z
+		self[0] += other[0]
+		self[1] += other[1]
+		self[2] += other[2]
+
 		return self
 		
 	def __isub__(self, other):
-		x, y, z = other
-		self.x -= x
-		self.y -= y
-		self.z -= z
+		self[0] -= other[0]
+		self[1] -= other[1]
+		self[2] -= other[2]
+
 		return self
 		
 	def __imul__(self, other):
-		x, y, z = other
-		self.x *= x
-		self.y *= y
-		self.z *= z
+		self[0] *= other[0]
+		self[1] *= other[1]
+		self[2] *= other[2]
+
 		return self
 		
 	def __itruediv__(self, other):
-		x, y, z = other
-		self.x /= x
-		self.y /= y
-		self.z /= z
+		self[0] /= other[0]
+		self[1] /= other[1]
+		self[2] /= other[2]
+
 		return self
 		
 	def __ifloordiv__(self, other):
-		x, y, z = other
-		self.x //= x
-		self.y //= y
-		self.z //= z
+		self[0] //= other[0]
+		self[1] //= other[1]
+		self[2] //= other[2]
+
 		return self
+
+	def __div__(self, other):
+		if all([type(i) in [int, long] for i in other]):
+			return self.__ifloordiv__(other)
+		else:
+			return self.__itruediv__(other)
 		
 	def __imod__(self, other):
-		x, y, z = other
-		self.x %= x
-		self.y %= y
-		self.z %= z
+		self[0] %= other[0]
+		self[1] %= other[1]
+		self[2] %= other[2]
+
 		return self
 
 	def __copy__(self):
