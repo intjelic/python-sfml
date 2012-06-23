@@ -8,6 +8,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import division
+
 cimport cython
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -77,83 +79,71 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		else: raise IndexError
 		
 	def __add__(self, other):
-		x, y = other
-		return Vector2(self.x + x, self.y + y)
+		return Vector2(self[0] + other[0], self[1] + other[1])
 
 	def __sub__(self, other):
-		x, y = other
-		return Vector2(self.x - x, self.y - y)
+		return Vector2(self[0] - other[0], self[1] - other[1])
 		
 	def __mul__(self, other):
-		if type(other) in [int, float]:
-			return Vector2(self.x * other, self.y * other)
-		else:
-			x, y = other
-			return Vector2(self.x * x, self.y * y)
+		return Vector2(self[0] * other[0], self[1] * other[1])
 		
 	def __truediv__(self, other):
-		x, y = other
-		return Vector2(self.x / x, self.y / y)
+		return Vector2(self[0] / other[0], self[1] / other[1])
 			
 	def __floordiv__(self, other):
-		x, y = other
-		return Vector2(self.x // x, self.y // y)
+		return Vector2(self[0] // other[0], self[1] // other[1])
+
+	def __div__(self, other):
+		if all([type(i) in [int, long] for i in other]):
+			return self.__floordiv__(other)
+		else:
+			return self.__truediv__(other)
 
 	def __mod__(self, other):
-		if type(other) in [int, float]:
-			return Vector2(self.x % other, self.y % other)
-		else:
-			x, y = other
-			return Vector2(self.x % x, self.y % y)
+		return Vector2(self[0] % other[0], self[1] % other[1])
 		
 	def __divmod__(self, other):
-		return self // other, self % other
+		return Vector2((self[0] // other[0], self[0] % other[0]),
+					   (self[1] // other[0], self[1] % other[1]))
 		
 	def __iadd__(self, other):
-		x, y = other
-		self.x += x
-		self.y += y
+		self[0] += other[0]
+		self[1] += other[1]
+
 		return self
 		
 	def __isub__(self, other):
-		x, y = other
-		self.x -= x
-		self.y -= y
+		self[0] -= other[0]
+		self[1] -= other[1]
+
 		return self
 		
 	def __imul__(self, other):
-		if type(other) in [int, float]:
-			self.x *= other
-			self.y *= other
-		else:
-			x, y = other
-			self.x *= x
-			self.y *= y
-			
+		self[0] *= other[0]
+		self[1] *= other[1]
+
 		return self
 		
 	def __itruediv__(self, other):
-		x, y = other
-		self.x /= x
-		self.y /= y
-			
+		self[0] /= other[0]
+		self[1] /= other[1]
 		return self
 		
 	def __ifloordiv__(self, other):
-		x, y = other
-		self.x //= x
-		self.y //= y
+		self[0] //= other[0]
+		self[1] //= other[1]
 			
 		return self
+
+	def __idiv__(self, other):
+		if all([type(i) in [int, long] for i in other]):
+			return self.__ifloordiv__(other)
+		else:
+			return self.__itruediv__(other)
 		
 	def __imod__(self, other):
-		if type(other) in [int, float]:
-			self.x %= other
-			self.y %= other
-		else:
-			x, y = other
-			self.x %= x
-			self.y %= y
+		self[0] %= other[0]
+		self[1] %= other[1]
 			
 		return self
 		
@@ -167,16 +157,7 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		p.x, p.y = self
 		return p
 		
-	def copy(self):
-		cdef Vector2 p = Vector2.__new__(Vector2)
-		p.x, p.y = self
-		return p
-	
-	@classmethod
-	def from_tuple(cls, value):
-		x, y = value
-		return cls(x, y)
-		
+
 cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 	cdef public object x
 	cdef public object y
@@ -296,16 +277,6 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		p.x, p.y, p.z = self
 		return p
 		
-	def copy(self):
-		cdef Vector3 p = Vector3.__new__(Vector3)
-		p.x, p.y, p.z = self
-		return p
-		
-	@classmethod
-	def from_tuple(cls, value):
-		x, y, z = value
-		return cls(x, y, z)
-
 
 cdef public class Time[type PyTimeType, object PyTimeObject]:
 	ZERO = wrap_time(<dsystem.Time*>&dsystem.time.Zero)
@@ -384,10 +355,6 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 		p[0] = self.p_this[0]
 		return wrap_time(p)
 		
-	def copy(self):
-		cdef dsystem.Time* p = new dsystem.Time()
-		p[0] = self.p_this[0]
-		return wrap_time(p)
 
 cdef api object wrap_time(dsystem.Time* p):
 	cdef Time r = Time.__new__(Time)
