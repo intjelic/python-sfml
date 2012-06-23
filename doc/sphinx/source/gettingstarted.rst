@@ -24,11 +24,11 @@ Here is the official short example to show you how simple using pySFML is.
 
    try:
    # load a sprite to display
-   texture = sfml.graphics.Texture.load_from_file("cute_image.png")
+   texture = sfml.graphics.Texture.from_file("cute_image.png")
    sprite = sfml.graphics.Sprite(texture)
 
    # create some graphical text to display
-   font = sfml.graphics.Font.load_from_file("arial.ttf")
+   font = sfml.graphics.Font.from_file("arial.ttf")
    text = sfml.graphics.Text("Hello SFML", font, 50)
 
    # load music to play
@@ -116,11 +116,11 @@ sure all operations made on the pictre were effective.
 .. code-block:: python
    :linenos:
 
-   image = sfml.graphics.Image.load_from_image("image.png")
+   image = sfml.graphics.Image.from_image("image.png")
    image.create_mask_from_color(sfml.graphics.Color.BLUE)
    image.show()
    
-   texture = sfml.graphics.Texture.load_from_image(image)
+   texture = sfml.graphics.Texture.from_image(image)
    texture.update(window, (50, 60))
    texture.copy_to_image().show()
    
@@ -129,5 +129,5 @@ Attach an icon to a Window
 
 Easily attach an icon to your window ::
 
-	icon = sfml.graphics.Image.load_from_file("data/icon.bmp")
+	icon = sfml.graphics.Image.from_file("data/icon.bmp")
 	window.icon = icon.pixels

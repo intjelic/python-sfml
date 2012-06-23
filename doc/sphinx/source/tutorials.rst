@@ -131,7 +131,7 @@ with a **try... except** statement. ::
 Note that load/open methods DO NOT raise a :exc:`sfml.system.SFMLException` but a 
 traditional **IOError**::
 
-   try: music = sfml.audio.Music.open_from_file("song.ogg")
+   try: music = sfml.audio.Music.from_file("song.ogg")
    except IOError: exit(1)
 
 

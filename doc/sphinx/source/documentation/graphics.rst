@@ -481,7 +481,7 @@ Image
    composed of 8 bits red, green, blue and alpha channels -- just like 
    an :class:`sfml.graphics.Color`. All the functions that return an array of 
    pixels follow this rule, and all parameters that you pass to 
-   :class:`sfml.graphics.Image` functions (such as :func:`load_from_pixels`) must 
+   :class:`sfml.graphics.Image` functions (such as :func:`from_pixels`) must 
    use this representation as well.
 
    A `sfml.graphics.Image` can be copied, but it is a heavy resource; keep it in 
@@ -491,7 +491,7 @@ Image
    
       try: 
          # load an image file from a file
-         background = sfml.graphics.Image.load_from_file("background.jpg")
+         background = sfml.graphics.Image.from_file("background.jpg")
          
          # create a 20x20 image filled with black color
          image = sfml.graphics.Image.create(20, 20, sfml.graphics.Color.BLACK)
@@ -530,7 +530,7 @@ Image
       :param sfml.window.Pixels pixels: Array of pixels to copy to the image
       :rtype: :class:`sfml.graphics.Image`
       
-   .. py:classmethod:: load_from_file(filename)
+   .. py:classmethod:: from_file(filename)
          
       Load the image from a file on disk.
 
@@ -542,7 +542,7 @@ Image
       :param string filename: Path of the image file to load
       :rtype: :class:`sfml.graphics.Image`
       
-   .. py:classmethod:: load_from_memory(data)
+   .. py:classmethod:: from_memory(data)
    
       Load the image from a file in memory.
 
@@ -698,7 +698,7 @@ Texture
    to perform some modifications on the pixels before creating the 
    final texture, you can load your file to an :class:`sfml.graphics.Image`, do 
    whatever you need with the pixels, and then call 
-   :func:`Texture.load_from_image`.
+   :func:`Texture.from_image`.
 
    Since they live in the graphics card memory, the pixels of a texture 
    cannot be accessed without a slow copy first. And they cannot be 
@@ -718,7 +718,7 @@ Texture
 
       #load a texture from a file
       try:
-         texture = sfml.graphics.Texture.load_from_file("texture.png")
+         texture = sfml.graphics.Texture.from_file("texture.png")
          
       except sfml.system.SFMLException: exit(1)
 
@@ -759,8 +759,8 @@ Texture
       must use a specific constructor.
       
       Those specific constructors are: :func:`create`, 
-      :func:`load_from_file`, :func:`load_from_memory`, 
-      :func:`load_from_image`.
+      :func:`from_file`, :func:`from_memory`, 
+      :func:`from_image`.
       
    .. py:data:: NORMALIZED
    
@@ -778,14 +778,14 @@ Texture
       :param integer height: Height of the texture
       :rtype: :class:`sfml.graphics.Texture`
 
-   .. py:classmethod:: load_from_file(filename[, area=(0, 0, 0, 0)])
+   .. py:classmethod:: from_file(filename[, area=(0, 0, 0, 0)])
    
       Load the texture from a file on disk.
 
       This function is a shortcut for the following code::
       
-         image = sfml.graphics.Image.load_from_file(filename)
-         texture.load_from_image(image, area)
+         image = sfml.graphics.Image.from_file(filename)
+         texture.from_image(image, area)
 
       The area argument can be used to load only a sub-rectangle of the 
       whole image. If you want the entire image then leave the default 
@@ -804,14 +804,14 @@ Texture
       :type area: :class:`sfml.graphics.Rectangle`
       :rtype: :class:`sfml.graphics.Texture`
 
-   .. py:classmethod:: load_from_memory(data, area=(0, 0, 0, 0))
+   .. py:classmethod:: from_memory(data, area=(0, 0, 0, 0))
    
       Load the texture from a file in memory.
 
       This function is a shortcut for the following code::
       
-         image = sfml.graphics.Image.load_from_memory(data)
-         texture = sfml.graphics.Texture.load_from_image(image, area)
+         image = sfml.graphics.Image.from_memory(data)
+         texture = sfml.graphics.Texture.from_image(image, area)
 
       The area argument can be used to load only a sub-rectangle of the 
       whole image. If you want the entire image then leave the default 
@@ -830,7 +830,7 @@ Texture
       :type area: :class:`sfml.graphics.Rectangle`
       :rtype: :class:`sfml.graphics.Texture`
 
-   .. py:classmethod:: load_from_image(image[, area=(0, 0, 0, 0)])
+   .. py:classmethod:: from_image(image[, area=(0, 0, 0, 0)])
    
       Load the texture from an image.
 
@@ -1007,7 +1007,7 @@ Font
       Fonts can be loaded from a file or from memory, and supports the 
       most common types of fonts.
 
-      See the :func:`load_from_file` function for the complete list of 
+      See the :func:`from_file` function for the complete list of 
       supported formats.
 
       Once it is loaded, an :class:`sfml.graphics.Font` instance provides three 
@@ -1039,7 +1039,7 @@ Font
 
          # declare a new font
          try:
-            font = sfml.graphics.Font.load_from_file("arial.ttf")
+            font = sfml.graphics.Font.from_file("arial.ttf")
             
          except sfml.system.SFMLException: exit(1) # error...
 
@@ -1066,10 +1066,10 @@ Font
       :exc:`NotImplementedError` with a message telling you that you 
       must use a specific constructor.
       
-      Those specific constructors are: :func:`load_from_file` and 
-      :func:`load_from_memory`.
+      Those specific constructors are: :func:`from_file` and 
+      :func:`from_memory`.
       
-   .. py:classmethod:: load_from_file(filename)
+   .. py:classmethod:: from_file(filename)
 
       Load the font from a file.
 
@@ -1084,7 +1084,7 @@ Font
       :param string filename: Path of the font file to load
       :rtype: :class:`sfml.graphics.Font`
       
-   .. py:classmethod:: load_from_memory(data)
+   .. py:classmethod:: from_memory(data)
 
       Load the font from a file in memory.
       
@@ -1200,11 +1200,11 @@ Shader
       :exc:`NotImplementedError` with a message telling you that you 
       must use a specific constructor.
       
-      Those specific constructors are: :func:`load_from_file`,
+      Those specific constructors are: :func:`from_file`,
       :func:`load_vertex_from_file`, :func:`load_fragment_from_file`, 
       :func:`load_vertex_from_memory` and :func:`load_fragment_from_memory`.
       
-   .. py:classmethod:: load_from_file(vertex_filename, fragment_filename)
+   .. py:classmethod:: from_file(vertex_filename, fragment_filename)
 
       Load both the vertex and fragment shaders from files.
 
@@ -1248,7 +1248,7 @@ Shader
       :param string filename: Path of the vertex file to load 
       :rtype: :class:`sfml.graphics.Shader`
       
-   .. py:classmethod:: load_from_memory(vertex_shader, fragment_shader)
+   .. py:classmethod:: from_memory(vertex_shader, fragment_shader)
    
       Load both the vertex and fragment shaders from source codes in 
       memory.
@@ -1634,7 +1634,7 @@ Sprite
    Usage examples::
    
       # declare and load a texture
-      texture = sfml.graphics.Texture.load_from_file("texture.png")
+      texture = sfml.graphics.Texture.from_file("texture.png")
 
       # create a sprite
       sprite = sfml.graphics.Sprite(texture)
@@ -1751,7 +1751,7 @@ Text
 
          # declare and load a font
          try:
-            font = sfml.graphics.Font.load_from_file("arial.ttf")
+            font = sfml.graphics.Font.from_file("arial.ttf")
             
          except sfml.system.SFMLException: exit(1)
 

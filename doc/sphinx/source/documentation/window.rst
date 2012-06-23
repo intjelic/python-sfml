@@ -303,7 +303,7 @@ Pixels
 	
 	Usage examples::
 	
-		image = sfml.graphics.Image.load_from_file("icon.png")
+		image = sfml.graphics.Image.from_file("icon.png")
 		window = sfml.graphics.Window(sfml.window.VideoMode(640, 480), "pySFML")
 
 		window.icon = image.pixels

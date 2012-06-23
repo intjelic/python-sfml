@@ -112,7 +112,7 @@ SoundBuffer
    to an :class:`sfml.graphics.Texture`.
 
    A sound buffer can be loaded from a file (see 
-   :func:`load_from_file()` for the complete list of supported 
+   :func:`from_file()` for the complete list of supported 
    formats), from memory or directly from an array of samples. It can 
    also be saved back to a file.
 
@@ -139,7 +139,7 @@ SoundBuffer
    Usage example::
 
       # load a new sound buffer from a file
-      try: buffer = sfml.audio.SoundBuffer.load_from_file("data/sound.wav")
+      try: buffer = sfml.audio.SoundBuffer.from_file("data/sound.wav")
       except sfml.system.SFMLException as error: exit()
 
       # create a sound source and bind it to the buffer
@@ -161,10 +161,10 @@ SoundBuffer
 
       If you try to instantiate an :class:`sfml.audio.SoundBuffer` directly, it 
       will raise an error saying that you have to use its specific 
-      constructors: `load_from_file`, `load_from_memory` or 
-      `load_from_samples`
+      constructors: `from_file`, `from_memory` or 
+      `from_samples`
 
-   .. py:classmethod:: load_from_file(filename)
+   .. py:classmethod:: from_file(filename)
       
       Load the sound buffer from a file.
 
@@ -175,7 +175,7 @@ SoundBuffer
       :param str filename: Path of the sound file to load
       :rtype: :class:`sfml.audio.SoundBuffer`
       
-   .. classmethod:: load_from_memory(data)
+   .. classmethod:: from_memory(data)
       
       Load the sound buffer from a file in memory.
       
@@ -186,7 +186,7 @@ SoundBuffer
       wav, flac, aiff, au, raw, paf, svx, nist, voc, ircam, w64, mat4, 
       mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64.
 
-   .. classmethod:: load_from_samples(samples, channel_count, sample_rate)
+   .. classmethod:: from_samples(samples, channel_count, sample_rate)
 
       Load the sound buffer from an array of audio samples.
 
@@ -360,7 +360,7 @@ Sound
 
    Usage example::
 
-      try: buffer = sfml.audio.SoundBuffer.load_from_file("sound.wav")
+      try: buffer = sfml.audio.SoundBuffer.from_file("sound.wav")
       except IOError: exit(1)
 
       sound = sfml.audio.Sound()
