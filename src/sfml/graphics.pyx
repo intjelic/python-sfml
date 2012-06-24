@@ -940,20 +940,7 @@ cdef class Shader:
 		return cls.from_file(vertex=filename)
 		
 	@classmethod
-	def vertex_from_file(cls, filename):
-		warn('Please use Shader.from_file(vertex=filename) instead.', 
-			 DeprecationWarning)
-		return cls.from_file(vertex=filename)
-
-	
-	@classmethod
 	def load_fragment_from_file(cls, filename):
-		warn('Please use Shader.from_file(fragment=filename) instead.', 
-			 DeprecationWarning)
-		return cls.from_file(fragment=filename)
-		
-	@classmethod
-	def fragment_from_file(cls, filename):
 		warn('Please use Shader.from_file(fragment=filename) instead.', 
 			 DeprecationWarning)
 		return cls.from_file(fragment=filename)
