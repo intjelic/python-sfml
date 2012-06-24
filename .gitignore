@@ -25,4 +25,6 @@ install*
 trash/
 
 __pycache__
+*.pyc
 *.cpp
+*.h
