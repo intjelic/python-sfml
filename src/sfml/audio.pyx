@@ -406,6 +406,12 @@ cdef class Music(SoundStream):
 		raise IOError(pop_error_message())
 
 	@classmethod
+	def load_from_file(cls, filename):
+		warn('Please use Music.from_file(filename) instead.', 
+			 DeprecationWarning)
+		return cls.from_file(filename)
+
+	@classmethod
 	def from_memory(cls, bytes data):
 		cdef daudio.Music *p = new daudio.Music()
 
