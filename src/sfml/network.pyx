@@ -47,6 +47,14 @@ cdef class IpAddress:
 	def __str__(self):
 		return self.string.decode('utf-8')
 		
+	def __richcmp__(IpAddress x, IpAddress y, int op):
+		if op == 0:   return x.p_this[0] <  y.p_this[0]
+		elif op == 2: return x.p_this[0] == y.p_this[0]
+		elif op == 4: return x.p_this[0] >  y.p_this[0]
+		elif op == 1: return x.p_this[0] <= y.p_this[0]
+		elif op == 3: return x.p_this[0] != y.p_this[0]
+		elif op == 5: return x.p_this[0] >= y.p_this[0]
+		
 	@classmethod
 	def from_string(self, _string):
 		cdef string encoded_string

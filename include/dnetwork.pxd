@@ -26,7 +26,13 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		IpAddress(Uint32)
 		string toString()
 		Uint32 toInteger()
-
+		bint operator==(IpAddress&)
+		bint operator!=(IpAddress&)
+		bint operator<(IpAddress&)
+		bint operator>(IpAddress&)
+		bint operator<=(IpAddress&)
+		bint operator>=(IpAddress&)
+		
 	cdef cppclass Socket:
 		void setBlocking(bint)
 		bint isBlocking() 
