@@ -8,7 +8,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from warnings import warn
 
 cimport cython
 from cython.operator cimport dereference as deref
@@ -33,6 +32,7 @@ numeric_type = [int, long, float, long]
 
 import os, tempfile, struct, subprocess
 from copy import copy, deepcopy
+from warnings import warn
 
 from sfml.system import SFMLException
 from sfml.system import pop_error_message, push_error_message
