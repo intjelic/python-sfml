@@ -30,7 +30,7 @@ __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
 string_type = [bytes, unicode, str]
 numeric_type = [int, long, float, long]
 
-import os, tempfile, struct, subprocess
+import os, tempfile, struct, subprocess, sys
 from copy import copy, deepcopy
 from warnings import warn
 
@@ -531,7 +531,7 @@ cdef class Image:
 	def flip_vertically(self):
 		self.p_this.flipVertically()
 
-	def show(self, python="python"):
+	def show(self):
 		script_filename = os.path.dirname(__file__) + "/show.py"
 		temporaryfile_filename = tempfile.mkstemp()[1]
 		
@@ -540,7 +540,7 @@ cdef class Image:
 			temporaryfile.write(struct.pack("I", self.pixels.height))
 			temporaryfile.write(self.pixels.data)
 			
-		subprocess.Popen([python, script_filename, temporaryfile_filename])
+		subprocess.Popen([sys.executable, script_filename, temporaryfile_filename])
 
 	def copy(self):
 		cdef dgraphics.Image *p = new dgraphics.Image()
