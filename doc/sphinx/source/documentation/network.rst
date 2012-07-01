@@ -857,7 +857,7 @@ Ftp
 
 
 
-Html
+HTTP
 ^^^^
 
 .. py:class:: HttpRequest()
