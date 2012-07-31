@@ -1,63 +1,42 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-import unittest
+from __future__ import division
 import sfml as sf
 
-class TestVector2(unittest.TestCase):
+def pytest_funcarg__v1(request):
+    return sf.Vector2(2, 5)
 
-    def setUp(self):
-        self.v = sf.Vector2(16.5, 24)
+def pytest_funcarg__v2(request):
+    return sf.Vector2(5, 2)
 
-    def test_x(self):
-        self.assertEqual(self.v.x, 16.5)
+def test_x(v1):
+    assert v1.x == 2
 
-    def test_y(self):
-        self.assertEqual(self.v.y, 24)
+def test_y(v1):
+    assert v1.y == 5
 
+def test_add(v1, v2):
+    assert v1 + v2 == (7, 7)
 
-class TestOverloadedOperators(unittest.TestCase):
+def test_sub(v1, v2):
+    assert v1 - v2 == (-3, 3)
 
-    def setUp(self):
-        self.v1 = sf.Vector2(2, 5)
-        self.v2 = sf.Vector2(5, 2)
+def test_mul(v1, v2):
+    assert v1 * v2 == (10, 10)
 
-    def test_add(self):
-        x, y = self.v1 + self.v2
-        self.assertEqual((x, y), (7, 7))
+def test_div(v1, v2):
+    assert v1 / v2 == (0.4, 2.5)
 
-    def test_sub(self):
-        x, y = self.v1 - self.v2
-        self.assertEqual((x, y), (-3, 3))
+def test_iadd(v1, v2):
+    v1 += v2
+    assert v1 == (7, 7)
 
-    def test_mul(self):
-        x, y = self.v1 * self.v2
-        self.assertEqual((x, y), (10, 10))
+def test_isub(v1, v2):
+    v1 -= v2
+    assert v1 == (-3, 3)
 
-    def test_div(self):
-        x, y = self.v1 / self.v2
-        self.assertEqual((x, y), (0.4, 2.5))
+def test_imul(v1, v2):
+    v1 *= v2
+    assert v1 == (10, 10)
 
-    def test_iadd(self):
-        self.v1 += self.v2
-        x, y = self.v1
-        self.assertEqual((x, y), (7, 7))
-
-    def test_isub(self):
-        self.v1 -= self.v2
-        x, y = self.v1
-        self.assertEqual((x, y), (-3, 3))
-
-    def test_imul(self):
-        self.v1 *= self.v2
-        x, y = self.v1
-        self.assertEqual((x, y), (10, 10))
-
-    def test_idiv(self):
-        self.v1 /= self.v2
-        x, y = self.v1
-        self.assertEqual((x, y), (0.4, 2.5))
-
-
-if __name__ == '__main__':
-    unittest.main()
+def test_idiv(v1, v2):
+    v1 /= v2
+    assert v1 == (0.4, 2.5)
