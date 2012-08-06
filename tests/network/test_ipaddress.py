@@ -1,59 +1,49 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
 import socket
-import urllib2
 import sfml.network as sf
 
 def pytest_funcarg__ip(request):
-    ip = {'local': sf.IpAddress.from_string('127.0.0.1')
+    ip = {'local': sf.IpAddress.from_string('127.0.0.1'),
         'remote': sf.IpAddress.from_string('74.125.224.208')}
 
     return ip
 
+def test_invalid_address():
+    ip = sf.IpAddress()
+    assert str(ip) == '0.0.0.0'
 
-class TestIpAddress(unittest.TestCase):
+def test_from_hostname(ip):
+    host = sf.IpAddress.from_string('localhost')
+    assert str(host) == str(ip['local'])
 
-    def setUp(self):
-        self.local_ip = sf.IpAddress.from_string('127.0.0.1')
-        self.remote_ip = sf.IpAddress.from_string('74.125.224.208')
 
-    def test_invalid_address(self):
-        ip = sf.IpAddress()
+def test_from_bytes(ip):
+    byte = sf.IpAddress.from_bytes(127, 0, 0, 1)
+    assert str(byte) == str(ip['local'])
 
-        self.assertNotEqual(str(ip), str(self.local_ip))
+def test_from_url(ip):
+    url = sf.IpAddress.from_string('www.google.com')
+    assert str(url).split('.')[:-2] == str(ip['remote']).split('.')[:-2]
 
-    def test_from_hostname(self):
-        ip = sf.IpAddress.from_string('localhost')
 
-        self.assertEqual(str(ip), str(self.local_ip))
+def test_local_address():
+    sfip = sf.IpAddress.get_local_address()
+    pyip = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    pyip.connect(('8.8.8.8', 80))
+    pyip = pyip.getsockname()[0]
 
-    def test_from_bytes(self):
-        ip = sf.IpAddress.from_bytes(127, 0, 0, 1)
+    assert str(sfip) == str(pyip)
 
-        self.assertEqual(str(ip), str(self.local_ip))
+def test_remote_address():
+    sfip = sf.IpAddress.get_public_address()
+    pyip = urlopen('http://ip.42.pl/raw').read()
 
-    def test_from_url(self):
-        ip = sf.IpAddress.from_string('www.google.com')
-        ip_bytes = str(self.remote_ip).split('.')
-        remote_bytes = str(self.remote_ip).split('.')
-        self.assertEqual(ip_bytes[:2], remote_bytes[:2])
-
-    def test_local_address(self):
-        ip = sf.IpAddress.get_local_address()
-
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('8.8.8.8', 80))
-        stdlib_ip = s.getsockname()[0]
-
-        self.assertEqual(str(ip), str(stdlib_ip))
-
-    def test_remote_address(self):
-        ip = sf.IpAddress.get_public_address()
-        stdlib_ip = urllib2.urlopen('http://ip.42.pl/raw').read()
-
-        self.assertEqual(str(ip), stdlib_ip)
-
+    assert str(sfip) == str(pyip)
 
 if __name__ == '__main__':
     unittest.main()
