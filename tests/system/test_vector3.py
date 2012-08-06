@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
-import sfml as sf
+import sfml.system as sf
 
 def pytest_funcarg__v(request):
     return [sf.Vector3(2, 5, 0), sf.Vector3(5, 2, 7)]
