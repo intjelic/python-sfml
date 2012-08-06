@@ -1,10 +1,16 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import unittest
 import socket
 import urllib2
 import sfml.network as sf
+
+def pytest_funcarg__ip(request):
+    ip = {'local': sf.IpAddress.from_string('127.0.0.1')
+        'remote': sf.IpAddress.from_string('74.125.224.208')}
+
+    return ip
+
 
 class TestIpAddress(unittest.TestCase):
 
