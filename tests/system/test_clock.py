@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sfml.system as sf
 
 def pytest_funcarg__clock(request):
