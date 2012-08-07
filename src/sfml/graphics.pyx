@@ -554,7 +554,7 @@ cdef Image wrap_image(dgraphics.Image *p):
 	return r
 
 
-cdef class Texture:
+cdef public class Texture[type PyTextureType, object PyTextureObject]:
 	NORMALIZED = dgraphics.texture.Normalized
 	PIXELS = dgraphics.texture.Pixels
 	
@@ -576,6 +576,9 @@ cdef class Texture:
 		cdef dgraphics.Texture *p = new dgraphics.Texture()
 		p[0] = self.p_this[0]
 		return wrap_texture(p)
+		
+	def draw(self, RenderTarget target, states):
+		target.p_rendertarget.draw((<dgraphics.Drawable*>self.p_this)[0])
 		
 	@classmethod
 	def create(cls, unsigned int width, unsigned int height):
@@ -1209,16 +1212,16 @@ cdef api object api_wrap_renderstates(dgraphics.RenderStates *p):
 	return r
 
 
-cdef class Drawable:
+cdef public class Drawable[type PyDrawableType, object PyDrawableObject]:
 	cdef dgraphics.Drawable *p_drawable
 	
 	def __cinit__(self, *args, **kwargs):
 		if self.__class__ == Drawable:
 			raise NotImplementedError('Drawable is abstact')
-		elif self.__class__ not in [Shape, Sprite, Text, VertexArray]:
-			self.p_drawable = <dgraphics.Drawable*>new dgraphics.DerivableDrawable(<void*>self)
 			
-	def draw(self, target, states): pass
+		self.p_drawable = <dgraphics.Drawable*>new dgraphics.DerivableDrawable(<void*>self)
+			
+	def draw(self, RenderTarget target, RenderStates states): pass
 	
 cdef class Transformable:
 	cdef dgraphics.Transformable *p_this
@@ -1354,6 +1357,9 @@ cdef class Sprite(TransformableDrawable):
 	def __dealloc__(self):
 		del self.p_this
 
+	def draw(self, RenderTarget target, RenderStates states):
+		target.p_rendertarget.draw((<dgraphics.Drawable*>self.p_this)[0])
+	
 	property texture:
 		def __get__(self):
 			return self.m_texture
@@ -1479,6 +1485,9 @@ cdef class Shape(TransformableDrawable):
 		if self.__class__ == Shape:
 			raise NotImplementedError('Shape is abstact')
 
+	def draw(self, RenderTarget target, RenderStates):
+		target.p_rendertarget.draw((<dgraphics.Drawable*>self.p_shape)[0])
+		
 	property texture:
 		def __get__(self):
 			return self.m_texture
@@ -1679,6 +1688,9 @@ cdef class VertexArray(Drawable):
 	def __setitem__(self, unsigned int index, Vertex key):
 		self.p_this[0][index] = key.p_this[0]
 		
+	def draw(self, RenderTarget target, states):
+		target.p_rendertarget.draw((<dgraphics.Drawable*>self.p_this)[0])
+		
 	def clear(self):
 		self.p_this.clear()
 		
@@ -1798,7 +1810,7 @@ cdef View wrap_view_for_rendertarget(dgraphics.View *p, RenderTarget rendertarge
 	return r
 
 
-cdef class RenderTarget:
+cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObject]:
 	cdef dgraphics.RenderTarget *p_rendertarget
 
 	def __init__(self, *args, **kwargs):
