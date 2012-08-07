@@ -37,3 +37,8 @@ v1.0 -> v1.1
 * :meth:`sfml.graphics.Image.show()` is implemented and platform-independant
 * :class:`sfml.audio.SoundStream` and :class:`sfml.audio.SoundRecorder` can be subclassed
 
+v1.1 -> v1.2
+------------
+* load_from_ and open_from_ methods are depreciated, use from_ instead.
+* The license has changed: GPLv3 -> LGPLv3
+* Unit tests implemented
