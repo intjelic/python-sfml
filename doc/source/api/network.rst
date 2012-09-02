@@ -804,7 +804,7 @@ Ftp
 
          # print the working directory
          directory_response = ftp.get_working_directory()
-         if directory_response.ok: print("Working directory: {0}".format(directory_response.direcotry))
+         if directory_response.ok: print("Working directory: {0}".format(directory_response.get_directory))
 
          # create a new directory
          response = ftp.create_directory("files")
