@@ -2,6 +2,8 @@
 
 import sfml.network as sf
 
+#TODO: Find a simple way to create an example ftp server to use for upload testing
+
 def test_connection():
     ftp = sf.Ftp()
     response = ftp.connect(sf.IpAddress.from_string('ftp.secureftp-test.com'))
@@ -9,9 +11,14 @@ def test_connection():
     assert response.ok
     return ftp
 
+def test_disconnection(ftp):
+    response = ftp.disconnect()
+    assert response.status in (sf.FtpResponse.CLOSING_CONNECTION,
+        sf.FtpResponse.CONNECTION_CLOSED)
 
 def pytest_funcarg__ftp(request):
-    return request.cached_setup(setup=test_connection, scope='function')
+    return request.cached_setup(setup=test_connection,
+        teardown=test_disconnection, scope='function')
 
 def test_login(ftp):
     response = ftp.login('test', 'test')
