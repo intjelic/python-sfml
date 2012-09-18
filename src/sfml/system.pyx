@@ -193,6 +193,18 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 			self[1] %= other[1]
 		return self
 		
+	def __neg__(self):
+		cdef Vector2 p = Vector2.__new__(Vector2)
+		p.x, p.y = self
+		p.x, p.y = -p.x, -p.y
+		return p
+		
+	def __pos__(self):
+		cdef Vector2 p = Vector2.__new__(Vector2)
+		p.x, p.y = self
+		p.x, p.y = +p.x, +p.y
+		return p
+		
 	def __copy__(self):
 		cdef Vector2 p = Vector2.__new__(Vector2)
 		p.x, p.y = self
@@ -392,6 +404,18 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[1] %= other[1]
 			self[2] %= other[2]
 		return self
+		
+	def __neg__(self):
+		cdef Vector3 p = Vector3.__new__(Vector3)
+		p.x, p.y, p.z = self
+		p.x, p.y, p.z = -p.x, -p.y, -p.z
+		return p
+		
+	def __pos__(self):
+		cdef Vector3 p = Vector3.__new__(Vector3)
+		p.x, p.y, p.z = self
+		p.x, p.y, p.z = +p.x, +p.y, +p.z
+		return p
 
 	def __copy__(self):
 		cdef Vector3 p = Vector3.__new__(Vector3)
