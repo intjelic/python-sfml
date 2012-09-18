@@ -1,5 +1,5 @@
-This is the version 1.1 of a non-official python binding for SFML2 
-released under the GPLv3 license. This version is based on the first 
+This is the version 1.2 of a non-official python binding for SFML2 
+released under the LGPLv3 license. This version is based on the first 
 release candidate of SFML2.
 
 This binding is complete as it provides all classes found in SFML and 
@@ -7,13 +7,13 @@ all its features. The module is split into five distinct sub-modules:
 system, window, graphics, audio and network.
 
 Unlike the official one this binding provides the network module in 
-order to be exauhstive altought its use is discouraged since the 
-standard python library has already has one.
+order to be exhaustive although its use is discouraged in favor of the
+implementation included in python's standard library.
 
 Examples, tutorials and complete documentation come along to help 
 you with using pySFML2.
 
-A python binding really is the perfect way to sketch a software using 
+A python binding really is the perfect way to sketch software using 
 SFML.
 
 By combining the strength of SFML with the ease of the python language,
