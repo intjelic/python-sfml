@@ -238,7 +238,7 @@ cdef class Color:
 
 	cdef dgraphics.Color *p_this
 
-	def __init__(self, Uint8 r=0, Uint8 g=0, Uint8 b=0, Uint8 a=255):
+	def __cinit__(self, Uint8 r=0, Uint8 g=0, Uint8 b=0, Uint8 a=255):
 		self.p_this = new dgraphics.Color(r, g, b, a)
 
 	def __dealloc__(self):
@@ -303,7 +303,16 @@ cdef class Color:
 
 		def __set__(self, unsigned int a):
 			self.p_this.a = a
-
+                        
+	def __copy__(self):
+		cdef Color p = Color.__new__(Color)
+		p.r, p.g, p.b, p.a = self
+		return p
+		
+	def __deepcopy__(self):
+		cdef Color p = Color.__new__(Color)
+		p.r, p.g, p.b, p.a = self
+		return p
 
 cdef Color wrap_color(dgraphics.Color *p):
 	cdef Color r = Color.__new__(Color)
