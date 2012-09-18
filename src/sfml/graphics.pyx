@@ -238,7 +238,7 @@ cdef class Color:
 
 	cdef dgraphics.Color *p_this
 
-	def __init__(self, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255):
+	def __init__(self, Uint8 r=0, Uint8 g=0, Uint8 b=0, Uint8 a=255):
 		self.p_this = new dgraphics.Color(r, g, b, a)
 
 	def __dealloc__(self):
