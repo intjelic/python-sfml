@@ -1,10 +1,10 @@
 Introduction
 ============
-This is an unofficial binding based on the first release candidate of 
+This is the unofficial binding based on the first release candidate of 
 SFML2.
 
 This binding is **complete**, providing access to all of SFML's API's and
-featuers. The module is split into five distinct sub-modules:
+features. The module is split into five distinct sub-modules:
 :py:mod:`.system`, :py:mod:`.window`, :py:mod:`.graphics`, :py:mod:`.audio`, 
 and :py:mod:`.network`.
 
@@ -20,8 +20,8 @@ you with using pySFML2.
 
 History
 -------
-This binding was forked from the `official python binding
-<https://github.com/bastienleonard/pysfml2-cython>_` created by Bastien 
+This binding was forked from the `official python binding 
+<https://github.com/bastienleonard/pysfml2-cython>`_ created by Bastien 
 Léonard on the 16th of November, 2011.
 
 I decided to fork because his project was (and still is) a work in progress 
@@ -57,10 +57,10 @@ you just passed is right or not at runtime.
 
 Contributors
 ------------
+- **Edwin Marshall**: active contributor who made test units and improved the doc. He also created a sfml2 back-end to the `kivy project <http://kivy.org/>`_ .
 - **Laurent Gomilla** for creating SFML2
+- **Jorge Araya Navarro** who made the binding officialy supported on **Parabola GNU/Linux-libre**
 - **Bastien Léonard** who helped me discover Cython
-- **Lewis Ellis** for his wise advice
-- **Edwin Marshall** for his relevant comments
 - **Richard Sims** who corrected my text and provided hosting.
 
 Next version
@@ -70,5 +70,10 @@ by myself, despite performing many tests. In addition to Mac OS X being
 **officially** supported, binary rpm packages (eg. Fedora) will be made
 available. Also, platform-specific examples should be available as well.
 
+You might want to consult the :doc:`changelog` page.
+
+
 .. [#] In theory, this binding should work fine on Mac OS X, but unit tests,
        binary packages, and a formal install procedure have yet to be established.
+
+

@@ -39,6 +39,6 @@ v1.0 -> v1.1
 
 v1.1 -> v1.2
 ------------
-* load_from_ and open_from_ methods are depreciated, use from_ instead.
+* 'load_from_*' and 'open_from_*' methods are depreciated, use 'from_*' instead.
 * The license has changed: GPLv3 -> LGPLv3
 * Unit tests implemented

@@ -1,5 +1,5 @@
-Installation
-============
+Download
+========
 Here you'll find all the necessary explainations for installing the binding 
 on your favorite platform. Unfortunately the procedures for the **Mac OSX** and 
 **Fedora** packages are not available yet.
