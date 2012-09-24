@@ -524,7 +524,7 @@ cdef api object wrap_time(dsystem.Time* p):
 	return r
 
 def sleep(Time duration):
-	dsystem.sleep(duration.p_this[0])
+	with nogil: dsystem.sleep(duration.p_this[0])
 
 cdef class Clock:
 	cdef dsystem.Clock *p_this

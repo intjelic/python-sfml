@@ -58,7 +58,7 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		#Time operator/(float)
 		#Time operator/(Int64)
         
-	cdef void sleep(Time)
+	cdef void sleep(Time) nogil
 
 	cdef cppclass Clock:
 		Clock()
