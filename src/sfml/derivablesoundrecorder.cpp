@@ -10,10 +10,11 @@ m_pyobj           (static_cast<PyObject*>(pyobj))
 
 bool DerivableSoundRecorder::onStart()
 {
+    PyEval_InitThreads();
+    
 	static char method[] = "on_start";
     PyObject* r = PyObject_CallMethod(m_pyobj, method, NULL);
     
-    return true;
     return PyObject_IsTrue(r);
 }
 
@@ -31,13 +32,16 @@ bool DerivableSoundRecorder::onProcessSamples(const sf::Int16* samples, std::siz
 	Py_DECREF(pyChunk);
 	PyGILState_Release(gstate);
 	
-	return true;
     return PyObject_IsTrue(r);
 }
 
 void DerivableSoundRecorder::onStop()
 {
-	std::cout << "onStop()" << std::endl;
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure();
+    
 	static char method[] = "on_stop";
     PyObject_CallMethod(m_pyobj, method, NULL);
+    
+   	PyGILState_Release(gstate);
 }

@@ -452,15 +452,14 @@ cdef class SoundRecorder:
 
 	def __dealloc__(self):
 		if self.__class__ is SoundRecorder:
-			print("HEINNNNNNNNNNNNn")
 			del self.p_soundrecorder
 			
 	def start(self, unsigned int sample_rate=44100):
 		self.p_soundrecorder.start(sample_rate)
 		
 	def stop(self):
-		self.p_soundrecorder.stop()
-
+		with nogil: self.p_soundrecorder.stop()
+		
 	property sample_rate:
 		def __get__(self):
 			return self.p_soundrecorder.getSampleRate()

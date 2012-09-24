@@ -85,7 +85,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 
 	cdef cppclass SoundRecorder:
 		void start(unsigned int)
-		void stop()
+		void stop() nogil
 		unsigned int getSampleRate()
 
 	cdef cppclass SoundBufferRecorder:
