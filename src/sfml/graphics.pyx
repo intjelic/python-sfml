@@ -1770,8 +1770,8 @@ cdef class View:
 		self.p_this.reset(rectangle_to_floatrect(rectangle))
 		self._update_target()
 	
-	def move(self, offset):
-		self.p_this.move(vector2_to_vector2f(offset))
+	def move(self, float x, float y):
+		self.p_this.move(dsystem.Vector2f(x, y))
 		self._update_target()
 
 	def rotate(self, float angle):
@@ -1920,7 +1920,7 @@ cdef class RenderWindow(Window):
 			
 		def __set__(self, View view):
 			self.p_this.setView(view.p_this[0])
-
+			
 	property default_view:
 		def __get__(self):
 			cdef dgraphics.View *p = new dgraphics.View()
