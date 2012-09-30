@@ -133,11 +133,11 @@ cdef api Int16* terminate_chunk(chunk):
 	p.delete_this = False
 	return p.m_samples
 	
-cdef api object wrap_chunk(Int16* samples, unsigned int sample_count):
+cdef api object wrap_chunk(Int16* samples, unsigned int sample_count, bint delete):
 	cdef Chunk r = Chunk.__new__(Chunk)
 	r.m_samples = samples
 	r.m_sampleCount = sample_count
-	r.delete_this = True
+	r.delete_this = delete
 	return r
 
 cdef class SoundBuffer:

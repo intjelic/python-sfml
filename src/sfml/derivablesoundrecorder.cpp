@@ -26,7 +26,7 @@ bool DerivableSoundRecorder::onProcessSamples(const sf::Int16* samples, std::siz
     PyGILState_STATE gstate;
     gstate = PyGILState_Ensure();
     
-    PyObject* pyChunk = (PyObject*)(wrap_chunk((sf::Int16*)samples, sampleCount));
+    PyObject* pyChunk = (PyObject*)(wrap_chunk((sf::Int16*)samples, sampleCount, false));
     PyObject* r = PyObject_CallMethod(m_pyobj, method, format, pyChunk);
 
 	Py_DECREF(pyChunk);
