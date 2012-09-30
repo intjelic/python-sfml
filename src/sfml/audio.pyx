@@ -83,10 +83,14 @@ cdef class Chunk:
 	cdef size_t m_sampleCount
 	cdef bint   delete_this
 
-	def __init__(self):
+	def __cinit__(self):
 		self.m_samples = NULL
 		self.m_sampleCount = 0
-		self.delete_this = True
+		self.delete_this = False
+		
+	def __dealloc__(self):
+		if self.delete_this:
+			free(self.m_samples)
 		
 	def __len__(self):
 		return self.m_sampleCount
@@ -101,19 +105,28 @@ cdef class Chunk:
 		def __get__(self):
 			return (<char*>self.m_samples)[:len(self)*2]
 		
-		def __set__(self, char* data):
-			if self.delete_this:
-				self.m_samples = <Int16*>malloc(len(data))
-				memcpy(self.m_samples, data, len(data))
-				self.m_sampleCount = len(data) // 2
+		def __set__(self, bdata):
+			cdef char* data = <bytes>bdata
 			
+			if len(bdata) % 2: 
+				raise SFMLException("Chunk data lenght must be even as it represents a 16bit array")
+					
+			if self.delete_this:
+				free(self.m_samples)
+				self.m_sampleCount = 0
+
+			self.m_samples = <Int16*>malloc(len(bdata))
+			memcpy(self.m_samples, data, len(bdata))
+			self.m_sampleCount = len(bdata) // 2
+			
+			self.delete_this = True
 
 cdef api object wrap_chunk(Int16* samples, unsigned int sample_count):
 	cdef Chunk r = Chunk.__new__(Chunk)
 	r.m_samples = samples
 	r.m_sampleCount = sample_count
+	r.delete_this = True
 	return r
-
 
 cdef class SoundBuffer:
 	cdef daudio.SoundBuffer *p_this
@@ -377,7 +390,6 @@ cdef class SoundStream(SoundSource):
 
 	def initialize(self, unsigned int channel_count, unsigned int sample_rate):
 		if self.__class__ not in [Music]:
-			print("Initialization")
 			(<daudio.DerivableSoundStream*>self.p_soundstream).initialize(channel_count, sample_rate)
 			
 	def on_get_data(self, data): pass
@@ -469,16 +481,13 @@ cdef class SoundRecorder:
 		return daudio.soundrecorder.isAvailable()
 
 	def on_start(self):
-		print("sf.SoundRecorder.on_start()")
 		return True
 		
 	def on_process_samples(self, chunk):
-		print("sf.SoundRecorder.on_process_samples()")
 		return True
 	
 	def on_stop(self):
-		print("sf.SoundRecorder.on_stop()")
-
+		pass
 
 cdef class SoundBufferRecorder(SoundRecorder):
 	cdef daudio.SoundBufferRecorder *p_this
