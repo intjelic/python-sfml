@@ -5,6 +5,7 @@ DerivableSoundStream::DerivableSoundStream(void* pyobj):
 sf::SoundStream (),
 m_pyobj         (static_cast<PyObject*>(pyobj))
 {
+	PyEval_InitThreads();
 	import_sfml__system(); // make sure the system module is imported
 	import_sfml__audio(); // make sure the audio module is imported
 };
@@ -22,8 +23,10 @@ bool DerivableSoundStream::onGetData(sf::SoundStream::Chunk &data)
 	static char method[] = "on_get_data";	
     static char format[] = "O";
     
-    PyObject* pyChunk = (PyObject*)(wrap_chunk((sf::Int16*)data.samples, data.sampleCount));
+    PyObject* pyChunk = (PyObject*)(create_chunk());
     PyObject* r = PyObject_CallMethod(m_pyobj, method, format, pyChunk);
+    data.samples = static_cast<const sf::Int16*>(terminate_chunk(pyChunk));
+    data.sampleCount = PyObject_Length(pyChunk);
     
  	Py_DECREF(pyChunk);
  	

@@ -121,6 +121,18 @@ cdef class Chunk:
 			
 			self.delete_this = True
 
+cdef api object create_chunk():
+	cdef Chunk r = Chunk.__new__(Chunk)
+	r.m_samples = NULL
+	r.m_sampleCount = 0
+	r.delete_this = False
+	return r
+	
+cdef api Int16* terminate_chunk(chunk):
+	cdef Chunk p = <Chunk>chunk
+	p.delete_this = False
+	return p.m_samples
+	
 cdef api object wrap_chunk(Int16* samples, unsigned int sample_count):
 	cdef Chunk r = Chunk.__new__(Chunk)
 	r.m_samples = samples
