@@ -663,17 +663,6 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 	def __dealloc__(self):
 		if self.__class__.__name__ != 'RenderWindow':
 			del self.p_window
-			
-	def __iter__(self):
-		return self
-
-	def __next__(self):
-		cdef dwindow.Event *p = new dwindow.Event()
-
-		if self.p_window.pollEvent(p[0]):
-			return wrap_event(p)
-
-		raise StopIteration
 
 	def recreate(self, VideoMode mode, title, Uint32 style=dwindow.style.Default, ContextSettings settings=None):
 		cdef char* encoded_title
@@ -702,7 +691,16 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
 	property events:
 		def __get__(self):
-			return self
+			return Window.events_generator(self)
+			
+	def events_generator(window):
+		cdef dwindow.Event *p = new dwindow.Event()
+
+		while window.p_window.pollEvent(p[0]):
+			yield wrap_event(p)
+			p = new dwindow.Event()			
+		
+		del p
 
 	def poll_event(self):
 		cdef dwindow.Event *p = new dwindow.Event()
