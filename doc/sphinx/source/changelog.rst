@@ -39,6 +39,27 @@ v1.0 -> v1.1
 
 v1.1 -> v1.2
 ------------
-* 'load_from_*' and 'open_from_*' methods are depreciated, use 'from_*' instead.
 * The license has changed: GPLv3 -> LGPLv3
 * Unit tests implemented
+* Load/open methods are depreciated (use `from_foo` instead) [#]_
+* Save/convertion methods are depreciated (use `to_bar` instead) [#]_
+* Copy methods are depreciated (use the copy module instead)
+* :class:`sfml.Window.events` returns now a generator
+* Voip example implemented
+* Improved :class:`sfml.audio.Chunk`
+* Fixe bug in :class:`sfml.audio.SoundStream`
+* :meth:`sfml.graphics.View.move` takes now two integer (x and y) instead of a vector
+* Fixe bug in :class:`sfml.audio.SoundRecorder` (when calling stop())
+* :func:`sfml.system.sleep` works now well in multi-threaded application
+* :class:`sfml.graphics.Color` is copiable via the copy module
+* Added unary operator to :class:`sfml.system.Vector2` and :class:`sfml.system.Vector3`
+* Fixed :attr:`sfml.graphics.Rectangle.bottom`
+* :class:`sfml.network.IpAddress` can be compared
+* Ubuntu packages available for 12.04LTS and 12.10
+* Fedora packages available
+
+   .. official packages for parabola linux
+   .. installer script for archlinux
+
+.. [#] E.g: **Do not use** sf.Texture.load_from_file(filename) but **sf.Texture.from_file(filename)** instead.
+.. [#] E.g: **Do not use** sf.Texture.image.save_to_file() but **sf.Texture.to_image().to_file()** .

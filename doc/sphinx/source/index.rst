@@ -1,6 +1,6 @@
 SFML2 for Python
 ================
-This is version |version| of an unofficial python binding for `SFML2 <http://www.sfml-dev.org/>`_ 
+This is version |version| of the unofficial python binding for `SFML2 <http://www.sfml-dev.org/>`_ 
 released under the `LGPLv3 <http://www.gnu.org/copyleft/lgpl.html>`_ license.
 
 A python binding really is the perfect way to sketch a software using 

@@ -179,16 +179,7 @@ Rectangle
       :return: Rectangle filled with the intersection or None
       :rtype: :class:`sfml.graphics.Rectangle` or None
 
-   .. method:: copy()
-   
-      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
-   
-      Python always works by reference, unless you explicitly ask for 
-      a copy, that's why this method is provided.
-      
-      :return: Return a copy.
-      :rtype: :class:`sfml.graphics.Rectangle`
-      
+
 Color
 ^^^^^
 
@@ -640,13 +631,6 @@ Image
    
       Flip the image vertically (top <-> bottom)
       
-   .. py:method:: copy()
-   
-      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
-      
-      Python always works by reference, unless you explicitly ask for 
-      a copy, that's why this method is provided.
-
    .. py:method:: __getitem__()
 
       Get a pixel from the image. ::
@@ -868,7 +852,7 @@ Texture
       
       :type: integer
       
-   .. py:method:: copy_to_image()
+   .. py:method:: to_image()
    
       Copy the texture pixels to an image.
 
@@ -934,13 +918,6 @@ Texture
       by default.
 
       :type: bool
-      
-   .. py:method:: copy()
-
-      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
-      
-      Python always works by reference, unless you explicitly ask for 
-      a copy, that's why this method is provided.
 
    .. py:classmethod:: get_maximum_size()
 

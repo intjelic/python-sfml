@@ -23,16 +23,16 @@ Here is the official short example to show you how simple using pySFML is.
    window = sfml.graphics.RenderWindow(sfml.window.VideoMode(640, 480), "pySFML Window")
 
    try:
-   # load a sprite to display
-   texture = sfml.graphics.Texture.from_file("cute_image.png")
-   sprite = sfml.graphics.Sprite(texture)
+      # load a sprite to display
+      texture = sfml.graphics.Texture.from_file("cute_image.png")
+      sprite = sfml.graphics.Sprite(texture)
 
-   # create some graphical text to display
-   font = sfml.graphics.Font.from_file("arial.ttf")
-   text = sfml.graphics.Text("Hello SFML", font, 50)
-
-   # load music to play
-   music = sfml.audio.Music.open_from_file("nice_music.ogg")
+      # create some graphical text to display
+      font = sfml.graphics.Font.from_file("arial.ttf")
+      text = sfml.graphics.Text("Hello SFML", font, 50)
+   
+      # load music to play
+      music = sfml.audio.Music.open_from_file("nice_music.ogg")
 
    except IOError: exit(1)
 
@@ -61,11 +61,11 @@ Open a terminal and run the python interpreter. Now you can play.
 For example: try these commands::
 
    >>> import sfml as sf
-   >>> w = sfml.graphics.RenderWindow(sfml.window.VideoMode(640, 480), "My first pySFML Window - or not ?")
-   >>> w.clear(sfml.graphics.Color.BLUE)
+   >>> w = sf.RenderWindow(sf.VideoMode(640, 480), "My first pySFML Window - or not ?")
+   >>> w.clear(sf.Color.BLUE)
    >>> w.display()
    >>> w.size = (800, 600)
-   >>> w.clear(sfml.graphics.Color.GREEN)
+   >>> w.clear(sf.Color.GREEN)
    >>> w.display()
    >>> w.title = "Yes, it's my first PySFML Window"
    >>> w.display()
@@ -73,6 +73,12 @@ For example: try these commands::
    >>> w.close()
    >>> exit()
 
+.. warning::
+
+	On Windows, typing it directly in the console may froze your window 
+	saying the program doesn't respond. In this case, forget the 
+	console and write it down in a file.
+	
 To help with trying it out more some examples are provided. If you downloaded the source 
 they are in examples/. If you installed it from the Debian/Ubuntu repository
 (assuming you installed the pysfml2-examples package as well) just type
@@ -87,7 +93,7 @@ SFML2, translated for this binding.
 
 Tricks
 ------
-Once you know well pySFML2 well you may be interested in knowing some 
+Once you know pySFML2 well you may be interested in knowing some 
 tricks.
 
 Unpacking
@@ -111,23 +117,23 @@ sfml.Image.show()
 
 For debugging purpose pySFML provides a show() function. This allows 
 you to see how an image will look after modification. This is to be 
-sure all operations made on the pictre were effective.
+sure all operations made on the picture were effective.
 
 .. code-block:: python
    :linenos:
 
-   image = sfml.graphics.Image.from_image("image.png")
-   image.create_mask_from_color(sfml.graphics.Color.BLUE)
+   image = sf.Image.from_image("image.png")
+   image.create_mask_from_color(sf.Color.BLUE)
    image.show()
    
-   texture = sfml.graphics.Texture.from_image(image)
+   texture = sf.Texture.from_image(image)
    texture.update(window, (50, 60))
-   texture.copy_to_image().show()
+   texture.to_image().show()
    
 Attach an icon to a Window
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Easily attach an icon to your window ::
 
-	icon = sfml.graphics.Image.from_file("data/icon.bmp")
+	icon = sf.Image.from_file("data/icon.bmp")
 	window.icon = icon.pixels

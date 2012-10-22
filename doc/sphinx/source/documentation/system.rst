@@ -70,17 +70,6 @@ Time
    
       Reset the time to 0.
 
-   .. py:function:: copy()
-   
-      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
-   
-      Python always works by reference, unless you explicitly ask for 
-      a copy, that's why this method is provided.
-
-      :return: Return a copy.
-      :rtype: :class:`sfml.system.Time`
-
-
 sleep
 ^^^^^
 
@@ -221,16 +210,6 @@ Vector2
 
       Y coordinate of the vector.
 
-   .. py:function:: copy()
-      
-      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
-         
-      Python always works by reference, unless you explicitly ask for 
-      a copy, that's why this method is provided.
-
-      :return: Return a copy.
-      :rtype: :class:`sfml.system.Vector2`
-
    .. py:classmethod: from_tuple(tuple)
 
       Construct the vector from a tuple.
@@ -281,16 +260,6 @@ Vector3
    .. attribute:: z
 
       Z coordinate of the vector.
-
-   .. py:function:: copy()
-   
-      .. warning:: This method is depreciated and will disappear! Use the **copy** module instead.
-      
-      Python always works by reference, unless you explicitly ask for 
-      a copy, that's why this method is provided.
-      
-      :return: Return a copy.
-      :rtype: :class:`sfml.system.Vector3`
 
    .. py:classmethod: from_tuple(tuple)
 

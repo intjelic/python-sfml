@@ -4,6 +4,12 @@ API Reference
 Here you will find the project's documentation. It's mainly a 
 translation from the original SFML2's documentation.
 
+.. warning::
+
+   In order **not to pollute** the documenation, **announced depreciations** such 
+   **copy methods** and **open_from**, **save_to** and **load_from methods** **have been 
+   removed**. They still do exists to keep backward compabilities.
+
 .. only:: pdf
 
    The online doc will always be more up-to-date, with corrections, 

@@ -11,10 +11,12 @@ Windows
 -------
 Simply download the correct installer and follow the instructions.
 
-	* `pySFML2-1.1.0.win32-py2.7.exe <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.1.0.win32-py2.7.exe>`_ [1.6 MB] [Python 2.7] [32 bit]
-	* `pySFML2-1.1.0.win32-py3.2.exe <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.1.0.win32-py3.2.exe>`_ [1.6 MB] [Python 3.2] [32 bit]
-	* `pySFML2-1.1.0.win64-py2.7.exe <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.1.0.win64-py2.7.exe>`_ [1.6 MB] [Python 2.7] [64 bit]
-	* `pySFML2-1.1.0.win64-py3.2.exe <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.1.0.win64-py3.2.exe>`_ [1.6 MB] [Python 3.2] [64 bit]
+	* `pySFML2-1.2.0.win32-py2.6.exe <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win32-py2.6.exe>`_ [1.6 MB] [Python 2.6] [32 bit]
+	* `pySFML2-1.2.0.win32-py2.7.exe <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win32-py2.7.exe>`_ [1.6 MB] [Python 2.7] [32 bit]
+	* `pySFML2-1.2.0.win32-py3.2.exe <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win32-py3.2.exe>`_ [1.6 MB] [Python 3.2] [32 bit]
+	* `pySFML2-1.2.0.win64-py2.6.exe <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py2.6.exe>`_ [1.6 MB] [Python 2.6] [64 bit]
+	* `pySFML2-1.2.0.win64-py2.7.exe <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py2.7.exe>`_ [1.6 MB] [Python 2.7] [64 bit]
+	* `pySFML2-1.2.0.win64-py3.2.exe <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [1.6 MB] [Python 3.2] [64 bit]
 
 Compillation for this platform is not available yet.
 
@@ -27,7 +29,7 @@ supported.
 
 Ubuntu
 ------
-Packages are available via launchpad depot, just type ::
+Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad depot, just type ::
 
    sudo add-apt-repository ppa:sonkun/sfml
    sudo apt-get update

@@ -40,6 +40,17 @@ Sound
 .. literalinclude:: /../../../examples/sound/sound.py
    :linenos:
 
+Voip
+----
+.. literalinclude:: /../../../examples/voip/voip.py
+   :linenos:
+   
+.. literalinclude:: /../../../examples/voip/client.py
+   :linenos:
+   
+.. literalinclude:: /../../../examples/voip/server.py
+   :linenos:
+
 Spacial Music
 -------------
 .. literalinclude:: /../../../examples/spacial_music/spacial_music.py
