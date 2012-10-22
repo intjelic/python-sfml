@@ -32,6 +32,42 @@ to share my work under a new license: GPLv3.
 Altought his project was taken as a starting point, months went by, SFML2 
 matured rapidly, and everything was re-coded and re-thought from A to Z.
 
+Overview
+--------
+Open a terminal and run the python interpreter. Now you can play. 
+For example: try these commands::
+
+   >>> import sfml as sf
+   >>> w = sf.RenderWindow(sf.VideoMode(640, 480), "My first pySFML Window - or not ?")
+   >>> w.clear(sf.Color.BLUE)
+   >>> w.display()
+   >>> w.size = (800, 600)
+   >>> w.clear(sf.Color.GREEN)
+   >>> w.display()
+   >>> w.title = "Yes, it's my first PySFML Window"
+   >>> w.display()
+   >>> w.capture().show()
+   >>> w.close()
+   >>> exit()
+
+.. warning::
+
+	On Windows, typing it directly in the console may froze your window 
+	saying the program doesn't respond. In this case, forget the 
+	console and write it down in a file.
+	
+To help with trying it out more some examples are provided. If you downloaded the source 
+they are in examples/. If you installed it from the Debian/Ubuntu repository
+(assuming you installed the pysfml2-examples package as well) just type
+pysfml2-<example name>.
+
+For example; pysfml2-sound will run the official example provided by
+SFML2, translated for this binding.
+
+.. Note::
+   Examples are only avalaible for python3.2 and can be found in 
+   /usr/lib/games/pysfml2-examples/ should you wish to read the code.
+   
 A word about Cython
 -------------------
 This binding has been coded in Cython, a language that allows you to 

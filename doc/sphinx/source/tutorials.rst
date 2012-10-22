@@ -10,7 +10,7 @@ background. After reading this tutorial you should be able to start
 coding serious projects.
 
 .. contents:: :local:
-
+	
 System
 ------
 To manipulate vectors you use sfml.system.Vector2 or sfml.system.Vector3 and unlike in 
@@ -172,12 +172,12 @@ size in hand ::
 
     x, y = position
     w, h = size
-    rectangle = sfml.graphics.Rectangle(x, y, w, h) # two more lines for that... BAD
+    rectangle = sfml.graphics.Rectangle(x, y, w, h)
     
 
 Drawable
 --------
-To create your own drawable just inherit a class from 
+To create your own drawable just inherit your class from 
 :class:`sfml.graphics.Drawable`. ::
 
    class MyDrawable(sfml.graphics.Drawable):
@@ -187,32 +187,61 @@ To create your own drawable just inherit a class from
        def draw(self, target, states):
            target.draw(body)
            target.draw(clothes)
-           
-As Python doesn't allow you to subclass from two built-in types at the 
-same time, pySFML2 provides `sfml.graphics.TransformableDrawable` which is both 
-an :class:`sfml.graphics.Drawable` and :class:`sfml.graphics.Transformable`. That way your 
-class inherits from properties such `position`, `rotation` etc and their 
-methods `move()`, `rotate()` etc. ::
 
-   class MyDrawable(sfml.graphics.TransformableDrawable):
-       def __init__(self):
-           sfml.graphics.Drawable.__init__(self)
-           
-       def draw(self, target, states):
-           target.draw(body)
-           target.draw(clothes)
+To have a **transformable drawable** you have two implemenation choices. As 
+in sfml2, you can either use a transformable internaly and combine 
+your transformable at drawing time **or** ineriths your drawable from 
+both sf.Drawable and sf.Transformable.
 
-   mydrawable = MyDrawable()
-   mydrawable.position = (20, 30) # we have properties \o/
-   
-.. note::
-   You can choose between inheriting from sfml.graphics.TransformableDrawable and 
-   having an :class:`sfml.graphics.Transformable` in its internal attribute, and 
-   just before drawing, combine the transformable with the current 
-   state ::
-      
-      states.transform.combine(self.transformable.transform)
-      target.draw(body, states)
+1) **sf.Transformable in an internal attribute**
+
+   This consist of having a transformable in an attribute and combine 
+   with the states at drawing time. ::
+
+      class MyDrawable(sf.Drawable):
+          def __init__(self):
+              sf.Drawable.__init__(self)
+              self._transformable = sf.Transformable()
+
+          def draw(self, target, states):
+              states.transform.combine(self.transformable.transform)
+
+              target.draw(body)
+              target.draw(clothes)
+
+          def _get_position(self):
+              return self._transfomable.position
+              
+          def _set_position(self, position)
+              self._transformable.position = position
+
+          position = property(_get_position, _set_position)
+
+   Only the position property has been implemented in this example but you 
+   can also implement **rotation**, **scale**, **origin**.
+
+
+2) **Inerithing from sf.Drawable and sf.Transformable**
+
+   There's a current issue concerning this way to do. As Python doesn't 
+   allow you to subclass from two built-in types at the same time, you 
+   can't technically do it. That's why pySFML2 provides `sf.TransformableDrawable` 
+   which is both an :class:`sfml.graphics.Drawable` and :class:`sfml.graphics.Transformable`. 
+   That way your class inherits from properties such `position`, `rotation` 
+   etc and their methods `move()`, `rotate()` etc. ::
+
+      class MyDrawable(sfTransformableDrawable):
+          def __init__(self):
+              sfDrawable.__init__(self)
+              
+          def draw(self, target, states):
+              target.draw(body)
+              target.draw(clothes)
+
+      mydrawable = MyDrawable()
+      mydrawable.position = (20, 30) # we have properties \o/
+
+
       
 Audio
 -----
@@ -241,3 +270,51 @@ error is raised and you just have to handle it. ::
    except sfml.network.SocketError:
        socket.close()
        exit(1)
+
+
+Tricks
+------
+Once you know pySFML2 well you may be interested in knowing some 
+tricks.
+
+Unpacking
+^^^^^^^^^
+Many classes are unpackable 
+
+.. code-block:: python
+   :linenos:
+
+	x, y = sfml.system.Vector2(5, 10)
+	x, y, z = sfml.system.Vector3(5, 10, 15)
+
+	size, bpp = sfml.window.VideoMode(640, 480, 32)
+	depth_bits, stencil_bits, antialiasing, minor_version, major_version = sfml.window.ContextSettings()
+
+	r, g, b, a = sfml.graphics.Color.CYAN
+	left, top, width, height = sfml.graphics.Rectangle((5, 10), (15, 20))
+
+sfml.Image.show()
+^^^^^^^^^^^^^^^^^
+
+For debugging purpose pySFML provides a show() function. This allows 
+you to see how an image will look after modification. This is to be 
+sure all operations made on the picture were effective.
+
+.. code-block:: python
+   :linenos:
+
+   image = sf.Image.from_image("image.png")
+   image.create_mask_from_color(sf.Color.BLUE)
+   image.show()
+   
+   texture = sf.Texture.from_image(image)
+   texture.update(window, (50, 60))
+   texture.to_image().show()
+   
+Attach an icon to a Window
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Easily attach an icon to your window ::
+
+	icon = sf.Image.from_file("data/icon.bmp")
+	window.icon = icon.pixels

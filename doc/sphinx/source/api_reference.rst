@@ -44,8 +44,6 @@ Choose the module:
 
       :doc:`documentation/network`
          The network module documentation.
-         
-
 
 .. toctree::
    :maxdepth: 1

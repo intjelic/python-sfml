@@ -33,7 +33,12 @@ we can provide an amazing tool to quickly build multimedia software.
 
       :doc:`introduction`
          Where you should start reading if you've never been here before.
-
+         
+   * .. glossary::
+   
+      :doc:`gettingstarted`
+         A documentation to help you get started with the binding.
+      
    * .. glossary::
    
       :doc:`download`
@@ -41,11 +46,6 @@ we can provide an amazing tool to quickly build multimedia software.
          
          It also give instructions to install and compile.
 
-   * .. glossary::
-   
-      :doc:`gettingstarted`
-         A documentation to help you get started with the binding.
-      
    * .. glossary::
    
       :doc:`tutorials`
@@ -92,3 +92,5 @@ Two new commands available::
 
 'save_to_file', 'open_from_*' and 'load_from_*' have been depreciated 
 and you should know use 'from_*' and 'to_file'.
+
+copy methods too.
