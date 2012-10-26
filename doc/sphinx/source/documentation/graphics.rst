@@ -1,9 +1,7 @@
 Graphics
 ========
-
-.. module:: sfml
-
 .. contents:: :local:
+.. py:module:: sfml.graphics
 
 BlendMode
 ^^^^^^^^^

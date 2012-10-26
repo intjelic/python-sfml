@@ -24,6 +24,7 @@ we can provide an amazing tool to quickly build multimedia software.
    examples
    tutorials
    api_reference
+   addons
    changelog
 
 .. hlist::
@@ -48,6 +49,11 @@ we can provide an amazing tool to quickly build multimedia software.
 
    * .. glossary::
    
+      :doc:`examples`
+         Various piece of examples.
+         
+   * .. glossary::
+   
       :doc:`tutorials`
          Good place to learn or/and grab knowledges.
 
@@ -58,9 +64,10 @@ we can provide an amazing tool to quickly build multimedia software.
 
    * .. glossary::
    
-      :doc:`examples`
-         Various piece of examples.
+      :doc:`addons`
+         So far only `sfeMovie <http://openhelbreath.net/python-sfml2/sfemovie>`_ has been ported but Thor and TGUI are coming.
       
+   
 What's new ?
 ------------
 

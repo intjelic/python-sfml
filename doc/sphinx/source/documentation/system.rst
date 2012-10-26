@@ -1,9 +1,7 @@
 System
 ======
-
-.. module:: sfml
-
 .. contents:: :local:
+.. py:module:: sfml.system
 
 Time
 ^^^^
@@ -12,7 +10,7 @@ Time
 
    Represents a time value.
 
-   :class:`sfml.system.Time` encapsulates a time value in a flexible way.
+   :class:`Time` encapsulates a time value in a flexible way.
 
    It allows to define a time value either as a number of seconds, 
    milliseconds or microseconds. It also works the other way round: 
@@ -48,16 +46,17 @@ Time
 
    .. py:method:: Time()
    
-      Construct an :class:`sfml.system.Time` equivalent to :const:`ZERO`
+      Construct a :class:`Time` equivalent to :const:`ZERO`
    
    .. py:data:: ZERO
       
-      Predefined "zero" time value. 
-
+      Predefined "zero" time value. Make sure to copy this value via 
+      the **copy** module.
+      
    .. py:attribute:: seconds
    
       Return the time value as a number of seconds.
-      
+       
    .. py:attribute:: milliseconds
    
       Return the time value as a number of milliseconds. 
@@ -77,7 +76,7 @@ sleep
 
    Make the current thread sleep for a given duration.
 
-   sfml.sleep is the best way to block a program or one of its threads, 
+   :func:`sleep` is the best way to block a program or one of its threads, 
    as it doesn't consume any CPU power.
    
    :param sfml.system.Time duration: Time to sleep
@@ -90,7 +89,7 @@ Clock
 
    Utility class that measures the elapsed time.
 
-   sfml.system.Clock is a lightweight class for measuring time.
+   :class:`Clock` is a lightweight class for measuring time.
 
    It provides the most precise time that the underlying OS can achieve 
    (generally microseconds or nanoseconds). It also ensures 
@@ -122,7 +121,7 @@ Clock
       :func:`restart()` (or the construction of the instance if 
       :func:`restart()` has not been called).
       
-      :rype: :class:`sfml.system.Time`
+      :rtype: :class:`sfml.system.Time`
                   
    .. py:method:: restart()
    
@@ -177,18 +176,18 @@ Vector2
    Utility class for manipulating 2-dimensional vectors. This class is
    equivalent to the template class sf::Vector2<T> in SFML.
 
-   :class:`sfml.system.Vector2` is a simple class that defines a mathematical 
+   :class:`Vector2` is a simple class that defines a mathematical 
    vector with two coordinates (:attr:`x` and :attr:`y`).
 
    It can be used to represent anything that has two dimensions: a size, a 
    point, a velocity, etc.
 
-   :class:`sfml.system.Vector2` supports arithmetic operations (+, -, /, \*) 
-   and comparisons (==, !=).
+   :class:`Vector2` supports arithmetic operations (+, -, /, \*), unary 
+   operations and comparisons (==, !=).
 
    Usage example::
 
-      v1 = sfml.system.Vector2(16.5, 24)
+      v1 = sf.Vector2(16.5, 24)
       v1.x = 18
       y = v1.y
 
@@ -223,18 +222,18 @@ Vector3
 
    Utility class for manipulating 3-dimensional vectors.
 
-   :class:`sfml.system.Vector3` is a simple class that defines a mathematical 
+   :class:`Vector3` is a simple class that defines a mathematical 
    vector with three coordinates (:attr:`x`, :attr:`y` and :attr:`z`).
 
    It can be used to represent anything that has three dimensions: a 
    size, a point, a velocity, etc.
 
-   :class:`sfml.system.Vector3` supports arithmetic operations (+, -, /, \*) and 
-   comparisons (==, !=).
+   :class:`Vector3` supports arithmetic operations (+, -, /, \*), unary 
+   operations and comparisons (==, !=).
 
    Usage example::
    
-      v1 = sfml.system.Vector3(16.8, 24, -8)
+      v1 = sf.Vector3(16.8, 24, -8)
       v1.x = 18.2
       y = v1.y
       z = v1.z
@@ -243,7 +242,7 @@ Vector3
 
       v3 = v1 + v2
 
-      different = v2 is not v3
+      assert v2 is not v3
 
    .. method:: Vector3(x=0, y=0, z=0)
 

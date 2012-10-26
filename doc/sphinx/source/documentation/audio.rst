@@ -1,8 +1,7 @@
 Audio
 =====
-.. module:: sfml
-
 .. contents:: :local:
+.. py:module:: sfml.audio
 
 Listener
 ^^^^^^^^

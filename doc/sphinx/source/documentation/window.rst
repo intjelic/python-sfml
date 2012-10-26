@@ -1,9 +1,7 @@
 Window
 ======
-
-.. module:: sfmlml
-
 .. contents:: :local:
+.. py:module:: sfml.window
 
 Style
 ^^^^^
@@ -33,97 +31,172 @@ Event
 
 .. class:: Event
 
-	Defines a system event and its parameters.
+   Defines a system event and its parameters.
 
-	sfml.window.Event holds all the information about a system event that just
-	happened.
+   :class:`Event` holds all the information about a system 
+   event that just happened.
 
-	Events are retrieved using the :func:`sfml.graphics.Window.poll_event` and 
-	:func:`sfml.graphics.Window.wait_event` functions. You can also retreive the 
-	current pending event list via the property :attr:`sfml.graphics.Window.event`.
+   Events are retrieved using the :meth:`Window.poll_event` and 
+   :meth:`Window.wait_event` functions. You can also retreive 
+   a generator that iterates over the pending events the property 
+   :attr:`Window.events`.
 
-	An :class:`sfml.Event` instance contains the data of the event.
+   An :class:`Event` instance contains the data of the event.
 
-	Usage example::
-	
-		for event in window.events:
-			# request for closing the window
-			if event == sfml.window.CloseEvent:
-				window.close()
+   Usage example::
 
-			# the escape key was pressed
-			if event == sfml.window.KeyEvent and event.code is sfm.window.Keyboard.ESCAPE:
-				window.close()
+      for event in window.events:
+         # request for closing the window
+         if type(event) is sf.CloseEvent:
+            window.close()
 
-			# the window was resized
-			if event == sfml.window.ResizeEvent:
-				do_something_with_the_new_size(event.size)
+         # the escape key was pressed
+         if type(event) is sf.KeyEvent and event.code is sf.Keyboard.ESCAPE:
+            window.close()
 
-			# ...
-			
+         # the window was resized
+         if type(event) is sf.ResizeEvent:
+            do_something_with_the_new_size(event.size)
 
+         # ...
+         
+CloseEvent
+----------
 .. class:: CloseEvent(Event)
 
+   The window requested to be closed.
 
-.. class:: ReizeEvent(Event)
-   
-	.. attribute:: size
+ResizeEvent
+-----------
+.. class:: ResizeEvent(Event)
 
+   The window was resized.
 
+   .. attribute:: size
+
+      Tells you the new window size.
+      
+      :rtype: :class:`sfml.system.Vector2`
+
+FocusEvent
+----------
 .. class:: FocusEvent(Event)
 
-   .. attribute:: lost
+   The window gained or lost the focus, :attr:`gained` and :attr:`lost` 
+   return boolean.
+
    .. attribute:: gained
+   .. attribute:: lost
 
-
-.. class:: TextEvent(Event)
-
-	.. attribute:: unicode
-
-
-.. class:: KeyEvent(Event)
-   
-   .. attribute:: pressed
-   .. attribute:: released
-   .. attribute:: code
-   .. attribute:: alt
-   .. attribute:: control
-   .. attribute:: shift
-   .. attribute:: system
-
-
-.. class:: MouseWheelEvent
-
-	.. attribute:: delta
-	.. attribute:: position
-
-
-.. class:: MouseButtonEvent
-
-	.. attribute:: pressed
-	.. attribute:: released
-	.. attribute:: button
-	.. attribute:: position
-
-
-.. class:: MouseMoveEvent
-
-	.. attribute:: position
-
-
+MouseEvent
+----------
 .. class:: MouseEvent
+
+   The mouse cursor entered or left the area of the window, 
+   :attr:`entered` and :attr:`left` return boolean.
 
    .. attribute:: entered
    .. attribute:: left
+   
+TextEvent
+---------
+.. class:: TextEvent(Event)
 
+   A character was entered. :attr:`unicode` return the ASCII code (integer).
+	.. attribute:: unicode
+      
+KeyEvent
+--------
+.. class:: KeyEvent(Event)
 
+   A key was pressed or released. :attr:`pressed` and :attr:`released` 
+   return boolean.
+   
+   .. attribute:: pressed
+   .. attribute:: released
+   
+   .. attribute:: code
+   
+      tells you the code of the key that has been pressed. 
+      You'll find the list in :class:`Keyboard`.
+   
+   .. attribute:: alt
+   
+      tells you if the Alt key was pressed.
+      
+   .. attribute:: control
+   
+      tells you if the Control key was pressed.
+      
+   .. attribute:: shift
+   
+      tells you if the Shift key was pressed.
+      
+   .. attribute:: system
+   
+      tells you if the System key was pressed.
+
+MouseWheelEvent
+---------------
+.. class:: MouseWheelEvent
+
+   The mouse wheel was scrolled. 
+
+   .. attribute:: delta
+
+      Number of ticks the wheel has moved (positive is up, negative is down) 
+      
+      :rtype: integer
+      
+   .. attribute:: position
+
+      Position of the mouse pointer, relative to the left of the owner window. 
+      
+      :rtype: :class:`sfml.system.Vector2`
+
+MouseButtonEvent
+----------------
+.. class:: MouseButtonEvent
+
+   A mouse button was pressed or released.
+
+   .. attribute:: pressed
+   .. attribute:: released
+
+   .. attribute:: button
+
+      Code of the button that has been presssed of released. You'll 
+      find the list in :class:`Mouse`.
+      
+   .. attribute:: position
+
+      Position of the mouse pointer, relative to the left of the owner window. 
+      
+      :rtype: :class:`sfml.system.Vector2`
+
+MouseMoveEvent
+--------------
+.. class:: MouseMoveEvent
+
+   The mouse cursor moved. To know the offset, you must take care of 
+   saving the previous value and compare with the next one.
+   
+	.. attribute:: position
+
+      Position of the mouse pointer, relative to the left of the owner window. 
+      
+      :rtype: :class:`sfml.system.Vector2`
+
+JoystickMoveEvent
+-----------------
 .. class:: JoystickMoveEvent
 
 	.. attribute:: joystick_id
 	.. attribute:: axis
 	.. attribute:: position
 
-
+JoystickButtonEvent
+-------------------
 .. class:: JoystickButtonEvent
 
 	.. attribute:: pressed
@@ -131,7 +204,8 @@ Event
 	.. attribute:: joystick_id
 	.. attribute:: button
 
-
+JoystickConnectEvent
+--------------------
 .. class:: JoystickConnectEvent
 
 	.. attribute:: connected
@@ -141,8 +215,6 @@ Event
 
 VideoMode
 ^^^^^^^^^
-
-
 .. class:: VideoMode
 
 	:class:`VideoMode` defines a video mode (width, height, bpp)
@@ -173,15 +245,15 @@ VideoMode
 		
 		# display the list of all the video modes available for fullscreen
 		i = 0
-		modes = sfml.window.VideoMode.get_fullscreen_modes()
+		modes = sf.VideoMode.get_fullscreen_modes()
 		for mode in modes:
 			print("Mode #{0}: {1}".format(i, mode))
 			i += 1
 			
 		# create a window with the same pixel depth as the desktop
-		desktop = sfml.window.VideoMode.get_desktop_mode()
+		desktop = sf.VideoMode.get_desktop_mode()
 		width, bpp = desktop
-		window = sfml.graphics.Window(sfml.window.VideoMode(1024, 768, bpp), "pySFML Window")
+		window = sf.Window(sf.VideoMode(1024, 768, bpp), "pySFML Window")
 
 
    .. py:method:: VideoMode(width, height[, bits_per_pixel=32])
@@ -234,7 +306,7 @@ VideoMode
 		always give the best mode (higher width, height and 
 		bits-per-pixel).
 
-		:rtype: list of :class:`VideoMode`
+		:rtype: list of :class:`sfml.window.VideoMode`
 		
    .. py:method:: is_valid()
 
@@ -244,7 +316,7 @@ VideoMode
       fullscreen windows; otherwise any video mode can be used with no 
       restriction.
 
-		:rtype: bool
+      :rtype: bool
 
 
 ContextSettings
@@ -338,32 +410,32 @@ Window
 	
 	Window that serves as a target for OpenGL rendering.
 
-	:class:`sfml.graphics.Window` is the main class of the Window module.
+	:class:`Window` is the main class of the Window module.
 
 	It defines an OS window that is able to receive an OpenGL rendering.
 
-	A :class:`sfml.graphics.Window` can create its own new window, or be embedded into 
+	A :class:`Window` can create its own new window, or be embedded into 
 	an already existing control using the create(handle) function. This can 
 	be useful for embedding an OpenGL rendering area into a view which is 
 	part of a bigger GUI with existing windows, controls, etc. It can also 
 	serve as embedding an OpenGL rendering area into a window created by 
 	another (probably richer) GUI library like Qt or wxWidgets.
 
-	The :class:`sfml.graphics.Window` class provides a simple interface for 
-	manipulating the window: move, resize, show/hide, control mouse cursor, 
+	The :class:`Window` class provides a simple interface for 
+	manipulating the window: :meth:`move`, :meth:`resize`, :attr:`show`/:attr:`hide`, control mouse cursor, 
 	etc. It also provides event handling through its :func:`poll_event` and 
 	:func:`wait_event` functions.
 
 	Note that OpenGL experts can pass their own parameters (antialiasing 
 	level, bits for the depth and stencil buffers, etc.) to the OpenGL 
-	context attached to the window, with the :class:`sfml.window.ContextSettings` 
+	context attached to the window, with the :class:`ContextSettings` 
 	structure which is passed as an optional argument when creating the 
 	window.
 
 	Usage example::
 
 		# declare and create a new window
-		window = sfml.graphics.Window(sfml.window.VideoMode(800, 600), "pySFML Window")
+		window = sf.Window(sf.VideoMode(800, 600), "pySFML Window")
 
 		# limit the framerate to 60 frames per second (this step is optional)
 		window.framerate_limit = 60
@@ -373,7 +445,7 @@ Window
 			# event processing
 			for event in window.events:
 				# request for closing the window
-				if event.type == sfml.window.Event.CLOSED:
+				if type(event) is sf.CloseEvent:
 					window.close()
 
 				# activate the window for OpenGL rendering
