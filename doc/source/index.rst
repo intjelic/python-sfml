@@ -1,11 +1,11 @@
 SFML2 for Python
 ================
-This is version |version| of the unofficial python bindings for `SFML2 <http://www.sfml-dev.org/>`_ 
+This is version |version| of the unofficial Python bindings for `SFML2 <http://www.sfml-dev.org/>`_ 
 released under the `LGPLv3 <http://www.gnu.org/copyleft/lgpl.html>`_ license.
 
 Python bindings really are the perfect way to sketch software using SFML.
 
-By combining the strength of SFML with the ease of the python language,
+By combining the strength of SFML with the ease of the Python language,
 we can provide an amazing tool to quickly build multimedia software.
 
 .. note ::
@@ -69,7 +69,7 @@ we can provide an amazing tool to quickly build multimedia software.
    
       :doc:`addons`
          Documentation for complementary SFML-based libraries that have also
-         been ported to python.
+         been ported to Python.
       
    
 What's new ?
@@ -79,7 +79,7 @@ What's new ?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 `sfeMovie <http://lucas.soltic.perso.luminy.univmed.fr/sfeMovie/>`_ has been
-ported to python. For documentation and installation instructions, please
+ported to Python. For documentation and installation instructions, please
 consult the `website <http://openhelbreath/python-sfeMovie>`_. Just as the
 original project depends on SFML being installed, the new sfeMovie bindings
 depend on these SFML bindings.
@@ -102,5 +102,5 @@ Two new commands have been added to the setup script::
 `save_to_file()`, `open_from_*()` and `load_from_*()` methods have been deprecated 
 in favor of `from_*()` and `to_file()`.
 
-In addition, `copy()` methods have been deprecated in favor of python's
+In addition, `copy()` methods have been deprecated in favor of Python's
 `__copy__()` special methods. 
