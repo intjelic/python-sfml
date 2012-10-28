@@ -1,17 +1,16 @@
 SFML2 for Python
 ================
-This is version |version| of the unofficial python binding for `SFML2 <http://www.sfml-dev.org/>`_ 
+This is version |version| of the unofficial python bindings for `SFML2 <http://www.sfml-dev.org/>`_ 
 released under the `LGPLv3 <http://www.gnu.org/copyleft/lgpl.html>`_ license.
 
-A python binding really is the perfect way to sketch a software using 
-SFML.
+Python bindings really are the perfect way to sketch software using SFML.
 
 By combining the strength of SFML with the ease of the python language,
 we can provide an amazing tool to quickly build multimedia software.
 
 .. note ::
 
-        So far, this binding has only been tested thoroughly on Linux,
+        So far, these bindings have only been tested thoroughly on Linux,
         though minimal testing has been done on Windows.
 	
 .. toctree::
@@ -33,39 +32,44 @@ we can provide an amazing tool to quickly build multimedia software.
    * .. glossary::
 
       :doc:`introduction`
-         Where you should start reading if you've never been here before.
+         Explains what this project is, who is responsible, and where this
+         project is going.
+
+   * .. glossary::
+   
+      :doc:`download`
+         Instructions on where and how to install these bindings for various
+         platforms. Includes information on how to compile them from source.
          
    * .. glossary::
    
       :doc:`gettingstarted`
-         A documentation to help you get started with the binding.
+         A gentle introduction to these bindings, covering some basic
+         principles.
       
    * .. glossary::
    
-      :doc:`download`
-         Download is available for all platforms: Windows, Mac OSX, Linux.
-         
-         It also give instructions to install and compile.
-
-   * .. glossary::
-   
       :doc:`examples`
-         Various piece of examples.
+         Practical examples demonstrating how various parts of this binding can
+         work together with each other as well as other APIs.
          
    * .. glossary::
    
       :doc:`tutorials`
-         Good place to learn or/and grab knowledges.
+         Tutorials focusing on the various core principles integral to
+         understanding how SFML works.
 
    * .. glossary::
    
       :doc:`api/api_index`
-         The official documentation enterily translated for this binding.
+         Complete library reference organized by each of the binding's five
+         core modules.
 
    * .. glossary::
    
       :doc:`addons`
-         So far only `sfeMovie <http://openhelbreath.net/python-sfml2/sfemovie>`_ has been ported but Thor and TGUI are coming.
+         Documentation for complementary SFML-based libraries that have also
+         been ported to python.
       
    
 What's new ?
@@ -74,30 +78,29 @@ What's new ?
 **1 October 2012**: sfeMovie
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The project **sfeMovie** has been ported for this binding: check out the 
-web page for documentation and installation procedure. Like this 
-binding, it supports all platforms.
+`sfeMovie <http://lucas.soltic.perso.luminy.univmed.fr/sfeMovie/>`_ has been
+ported to python. For documentation and installation instructions, please
+consult the `website <http://openhelbreath/python-sfeMovie>`_. Just as the
+original project depends on SFML being installed, the new sfeMovie bindings
+depend on these SFML bindings.
 
-The two binding are **independant** but sfeMovie won't work if pysfml2 is 
-not installed, of course.
-
-Webpage: http://openhelbreath/python-sfeMovie
- 
-Github: https://github.com/Sonkun/python-sfeMovie
+.. seealso::
+    Github: https://github.com/Sonkun/python-sfeMovie
 
 **30 August 2012**: New commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Two new commands available::
+Two new commands have been added to the setup script::
 
-   python setup.py doc # to gen the doc
-   python setup.py tests # to launch unit tests
+   python setup.py doc # generates html documentation
+   python setup.py tests # runs the test suite
 
 
-**16 Juny 2012**: Depreciated some methods
+**16 Juny 2012**: Deprecated some methods
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-'save_to_file', 'open_from_*' and 'load_from_*' have been depreciated 
-and you should know use 'from_*' and 'to_file'.
+`save_to_file()`, `open_from_*()` and `load_from_*()` methods have been deprecated 
+in favor of `from_*()` and `to_file()`.
 
-copy methods too.
+In addition, `copy()` methods have been deprecated in favor of python's
+`__copy__()` special methods. 
