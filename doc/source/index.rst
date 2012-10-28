@@ -23,7 +23,7 @@ we can provide an amazing tool to quickly build multimedia software.
    gettingstarted
    examples
    tutorials
-   api_reference
+   api/api_index
    addons
    changelog
 
@@ -59,7 +59,7 @@ we can provide an amazing tool to quickly build multimedia software.
 
    * .. glossary::
    
-      :doc:`api_reference`
+      :doc:`api/api_index`
          The official documentation enterily translated for this binding.
 
    * .. glossary::

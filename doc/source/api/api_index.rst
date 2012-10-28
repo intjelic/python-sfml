@@ -22,35 +22,35 @@ Choose the module:
 
    * .. glossary::
 
-      :doc:`documentation/system`
+      :doc:`system`
          The system module documentation.
          
    * .. glossary::
 
-      :doc:`documentation/window`
+      :doc:`window`
          The window module documentation.
          
    * .. glossary::
 
-      :doc:`documentation/graphics`
+      :doc:`graphics`
          The graphics module documentation.
          
    * .. glossary::
 
-      :doc:`documentation/audio`
+      :doc:`audio`
         The audio module documentation.
          
    * .. glossary::
 
-      :doc:`documentation/network`
+      :doc:`network`
          The network module documentation.
 
 .. toctree::
    :maxdepth: 1
    :hidden:
    
-   documentation/system
-   documentation/window
-   documentation/graphics
-   documentation/audio
-   documentation/network
+   system
+   window
+   graphics
+   audio
+   network
