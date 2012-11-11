@@ -19,9 +19,9 @@ class Test(Command):
     def finalize_options(self): pass
 
     def run(self):
-        import sys, subprocess
-        errno = subprocess.call([sys.executable, '-m',
-                                 'unittest', 'discover', '-s', 'tests'])
+        import subprocess
+        subprocess.call(
+            [sys.executable, '-m', 'unittest', 'discover', '-s', 'tests'])
 
 
 if os.environ.get('USE_CYTHON'):
@@ -103,7 +103,7 @@ kwargs = dict(
                         'Topic :: Software Development :: Libraries :: Python Modules'],
             cmdclass = {'test': Test})
 
-if os.environ.get('USE_CYTHON')
+if os.environ.get('USE_CYTHON'):
     kwargs.update(cmdclass={'build_ext': Cython.Distutils.build_ext})
 
 setup(**kwargs)

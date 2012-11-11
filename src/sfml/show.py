@@ -72,7 +72,7 @@ window.framerate_limit = 60
 texture = sf.Texture.load_from_image(image)
 sprite = sf.Sprite(texture)
 
-while window.opened:
+while window.is_open:
 	
 	for event in window.events:
 		if type(event) is sf.CloseEvent:

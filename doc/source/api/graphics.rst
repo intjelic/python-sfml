@@ -2702,7 +2702,7 @@ RenderTexture
       texture = sfml.graphics.RenderTexture.create(500, 500)
 
       # the main loop
-      while window.opened:
+      while window.is_open:
          
          # ...
          

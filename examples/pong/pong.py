@@ -76,7 +76,7 @@ ball_angle = 0. # to be changed later
 clock = sf.Clock()
 is_playing = False
 
-while window.opened:
+while window.is_open:
 	
 	# handle events
 	for event in window.events:

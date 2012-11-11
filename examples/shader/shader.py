@@ -241,7 +241,7 @@ if __name__ == "__main__":
 	clock = sf.Clock()
 	
 	# start the game loop
-	while window.opened:
+	while window.is_open:
 		
 		# update the current example
 		x, y = sf.Mouse.get_position(window) / window.size
