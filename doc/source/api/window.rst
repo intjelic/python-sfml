@@ -495,7 +495,7 @@ Window
       :attr:`opened` every time), and will have no effect on closed 
       windows.
 
-   .. attribute:: opened
+   .. attribute:: is_open
    
       Tell whether or not the window is open.
 
