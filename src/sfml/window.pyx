@@ -83,7 +83,6 @@ cdef class Event:
 		else:
 			return NotImplemented
 
-
 	property type:
 		def __get__(self):
 			return self.p_this.type
@@ -319,10 +318,10 @@ cdef class MouseMoveEvent(Event):
 		
 	property position:
 		def __get__(self):
-			return Vector2(self.x, self.y)
+			return Vector2(self.p_this.mouseMove.x, self.p_this.mouseMove.y)
 			
 		def __set__(self, position):
-			self.x, self.y = position
+			self.p_this.mouseMove.x, self.p_this.mouseMove.y = position
 
 
 cdef class MouseEvent(Event):
