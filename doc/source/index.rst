@@ -85,7 +85,7 @@ original project depends on SFML being installed, the new sfeMovie bindings
 depend on these SFML bindings.
 
 .. seealso::
-    Github: https://github.com/Sonkun/python-sfeMovie
+    Github: https://github.com/Sonkun/python-sfemovie
 
 **30 August 2012**: New commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
