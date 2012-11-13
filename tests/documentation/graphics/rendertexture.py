@@ -5,7 +5,7 @@ window = sf.RenderWindow(sf.VideoMode(800, 600), "pySFML - RenderWindow")
 texture = sf.RenderTexture.create(500, 500)
 
 # the main loop
-while window.opened:
+while window.is_open:
 	
 	# ...
 	

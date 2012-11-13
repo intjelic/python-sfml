@@ -12,7 +12,7 @@ import sfml as sf
 
 window = sf.Window(sf.VideoMode(800, 600), "pySFML Window")
 
-print(window.opened)
+print(window.is_open)
 print(window.settings)
 assert type(window.settings) == sf.ContextSettings
 

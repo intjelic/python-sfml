@@ -6,9 +6,10 @@
 #
 # This software is released under the GPLv3 license.
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.	If not, see <http://www.gnu.org/licenses/>.
 
 cimport cython
+from warnings import warn
 from cython.operator cimport dereference as deref, preincrement as inc
 
 from libcpp.vector cimport vector
@@ -18,18 +19,18 @@ from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 
-__all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event', 
-			'CloseEvent', 'ResizeEvent', 'FocusEvent', 'TextEvent', 
-			'KeyEvent', 'MouseWheelEvent', 'MouseButtonEvent', 
-			'MouseMoveEvent', 'MouseEvent', 'JoystickButtonEvent', 
-			'JoystickMoveEvent', 'JoystickConnectEvent', 'Pixels', 
+__all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
+			'CloseEvent', 'ResizeEvent', 'FocusEvent', 'TextEvent',
+			'KeyEvent', 'MouseWheelEvent', 'MouseButtonEvent',
+			'MouseMoveEvent', 'MouseEvent', 'JoystickButtonEvent',
+			'JoystickMoveEvent', 'JoystickConnectEvent', 'Pixels',
 			'Window', 'Keyboard', 'Joystick', 'Mouse', 'Context']
-			
+
 cdef extern from "system.h":
 	cdef class sfml.system.Vector2 [object PyVector2Object]:
 		cdef public object x
 		cdef public object y
-			
+
 	cdef class sfml.system.Vector3 [object PyVector3Object]:
 		cdef public object x
 		cdef public object y
@@ -40,11 +41,11 @@ cdef extern from "system.h":
 cdef dsystem.Vector2i vector2_to_vector2i(vector):
 	x, y = vector
 	return dsystem.Vector2i(x, y)
-	
+
 cdef dsystem.Vector2u vector2_to_vector2u(vector):
 	w, h = vector
 	return dsystem.Vector2u(w, h)
-	
+
 
 cdef class Style:
 	NONE = dwindow.style.None
@@ -86,13 +87,13 @@ cdef class Event:
 	property type:
 		def __get__(self):
 			return self.p_this.type
-			
+
 		def __set__(self, dwindow.event.EventType type):
 			self.p_this.type = type
 
 cdef Event wrap_event(dwindow.Event *p):
 	cdef Event event
-	
+
 	if p.type == dwindow.event.Closed:
 		event = CloseEvent.__new__(CloseEvent)
 	elif p.type == dwindow.event.Resized:
@@ -129,43 +130,43 @@ cdef Event wrap_event(dwindow.Event *p):
 		event = wrap_joystickconnectevent(p, Event.CONNECTED)
 	elif p.type == dwindow.event.JoystickDisconnected:
 		event = wrap_joystickconnectevent(p, Event.DISCONNECTED)
-		
+
 	event.p_this = p
 	return event
 
 cdef class CloseEvent(Event):
 	def __str__(self):
 		return "The window requested to be closed"
-		
+
 cdef class ResizeEvent(Event):
 	def __str__(self):
 		return "The window was resized"
-		
+
 	property size:
 		def __get__(self):
 			return Vector2(self.width, self.height)
-			
+
 		def __set__(self, size):
 			self.width, self.height = size
-			
+
 cdef class FocusEvent(Event):
 	cdef bint state
-	
+
 	def __str__(self):
 		if self.gained: return "The window gained the focus"
 		if self.lost: return "The window lost the focus"
-		
+
 	property gained:
 		def __get__(self):
 			return self.state
-			
+
 		def __set__(self, bint gained):
 			self.state = gained
-		
+
 	property lost:
 		def __get__(self):
 			return not self.state
-			
+
 		def __set__(self, bint lost):
 			self.state = not lost
 
@@ -174,73 +175,73 @@ cdef FocusEvent wrap_focusevent(dwindow.Event *p, bint state):
 	r.p_this = p
 	r.state = state
 	return r
-	
+
 
 cdef class TextEvent(Event):
 	def __str__(self):
 		return "A character was entered"
-		
+
 	property unicode:
 		def __get__(self):
 			return self.p_this.text.unicode
-			
+
 		def __set__(self, Uint32 unicode):
 			self.p_this.text.unicode = unicode
 
 
 cdef class KeyEvent(Event):
 	cdef bint state
-	
+
 	def __str__(self):
 		if self.pressed: return "A key was pressed"
 		if self.released: return "A key was released"
-		
+
 	property pressed:
 		def __get__(self):
 			return self.state
-			
+
 		def __set__(self, bint pressed):
 			self.state = pressed
-		
+
 	property released:
 		def __get__(self):
 			return not self.state
-			
+
 		def __set__(self, bint released):
 			self.state = not released
 
 	property code:
 		def __get__(self):
 			return self.p_this.key.code
-			
+
 		def __set__(self, dwindow.keyboard.Key code):
 			self.p_this.key.code = code
-		
+
 	property alt:
 		def __get__(self):
 			return self.p_this.key.alt
-			
+
 		def __set__(self, bint alt):
 			self.p_this.key.alt = alt
-			
+
 	property control:
 		def __get__(self):
 			return self.p_this.key.control
-			
+
 		def __set__(self, bint control):
 			self.p_this.key.control = control
-			
+
 	property shift:
 		def __get__(self):
 			return self.p_this.key.shift
-			
+
 		def __set__(self, bint shift):
 			self.p_this.key.shift = shift
-			
+
 	property system:
 		def __get__(self):
 			return self.p_this.key.system
-			
+
 		def __set__(self, bint system):
 			self.p_this.key.system = system
 
@@ -258,28 +259,39 @@ cdef class MouseWheelEvent(Event):
 	property delta:
 		def __get__(self):
 			return self.p_this.mouseWheel.delta
-			
+
 		def __set__(self, int delta):
 			self.p_this.mouseWheel.delta = delta
 
+<<<<<<< HEAD
+=======
+	property position:
+		def __get__(self):
+			return Vector2(self.x, self.y)
+
+		def __set__(self, position):
+			self.x, self.y = position
+
+
+>>>>>>> c63b8d7dd058d76813bcfd508e0c6e61167dbabb
 cdef class MouseButtonEvent(Event):
 	cdef bint state
-	
+
 	def __str__(self):
 		if self.pressed: return "A mouse button was pressed"
 		if self.released: return "A mouse button was released"
-		
+
 	property pressed:
 		def __get__(self):
 			return self.state
-			
+
 		def __set__(self, bint pressed):
 			self.state = pressed
-		
+
 	property released:
 		def __get__(self):
 			return not self.state
-			
+
 		def __set__(self, bint released):
 			self.state = not released
 
@@ -295,38 +307,43 @@ cdef MouseButtonEvent wrap_mousebuttonevent(dwindow.Event *p, bint state):
 	r.p_this = p
 	r.state = state
 	return r
-	
-	
+
+
 cdef class MouseMoveEvent(Event):
 	def __str__(self):
 		return "The mouse cursor moved"
-		
+
 	property position:
 		def __get__(self):
+<<<<<<< HEAD
 			return Vector2(self.p_this.mouseMove.x, self.p_this.mouseMove.y)
 			
+=======
+			return Vector2(self.x, self.y)
+
+>>>>>>> c63b8d7dd058d76813bcfd508e0c6e61167dbabb
 		def __set__(self, position):
 			self.p_this.mouseMove.x, self.p_this.mouseMove.y = position
 
 
 cdef class MouseEvent(Event):
 	cdef bint state
-	
+
 	def __str__(self):
 		if self.entered: return "The mouse cursor entered the area of the window"
 		if self.left: return "The mouse cursor left the area of the window"
-		
+
 	property entered:
 		def __get__(self):
 			return self.state
-			
+
 		def __set__(self, bint entered):
 			self.state = entered
-		
+
 	property left:
 		def __get__(self):
 			return not self.state
-			
+
 		def __set__(self, bint left):
 			self.state = not left
 
@@ -339,36 +356,36 @@ cdef MouseEvent wrap_mouseevent(dwindow.Event *p, bint state):
 
 cdef class JoystickButtonEvent(Event):
 	cdef bint state
-	
+
 	def __str__(self):
 		if self.pressed: return "A joystick button was pressed"
 		if self.released: return "A joystick button was released"
-		
+
 	property pressed:
 		def __get__(self):
 			return self.state
-			
+
 		def __set__(self, bint pressed):
 			self.state = pressed
-		
+
 	property released:
 		def __get__(self):
 			return not self.state
-			
+
 		def __set__(self, bint released):
 			self.state = not released
-			
+
 	property joystick_id:
 		def __get__(self):
 			return self.p_this.joystickButton.joystickId
-			
+
 		def __set__(self, unsigned int joystick_id):
 			self.p_this.joystickButton.joystickId = joystick_id
-			
+
 	property button:
 		def __get__(self):
 			return self.p_this.joystickButton.button
-			
+
 		def __set__(self, unsigned int button):
 			self.p_this.joystickButton.button = button
 
@@ -382,54 +399,54 @@ cdef JoystickButtonEvent wrap_joystickbuttonevent(dwindow.Event *p, bint state):
 cdef class JoystickMoveEvent(Event):
 	def __str__(self):
 		return "The joystick moved along an axis"
-		
+
 	property joystick_id:
 		def __get__(self):
 			return self.p_this.joystickMove.joystickId
-			
+
 		def __set__(self, unsigned int joystick_id):
 			self.p_this.joystickMove.joystickId = joystick_id
-		
+
 	property axis:
 		def __get__(self):
 			return self.p_this.joystickMove.axis
-			
+
 		def __set__(self, dwindow.joystick.Axis axis):
 			self.p_this.joystickMove.axis = axis
-		
+
 	property position:
 		def __get__(self):
 			return self.p_this.joystickMove.position
-			
+
 		def __set__(self, float position):
 			self.p_this.joystickMove.position = position
 
 
 cdef class JoystickConnectEvent(Event):
 	cdef bint state
-	
+
 	def __str__(self):
 		if self.connected: return "A joystick was connected"
 		if self.disconnected: return "A joystick was disconnected"
-		
+
 	property connected:
 		def __get__(self):
 			return self.state
-			
+
 		def __set__(self, bint connected):
 			self.state = connected
-		
+
 	property disconnected:
 		def __get__(self):
 			return not self.state
-			
+
 		def __set__(self, bint disconnected):
 			self.state = not disconnected
-			
+
 	property joystick_id:
 		def __get__(self):
 			return self.p_this.joystickConnect.joystickId
-			
+
 		def __set__(self, unsigned int joystick_id):
 			self.p_this.joystickConnect.joystickId = joystick_id
 
@@ -447,7 +464,7 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
 	def __init__(self, unsigned int width, unsigned int height, unsigned int bpp=32):
 		self.p_this = new dwindow.VideoMode(width, height, bpp)
 		self.delete_this = True
-		
+
 	def __dealloc__(self):
 		if self.delete_this: del self.p_this
 
@@ -458,34 +475,34 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
 		return "{0}x{1}x{2}".format(self.width, self.height, self.bpp)
 
 	def __richcmp__(VideoMode x, VideoMode y, int op):
-		if op == 0:   return x.p_this[0] <  y.p_this[0]
+		if op == 0:   return x.p_this[0] <	y.p_this[0]
 		elif op == 2: return x.p_this[0] == y.p_this[0]
-		elif op == 4: return x.p_this[0] >  y.p_this[0]
+		elif op == 4: return x.p_this[0] >	y.p_this[0]
 		elif op == 1: return x.p_this[0] <= y.p_this[0]
 		elif op == 3: return x.p_this[0] != y.p_this[0]
 		elif op == 5: return x.p_this[0] >= y.p_this[0]
 
 	def __iter__(self):
 		return iter((self.size, self.bpp))
-		
+
 	property width:
 		def __get__(self):
 			return self.p_this.width
-			
+
 		def __set__(self, unsigned int width):
 			self.p_this.width = width
-		
+
 	property height:
 		def __get__(self):
 			return self.p_this.height
-			
+
 		def __set__(self, unsigned int height):
 			self.p_this.height = height
 
 	property size:
 		def __get__(self):
 			return Vector2(self.p_this.width, self.p_this.height)
-			
+
 		def __set__(self, value):
 			width, height = value
 			self.p_this.width = width
@@ -502,25 +519,25 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
 	def get_desktop_mode(cls):
 		cdef dwindow.VideoMode *p = new dwindow.VideoMode()
 		p[0] = dwindow.videomode.getDesktopMode()
-		
+
 		return wrap_videomode(p, True)
-		
+
 	@classmethod
 	def get_fullscreen_modes(cls):
 		cdef list modes = []
 		cdef vector[dwindow.VideoMode] *v = new vector[dwindow.VideoMode]()
 		v[0] = dwindow.videomode.getFullscreenModes()
-		
+
 		cdef vector[dwindow.VideoMode].iterator it = v.begin()
 		cdef dwindow.VideoMode vm
-		
+
 		while it != v.end():
 			vm = deref(it)
 			modes.append(VideoMode(vm.width, vm.height, vm.bitsPerPixel))
 			inc(it)
 
 		return modes
-		
+
 	def is_valid(self):
 		return self.p_this.isValid()
 
@@ -548,7 +565,7 @@ cdef public class ContextSettings[type PyContextSettingsType, object PyContextSe
 
 	def __iter__(self):
 		return iter((self.depth_bits, self.stencil_bits, self.antialiasing_level, self.major_version, self.minor_version))
-		
+
 	property depth_bits:
 		def __get__(self):
 			return self.p_this.depthBits
@@ -591,24 +608,24 @@ cdef ContextSettings wrap_contextsettings(dwindow.ContextSettings *v):
 
 
 cdef public class Pixels[type PyPixelsType, object PyPixelsObject]:
-	cdef Uint8*          p_array
-	cdef unsigned int    m_width
-	cdef unsigned int    m_height
-	
+	cdef Uint8*			 p_array
+	cdef unsigned int	 m_width
+	cdef unsigned int	 m_height
+
 	def __init__(self):
 		raise UserWarning("This class is not meant to be used directly")
-	
+
 	def __getitem__(self, unsigned int index):
 		return self.p_this[index]
-		
+
 	property width:
 		def __get__(self):
 			return self.m_width
-			
+
 	property height:
 		def __get__(self):
 			return self.m_height
-			
+
 	property data:
 		def __get__(self):
 			return (<char*>self.p_array)[:self.width*self.height*4]
@@ -621,28 +638,28 @@ cdef public Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 
 cdef public class Window[type PyWindowType, object PyWindowObject]:
 	cdef dwindow.Window *p_window
-	cdef bint            m_visible
-	cdef bint            m_vertical_synchronization
-	
+	cdef bint			 m_visible
+	cdef bint			 m_vertical_synchronization
+
 	def __cinit__(self, *args, **kwargs):
 		self.m_visible = True
 		self.m_vertical_synchronization = False
-		
+
 	def __init__(self, VideoMode mode, title, Uint32 style=dwindow.style.Default, ContextSettings settings=None):
 		cdef char* encoded_title
-		
+
 		if self.__class__.__name__ != 'RenderWindow':
 			encoded_title_temporary = title.encode(u"ISO-8859-1")
 			encoded_title = encoded_title_temporary
-			
+
 			if self.__class__ is Window:
 				if not settings: self.p_window = new dwindow.Window(mode.p_this[0], encoded_title, style)
-				else: self.p_window = new dwindow.Window(mode.p_this[0], encoded_title, style, settings.p_this[0])		
-				
+				else: self.p_window = new dwindow.Window(mode.p_this[0], encoded_title, style, settings.p_this[0])
+
 			else:
 				if not settings: self.p_window = <dwindow.Window*>new dwindow.DerivableWindow(mode.p_this[0], encoded_title, style)
 				else: self.p_window = <dwindow.Window*>new dwindow.DerivableWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
-				(<dwindow.DerivableWindow*>self.p_window).set_pyobj(<void*>self)		
+				(<dwindow.DerivableWindow*>self.p_window).set_pyobj(<void*>self)
 
 	def __dealloc__(self):
 		if self.__class__.__name__ != 'RenderWindow':
@@ -650,19 +667,24 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
 	def recreate(self, VideoMode mode, title, Uint32 style=dwindow.style.Default, ContextSettings settings=None):
 		cdef char* encoded_title
-		
+
 		encoded_title_temporary = title.encode(u"ISO-8859-1")
 		encoded_title = encoded_title_temporary
-		
+
 		if not settings: self.p_window.create(mode.p_this[0], encoded_title, style)
 		else: self.p_window.create(mode.p_this[0], encoded_title, style, settings.p_this[0])
-		
+
 	def close(self):
 		self.p_window.close()
 
-	property opened:
+	property is_open:
 		def __get__(self):
 			return self.p_window.isOpen()
+
+	property opened:
+		def __get__(self):
+			warn("Please use 'is_open' instead.", DeprecationWarning)
+			return self.is_open
 
 	property settings:
 		def __get__(self):
@@ -676,14 +698,14 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 	property events:
 		def __get__(self):
 			return Window.events_generator(self)
-			
+
 	def events_generator(window):
 		cdef dwindow.Event *p = new dwindow.Event()
 
 		while window.p_window.pollEvent(p[0]):
 			yield wrap_event(p)
-			p = new dwindow.Event()			
-		
+			p = new dwindow.Event()
+
 		del p
 
 	def poll_event(self):
@@ -691,10 +713,10 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
 		if self.p_window.pollEvent(p[0]):
 			return wrap_event(p)
-			
+
 	def wait_event(self):
 		cdef dwindow.Event *p = new dwindow.Event()
-		
+
 		if self.p_window.waitEvent(p[0]):
 			return wrap_event(p)
 
@@ -724,21 +746,21 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 	property visible:
 		def __get__(self):
 			return self.m_visible
-			
+
 		def __set__(self, bint visible):
 			self.p_window.setVisible(visible)
 			self.m_visible = visible
-			
+
 	def show(self):
 		self.visible = True
-			
+
 	def hide(self):
 		self.visible = False
 
 	property vertical_synchronization:
 		def __get__(self):
 			return self.m_vertical_synchronization
-			
+
 		def __set__(self, bint vertical_synchronization):
 			self.p_window.setVerticalSyncEnabled(vertical_synchronization)
 			self.m_vertical_synchronization = vertical_synchronization
@@ -880,7 +902,7 @@ cdef class Keyboard:
 
 	def __init__(self):
 		raise NotImplementedError("This class is not meant to be instantiated!")
-		
+
 	@classmethod
 	def is_key_pressed(cls, int key):
 		return dwindow.keyboard.isKeyPressed(<dwindow.keyboard.Key>key)
@@ -902,7 +924,7 @@ cdef class Joystick:
 
 	def __init__(self):
 		raise NotImplementedError("This class is not meant to be instantiated!")
-		
+
 	@classmethod
 	def is_connected(cls, unsigned int joystick):
 		return dwindow.joystick.isConnected(joystick)
@@ -935,10 +957,10 @@ cdef class Mouse:
 	X_BUTTON1 = dwindow.mouse.XButton1
 	X_BUTTON2 = dwindow.mouse.XButton2
 	BUTTON_COUNT = dwindow.mouse.ButtonCount
-	
+
 	def __init__(self):
 		raise NotImplementedError("This class is not meant to be instantiated!")
-		
+
 	@classmethod
 	def is_button_pressed(cls, int button):
 		return dwindow.mouse.isButtonPressed(<dwindow.mouse.Button>button)
@@ -963,13 +985,13 @@ cdef class Mouse:
 
 cdef class Context:
 	cdef dwindow.Context *p_this
-	
+
 	def __init__(self):
 		self.p_this = new dwindow.Context()
 
 	def __dealloc__(self):
 		del self.p_this
-		
-	property active:			
+
+	property active:
 		def __set__(self, bint active):
 			self.p_this.setActive(active)

@@ -46,7 +46,7 @@ Here it is:
    music.play()
 
    # start the game loop
-   while window.opened:
+   while window.is_open:
       # process events
       for event in window.events:
          # close window: exit

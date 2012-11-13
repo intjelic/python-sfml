@@ -17,7 +17,7 @@ window = sf.Window(sf.VideoMode(800, 600), "pySFML Window")
 window.framerate_limit = 60
 
 # the main loop - ends as soon as the window is closed
-while window.opened:
+while window.is_open:
 	# event processing
 	for event in window.events:
 		# request for closing the window
