@@ -235,6 +235,7 @@ both sf.Drawable and sf.Transformable.
               sfDrawable.__init__(self)
               
           def draw(self, target, states):
+              states.transform.combine(self.transformable.transform)
               target.draw(body)
               target.draw(clothes)
 

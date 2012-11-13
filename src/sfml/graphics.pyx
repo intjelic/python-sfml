@@ -403,6 +403,11 @@ cdef Transform wrap_transform(dgraphics.Transform *p, bint d=True):
 	r.p_this = p
 	r.delete_this = d
 	return r
+	
+cdef Transformable wrap_transformable(dgraphics.Transformable *p):
+	cdef Transformable r = Transformable.__new__(Transformable)
+	r.p_this = p
+	return r
 
 
 cdef class Image:
@@ -1297,7 +1302,10 @@ cdef class TransformableDrawable(Drawable):
 	def __cinit__(self, *args, **kwargs):
 		if self.__class__ == TransformableDrawable:
 			raise NotImplementedError('TransformableDrawable is abstact')
-
+		
+		if self.__class__ not in [Sprite, Shape, Text]:
+			self.p_transformable = new dgraphics.Transformable()
+			
 	property position:
 		def __get__(self):
 			return Vector2(self.p_transformable.getPosition().x, self.p_transformable.getPosition().y)
@@ -1347,7 +1355,10 @@ cdef class TransformableDrawable(Drawable):
 			p[0] = self.p_transformable.getInverseTransform()
 			return wrap_transform(p)
 			
-			
+	property transformable:
+		def __get__(self):
+			return wrap_transformable(self.p_transformable)
+
 cdef class Sprite(TransformableDrawable):
 	cdef dgraphics.Sprite *p_this
 	cdef Texture           m_texture
