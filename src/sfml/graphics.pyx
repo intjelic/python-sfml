@@ -1838,12 +1838,14 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 			
 		def __set__(self, View view):
 			self.p_rendertarget.setView(view.p_this[0])
+			view.m_renderwindow = None
+			view.m_rendertarget = self
 
 	property default_view:
 		def __get__(self):
 			cdef dgraphics.View *p = new dgraphics.View()
 			p[0] = self.p_rendertarget.getDefaultView()
-			return wrap_view(p)
+			return wrap_view_for_rendertarget(p, self)
 
 	def get_viewport(self, View view):
 		cdef dsystem.IntRect p = self.p_rendertarget.getViewport(view.p_this[0])
@@ -1856,9 +1858,7 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 	def draw(self, Drawable drawable, RenderStates states=None):
 		if not states: self.p_rendertarget.draw(drawable.p_drawable[0])
 		else: self.p_rendertarget.draw(drawable.p_drawable[0], states.p_this[0])
-		
-	def draw_vertex(self): pass
-		
+
 	property size:
 		def __get__(self):
 			return Vector2(self.p_rendertarget.getSize().x, self.p_rendertarget.getSize().y)
@@ -1920,12 +1920,14 @@ cdef class RenderWindow(Window):
 			
 		def __set__(self, View view):
 			self.p_this.setView(view.p_this[0])
-			
+			view.m_renderwindow = self
+			view.m_rendertarget = None
+
 	property default_view:
 		def __get__(self):
 			cdef dgraphics.View *p = new dgraphics.View()
 			p[0] = self.p_this.getDefaultView()
-			return wrap_view(p)
+			return wrap_view_for_renderwindow(p, self)
 
 	def get_viewport(self, View view):
 		cdef dsystem.IntRect p = self.p_this.getViewport(view.p_this[0])
@@ -1938,10 +1940,7 @@ cdef class RenderWindow(Window):
 	def draw(self, Drawable drawable, RenderStates states=None):
 		if not states: self.p_this.draw(drawable.p_drawable[0])
 		else: self.p_this.draw(drawable.p_drawable[0], states.p_this[0])
-		
-	def draw_vertex(self):
-		raise NotImplemented
-		
+
 	property size:
 		def __get__(self):
 			return Vector2(self.p_this.getSize().x, self.p_this.getSize().y)
