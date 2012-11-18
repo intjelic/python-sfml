@@ -1,29 +1,35 @@
-This is the version 1.2 of a non-official python binding for SFML2 
-released under the LGPLv3 license. This version is based on the first 
-release candidate of SFML2.
+About
+=====
+This is version |version| of the unofficial Python bindings for `SFML2 <http://www.sfml-dev.org/>`_ 
+released under the `LGPLv3 <http://www.gnu.org/copyleft/lgpl.html>`_ license.
 
-This binding is complete as it provides all classes found in SFML and 
-all its features. The module is split into five distinct sub-modules: 
-system, window, graphics, audio and network.
+Python bindings really are the perfect way to sketch software using SFML.
 
-Unlike the official one this binding provides the network module in 
-order to be exhaustive although its use is discouraged in favor of the
-implementation included in python's standard library.
+By combining the strength of SFML with the ease of the Python language,
+we can provide an amazing tool to quickly build multimedia software.
 
-Examples, tutorials and complete documentation come along to help 
-you with using pySFML2.
+.. note ::
 
-A python binding really is the perfect way to sketch software using 
-SFML.
+        So far, these bindings have only been tested thoroughly on Linux,
+        though minimal testing has been done on Windows.
 
-By combining the strength of SFML with the ease of the python language,
-we can provide an amazing tool to build quickly multimedia software.
+Getting the Code
+================
+After you've installed `Git <http://git-scm.com/downloads>`_, you may issue
+the following command to obtain the source::
 
-The bug-tracker is temporarily read-only. If you find bugs then please 
-report them on the forum or via the issues tab on the github page, I'll 
-add them.
+    git clone git@github.com:Sonkun/python-sfml2.git
 
-Website: http://openhelbreath.net/python-sfml2/
+The source from the add-ons projects are available as submodules, which may be
+obtained by issuing the following additional commands::
+
+    git submodule init
+    git submodule update
+
+Resources
+=========
+
+Bug Tracker: http://github.com/Sonkun/python-sfml2/issues
 Documentation: http://openhelbreath.net/python-sfml2/documentation.html
-Bugtracker: http://openhelbreath.net/python-sfml2/flyspray/
-Github: https://github.com/Sonkun/python-sfml2
+Project Page: https://github.com/Sonkun/python-sfml2
+Website: http://openhelbreath.net/python-sfml2/

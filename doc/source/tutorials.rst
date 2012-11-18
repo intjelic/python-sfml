@@ -110,7 +110,7 @@ two "states", you'll have to check it via their properties.::
        if event.lost: 
            ...
 
-Read the :doc:`documentation/window` for information about events.
+Read the :doc:`api/window` for information about events.
 
 Exception
 ---------

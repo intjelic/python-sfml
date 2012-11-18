@@ -16,4 +16,4 @@ def test_request():
 def test_response(http):
     response = http.send_request(test_request)
 
-    print response.body
+    print(response.body)
