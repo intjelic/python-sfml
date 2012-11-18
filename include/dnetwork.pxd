@@ -42,18 +42,18 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		unsigned short getLocalPort()
 		socket.Status listen(unsigned short)
 		void close()
-		socket.Status accept(TcpSocket&)
+		socket.Status accept(TcpSocket&) nogil
 
 	cdef cppclass TcpSocket:
 		TcpSocket()
 		unsigned short getLocalPort()
 		IpAddress getRemoteAddress()
 		unsigned short getRemotePort()
-		socket.Status connect(IpAddress&, unsigned short)
-		socket.Status connect(IpAddress&, unsigned short, Time)
+		socket.Status connect(IpAddress&, unsigned short) nogil
+		socket.Status connect(IpAddress&, unsigned short, Time) nogil
 		void disconnect()
-		socket.Status send(void*, size_t)
-		socket.Status receive(void*, size_t, size_t&)
+		socket.Status send(void*, size_t) nogil
+		socket.Status receive(void*, size_t, size_t&) nogil
 
 	cdef cppclass UdpSocket:
 		UdpSocket()
@@ -68,32 +68,32 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		void add(Socket&)
 		void remove(Socket&)
 		void clear()
-		bint wait()
-		bint wait(Time)
+		bint wait() nogil
+		bint wait(Time) nogil
 		bint isReady(Socket&)
 
 	cdef cppclass Ftp:
 		Ftp()
-		ftp.Response connect(IpAddress&)
-		ftp.Response connect(IpAddress&, unsigned short)
-		ftp.Response connect(IpAddress&, unsigned short, Time)
+		ftp.Response connect(IpAddress&) nogil
+		ftp.Response connect(IpAddress&, unsigned short) nogil
+		ftp.Response connect(IpAddress&, unsigned short, Time) nogil
 		ftp.Response disconnect()
-		ftp.Response login()
-		ftp.Response login(char*&, char*&)
-		ftp.Response keepAlive()
-		ftp.DirectoryResponse getWorkingDirectory()
-		ftp.ListingResponse	getDirectoryListing()
-		ftp.ListingResponse	getDirectoryListing(char*&)
-		ftp.Response changeDirectory(char*&)
-		ftp.Response parentDirectory()
-		ftp.Response createDirectory(char*&)
-		ftp.Response deleteDirectory(char*&)
-		ftp.Response renameFile(char*&, char*&)
-		ftp.Response deleteFile(char*&)
-		ftp.Response download(char*&, char*&)
-		ftp.Response download(char*&, char*&, ftp.TransferMode)
-		ftp.Response upload(char*&, char*&)
-		ftp.Response upload(char*&, char*&, ftp.TransferMode)
+		ftp.Response login() nogil
+		ftp.Response login(char*&, char*&) nogil
+		ftp.Response keepAlive() nogil
+		ftp.DirectoryResponse getWorkingDirectory() nogil
+		ftp.ListingResponse	getDirectoryListing() nogil
+		ftp.ListingResponse	getDirectoryListing(char*&) nogil
+		ftp.Response changeDirectory(char*&) nogil
+		ftp.Response parentDirectory() nogil
+		ftp.Response createDirectory(char*&) nogil
+		ftp.Response deleteDirectory(char*&) nogil
+		ftp.Response renameFile(char*&, char*&) nogil
+		ftp.Response deleteFile(char*&) nogil
+		ftp.Response download(char*&, char*&) nogil
+		ftp.Response download(char*&, char*&, ftp.TransferMode) nogil
+		ftp.Response upload(char*&, char*&) nogil
+		ftp.Response upload(char*&, char*&, ftp.TransferMode) nogil
 
 	cdef cppclass Http:
 		Http()
@@ -101,5 +101,5 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		Http(string&, unsigned short)
 		void setHost(string&)
 		void setHost(string&, unsigned short)
-		http.Response sendRequest(http.Request&)
-		http.Response sendRequest(http.Request&, Time)
+		http.Response sendRequest(http.Request&) nogil
+		http.Response sendRequest(http.Request&, Time) nogil

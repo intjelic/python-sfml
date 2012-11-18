@@ -84,7 +84,6 @@ cdef class Event:
 		else:
 			return NotImplemented
 
-
 	property type:
 		def __get__(self):
 			return self.p_this.type
@@ -264,6 +263,8 @@ cdef class MouseWheelEvent(Event):
 		def __set__(self, int delta):
 			self.p_this.mouseWheel.delta = delta
 
+<<<<<<< HEAD
+=======
 	property position:
 		def __get__(self):
 			return Vector2(self.x, self.y)
@@ -272,6 +273,7 @@ cdef class MouseWheelEvent(Event):
 			self.x, self.y = position
 
 
+>>>>>>> c63b8d7dd058d76813bcfd508e0c6e61167dbabb
 cdef class MouseButtonEvent(Event):
 	cdef bint state
 
@@ -300,13 +302,6 @@ cdef class MouseButtonEvent(Event):
 		def __set__(self, dwindow.mouse.Button button):
 			self.p_this.mouseButton.button = button
 
-	property position:
-		def __get__(self):
-			return Vector2(self.x, self.y)
-
-		def __set__(self, position):
-			self.x, self.y = position
-
 cdef MouseButtonEvent wrap_mousebuttonevent(dwindow.Event *p, bint state):
 	cdef MouseButtonEvent r = MouseButtonEvent.__new__(MouseButtonEvent)
 	r.p_this = p
@@ -320,10 +315,15 @@ cdef class MouseMoveEvent(Event):
 
 	property position:
 		def __get__(self):
+<<<<<<< HEAD
+			return Vector2(self.p_this.mouseMove.x, self.p_this.mouseMove.y)
+			
+=======
 			return Vector2(self.x, self.y)
 
+>>>>>>> c63b8d7dd058d76813bcfd508e0c6e61167dbabb
 		def __set__(self, position):
-			self.x, self.y = position
+			self.p_this.mouseMove.x, self.p_this.mouseMove.y = position
 
 
 cdef class MouseEvent(Event):

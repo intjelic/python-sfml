@@ -148,12 +148,6 @@ MouseWheelEvent
       
       :rtype: integer
       
-   .. attribute:: position
-
-      Position of the mouse pointer, relative to the left of the owner window. 
-      
-      :rtype: :class:`sfml.system.Vector2`
-
 MouseButtonEvent
 ----------------
 .. class:: MouseButtonEvent
@@ -168,12 +162,6 @@ MouseButtonEvent
       Code of the button that has been presssed of released. You'll 
       find the list in :class:`Mouse`.
       
-   .. attribute:: position
-
-      Position of the mouse pointer, relative to the left of the owner window. 
-      
-      :rtype: :class:`sfml.system.Vector2`
-
 MouseMoveEvent
 --------------
 .. class:: MouseMoveEvent

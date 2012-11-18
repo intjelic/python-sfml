@@ -164,7 +164,10 @@ cdef class TcpListener(Socket):
 		
 	def accept(self):
 		cdef TcpSocket socket = TcpSocket()
-		cdef dnetwork.socket.Status status = self.p_this.accept(socket.p_this[0])
+		cdef dnetwork.socket.Status status
+		
+		with nogil:
+			status = self.p_this.accept(socket.p_this[0])
 		
 		if status is not dnetwork.socket.Done:
 			if status is dnetwork.socket.NotReady:
@@ -209,9 +212,13 @@ cdef class TcpSocket(Socket):
 			
 	def connect(self, IpAddress remote_address, unsigned short remote_port, Time timeout=None):
 		cdef dnetwork.socket.Status status
-		
-		if not timeout: status = self.p_this.connect(remote_address.p_this[0], remote_port)
-		else: status = self.p_this.connect(remote_address.p_this[0], remote_port, timeout.p_this[0])
+
+		if not timeout:
+			with nogil:
+				status = self.p_this.connect(remote_address.p_this[0], remote_port)
+		else:
+			with nogil:
+				status = self.p_this.connect(remote_address.p_this[0], remote_port, timeout.p_this[0])
 		
 		if status is not dnetwork.socket.Done:
 			if status is dnetwork.socket.NotReady:
@@ -225,7 +232,12 @@ cdef class TcpSocket(Socket):
 		self.p_this.disconnect()
 
 	def send(self, bytes data):
-		cdef dnetwork.socket.Status status = self.p_this.send(<char*>data, len(data))
+		cdef dnetwork.socket.Status status
+		cdef char* cdata = <char*>data
+		cdef size_t cdata_len = len(data)
+		
+		with nogil:
+			status = self.p_this.send(cdata, cdata_len)
 		
 		if status is not dnetwork.socket.Done:
 			if status is dnetwork.socket.NotReady:
@@ -238,7 +250,10 @@ cdef class TcpSocket(Socket):
 	def receive(self, size_t size):
 		cdef char* data = <char*>malloc(size * sizeof(char))
 		cdef size_t received = 0
-		cdef dnetwork.socket.Status status = self.p_this.receive(data, size, received)
+		cdef dnetwork.socket.Status status
+		
+		with nogil:
+			status = self.p_this.receive(data, size, received)
 		
 		if status is not dnetwork.socket.Done:
 			if status is dnetwork.socket.NotReady:
@@ -329,8 +344,16 @@ cdef class SocketSelector:
 		self.p_this.clear()
 		
 	def wait(self, Time timeout=None):
-		if not timeout: return self.p_this.wait()
-		else: return self.p_this.wait(timeout.p_this[0])
+		cdef bint ret
+		
+		if not timeout: 
+			with nogil:
+				ret = self.p_this.wait()
+		else: 
+			with nogil:
+				ret = self.p_this.wait(timeout.p_this[0])
+				
+		return ret
 		
 	def is_ready(self, Socket socket):
 		return self.p_this.isReady(socket.p_socket[0])
@@ -468,9 +491,14 @@ cdef class Ftp:
 	def __dealloc__(self):
 		del self.p_this
 		
-	def connect(self, IpAddress server, unsigned short port=21, Uint32 timeout=0):
+	def connect(self, IpAddress server, unsigned short port=21, Time timeout=None):
 		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
-		response[0] = self.p_this.connect(server.p_this[0], port, dsystem.milliseconds(timeout))
+		
+		if not timeout:
+			with nogil: response[0] = self.p_this.connect(server.p_this[0], port)
+		else:
+			with nogil: response[0] = self.p_this.connect(server.p_this[0], port, timeout.p_this[0])
+		
 		return wrap_ftpresponse(response)
 		
 	def disconnect(self):
@@ -486,13 +514,19 @@ cdef class Ftp:
 		cdef char* encoded_name = encoded_name_temporary
 		cdef char* encoded_message = encoded_message_temporary
 
-		if not name: response[0] = self.p_this.login()
-		else: response[0] = self.p_this.login(encoded_name, encoded_message)
+		if not name:
+			with nogil: response[0] = self.p_this.login()
+		else: 
+			with nogil: response[0] = self.p_this.login(encoded_name, encoded_message)
+			
 		return wrap_ftpresponse(response)
 
 	def keep_alive(self):
 		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
-		response[0] = self.p_this.keepAlive()
+		
+		with nogil: 
+			response[0] = self.p_this.keepAlive()
+			
 		return wrap_ftpresponse(response)
 		
 	def get_working_directory(self):
@@ -503,7 +537,10 @@ cdef class Ftp:
 		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
 		cdef dnetwork.ftp.DirectoryResponse* directory_response = new dnetwork.ftp.DirectoryResponse(response[0])
 		del response
-		directory_response[0] = self.p_this.getWorkingDirectory()
+		
+		with nogil:
+			directory_response[0] = self.p_this.getWorkingDirectory()
+			
 		return wrap_ftpdirectoryresponse(directory_response)
 		
 	def get_directory_listing(self, str directory=""):
@@ -520,7 +557,9 @@ cdef class Ftp:
 		encoded_directory_temporary = directory.encode('UTF-8')
 		cdef char* encoded_directory = encoded_directory_temporary
 		
-		listing_response[0] = self.p_this.getDirectoryListing(encoded_directory)
+		with nogil:
+			listing_response[0] = self.p_this.getDirectoryListing(encoded_directory)
+			
 		return wrap_ftplistingresponse(listing_response)
 		
 	def change_directory(self, str directory):
@@ -529,12 +568,17 @@ cdef class Ftp:
 		encoded_directory_temporary = directory.encode('UTF-8')
 		cdef char* encoded_directory = encoded_directory_temporary
 		
-		response[0] = self.p_this.changeDirectory(encoded_directory)
+		with nogil:
+			response[0] = self.p_this.changeDirectory(encoded_directory)
+			
 		return wrap_ftpresponse(response)
 
 	def parent_directory(self):
 		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
-		response[0] = self.p_this.parentDirectory()
+		
+		with nogil:
+			response[0] = self.p_this.parentDirectory()
+			
 		return wrap_ftpresponse(response)
 		
 	def create_directory(self, str name):
@@ -543,7 +587,9 @@ cdef class Ftp:
 		encoded_name_temporary = name.encode('UTF-8')
 		cdef char* encoded_name = encoded_name_temporary
 		
-		response[0] = self.p_this.createDirectory(encoded_name)
+		with nogil:
+			response[0] = self.p_this.createDirectory(encoded_name)
+			
 		return wrap_ftpresponse(response)
 		
 	def delete_directory(self, str name):
@@ -552,7 +598,9 @@ cdef class Ftp:
 		encoded_name_temporary = name.encode('UTF-8')
 		cdef char* encoded_name = encoded_name_temporary
 		
-		response[0] = self.p_this.deleteDirectory(encoded_name)
+		with nogil:
+			response[0] = self.p_this.deleteDirectory(encoded_name)
+			
 		return wrap_ftpresponse(response)
 		
 	def rename_file(self, str filename, str newname):
@@ -563,7 +611,9 @@ cdef class Ftp:
 		cdef char* encoded_filename = encoded_filename_temporary
 		cdef char* encoded_newname = encoded_newname_temporary
 		
-		response[0] = self.p_this.renameFile(encoded_filename, encoded_newname)
+		with nogil:
+			response[0] = self.p_this.renameFile(encoded_filename, encoded_newname)
+			
 		return wrap_ftpresponse(response)
 		
 	def delete_file(self, str name):
@@ -572,7 +622,9 @@ cdef class Ftp:
 		encoded_name_temporary = name.encode('UTF-8')
 		cdef char* encoded_name = encoded_name_temporary
 		
-		response[0] = self.p_this.deleteFile(encoded_name)
+		with nogil:
+			response[0] = self.p_this.deleteFile(encoded_name)
+			
 		return wrap_ftpresponse(response)
 		
 	def download(self, str remotefile, str localpath, dnetwork.ftp.TransferMode mode=dnetwork.ftp.Binary):
@@ -583,7 +635,9 @@ cdef class Ftp:
 		cdef char* encoded_remotefile = encoded_remotefile_temporary
 		cdef char* encoded_localpath = encoded_localpath_temporary
 		
-		response[0] = self.p_this.download(encoded_remotefile, encoded_localpath, mode)
+		with nogil:
+			response[0] = self.p_this.download(encoded_remotefile, encoded_localpath, mode)
+			
 		return wrap_ftpresponse(response)
 		
 	def upload(self, str localfile, str remotepath, dnetwork.ftp.TransferMode mode=dnetwork.ftp.Binary):
@@ -594,7 +648,9 @@ cdef class Ftp:
 		cdef char* encoded_localfile = encoded_localfile_temporary
 		cdef char* encoded_remotepath = encoded_remotepath_temporary
 		
-		response[0] = self.p_this.upload(encoded_localfile, encoded_remotepath, mode)
+		with nogil:
+			response[0] = self.p_this.upload(encoded_localfile, encoded_remotepath, mode)
+			
 		return wrap_ftpresponse(response)
 
 
@@ -704,6 +760,10 @@ cdef class Http:
 
 	def send_request(self, HttpRequest request, Time timeout=None):
 		cdef dnetwork.http.Response* p = new dnetwork.http.Response()
-		if not timeout: p[0] = self.p_this.sendRequest(request.p_this[0])
-		else: p[0] = self.p_this.sendRequest(request.p_this[0], timeout.p_this[0])
+		
+		if not timeout: 
+			with nogil: p[0] = self.p_this.sendRequest(request.p_this[0])
+		else: 
+			with nogil: p[0] = self.p_this.sendRequest(request.p_this[0], timeout.p_this[0])
+			
 		return wrap_httpresponse(p)
