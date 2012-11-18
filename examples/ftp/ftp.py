@@ -11,6 +11,12 @@
 import os
 import sfml.network as sf
 
+try:
+    # Python 2.* compatability
+    input = raw_input
+except NameError:
+    pass
+
 # choose the server address
 address = input("Enter the FTP server address: ")
 address = sf.IpAddress.from_string(address)

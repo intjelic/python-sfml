@@ -10,39 +10,45 @@
 
 import sfml.network as sf
 
+try:
+    # python 2 compatabiliy
+    input = raw_input
+except NameError:
+    pass
+
 def run_tcp_server():
-	""" Launch a server. The server waits for an incoming connection, 
+	""" Launch a server. The server waits for an incoming connection,
 	sends a message and waits for the answer. """
 
 	try:
 		# create a server socket to accept new connections
 		listener = sf.TcpListener()
-		
+
 		# listen to the given port for incoming connections
 		listener.listen(PORT)
-		
+
 		print("Server is listening to port {0}, waiting for connections...".format(PORT))
 
 		# wait for a connection
 		socket = listener.accept()
 		print("Client connected: {0}".format(socket.remote_address))
-		
-		# send a message to the connected client		
+
+		# send a message to the connected client
 		message = "Hi, I'm the server"
 		socket.send(message.encode('utf-8'))
 		print("Message sent to the client: {0}".format(message))
-		
+
 		# recieve a message back from the client
 		answer = socket.receive(128).decode('utf-8')
 		print("Answer received from the client: {0}".format(answer))
-		
+
 	except sf.SocketException as error:
 		print("An error occured!")
 		print(error)
 		return
 
 def run_tcp_client():
-	""" Create a client. The client is connected to a server, displays 
+	""" Create a client. The client is connected to a server, displays
 	the welcome message and sends an answer. """
 
 	server = input("Type the address or name of the server to connect to: ")
@@ -69,7 +75,7 @@ def run_tcp_client():
 		print("An error occured!")
 		print(error)
 		return
-		
+
 def run_udp_server():
 	""" Launch a server. The server waits for a message then sends an
 	answer. """
@@ -90,7 +96,7 @@ def run_udp_server():
 		answer = "Hi, I'm the server"
 		socket.send(answer.encode('utf-8'), ip, port)
 		print("Message sent to the client: {0}".format(answer))
-		
+
 	except sf.SocketException as error:
 		print("An error occured!")
 		print(error)
@@ -139,5 +145,5 @@ if __name__ == "__main__":
 	else:
 		if who == 's': run_udp_server()
 		else: run_udp_client()
-			
+
 	input("Press any key to exit...")

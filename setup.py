@@ -76,7 +76,7 @@ network = extension(
 	[network_source],
 	['sfml-system', 'sfml-network'])
 
-with open('README', 'r') as f:
+with open('README.rst', 'r') as f:
 	long_description = f.read()
 
 kwargs = dict(

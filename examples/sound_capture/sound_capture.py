@@ -10,6 +10,12 @@
 
 import sfml as sf
 
+try:
+    # python 2 compatability
+    input = raw_input
+except NameError:
+    pass
+
 def main():
 	# check that the device can capture audio
 	if not sf.SoundRecorder.is_available():
@@ -45,7 +51,7 @@ def main():
 	if choice == 's':
 		# choose the filename
 		filename = input("Choose the file to create: ")
-		
+
 		# save the buffer
 		buffer.to_file(filename);
 	else:

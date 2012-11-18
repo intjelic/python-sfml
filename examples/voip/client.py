@@ -11,38 +11,45 @@
 import sfml as sf
 from struct import pack
 from random import randint
+
+try:
+    # python 2 compatability
+    input = raw_input
+except NameError:
+    pass
+
 AUDIO_DATA, END_OF_STREAM = list(range(1, 3))
 
 class NetworkRecorder(sf.SoundRecorder):
 	def __init__(self, host, port):
 		sf.SoundRecorder.__init__(self)
-		
+
 		self.host = host # address of the remote host
 		self.port = port # remote port
 		self.socket = sf.TcpSocket() # socket used to communicate with the server
-		
+
 	def on_start(self):
 		try: self.socket.connect(self.host, self.port)
 		except sf.SocketException as error: return False
 
 		return True
-			
+
 	def on_process_samples(self, chunk):
-		# pack the audio samples 
+		# pack the audio samples
 		data = pack("B", AUDIO_DATA)
 		data += pack("I", len(chunk.data))
 		data += chunk.data
-		
+
 		# send the audio packet
 		try: self.socket.send(data)
 		except sf.SocketException: return False
-		
+
 		return True
-		
+
 	def on_stop(self):
 		# send a "end-of-stream" signal
 		self.socket.send(bytes(END_OF_STREAM))
-		
+
 		# close the socket
 		self.socket.disconnect()
 
