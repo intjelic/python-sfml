@@ -22,7 +22,6 @@ class PyTest(test):
 
 	def run_tests(self):
 		import pytest
-		print 'here'
 		errno = pytest.main(self.test_args)
 		sys.exit(errno)
 
@@ -81,25 +80,25 @@ with open('README', 'r') as f:
 	long_description = f.read()
 
 kwargs = dict(
-			name='pySFML2',
+			name=u'pySFML2',
 			ext_modules=[x11, system, window, graphics, audio, network],
 			package_dir={'': 'src'},
 			packages=['sfml'],
-			version='1.2.0',
-			description='The non-official Python binding for SFML2',
+			version=u'1.2.0',
+			description=u'The unofficial Python binding for SFML2',
 			long_description=long_description,
-			author='Jonathan de Wachter, Edwin O Marshall'.decode('UTF-8'),
-			author_email='dewachter.jonathan@gmail.com, emarshall85@gmail.com',
-			url='http://openhelbreath.be/python-sfml2',
-			license='LGPLv3',
-			classifiers=['Development Status :: 5 - Production/Stable',
-						'Intended Audience :: Developers',
-						'License :: OSI Approved :: GNU General Public License v3 (LGPLv3)',
-						'Operating System :: OS Independent',
-						'Programming Language :: Cython',
-						'Topic :: Games/Entertainment',
-						'Topic :: Multimedia',
-						'Topic :: Software Development :: Libraries :: Python Modules'],
+			author=u'Jonathan de Wachter, Edwin O Marshall',
+			author_email=u'dewachter.jonathan@gmail.com, emarshall85@gmail.com',
+			url=u'http://openhelbreath.be/python-sfml2',
+			license=u'LGPLv3',
+			classifiers=[u'Development Status :: 5 - Production/Stable',
+						u'Intended Audience :: Developers',
+						u'License :: OSI Approved :: GNU General Public License v3 (LGPLv3)',
+						u'Operating System :: OS Independent',
+						u'Programming Language :: Cython',
+						u'Topic :: Games/Entertainment',
+						u'Topic :: Multimedia',
+						u'Topic :: Software Development :: Libraries :: Python Modules'],
 			tests_require=['pytest'],
 			cmdclass = {'test': PyTest})
 
