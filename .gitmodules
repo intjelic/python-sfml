@@ -1,3 +1,3 @@
-[submodule "addons/sfemovie"]
-	path = addons/sfemovie
+[submodule "add-ons/sfemovie"]
+	path = add-ons/sfemovie
 	url = git@github.com:Sonkun/python-sfemovie
