@@ -29,7 +29,7 @@ obtained by issuing the following additional commands::
 Resources
 =========
 
-Bug Tracker: http://github.com/Sonkun/python-sfml2/issues
-Documentation: http://openhelbreath.net/python-sfml2/documentation.html
-Project Page: https://github.com/Sonkun/python-sfml2
-Website: http://openhelbreath.net/python-sfml2/
+* Bug Tracker: http://github.com/Sonkun/python-sfml2/issues
+* Documentation: http://openhelbreath.net/python-sfml2/documentation.html
+* Project Page: https://github.com/Sonkun/python-sfml2
+* Website: http://openhelbreath.net/python-sfml2/
