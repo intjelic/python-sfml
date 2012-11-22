@@ -35,6 +35,8 @@ Choose the module:
       :doc:`graphics`
          The graphics module documentation.
          
+         **HandledWindow** is not documented, see **PyQt4** integration example.
+         
    * .. glossary::
 
       :doc:`audio`
@@ -43,7 +45,11 @@ Choose the module:
    * .. glossary::
 
       :doc:`network`
-         The network module documentation.
+         The network module documentation. 
+         
+         Althought **SocketSelector**, **Ftp** and **Http** classes are implemented, they are not yet documented. 
+         
+         Refer to official examples to know how they work.
 
 .. toctree::
    :maxdepth: 1
