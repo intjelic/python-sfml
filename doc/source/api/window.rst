@@ -501,7 +501,7 @@ Window
       remains valid and you can call :func:`recreate` to recreate the 
       window. All other functions such as :func:`poll_event` or 
       :func:`display` will still work (i.e. you don't have to test 
-      :attr:`opened` every time), and will have no effect on closed 
+      :attr:`is_open` every time), and will have no effect on closed 
       windows.
 
    .. attribute:: is_open
@@ -513,6 +513,13 @@ Window
       property would return **True**).
 
       :type: bool
+      
+   .. attribute:: opened
+   
+      .. deprecated :: 1.2
+      
+      See and use :meth:`is_open` instead. This method is kept for 
+      backward compatibilities.
       
    .. attribute:: settings
    
