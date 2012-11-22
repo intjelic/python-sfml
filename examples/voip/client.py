@@ -12,11 +12,9 @@ import sfml as sf
 from struct import pack
 from random import randint
 
-try:
-    # python 2 compatability
-    input = raw_input
-except NameError:
-    pass
+# python 2.* compatability
+try: input = raw_input 
+except NameError: pass
 
 AUDIO_DATA, END_OF_STREAM = list(range(1, 3))
 

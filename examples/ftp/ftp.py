@@ -11,11 +11,9 @@
 import os
 import sfml.network as sf
 
-try:
-    # Python 2.* compatability
-    input = raw_input
-except NameError:
-    pass
+# python 2.* compatability
+try: input = raw_input 
+except NameError: pass
 
 # choose the server address
 address = input("Enter the FTP server address: ")
