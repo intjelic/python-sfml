@@ -33,7 +33,7 @@ PrimitiveType
 .. py:class:: PrimitiveType
 
    Empty class that defines some constants. The are the types of 
-   primitives that an :class:`sfml.graphics.VertexArray` can render.
+   primitives that an :class:`VertexArray` can render.
 
    :const:`POINTS` and :class:`LINES` have no area, therefore their 
    thickness will always be 1 pixel, regarldess the current transform 
@@ -79,41 +79,40 @@ Rectangle
 
    It is a very simple class defined for convenience, so its member 
    variables (left, top, width and height) are public and can be 
-   accessed directly via attributes, just like :class:`sfml.system.Vector2`.
+   accessed directly via attributes, just like :class:`.Vector2`.
 
-   Unlike SFML, :class:`sfml.graphics.Rectangle` does define functions to emulate 
+   Unlike SFML, :class:`Rectangle` does define functions to emulate 
    the properties that are not directly members (such as right, bottom, 
    center, etc.).
 
-   :class:`sfml.graphics.Rectangle` uses the usual rules for its boundaries:
+   :class:`Rectangle` uses the usual rules for its boundaries:
 
       * The left and top edges are included in the rectangle's area
       * The right (left + width) and bottom (top + height) edges are excluded from the rectangle's area
 
-   This means that sfml.graphics.Rectangle((0, 0), (1, 1)) and 
-   sfml.graphics.Rectangle((1, 1), (1, 1)) don't intersect.
+   This means that (0, 0, 1, 1) and (1, 1, 1, 1) don't intersect.
 
    Usage example::
 
       # define a rectangle, located at (0, 0) with a size of 20x5
-      r1 = sfml.graphics.Rectangle(sfml.system.Vector2(0, 0), sfml.system.Vector2(20, 5))
-      # or r1 = sfml.graphics.Rectangle((0, 0), (20, 5))
+      r1 = sf.Rectangle(sf.Vector2(0, 0), sf.Vector2(20, 5))
+      # or r1 = sf.Rectangle((0, 0), (20, 5))
 
       # define another rectangle, located at (4, 2) with a size of 18x10
-      position = sfml.system.Vector2(4, 2)
-      size = sfml.system.Vector2(18, 10)
+      position = sf.Vector2(4, 2)
+      size = sf.Vector2(18, 10)
 
-      r2 = sfml.graphics.Rectangle(position, size)
+      r2 = sf.Rectangle(position, size)
 
       # test intersections with the point (3, 1)
-      b1 = r1.contains(sfml.system.Vector2(3, 1)); # True
-      b2 = r2.contains((3, 1)); # False
+      b1 = r1.contains(sf.Vector2(3, 1)) # True
+      b2 = r2.contains((3, 1)) # False
 
       # test the intersection between r1 and r2
       result = r1.intersects(r2) # True
 
-      # as there's an intersection, the result is not None but sfml.graphics.Rectangle(4, 2, 16, 3)
-      assert result == sfml.graphics.Rectangle((4, 2), (16, 3))
+      # as there's an intersection, the result is not None but (4, 2, 16, 3)
+      assert result == sf.Rectangle((4, 2), (16, 3))
       
    .. method:: Rectangle(position=(0, 0), size=(0, 0))
       
@@ -185,7 +184,7 @@ Color
 
       Utility class for manpulating RGBA colors.
 
-      :class:`sfml.graphics.Color` is a simple color class composed of 4 
+      :class:`Color` is a simple color class composed of 4 
       components:
          
          * Red, 
@@ -197,9 +196,9 @@ Color
       [0, 255]. Thus, colors can be constructed and manipulated very 
       easily::
 
-         c1 = sfml.graphics.Color(255, 0, 0) # red
-         c1.r = 0;                # make it black
-         c1.b = 128;              # make it dark blue
+         c1 = sf.Color(255, 0, 0) # red
+         c1.r = 0                 # make it black
+         c1.b = 128               # make it dark blue
 
       The fourth component of colors, named "alpha", represents the 
       opacity of the color. A color with an alpha value of 255 will be 
@@ -208,20 +207,20 @@ Color
 
       The most common colors are already defined. ::
          
-         black = sfml.graphics.Color.BLACK
-         white = sfml.graphics.Color.WHITE
-         red = sfml.graphics.Color.RED
-         green = sfml.graphics.Color.GREEN
-         blue = sfml.graphics.Color.BLUE
-         yellow = sfml.graphics.Color.YELLOW
-         magenta = sfml.graphics.Color.MAGENTA
-         cyan = sfml.graphics.Color.CYAN
-         transparent = sfml.graphics.Color.TRANSPARENT
+         black       = sf.Color.BLACK
+         white       = sf.Color.WHITE
+         red         = sf.Color.RED
+         green       = sf.Color.GREEN
+         blue        = sf.Color.BLUE
+         yellow      = sf.Color.YELLOW
+         magenta     = sf.Color.MAGENTA
+         cyan        = sf.Color.CYAN
+         transparent = sf.Color.TRANSPARENT
    
       Colors can also be added and modulated (multiplied) using the 
       overloaded operators + and \*. 
 
-   .. py:method:: Color(r, g, b[, a=255])
+   .. py:method:: Color([r=0[, g=0[, b=0[, a=255]]]])
    
       Construct the color from its 4 RGBA components.
       
@@ -289,7 +288,7 @@ Transform
 
    Define a 3x3 transform matrix.
 
-   A :class:`sfml.graphics.Transform` specifies how to translate, rotate, scale, 
+   A :class:`Transform` specifies how to translate, rotate, scale, 
    shear, project, whatever things.
 
    In mathematical terms, it defines how to transform a coordinate 
@@ -308,11 +307,11 @@ Transform
    Usage exampe::
 
       # define a translation transform
-      translation = sfml.graphics.Transform()
+      translation = sf.Transform()
       translation.translate((20, 50))
 
       # define a rotation transform
-      rotation = sfml.graphics.Transform()
+      rotation = sf.Transform()
       rotation.rotate(45)
 
       # combine them
@@ -320,7 +319,7 @@ Transform
 
       # use the result to transform stuff...
       point = transform.transform_point((10, 20))
-      rectangle = transform.transform_rectangle(sfml.graphics.Rectangle((0, 0), (10, 100)))
+      rectangle = transform.transform_rectangle(sf.Rectangle((0, 0), (10, 100)))
       
    .. py:classmethod:: from_values(a00, a01, a02, a10, a11, a12, a20, a21, a22)
 
@@ -401,8 +400,8 @@ Transform
       This function returns a reference to *self*, so that calls can be 
       chained. ::
       
-         transform = sfml.graphics.Transform()
-         transform.translate(sfml.system.Vector2(100, 200)).rotate(45)
+         transform = sf.Transform()
+         transform.translate(sf.Vector2(100, 200)).rotate(45)
          
       :param offset: Translation offset to apply
       :type offset: :class:`sfml.system.Vector2` or tuple
@@ -421,7 +420,7 @@ Transform
       This function returns a reference to *self*, so that calls can be 
       chained. ::
       
-         transform = sfml.graphics.Transform()
+         transform = sf.Transform()
          transform.rotate(90, (8, 3)).translate((50, 20))
          
       :param float angle: Rotation angle, in degrees
@@ -442,7 +441,7 @@ Transform
       This function returns a reference to *self*, so that calls can be 
       chained. ::
       
-         transform = sfml.graphics.Transform()
+         transform = sf.Transform()
          transform.scale((2, 1), (8, 3)).rotate(45)
 
       :param factor: Scaling factors 
@@ -452,6 +451,18 @@ Transform
       :return: Return itself
       :rtype: :class:`sfml.graphics.Transform`
 
+Pixels
+^^^^^^
+
+.. py:class:: Pixels
+
+   .. py:attribute:: width
+   
+   .. py:attribute:: heigth
+   
+   .. py:attribute:: data
+      
+
 Image
 ^^^^^
 
@@ -459,34 +470,36 @@ Image
 
    Class for loading, manipulating and saving images.
 
-   :class:`sfml.graphics.Image` is an abstraction to manipulate images as 
+   :class:`Image` is an abstraction to manipulate images as 
    bidimensional arrays of pixels.
 
    The class provides functions to load, read, write and save pixels, 
    as well as many other useful functions.
 
-   :class:`sfml.graphics.Image` can handle a unique internal representation of 
+   :class:`Image` can handle a unique internal representation of 
    pixels, which is RGBA 32 bits. This means that a pixel must be 
    composed of 8 bits red, green, blue and alpha channels -- just like 
-   an :class:`sfml.graphics.Color`. All the functions that return an array of 
+   an :class:`Color`. All the functions that return an array of 
    pixels follow this rule, and all parameters that you pass to 
-   :class:`sfml.graphics.Image` functions (such as :func:`from_pixels`) must 
+   :class:`Image` functions (such as :func:`from_pixels`) must 
    use this representation as well.
 
-   A `sfml.graphics.Image` can be copied, but it is a heavy resource; keep it in 
+   A :class:`Image` can be copied, but it is a heavy resource; keep it in 
    mind!
+   
+   For debugging purpose, you can call its method :meth:`show` that 
+   displays its content in an external window in an external thread.
    
    Usage example::
    
       try: 
          # load an image file from a file
-         background = sfml.graphics.Image.from_file("background.jpg")
+         background = sf.Image.from_file("background.jpg")
          
-         # create a 20x20 image filled with black color
-         image = sfml.graphics.Image.create(20, 20, sfml.graphics.Color.BLACK)
-
-      except sfml.system.SFMLException:
-         exit(1)
+      except IOError: exit(1)
+         
+      # create a 20x20 image filled with black color
+      image = sf.Image.create(20, 20, sf.Color.BLACK)
 
       # copy image1 on image 2 at position(10, 10)
       background.blit(image, (10, 10))
@@ -497,9 +510,9 @@ Image
       image[0, 0] = color
 
       # save the image to a file
-      background.save_to_file("result.png")
+      background.to_file("result.png")
 
-   .. py:classmethod:: create(width, height, color=sfml.graphics.Color.BLACK])
+   .. py:classmethod:: create(width, height[, color])
    
       Create the image and fill it with a unique color. 
 
@@ -508,10 +521,10 @@ Image
       :param sfml.graphics.Color color: Fill color
       :rtype: :class:`sfml.graphics.Image`
       
-   .. py:classmethod:: create_from_pixels(pixels)
+   .. py:classmethod:: from_pixels(pixels)
    
       Create the image from an array of pixels wrapped around 
-      :class:`sfml.window.Pixels`. This function fails without raising error if 
+      :class:`Pixels`. This function fails without raising error if 
       pixels are invalid. On the other hand, it raises one if *pixels* 
       points on *NULL*?
       
@@ -527,7 +540,7 @@ Image
       and pic. Some format options are not supported, like progressive 
       jpeg. If this function fails, it raises an exception.
 
-      :raise: :exc:`sfml.system.SFMLException` - If it fails
+      :raise: :exc:`IOError` - If it fails
       :param string filename: Path of the image file to load
       :rtype: :class:`sfml.graphics.Image`
       
@@ -539,11 +552,11 @@ Image
       and pic. Some format options are not supported, like progressive 
       jpeg. If this function fails, it raises an exception.
 
-      :raise: :exc:`sfml.system.SFMLException` - If it fails
+      :raise: :exc:`IOError` - If it fails
       :param bytes data: The data to load, in bytes
       :rtype: :class:`sfml.graphics.Image`
       
-   .. py:classmethod:: save_to_file(filename)
+   .. py:classmethod:: to_file(filename)
          
       Save the image to a file on disk.
 
@@ -551,8 +564,14 @@ Image
       extension. The supported image formats are bmp, png, tga and jpg. 
       The destination file is overwritten if it already exists.
       
-      :raise: :exc:`sfml.system.SFMLException` - If the image is empty
+      :raise: :exc:`IOError` - If the image is empty
       :param string filename: Path of the file to save
+      
+   .. py:method:: show()
+   
+      This function starts an external thread that displays the current 
+      content of the image in a window. It's a very handy feature for 
+      debugging purpose only.
       
    .. py:attribute:: size
    
@@ -590,7 +609,7 @@ Image
       This function does a slow pixel copy and should not be used 
       intensively. It can be used to prepare a complex static image 
       from several others, but if you need this kind of feature in 
-      real-time you'd better use :class:`sfml.graphics.RenderTexture`.
+      real-time you'd better use :class:`RenderTexture`.
 
       If *source_rect* is empty, the whole image is copied. If 
       *apply_alpha* is set to true, the transparency of source pixels is 
@@ -607,7 +626,7 @@ Image
    .. py:attribute:: pixels
          
       Get a read-only pointer to the array of pixels. This pointer is
-      wrapped around :class:`sfml.window.Pixels`.
+      wrapped around :class:`Pixels`.
       
       The returned value points to an array of RGBA pixels made of 8 
       bits integers components. The size of the array is :attr:`width` 
@@ -643,11 +662,6 @@ Image
          image[0,0]   = sfml.graphics.Color(10, 20, 30)  # create tuple implicitly
          image[(0,0)] = sfml.graphics.Color(10, 20, 30)  # create tuple explicitly
 
-   .. py:method:: show()
-   
-      This function starts an external thread that displays the current 
-      content of the image in a window. It's a very handy feature for 
-      debugging purpose only.
       
 Texture
 ^^^^^^^
@@ -657,7 +671,7 @@ Texture
    :class:`Image` living on the graphics card that can be used for 
    drawing.
 
-   :class:`sfml.graphics.Texture` stores pixels that can be drawn, with a sprite 
+   :class:`Texture` stores pixels that can be drawn, with a sprite 
    for example.
 
    A texture lives in the graphics card memory, therefore it is very 
@@ -665,12 +679,12 @@ Texture
    to a texture (the graphics card can access both directly).
 
    Being stored in the graphics card memory has some drawbacks. A 
-   texture cannot be manipulated as freely as an :class:`sfml.graphics.Image`, you 
+   texture cannot be manipulated as freely as an :class:`Image`, you 
    need to prepare the pixels first and then upload them to the texture 
    in a single operation (see :func:`Texture.update`).
 
-   :class:`sfml.graphics.Texture` makes it easy to convert from/to 
-   :class:`sfml.graphics.Image`, but keep in mind that these calls require 
+   :class:`Texture` makes it easy to convert from/to 
+   :class:`Image`, but keep in mind that these calls require 
    transfers between the graphics card and the central memory, 
    therefore they are slow operations.
 
@@ -678,7 +692,7 @@ Texture
    or a memory. The necessary shortcuts are defined so that you don't 
    need an image first for the most common cases. However, if you want 
    to perform some modifications on the pixels before creating the 
-   final texture, you can load your file to an :class:`sfml.graphics.Image`, do 
+   final texture, you can load your file to an :class:`Image`, do 
    whatever you need with the pixels, and then call 
    :func:`Texture.from_image`.
 
@@ -689,35 +703,34 @@ Texture
    store the collision information separately, for example in an array 
    of booleans.
 
-   Like :class:`sfml.graphics.Image`, :class:`sfml.graphics.Texture` can handle a unique 
+   Like :class:`Image`, :class:`Texture` can handle a unique 
    internal representation of pixels, which is RGBA 32 bits. This means 
    that a pixel must be composed of 8 bits red, green, blue and alpha 
-   channels -- just like an :class:`sfml.graphics.Color`.
+   channels -- just like an :class:`Color`.
 
    Usage example:
        
-   This first example shows the most common use of sfml.graphics.Texture: drawing a sprite ::
+   This first example shows the most common use of :class:`Texture` drawing a sprite ::
 
       #load a texture from a file
       try:
-         texture = sfml.graphics.Texture.from_file("texture.png")
+         texture = sf.Texture.from_file("texture.png")
          
-      except sfml.system.SFMLException: exit(1)
+      except IOError: exit(1)
 
       # assign it to a sprite
-      sprite = sfml.graphics.Sprite()
-      sprite.texture = texture
+      sprite = sf.Sprite(texture)
 
       # draw the textured sprite
       window.draw(sprite);
 
-   This second example shows another common use of sfml.graphics.Texture: streaming real-time data, like video frames ::
+   This second example shows another common use of :class:`Texture` streaming real-time data, like video frames ::
 
       # create an empty texture
-      texture = sfml.graphics.Texture.create(640, 480)
+      texture = sf.Texture.create(640, 480)
 
       # create a sprite that will display the texture
-      sprite = sfml.graphics.Sprite(texture)
+      sprite = sf.Sprite(texture)
 
       while loop: # the main loop
          # ...
@@ -766,12 +779,12 @@ Texture
 
       This function is a shortcut for the following code::
       
-         image = sfml.graphics.Image.from_file(filename)
+         image = sf.Image.from_file(filename)
          texture.from_image(image, area)
 
       The area argument can be used to load only a sub-rectangle of the 
       whole image. If you want the entire image then leave the default 
-      value (which is an empty :class:`sfml.graphics.Rectangle`). If the area 
+      value (which is an empty :class:`Rectangle`). If the area 
       rectangle crosses the bounds of the image, it is adjusted to fit 
       the image size.
 
@@ -780,7 +793,7 @@ Texture
 
       If this function fails, it raises an exception.
       
-      :raise: :class:`sfml.system.SFMLException` - If it fails
+      :raise: :class:`IOError` - If it fails
       :param string filename: Path of the image file to load
       :param area: Area of the image to load
       :type area: :class:`sfml.graphics.Rectangle`
@@ -792,12 +805,12 @@ Texture
 
       This function is a shortcut for the following code::
       
-         image = sfml.graphics.Image.from_memory(data)
-         texture = sfml.graphics.Texture.from_image(image, area)
+         image = sf.Image.from_memory(data)
+         texture = sf.Texture.from_image(image, area)
 
       The area argument can be used to load only a sub-rectangle of the 
       whole image. If you want the entire image then leave the default 
-      value (which is an empty :class:`sfml.graphics.Rectangle`). If the area 
+      value (which is an empty :class:`Rectangle`). If the area 
       rectangle crosses the bounds of the image, it is adjusted to fit 
       the image size.
 
@@ -806,7 +819,7 @@ Texture
 
       If this function fails, it raises an exception.
       
-      :raise: :class:`sfml.system.SFMLException` - If it fails
+      :raise: :class:`IOError` - If it fails
       :param bytes data: Data to load
       :param area: Area of the image to load
       :type area: :class:`sfml.graphics.Rectangle`
@@ -818,7 +831,7 @@ Texture
 
       The area argument can be used to load only a sub-rectangle of the 
       whole image. If you want the entire image then leave the default 
-      value (which is an empty :class:`sfml.graphics.Rectangle`). If the area 
+      value (which is an empty :class:`Rectangle`). If the area 
       rectangle crosses the bounds of the image, it is adjusted to fit 
       the image size.
 
@@ -863,16 +876,70 @@ Texture
       :type: :class:`sfml.graphics.Image`
       
    .. py:method:: update(*args, **kwargs)
-   .. py:method:: update_from_pixels(pixel[, position])
+   
+      Refer to :meth:`update_from_pixels`, :meth:`update_from_image`
+      or :meth:`update_from_window`.
+      
+      This method is provided for convinience, its sisters will be 
+      faster as they don't have to check the argument's type.
+      
+   .. py:method:: update_from_pixels(pixels[, position])
+   
+      Update the whole texture from an array of pixels.
+
+      The pixel array is assumed to have the same size as the area 
+      rectangle, and to contain 32-bits RGBA pixels.
+
+      This function does nothing if pixels is null or if the texture 
+      was not previously created.
+
+      :param sfml.graphics.Pixels pixels: Array of pixels to copy to the texture 
+      :param sfml.system.Vector2 position: Offset in the texture where to copy the source pixels
+
    .. py:method:: update_from_image(image[, position])
+   
+      Update the texture from an image.
+
+      Although the source image can be smaller than the texture, this 
+      function is usually used for updating the whole texture. Provide 
+      the additional argument **position** for updating a sub-area of 
+      the texture.
+
+      No additional check is performed on the size of the image, 
+      passing an image bigger than the texture will lead to an 
+      undefined behaviour.
+
+      This function does nothing if the texture was not previously 
+      created.
+
+      :param sfml.graphics.Image image: Image to copy to the texture 
+      :param sfml.system.Vector2 position: Offset in the texture where to copy the source image 
+      
    .. py:method:: update_from_window(window[, position])
    
+      Update the texture from the contents of a window.
+
+      Although the source window can be smaller than the texture, this 
+      function is usually used for updating the whole texture. Provide 
+      the additional argument **position** for updating a sub-area of 
+      the texture.
+
+      No additional check is performed on the size of the window, 
+      passing a window bigger than the texture will lead to an 
+      undefined behaviour.
+
+      This function does nothing if either the texture or the window 
+      was not previously created.
+      
+      :param sfml.window.Window window: Window to copy to the texture 
+      :param sfml.system.Vector2 position: Offset in the texture where to copy the source window 
+      
    .. py:method:: bind(coordinate_type=sfml.graphics.Texture.NORMALIZED)
    
       Activate the texture for rendering.
 
       This function is mainly used internally by the SFML rendering 
-      system. However it can be useful when using :class:`sfml.graphics.Texture` 
+      system. However it can be useful when using :class:`Texture` 
       together with OpenGL code (this function is equivalent to 
       glBindTexture).
 
@@ -938,7 +1005,7 @@ Glyph
 
    A glyph is the visual representation of a character.
 
-   The :class:`sfml.graphics.Glyph` structure provides the information needed to 
+   The :class:`Glyph` structure provides the information needed to 
    handle the glyph:
 
        * its coordinates in the font's texture
@@ -985,7 +1052,7 @@ Font
       See the :func:`from_file` function for the complete list of 
       supported formats.
 
-      Once it is loaded, an :class:`sfml.graphics.Font` instance provides three 
+      Once it is loaded, an :class:`Font` instance provides three 
       types of informations about the font:
 
           * Global metrics, such as the line spacing
@@ -994,44 +1061,44 @@ Font
 
       Fonts alone are not very useful: they hold the font data but 
       cannot make anything useful of it. To do so you need to use the 
-      :class:`sfml.graphics.Text` class, which is able to properly output text 
+      :class:`Text` class, which is able to properly output text 
       with several options such as character size, style, color, 
       position, rotation, etc. This separation allows more flexibility 
-      and better performances: indeed an :class:`sfml.graphics.Font` is a heavy 
+      and better performances: indeed an :class:`Font` is a heavy 
       resource, and any operation on it is slow (often too slow for 
-      real-time applications). On the other side, an :class:`sfml.graphics.Text` is 
+      real-time applications). On the other side, an :class:`Text` is 
       a lightweight object which can combine the glyphs data and 
-      metrics of an :class:`sfml.graphics.Font` to display any text on a render 
+      metrics of an :class:`Font` to display any text on a render 
       target. Note that it is also possible to bind several 
-      :class:`sfml.graphics.Text` instances to the same :class:`sfml.graphics.Font`.
+      :class:`Text` instances to the same :class:`Font`.
 
-      It is important to note that the :class:`sfml.graphics.Text` instance 
+      It is important to note that the :class:`Text` instance 
       doesn't copy the font that it uses, it only keeps a reference to 
-      it. Thus, an :class:`sfml.graphics.Font` must not be destructed while it is 
-      used by an :class:`sfml.graphics.Text`.
+      it. Thus, an :class:`Font` must not be destructed while it is 
+      used by an :class:`Text`.
 
       Usage example::
 
          # declare a new font
          try:
-            font = sfml.graphics.Font.from_file("arial.ttf")
+            font = sf.Font.from_file("arial.ttf")
             
-         except sfml.system.SFMLException: exit(1) # error...
+         except IOError: exit(1) # error...
 
          # create a text which uses our font
-         text1 = sfml.graphics.Text()
+         text1 = sf.Text()
          text1.font = font
          text1.character_size = 30
-         text1.style = sfml.graphics.Text.REGULAR
+         text1.style = sf.Text.REGULAR
 
          # create another text using the same font, but with different parameters
-         text2 = sfml.graphics.Text()
+         text2 = sf.Text()
          text2.font = font
          text2.character_size = 50
-         text2.style = sfml.graphics.Text.ITALIC
+         text2.style = sf.Text.ITALIC
 
       Apart from loading font files, and passing them to instances of 
-      :class:`sfml.graphics.Text`, you should normally not have to deal directly 
+      :class:`Text`, you should normally not have to deal directly 
       with this class. However, it may be useful to access the font 
       metrics or rasterized glyphs for advanced usage.
 
@@ -1055,7 +1122,7 @@ Font
       
       This function raises an exception if it fails.
 
-      :raise: :exc:`sfml.system.SFMLException` - If it fails.
+      :raise: :exc:`IOError` - If it fails.
       :param string filename: Path of the font file to load
       :rtype: :class:`sfml.graphics.Font`
       
@@ -1070,7 +1137,7 @@ Font
       
       This function raises an exception if it fails.
 
-      :raise: :exc:`sfml.system.SFMLException` - If it fails.
+      :raise: :exc:`IOError` - If it fails.
       :param bytes data: The data to load
       :rtype: :class:`sfml.graphics.Font`
 
@@ -1118,7 +1185,7 @@ Font
 
       The contents of the returned texture changes as more glyphs are 
       requested, thus it is not very relevant. It is mainly used 
-      internally by :class:`sfml.graphics.Text`.
+      internally by :class:`Text`.
 
       :param integer character_size: Reference character size
       :return: Texture containing the glyphs of the requested size 
@@ -1129,7 +1196,7 @@ Font
       Return the default built-in font.
 
       This font is provided for convenience, it is used by 
-      :class:`sfml.graphics.Text` instances by default. It is provided so that 
+      :class:`Text` instances by default. It is provided so that 
       users don't have to provide and load a font file in order to 
       display text on screen. The font used is Arial.
       
@@ -1152,7 +1219,7 @@ Shader
        * Vertex shaders, that process vertices
        * Fragment (pixel) shaders, that process pixels
 
-   A :class:`sfml.graphics.Shader` can be composed of either a vertex shader 
+   A :class:`Shader` can be composed of either a vertex shader 
    alone, a fragment shader alone, or both combined (see the variants 
    of the load functions).
 
@@ -1161,7 +1228,7 @@ Shader
    writing your own shaders for pySFML.
 
    Like any C/C++ program, a shader has its own variables that you can 
-   set from your Python application. :class:`sfml.graphics.Shader` handles 4 
+   set from your Python application. :class:`Shader` handles 4 
    different types of variables:
 
        * floats

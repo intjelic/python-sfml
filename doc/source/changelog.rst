@@ -41,7 +41,7 @@ v1.1 -> v1.2
 ------------
 * The license has changed: GPLv3 -> LGPLv3
 * Unit tests implemented
-* Load/open methods are depreciated (use `from_foo` instead) [#]_
+* Load/open/create methods are depreciated (use `from_foo` instead) [#]_
 * Save/convertion methods are depreciated (use `to_bar` instead) [#]_
 * Copy methods are depreciated (use the copy module instead)
 * :class:`sfml.Window.events` returns now a generator

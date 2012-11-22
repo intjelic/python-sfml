@@ -204,7 +204,7 @@ both sf.Drawable and sf.Transformable.
               self._transformable = sf.Transformable()
 
           def draw(self, target, states):
-              states.transform.combine(self.transformable.transform)
+              states.transform.combine(self._transformable.transform)
 
               target.draw(body)
               target.draw(clothes)
@@ -212,7 +212,7 @@ both sf.Drawable and sf.Transformable.
           def _get_position(self):
               return self._transfomable.position
               
-          def _set_position(self, position)
+          def _set_position(self, position):
               self._transformable.position = position
 
           position = property(_get_position, _set_position)
