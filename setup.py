@@ -99,7 +99,7 @@ kwargs = dict(
 						u'Topic :: Games/Entertainment',
 						u'Topic :: Multimedia',
 						u'Topic :: Software Development :: Libraries :: Python Modules'],
-			tests_require=['pytest'],
+			tests_require=['pytest>=2.3'],
 			cmdclass = {'test': PyTest})
 
 if os.environ.get('USE_CYTHON'):
