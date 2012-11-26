@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
+import pytest
 import sfml.system as sf
 
-def pytest_funcarg__clock(request):
+@pytest.fixture()
+def clock():
     return sf.Clock()
 
-def test_elapsed(clock):
+def test_sleep(clock):
     sf.sleep(sf.seconds(1))
     assert clock.elapsed_time >= sf.seconds(1)
 
