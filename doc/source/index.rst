@@ -1,5 +1,10 @@
 Introduction
 ============
+.. note ::
+
+        So far, these bindings have only been tested thoroughly on Linux,
+        though minimal testing has been done on Windows.
+
 This is version |version| of the unofficial Python bindings for `SFML2`_,
 based on `the first release candidate` and is made available under the terms of
 the `LGPLv3`_ license.
@@ -7,23 +12,10 @@ the `LGPLv3`_ license.
 By combining the strength of SFML with the ease of the Python language,
 we can provide an amazing tool to quickly build multimedia software.
 
-.. note ::
-
-        So far, these bindings have only been tested thoroughly on Linux,
-        though minimal testing has been done on Windows.
-
-Project History
-===============
-These bindings were forked from the `official Python bindings`_
-created by Bastien Léonard on the 16th of November, 2011.
-
-I decided to fork because his project was (and still is) a work in progress,
-and I urgently needed some unimplemented features in order to port my current
-C++ projects to Python. Since then, it has vastly improved and I have decided
-to share my work under a new license: LGPLv3.
-
-Altought his project was taken as a starting point, months went by, SFML2 
-matured rapidly, and everything was re-coded and re-thought from A to Z.
+These bindings were created in large part by Jonathan DeWachter, with
+significant contributions from Edwin Marshall. Other contributors include 
+Jorge Araya Navarro and Richard Sims. Of course, this bindnig wouldn't have
+been made possible without the work of Laurent Gomilla and Bastien Léonard.
 
 Table of Contents
 =================
@@ -78,30 +70,6 @@ Table of Contents
       :doc:`add-ons`
          Documentation for complementary SFML-based libraries that have also
          been ported to Python.
-
-Contributors
-============
-.. glossary::
-
-    Jonathan DeWachter
-        Author of these bindings.
-
-    Edwin Marshall
-        Active contributor who wrote unit tests, improved the documentation, implemented various API 
-        improvements, and is currently working on writing an SFML backend for 
-        `kivy <http://www.kivy.org>`_ using these bindings.
-
-    Laurent Gomilla
-        Author of SFML2.
-
-    Jorge Araya Navarro
-        Made the binding officialy supported on **Parabola GNU/Linux-libre**
-
-    Bastien Léonard
-        Helped me discover Cython
-
-    Richard Sims
-        Corrected my text and provids hosting.
 
 What's new ?
 ============
