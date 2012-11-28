@@ -29,10 +29,36 @@ C++ projects to Python. Since then, it has vastly improved and I have decided
 to share my work under a new license: LGPLv3.
 
 Altought his project was taken as a starting point, months went by, SFML2 
-matured rapidly, and everything was re-coded and re-thought from A to Z.
+matured rapidly, and everything was re-coded and re-thought from A to Z. 
+It follows other **conventions** and the **technical implementation choices**
+are different which allows (for example) to **use these binding in C or C++ code** (as a C API interface 
+or at least the headers are provided) or (another example) **a third-party developer to 
+create other binding that integrates with the main one** (as we did for 
+sfeMovie:link:).
 
-Overview
---------
+Where is this project going ?
+-----------------------------
+First, this project is active and open to ideas. 
+
+It's mainly maintained by two 
+developpers who have large projects (unreleased yet) based on these 
+bindings, thus as long as we work on them, a support will be guaranted. 
+Our projects are also an evidence pysfml2 is usable and make sure it
+is ready for mature projects as our final goal is enjoying a complete
+and stable SFML2 experience in Python.
+
+Another goal is to introduce SFML2 without going throught the C++ 
+documentation, or even knowing SFML2 is originaly a C++ library. That's 
+why as soon as the sfml2 tutorials are written, they're going to be 
+translated for this binding as well.
+
+The project is also being ported to use with kivy. (add details ?).
+
+Other SFML-based libraries are planned to be port such **Thor** and **TGUI**. 
+Porting them should help improve the C API of these bindings.
+
+Bindings overview
+-----------------
 .. warning::
 
     On Windows, typing these commands directly in a console might cause the
@@ -41,7 +67,7 @@ Overview
 
 Open a terminal and run the Python interpreter. Now we can experiment::
 
-   >>> import sfml as sf
+   >>> from sfml import graphics as sf
    >>> w = sf.RenderWindow(sf.VideoMode(640, 480), "My first pySFML Window - or not ?")
    >>> w.clear(sf.Color.BLUE)
    >>> w.display()
@@ -55,7 +81,7 @@ Open a terminal and run the Python interpreter. Now we can experiment::
    >>> exit()
 
 	
-Running the Examples
+Running the examples
 --------------------
 As mentioned before, pySFML2 comes with plenty of examples. If you downloaded
 a source archive, they will be located in the examples subdirectory. If running
@@ -66,10 +92,7 @@ following in a terminal::
 
     pysfml2-sound
 
-.. Note::
-   Examples are only avalaible for Python3.2 and can be found in 
-   /usr/lib/games/pysfml2-examples/ should you wish to read the code.
-   
+
 A word about Cython
 -------------------
 This binding has been coded in Cython, a language that allows you to 
@@ -89,7 +112,7 @@ argument, it means there was an error earlier"
 For an extension module this is not the case and if you pass a 
 :class:`sfml.graphics.Transform` when an :class:`sfml.graphics.Color` is expected, an exception **will**
 be raised. Incidentally, having a precise type makes things execute much faster 
-sincethe  Python interpreter doesn't have to check whether the argument type 
+since the  Python interpreter doesn't have to check whether the argument type 
 you just passed is right or not at runtime.
 
 
@@ -102,24 +125,22 @@ Contributors
         improvements, and is currently working on writing an SFML backend for 
         `kivy <http://www.kivy.org>`_ using these bindings.
 
-    Laurent Gomilla
-        Author of SFML2.
-
     Jorge Araya Navarro
         Made the binding officialy supported on **Parabola GNU/Linux-libre**
-
-    Bastien Léonard
-        Helped me discover Cython
 
     Richard Sims
         Corrected my text and provids hosting.
 
+Also, thanks to **Laurent Gomilla**, author of SFML2 and **Bastien 
+Léonard**, who help start the project.
+
 Next version
 ------------
-The next version will be a bug-fix release as I can't track all bugs 
-by myself, despite performing many tests. In addition to Mac OS X being
-**officially** supported, binary rpm packages (eg. Fedora) will be made
-available. Also, platform-specific examples should be available as well.
+The next version will update the bindings to the last sfml2 changes 
+and hopes to be released as soon as the final sfml2 version is availabe. 
+In addition to Mac OS X being **officially** supported, platform-specific 
+examples will be made available. The remaining unit tests should be 
+finished as well.
 
 For more specific details about what is planned and what has been accomplished,
 please visit the `issues page on github
