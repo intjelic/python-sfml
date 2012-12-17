@@ -1,4 +1,4 @@
-Add-ons
+Add-Ons
 =======
 
 We've also developed bindings to popular utility libraries that add
