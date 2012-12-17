@@ -1,5 +1,5 @@
-Introduction
-============
+Python bindings for SFML
+========================
 .. note ::
 
         So far, these bindings have only been tested thoroughly on Linux,
