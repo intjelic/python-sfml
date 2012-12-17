@@ -5,7 +5,7 @@ library; class, methods and functions names are the same. We'll see here
 step by step everything you need to know to get started with pysfml2!
 
 Of course, you need first to have pySFML2 downloaded and installed on 
-your computer. To do that, read the download section, it provides all 
+your computer. To do that, read the :doc:`download </download>`  section, it provides all 
 explanations you'll need to install on your favourite platform. At worst, 
 you'll need to compile.
 

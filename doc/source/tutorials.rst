@@ -57,65 +57,65 @@ implements rich comparison operators to make things simpler::
 
 Available event classes and their pysfml2-cython equivalents are shown below:
 
-+---------------------------+-------------------------------------+
-| python-sfml2              | pysfml2-cython                      | 
-+===========================+=====================================+
-| sfml.CloseEvent           | sfml.Event.CLOSED                   |
-+---------------------------+-------------------------------------+
-| sfml.ResizeEvent          | sfml.Event.RESIZED                  |
-+---------------------------+-------------------------------------+
-| sfml.FocusEvent           | sfml.Event.LOST_FOCUS               |
-|                           | sfml.Event.GAINED_FOCUS             |
-+---------------------------+-------------------------------------+
-| sfml.TextEvent            | sfml.Event.TEXT_ENTERED             |
-| sfml.KeyEvent             | sfml.Event.KEY_PRESSED              |
-|                           | sfml.Event.KEY_RELEASED             |
-+---------------------------+-------------------------------------+
-| sfml.MouseWheelEvent      | sfml.Event.MOUSE_WHEEL_MOVED        |
-| sfml.MouseButtonEvent     | sfml.Event.MOUSE_BUTTON_PRESSED     |
-|                           | sfml.Event.MOUSE_BUTTON_RELEASED    |
-+---------------------------+-------------------------------------+
-| sfml.MouseMoveEvent       | sfml.Event.MOUSE_MOVED              |
-| sfml.MouseEvent           | sfml.Event.MOUSE_ENTERED            | 
-|                           | sfml.Event.MOUSE_LEFT               |
-+---------------------------+-------------------------------------+
-| sfml.JoystickButtonEvent  | sfml.Event.JOYSTICK_BUTTON_PRESSED  |
-|                           | sfml.Event.JOYSTICK_BUTTON_RELEASED |
-+---------------------------+-------------------------------------+
-| sfml.JoystickMoveEvent    | sfml.Event.JOYSTICK_MOVED           |
-| sfml.JoystickConnectEvent | sfml.Event.JOYSTICK_CONNECTED       |
-|                           | sfml.Event.JOYSTICK_DISCONNECTED    |
-+---------------------------+-------------------------------------+
++-------------------------------------------+-------------------------------------+
+| python-sfml2                              | pysfml2-cython                      | 
++===========================================+=====================================+
+| :class:`sfml.window.CloseEvent`           | sfml.Event.CLOSED                   |
++-------------------------------------------+-------------------------------------+
+| :class:`sfml.window.ResizeEvent`          | sfml.Event.RESIZED                  |
++-------------------------------------------+-------------------------------------+
+| :class:`sfml.window.FocusEvent`           | sfml.Event.LOST_FOCUS               |
+|                                           | sfml.Event.GAINED_FOCUS             |
++-------------------------------------------+-------------------------------------+
+| :class:`sfml.window.TextEvent`            | sfml.Event.TEXT_ENTERED             |
+| :class:`sfml.window.KeyEvent`             | sfml.Event.KEY_PRESSED              |
+|                                           | sfml.Event.KEY_RELEASED             |
++-------------------------------------------+-------------------------------------+
+| :class:`sfml.window.MouseWheelEvent`      | sfml.Event.MOUSE_WHEEL_MOVED        |
+| :class:`sfml.window.MouseButtonEvent`     | sfml.Event.MOUSE_BUTTON_PRESSED     |
+|                                           | sfml.Event.MOUSE_BUTTON_RELEASED    |
++-------------------------------------------+-------------------------------------+
+| :class:`sfml.window.MouseMoveEvent`       | sfml.Event.MOUSE_MOVED              |
+| :class:`sfml.window.MouseEvent`           | sfml.Event.MOUSE_ENTERED            | 
+|                                           | sfml.Event.MOUSE_LEFT               |
++-------------------------------------------+-------------------------------------+
+| :class:`sfml.window.JoystickButtonEvent`  | sfml.Event.JOYSTICK_BUTTON_PRESSED  |
+|                                           | sfml.Event.JOYSTICK_BUTTON_RELEASED |
++-------------------------------------------+-------------------------------------+
+| :class:`sfml.window.JoystickMoveEvent`    | sfml.Event.JOYSTICK_MOVED           |
+| :class:`sfml.window.JoystickConnectEvent` | sfml.Event.JOYSTICK_CONNECTED       |
+|                                           | sfml.Event.JOYSTICK_DISCONNECTED    |
++-------------------------------------------+-------------------------------------+
 
 Once you know the type of the event you can get the data inside.::
 
-   if event == sfml.window.MouseMoveEvent:
+   if event == sf.MouseMoveEvent:
        x, y = event.position
 
-For events like sfml.window.KeyEvent, sfml.window.MouseButtonEvent, etc. which can have 
+For events like :class:`.KeyEvent`, :class:`.MouseButtonEvent`, etc. which can have 
 two "states", you'll have to check it via their properties.::
 
-   if event == sfml.window.KeyEvent:
+   if event == sf.KeyEvent:
        if event.pressed: 
            ...
        elif event.released: 
            ...
 
-   if event == sfml.window.KeyEvent and event.pressed:
+   if event == sf.KeyEvent and event.pressed:
        ...
        
-   if event == sfml.window.FocusEvent:
+   if event == sf.FocusEvent:
        if event.gained: 
            ...
        if event.lost: 
            ...
 
-Read the :doc:`api/window` for information about events.
+Read the :class:`.Window` class description for information about events.
 
 Exception
 ---------
 There's a main exception defined for all pySFML2 methods/functions that 
-may fail: `sfml.system.SFMLException`. If you use one of these method and if you 
+may fail: :exc:`sfml.system.SFMLException`. If you use one of these method and if you 
 want to do a specific task in case of failure, you can handle them 
 
 with a **try... except** statement. ::
@@ -123,15 +123,15 @@ with a **try... except** statement. ::
    try:
        # huge texture, will fail for sure 
        # (except maybe if you read that in 2075 and if your processor works with light speed)
-       texture = sfml.graphics.Texture.create(987654321, 987654321)
-   except sfml.system.SFMLException as error:
+       texture = sf.Texture.create(987654321, 987654321)
+   except sf.SFMLException as error:
        print(error) # print the error
        exit(1) # maybe quit ?
        
-Note that load/open methods DO NOT raise a :exc:`sfml.system.SFMLException` but a 
-traditional **IOError**::
+Note that load/open methods DO NOT raise a :exc:`.SFMLException` but a 
+traditional :exc:`IOError`::
 
-   try: music = sfml.audio.Music.from_file("song.ogg")
+   try: music = sf.Music.from_file("song.ogg")
    except IOError: exit(1)
 
 
@@ -139,15 +139,16 @@ Rectangle
 ---------
 Although unpacking a rectangle will give you four integers/floats 
 (respectively its left, its top, its width and its height) its 
-constructor takes two :class:`sfml.system.Vector2`; its position and its size. ::
+constructor takes two :class:`.Vector2` or tuple; its position and its 
+size. ::
 
    rectangle = mytext.local_bounds
    left, top, width, height = rectangle
    
 ::
    
-   position, size = sfml.system.Vector2(5, 10), sfml.system.Vector2(150, 160)
-   rectangle = sfml.graphics.Rectangle(position, size)
+   position, size = sf.Vector2(5, 10), sf.Vector2(150, 160)
+   rectangle = sf.Rectangle(position, size)
    
 
 This has been implemented as such because you may want to create a 
@@ -157,14 +158,14 @@ variables representing the position and the size. In both cases you can
 create a rectangle in one line! ::
 
    left, top, width, height = 5, 10, 150, 160
-   rectangle = sfml.graphics.Rectangle((left, top), (width, height))
-   # or
-   rectangle = sfml.graphics.Rectangle(sfml.system.Vector2(left, top), sfml.system.Vector2(width, height))
+   rectangle = sf.Rectangle((left, top), (width, height))
+   # or the ugly and verbose alternative
+   rectangle = sf.Rectangle(sf.Vector2(left, top), sf.Vector2(width, height))
    
 ::
 
    position, size = (5, 10), (150, 160)
-   rectangle = sfml.graphics.Rectangle(position, size)
+   rectangle = sf.Rectangle(position, size)
    
 Making the rectangle require four numeric values in its constructor 
 would have involved writing more lines if you had only a position and a 
@@ -172,17 +173,17 @@ size in hand ::
 
     x, y = position
     w, h = size
-    rectangle = sfml.graphics.Rectangle(x, y, w, h)
+    rectangle = sf.Rectangle(x, y, w, h)
     
 
 Drawable
 --------
 To create your own drawable just inherit your class from 
-:class:`sfml.graphics.Drawable`. ::
+:class:`.Drawable`. ::
 
-   class MyDrawable(sfml.graphics.Drawable):
+   class MyDrawable(sf.Drawable):
        def __init__(self):
-           sfml.graphics.Drawable.__init__(self)
+           sf.Drawable.__init__(self)
            
        def draw(self, target, states):
            target.draw(body)
@@ -191,7 +192,7 @@ To create your own drawable just inherit your class from
 To have a **transformable drawable** you have two implemenation choices. As 
 in sfml2, you can either use a transformable internaly and combine 
 your transformable at drawing time **or** ineriths your drawable from 
-both sf.Drawable and sf.Transformable.
+both :class:`.Drawable` and :class:`.Transformable`.
 
 1) **sf.Transformable in an internal attribute**
 
@@ -204,7 +205,7 @@ both sf.Drawable and sf.Transformable.
               self._transformable = sf.Transformable()
 
           def draw(self, target, states):
-              states.transform.combine(self.transformable.transform)
+              states.transform.combine(self._transformable.transform)
 
               target.draw(body)
               target.draw(clothes)
@@ -212,7 +213,7 @@ both sf.Drawable and sf.Transformable.
           def _get_position(self):
               return self._transfomable.position
               
-          def _set_position(self, position)
+          def _set_position(self, position):
               self._transformable.position = position
 
           position = property(_get_position, _set_position)
@@ -225,8 +226,8 @@ both sf.Drawable and sf.Transformable.
 
    There's a current issue concerning this way to do. As Python doesn't 
    allow you to subclass from two built-in types at the same time, you 
-   can't technically do it. That's why pySFML2 provides `sf.TransformableDrawable` 
-   which is both an :class:`sfml.graphics.Drawable` and :class:`sfml.graphics.Transformable`. 
+   can't technically do it. That's why pySFML2 provides :class:`.TransformableDrawable` 
+   which is both an :class:`.Drawable` and :class:`.Transformable`. 
    That way your class inherits from properties such `position`, `rotation` 
    etc and their methods `move()`, `rotate()` etc. ::
 
@@ -248,11 +249,11 @@ Audio
 -----
 Using the audio module should be very simple since there's no 
 differences with the original API. Just note that the class 
-:class:`Chunk` allows you to manipulate an array of sf::Int16 which 
+:class:`.Chunk` allows you to manipulate an array of sf::Int16 which 
 represents the audio samples. So far this class is pretty basic and 
 offers access to each sample via the operator [] and you can get 
 the data in a `string` for Python 2 or in `bytes` for Python 3 via 
-:attr:`sfml.audio.Chunk.data`.
+:attr:`.Chunk.data`.
 
 HandledWindow
 -------------
@@ -268,7 +269,7 @@ error is raised and you just have to handle it. ::
    try:
        socket.send(b'hello world')
        
-   except sfml.network.SocketError:
+   except sf.SocketError:
        socket.close()
        exit(1)
 
@@ -285,14 +286,14 @@ Many classes are unpackable
 .. code-block:: python
    :linenos:
 
-	x, y = sfml.system.Vector2(5, 10)
-	x, y, z = sfml.system.Vector3(5, 10, 15)
+	x, y = sf.Vector2(5, 10)
+	x, y, z = sf.Vector3(5, 10, 15)
 
-	size, bpp = sfml.window.VideoMode(640, 480, 32)
-	depth_bits, stencil_bits, antialiasing, minor_version, major_version = sfml.window.ContextSettings()
+	size, bpp = sf.VideoMode(640, 480, 32)
+	depth_bits, stencil_bits, antialiasing, minor_version, major_version = sf.ContextSettings()
 
-	r, g, b, a = sfml.graphics.Color.CYAN
-	left, top, width, height = sfml.graphics.Rectangle((5, 10), (15, 20))
+	r, g, b, a = sf.Color.CYAN
+	left, top, width, height = sf.Rectangle((5, 10), (15, 20))
 
 sfml.Image.show()
 ^^^^^^^^^^^^^^^^^

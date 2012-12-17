@@ -263,6 +263,13 @@ cdef class MouseWheelEvent(Event):
 		def __set__(self, int delta):
 			self.p_this.mouseWheel.delta = delta
 
+	property position:
+		def __get__(self):
+			return Vector2(self.p_this.mouseWheel.x, self.p_this.mouseWheel.y)
+
+		def __set__(self, position):
+			self.p_this.mouseWheel.x, self.p_this.mouseWheel.y = position
+
 cdef class MouseButtonEvent(Event):
 	cdef bint state
 
@@ -283,6 +290,13 @@ cdef class MouseButtonEvent(Event):
 
 		def __set__(self, bint released):
 			self.state = not released
+
+	property position:
+		def __get__(self):
+			return Vector2(self.p_this.mouseButton.x, self.p_this.mouseButton.y)
+
+		def __set__(self, position):
+			self.p_this.mouseButton.x, self.p_this.mouseButton.y = position
 
 	property button:
 		def __get__(self):

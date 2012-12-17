@@ -11,11 +11,10 @@
 import sfml as sf
 import client, server
 
-try:
-    # python 2 compatability
-    input = raw_input
-except NameError:
-    pass
+# python 2.* compatability
+try: input = raw_input 
+except NameError: pass
+
 # choose a random port for opening sockets (ports < 1024 are reserved)
 PORT = 2435
 

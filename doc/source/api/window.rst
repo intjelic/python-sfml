@@ -1,6 +1,8 @@
 Window
 ======
 .. contents:: :local:
+   :depth: 1
+   
 .. py:module:: sfml.window
 
 Style
@@ -28,6 +30,8 @@ Style
 
 Event
 ^^^^^
+
+.. contents:: :local:
 
 .. class:: Event
 
@@ -74,7 +78,7 @@ ResizeEvent
 
    .. attribute:: size
 
-      Tells you the new window size.
+      Tell you the new window size.
       
       :rtype: :class:`sfml.system.Vector2`
 
@@ -103,7 +107,8 @@ TextEvent
 .. class:: TextEvent(Event)
 
    A character was entered. :attr:`unicode` return the ASCII code (integer).
-	.. attribute:: unicode
+   
+   .. attribute:: unicode
       
 KeyEvent
 --------
@@ -113,28 +118,33 @@ KeyEvent
    return boolean.
    
    .. attribute:: pressed
+      
+      Tell whether the key has been pressed.
+      
    .. attribute:: released
+      
+      Tell whether the key has been released.
    
    .. attribute:: code
    
-      tells you the code of the key that has been pressed. 
+      Tell you the code of the key that has been pressed. 
       You'll find the list in :class:`Keyboard`.
    
    .. attribute:: alt
    
-      tells you if the Alt key was pressed.
+      Tell you if the **Alt** key was pressed.
       
    .. attribute:: control
    
-      tells you if the Control key was pressed.
+      Tell you if the **Control** key was pressed.
       
    .. attribute:: shift
    
-      tells you if the Shift key was pressed.
+      Tell you if the **Shift** key was pressed.
       
    .. attribute:: system
    
-      tells you if the System key was pressed.
+      Tell you if the **System** key was pressed.
 
 MouseWheelEvent
 ---------------
@@ -148,6 +158,12 @@ MouseWheelEvent
       
       :rtype: integer
       
+   .. attribute:: position
+
+      Position of the mouse pointer, relative to the left of the owner window. 
+      
+      :rtype: :class:`sfml.system.Vector2`
+      
 MouseButtonEvent
 ----------------
 .. class:: MouseButtonEvent
@@ -155,12 +171,23 @@ MouseButtonEvent
    A mouse button was pressed or released.
 
    .. attribute:: pressed
+      
+      Tell whether the button has been pressed.
+      
    .. attribute:: released
 
+      Tell whether the button has been released.
+      
    .. attribute:: button
 
       Code of the button that has been presssed of released. You'll 
       find the list in :class:`Mouse`.
+      
+   .. attribute:: position
+
+      Position of the mouse pointer, relative to the left of the owner window. 
+      
+      :rtype: :class:`sfml.system.Vector2`
       
 MouseMoveEvent
 --------------
@@ -169,7 +196,7 @@ MouseMoveEvent
    The mouse cursor moved. To know the offset, you must take care of 
    saving the previous value and compare with the next one.
    
-	.. attribute:: position
+   .. attribute:: position
 
       Position of the mouse pointer, relative to the left of the owner window. 
       
@@ -179,6 +206,8 @@ JoystickMoveEvent
 -----------------
 .. class:: JoystickMoveEvent
 
+   The joystick moved along an axis. 
+
 	.. attribute:: joystick_id
 	.. attribute:: axis
 	.. attribute:: position
@@ -186,6 +215,8 @@ JoystickMoveEvent
 JoystickButtonEvent
 -------------------
 .. class:: JoystickButtonEvent
+
+   A joystick button was pressed or released. 
 
 	.. attribute:: pressed
 	.. attribute:: released
@@ -195,6 +226,8 @@ JoystickButtonEvent
 JoystickConnectEvent
 --------------------
 .. class:: JoystickConnectEvent
+   	
+   A joystick was connected or disconnected. 
 
 	.. attribute:: connected
 	.. attribute:: disconnected
@@ -363,8 +396,8 @@ Pixels
 	
 	Usage examples::
 	
-		image = sfml.graphics.Image.from_file("icon.png")
-		window = sfml.graphics.Window(sfml.window.VideoMode(640, 480), "pySFML")
+		image = sf.Image.from_file("icon.png")
+		window = sf.Window(sf.VideoMode(640, 480), "pySFML")
 
 		window.icon = image.pixels
 
@@ -410,7 +443,7 @@ Window
 	another (probably richer) GUI library like Qt or wxWidgets.
 
 	The :class:`Window` class provides a simple interface for 
-	manipulating the window: :meth:`move`, :meth:`resize`, :attr:`show`/:attr:`hide`, control mouse cursor, 
+	manipulating the window: :meth:`move`, :meth:`resize`, :func:`show`/:func:`hide`, control mouse cursor, 
 	etc. It also provides event handling through its :func:`poll_event` and 
 	:func:`wait_event` functions.
 
@@ -476,11 +509,11 @@ Window
 
       Close the window and destroy all the attached resources.
 
-      After calling this function, the :class:`sfml.graphics.Window` instance 
+      After calling this function, the :class:`Window` instance 
       remains valid and you can call :func:`recreate` to recreate the 
       window. All other functions such as :func:`poll_event` or 
       :func:`display` will still work (i.e. you don't have to test 
-      :attr:`opened` every time), and will have no effect on closed 
+      :attr:`is_open` every time), and will have no effect on closed 
       windows.
 
    .. attribute:: is_open
@@ -489,9 +522,16 @@ Window
 
       This attribute returns whether or not the window exists. Note 
       that a hidden window (:func:`hide`) is open (therefore this 
-      function would return true).
+      property would return **True**).
 
       :type: bool
+      
+   .. attribute:: opened
+   
+      .. deprecated :: 1.2
+      
+      See and use :meth:`is_open` instead. This method is kept for 
+      backward compatibilities.
       
    .. attribute:: settings
    
@@ -506,9 +546,9 @@ Window
       
    .. attribute:: events
    
-      Return a tuple of events that haven't been handled yet.
+      Return a generator that iterates over new events.
 
-      :type: tuple
+      :type: generator
       
    .. method:: poll_event()
          
@@ -535,7 +575,7 @@ Window
       as long as no new event is received.
       
       :return: Returns an event or None if an error occured.
-      :rtype: :class:`sfml.window.Event` or None
+      :rtype: :class:`sfml.window.Event`
 
    .. attribute:: position
 
@@ -563,13 +603,7 @@ Window
 
    .. attribute:: visible
 
-      Set or get the window's visibility status.
-
-      .. note::
-         
-         You can't really rely on the getter since there's no method
-         "isVisible" in SFML. Actually it emulates it by tracking what 
-         you do with the window.
+      Set or get the window's visibility status. You shouldn't rely on the getter.
          
       The window is shown by default.
       
@@ -594,13 +628,8 @@ Window
       Activating vertical synchronization will limit the number of 
       frames displayed to the refresh rate of the monitor. This can 
       avoid some visual artifacts, and limit the framerate to a good 
-      value (but not constant across different computers).
-
-      .. note::
-         
-         You can't really rely on the getter since there's no method
-         "isVerticalSynchronizationEnabled" in SFML. Actually it 
-         emulates it by tracking what you do with the window.
+      value (but not constant across different computers).. You 
+      shouldn't rely on the getter.
          
       Vertical synchronization is disabled by default
 
@@ -635,7 +664,7 @@ Window
       call to :func:`display` to ensure that the current frame lasted 
       long enough to match the framerate limit. pySFML will try to 
       match the given limit as much as it can, but since it internally 
-      uses :func:`sfml.sleep`, whose precision depends on the underlying 
+      uses :func:`.sleep`, whose precision depends on the underlying 
       OS, the results may be a little unprecise as well (for example, 
       you can get 65 FPS when requesting 60).
 
@@ -646,7 +675,7 @@ Window
       Change the joystick threshold.
 
       The joystick threshold is the value below which no 
-      :class:`JoystickMoved` event will be generated.
+      :class:`JoystickMoveEvent` will be generated.
 
       The threshold value is 0.1 by default.
 
@@ -690,9 +719,9 @@ Window
 
       Usage examples::
       
-         class MyWindow(sfml.graphics.Window):
+         class MyWindow(sf.Window):
             def __init__(self):
-               sfml.graphics.Window.__init__(self, sfml.window.VideoMode(640, 480), "pySFML")
+               sf.Window.__init__(self, sf.VideoMode(640, 480), "pySFML")
                
             def on_create(self):
                print("Window created or recreated...")
@@ -709,15 +738,15 @@ Window
 
       Usage examples::
       
-         class MyWindow(sfml.graphics.Window):
+         class MyWindow(sf.Window):
             def __init__(self):
-               sfml.graphics.Window.__init__(self, sfml.window.VideoMode(640, 480), "pySFML")
+               sf.Window.__init__(self, sf.VideoMode(640, 480), "pySFML")
                
             def on_resize(self):
                print("Window size changed")
                do_something()
                
-      Reimplemented in :class:`sfml.graphics.RenderWindow`
+      Reimplemented in :class:`sf.RenderWindow`
       
 
 Keyboard
@@ -727,7 +756,7 @@ Keyboard
 
    Give access to the real-time state of the keyboard.
 
-   :class:`sfml.window.Keyboard` provides an interface to the state of the 
+   :class:`Keyboard` provides an interface to the state of the 
    keyboard.
 
    It only contains class methods (a single keyboard is assumed), so 
@@ -735,8 +764,8 @@ Keyboard
 
    This class allows users to query the keyboard state at any time and 
    directly, without having to deal with a window and its events. 
-   Compared to the :const:`KEY_PRESSED` and :const:`KEY_RELEASED` 
-   events, :class:`sfml.window.Keyboard` can retrieve the state of a key at any 
+   Compared to :class:`MouseButtonEvent` 
+   events, :class:`Keyboard` can retrieve the state of a key at any 
    time (you don't need to store and update a boolean on your side in 
    order to know if a key is pressed or released), and you always get 
    the real state of the keyboard, even if keys are pressed or released 
@@ -744,11 +773,11 @@ Keyboard
 
    Usage example::
    
-      if sfml.window.Keyboard.is_key_pressed(sfml.window.Keyboard.LEFT)
+      if sf.Keyboard.is_key_pressed(sf.Keyboard.LEFT)
          # move left...
-      else if sfml.window.Keyboard.is_key_pressed(sfml.window.Keyboard.RIGHT):
+      elif sf.Keyboard.is_key_pressed(sf.Keyboard.RIGHT):
          # move right...
-      else if sfml.window.Keyboard.is_key_pressed(sfml.window.Keyboard.ESCAPE):
+      elif sf.Keyboard.is_key_pressed(sf.Keyboard.ESCAPE):
          # quit...
 
    +------------+-----------------------------------------------------------------------------+
@@ -964,7 +993,7 @@ Keyboard
       Check if a key is pressed.
       
       :param key: Key to check
-      :type key: integer (:class:`sfml.window.Keyboard`'s constant)
+      :type key: :class:`sfml.window.Keyboard`'s constant
       
 
 Joystick
@@ -974,7 +1003,7 @@ Joystick
 
    Give access to the real-time state of the joysticks.
 
-   :class:`sfml.window.Joystick` provides an interface to the state of the 
+   :class:`Joystick` provides an interface to the state of the 
    joysticks.
 
    It only contains class methods, so it's not meant to be instanciated. 
@@ -983,9 +1012,8 @@ Joystick
 
    This class allows users to query the state of joysticks at any time 
    and directly, without having to deal with a window and its events. 
-   Compared to the :const:`JOYSTICK_MOVED`, 
-   :const:`JOYSTICK_BUTTON_PRESSED` and 
-   :const:`JOYSTICK_BUTTON_RELEASED` events, :class:`sfml.window.Joystick` can 
+   Compared to the :class:`JoystickButtonEvent` and 
+   :class:`JoystickMoveEvent` events, :class:`Joystick` can 
    retrieve the state of axes and buttons of joysticks at any time (you 
    don't need to store and update a boolean on your side in order to 
    know if a button is pressed or released), and you always get the 
@@ -994,9 +1022,9 @@ Joystick
 
    SFML supports:
 
-       * 8 joysticks (:const:`sfml.window.Joystick.COUNT`)
-       * 32 buttons per joystick (:const:`sfml.window.Joystick.BUTTON_COUNT`)
-       * 8 axes per joystick (:const:`sfml.window.Joystick.AXIS_COUNT`)
+       * 8 joysticks (:const:`Joystick.COUNT`)
+       * 32 buttons per joystick (:const:`Joystick.BUTTON_COUNT`)
+       * 8 axes per joystick (:const:`Joystick.AXIS_COUNT`)
 
    Unlike the keyboard or mouse, the state of joysticks is sometimes 
    not directly available (depending on the OS), therefore an 
@@ -1005,24 +1033,24 @@ Joystick
    handling, this is done automatically, you don't need to call 
    anything. But if you have no window, or if you want to check 
    joysticks state before creating one, you must call 
-   :func:`sfml.window.Joystick.update` explicitely.
+   :func:`Joystick.update` explicitely.
 
    Usage example::
 
       # is joystick #0 connected ?
-      connected = sfml.window.Joystick.is_connected(0)
+      connected = sf.Joystick.is_connected(0)
 
       # how many button does joystick #0 support ?
-      buttons = sfml.window.Joystick.get_button_count(0)
+      buttons = sf.Joystick.get_button_count(0)
 
       # does joystick # define a X axis ?
-      has_X = sfml.window.Joystick.has_axis(0, sfml.window.Joystick.X)
+      has_X = sf.Joystick.has_axis(0, sf.Joystick.X)
 
       # is button #2 pressed on joystick #0 ?
-      pressed = sfml.window.Joystick.is_button_pressed(0, 2)
+      pressed = sf.Joystick.is_button_pressed(0, 2)
 
       # what's the current position of the Y axis on joystick #0?
-      position = sfml.window.Joystick.get_axis_position(0, sfml.window.Joystick.Y)
+      position = sf.Joystick.get_axis_position(0, sf.Joystick.Y)
 
    +-------+--------------------------------------+
    | Axis  | Description                          |
@@ -1061,7 +1089,7 @@ Joystick
       If the joystick is not connected, this function returns false.
       
       :param integer joystick: Index of the joystick to check
-      :rtype: booléan
+      :rtype: boolean
       
    .. classmethod:: get_button_count(joystick)
    
@@ -1080,7 +1108,7 @@ Joystick
       
       :param integer joystick: Index of the joystick 
       :param integer axis: Axis to check
-      :rtype: booléan
+      :rtype: boolean
 
    .. classmethod:: is_button_pressed(joystick, button)
    
@@ -1090,7 +1118,7 @@ Joystick
       
       :param integer joystick: Index of the joystick 
       :param integer axis: Button to check
-      :rtype: booléan
+      :rtype: boolean
        
    .. classmethod:: get_axis_position(joystick, axis)
          
@@ -1100,7 +1128,7 @@ Joystick
       
       :param integer joystick: Index of the joystick 
       :param integer axis: Axis to check
-      :rtype: booléan
+      :rtype: boolean
       
    .. classmethod:: update()
          
@@ -1119,15 +1147,15 @@ Mouse
 
    Give access to the real-time state of the mouse.
 
-   :class:`sfml.window.Mouse` provides an interface to the state of the mouse.
+   :class:`Mouse` provides an interface to the state of the mouse.
 
    It only contains class methods (a single mouse is assumed), so it's 
    not meant to be instanciated.
 
    This class allows users to query the mouse state at any time and 
    directly, without having to deal with a window and its events. 
-   Compared to the :const:`MOUSE_MOVED`, :const:`MOUSE_BUTTON_PRESSED` and 
-   :const:`MOUSE_BUTTON_RELEASED` events, :const: sfml.window.Mouse` can retrieve 
+   Compared to the :class:`MouseMoveEvent`, :class:`MouseButtonEvent` 
+   events, :class:`Mouse` can retrieve 
    the state of the cursor and the buttons at any time (you don't need 
    to store and update a boolean on your side in order to know if a 
    button is pressed or released), and you always get the real state of 
@@ -1142,15 +1170,15 @@ Mouse
 
    Usage example::
    
-      if sfml.window.Mouse.is_button_pressed(sfml.window.Mouse.LEFT):
+      if sf.Mouse.is_button_pressed(sf.Mouse.LEFT):
          # left click...
          
       # get global mouse position
-      position = sfml.window.Mouse.position
-      # or: position = sfml.window.Mouse.get_position()
+      position = sf.Mouse.position
+      # or: position = sf.Mouse.get_position()
 
       # set mouse position relative to a window
-      sfml.window.Mouse.set_position(sfml.system.Vector2(100, 200), window)
+      sf.Mouse.set_position(sf.Vector2(100, 200), window)
 
    +--------------+------------------------------------+
    | Button       | Description                        |
@@ -1184,7 +1212,7 @@ Mouse
       This function returns the current position of the mouse cursor, 
       relative to the given window.
 
-      :param sfml.graphics.Window relativ_to: Reference window
+      :param sfml.window.Window relativ_to: Reference window
       :rtype: bool
          
    .. classmethod:: set_position(position[, relativ_to])
@@ -1195,7 +1223,7 @@ Mouse
       relative to the given window.
 
       :param sfml.system.Vector2 position: New position of the mouse 
-      :param sfml.graphics.Window relativ_to: Reference window
+      :param sfml.window.Window relativ_to: Reference window
 
 
 Context
@@ -1214,7 +1242,7 @@ Context
    Note that a context is only active in its current thread, if you 
    create a new thread it will have no valid context by default.
 
-   To use an :class:`sfml.window.Context` instance, just construct it and let it 
+   To use an :class:`Context` instance, just construct it and let it 
    live as long as you need a valid context. No explicit activation is 
    needed, all it has to do is to exist. Its destructor will take care 
    of deactivating and freeing all the attached resources.
@@ -1222,11 +1250,11 @@ Context
    Usage example::
    
       def thread_function():
-         context = sfml.window.Context()
+         context = sf.Context()
          # from now on, you have a valid context
          
          # you can make OpenGL calls
          glClear(GL_DEPTH_BUFFER_BIT)
 
       # the context is automatically deactivated and destroyed by the 
-      # sfml.window.Context destructor
+      # sf.Context destructor

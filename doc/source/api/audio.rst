@@ -14,27 +14,27 @@ Listener
    The audio listener defines the global properties of the audio 
    environment, it defines where and how sounds and musics are heard.
 
-   If :class:`sfml.graphics.View` is the eyes of the user, then 
-   :class:`sfml.audio.Listener` is his ears (by the way, they are often linked 
+   If :class:`.View` is the eyes of the user, then 
+   :class:`Listener` is his ears (by the way, they are often linked 
    together -- same position, orientation, etc.).
 
-   :class:`sfml.audio.Listener` is a simple interface, which allows to setup 
+   :class:`Listener` is a simple interface, which allows to setup 
    the listener in the 3D audio environment (position and direction), 
    and to adjust the global volume.
 
-   Because the listener is unique in the scene, :class:`sfml.audio.Listener`
+   Because the listener is unique in the scene, :class:`Listener`
    only contains class methods and doesn't have to be instanciated.
 
    Usage example::
 
       # move the listener to the position (1, 0, -5)
-      sfml.audio.Listener.set_position(sfml.system.Vector3(1, 0, -5))
+      sf.Listener.set_position(sfml.system.Vector3(1, 0, -5))
 
       # make it face the right axis (1, 0, 0)
-      sfml.audio.Listener.set_direction(sfml.system.Vector3(1, 0, 0))
+      sf.Listener.set_direction(sfml.system.Vector3(1, 0, 0))
 
       # reduce the global volume
-      sfml.audio.Listener.set_global_volume = 50
+      sf.Listener.set_global_volume = 50
 
 
    .. classmethod:: get_global_volume()
@@ -86,12 +86,41 @@ Listener
       normalized. The default listener's orientation is (0, 0, -1).
 
       :param direction: New listener's orientation
-      :type position: :class:`sfml.system.Vector3` or tuple	
+      :type direction: :class:`sfml.system.Vector3` or tuple	
 
 Chunk
 ^^^^^
 
 .. class:: Chunk
+   
+   :class:`Chunk` represents internally an array of **Int16** which 
+   are sound samples.
+   
+   It provides utilities to manipulate such an array in Python and a 
+   property :attr:`data` to access the underlying data representation.
+   
+   .. py:method:: __len__()
+
+      Return the number of sample.
+      
+   .. py:method:: __getitem__(index)
+
+      Get an access to a sample by its index.
+
+   .. py:method:: __setitem__(index, vertex)
+
+      Set a sample value by its index.
+
+   .. py:attribute:: data
+
+      Get a **copy** of the data inside. This returns a byte array twice 
+      larger than the chunck's lenght.
+      
+      Set a new array of sample. This array is an array of bytes (which 
+      will be converted internally in an array of **Int16**) and its 
+      lenght must be an even number.
+      
+      :rtype: bytes or string
 
 SoundBuffer
 ^^^^^^^^^^^
@@ -107,8 +136,8 @@ SoundBuffer
    the sound at a given time. The sound is then restituted by playing 
    these samples at a high rate (for example, 44100 samples per second 
    is the standard rate used for playing CDs). In short, audio samples 
-   are like texture pixels, and an :class:`sfml.audio.SoundBuffer` is similar 
-   to an :class:`sfml.graphics.Texture`.
+   are like texture pixels, and an :class:`SoundBuffer` is similar 
+   to an :class:`.Texture`.
 
    A sound buffer can be loaded from a file (see 
    :func:`from_file()` for the complete list of supported 
@@ -117,32 +146,32 @@ SoundBuffer
 
    Sound buffers alone are not very useful: they hold the audio data 
    but cannot be played. To do so, you need to use the 
-   :class:`sfml.audio.Sound` class, which provides functions to 
+   :class:`Sound` class, which provides functions to 
    play/pause/stop the sound as well as changing the way it is 
    outputted (volume, pitch, 3D position, ...). This separation allows 
    more flexibility and better performances: indeed a 
-   :class:`sfml.audio.SoundBuffer` is a heavy resource, and any operation on 
+   :class:`SoundBuffer` is a heavy resource, and any operation on 
    it is slow (often too slow for real-time applications). On the 
-   other side, an :class:`sfml.audio.Sound` is a lightweight object, which can 
+   other side, an :class:`Sound` is a lightweight object, which can 
    use the audio data of a sound buffer and change the way it is 
    played without actually modifying that data. Note that it is also 
-   possible to bind several :class:`sfml.audio.Sound` instances to the same 
-   :class:`sfml.audio.SoundBuffer`.
+   possible to bind several :class:`Sound` instances to the same 
+   :class:`SoundBuffer`.
 
-   It is important to note that the :class:`sfml.audio.Sound` instance doesn't 
+   It is important to note that the :class:`Sound` instance doesn't 
    copy the buffer that it uses, it only keeps a reference to it. 
-   Thus, an :class:`sfml.audio.SoundBuffer` must not be destructed while it is 
-   used by an :class:`sfml.audio.Sound` (i.e. never write a function that uses 
-   a local :class:`sfml.audio.SoundBuffer` instance for loading a sound).
+   Thus, an :class:`SoundBuffer` must not be destructed while it is 
+   used by an :class:`Sound` (i.e. never write a function that uses 
+   a local :class:`SoundBuffer` instance for loading a sound).
 
    Usage example::
 
       # load a new sound buffer from a file
-      try: buffer = sfml.audio.SoundBuffer.from_file("data/sound.wav")
-      except sfml.system.SFMLException as error: exit()
+      try: buffer = sf.SoundBuffer.from_file("data/sound.wav")
+      except IOError as error: exit()
 
       # create a sound source and bind it to the buffer
-      sound1 = sfml.audio.Sound()
+      sound1 = sf.Sound()
       sound1.buffer = buffer
 
       # play the sound
@@ -150,7 +179,7 @@ SoundBuffer
       input()
 
       # create another sound source bound to the same buffer
-      sound2 = sfml.audio.Sound(buffer)
+      sound2 = sf.Sound(buffer)
 
       # play it with higher pitch -- the first sound remains unchanged
       sound2.pitch = 2
@@ -158,7 +187,7 @@ SoundBuffer
 
    .. method:: SoundBuffer([buffer])
 
-      If you try to instantiate an :class:`sfml.audio.SoundBuffer` directly, it 
+      If you try to instantiate an :class:`SoundBuffer` directly, it 
       will raise an error saying that you have to use its specific 
       constructors: `from_file`, `from_memory` or 
       `from_samples`
@@ -167,10 +196,11 @@ SoundBuffer
       
       Load the sound buffer from a file.
 
-      Here is a complete list of all the supported audio formats: ogg, 
+      Here is a complete list of all the supported audio formats: **ogg, 
       wav, flac, aiff, au, raw, paf, svx, nist, voc, ircam, w64, mat4, 
-      mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64.
-         
+      mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64**.
+      
+      :raise: :exc:`IOError` - The SoundBuffer failed to load  
       :param str filename: Path of the sound file to load
       :rtype: :class:`sfml.audio.SoundBuffer`
       
@@ -178,30 +208,33 @@ SoundBuffer
       
       Load the sound buffer from a file in memory.
       
+      Here is a complete list of all the supported audio formats: ogg, 
+      wav, **flac, aiff, au, raw, paf, svx, nist, voc, ircam, w64, mat4, 
+      mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64**.
+      
+      :raise: :exc:`IOError` - The SoundBuffer failed to load 
       :param bytes data: The file data
       :rtype: :class:`sfml.audio.SoundBuffer`
       
-      Here is a complete list of all the supported audio formats: ogg, 
-      wav, flac, aiff, au, raw, paf, svx, nist, voc, ircam, w64, mat4, 
-      mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64.
-
    .. classmethod:: from_samples(samples, channel_count, sample_rate)
 
       Load the sound buffer from an array of audio samples.
 
+      :raise: :exc:`IOError` - The SoundBuffer failed to load 
       :param sfml.audio.Chunk samples: The samples
       :param integer channel_count: Number of channels (1 = mono, 2 = stereo, ...)
       :param integer sample_rate: Sample rate (number of samples to play per second)
       :rtype: :class:`sfml.audio.SoundBuffer`
 
-   .. method:: save_to_file(filename)
+   .. method:: to_file(filename)
 
       Save the sound buffer to an audio file.
 
-      Here is a complete list of all the supported audio formats: ogg, 
+      Here is a complete list of all the supported audio formats: **ogg, 
       wav, flac, aiff, au, raw, paf, svx, nist, voc, ircam, w64, mat4, 
-      mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64.
+      mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64**.
 
+      :raise: :exc:`IOError` - The SoundBuffer failed to save 
       :param str filename: Path of the sound file to write
       
    .. attribute:: channels_count
@@ -242,7 +275,7 @@ SoundSource
 
    Base class defining a sound's properties.
 
-   :class:`sfml.audio.SoundSource` is not meant to be used directly, it only 
+   :class:`SoundSource` is not meant to be used directly, it only 
    serves as a common base for all audio objects that can live in the 
    audio environment.
 
@@ -336,7 +369,7 @@ Sound
 
    Regular sound that can be played in the audio environment.
 
-   :class:`sfml.audio.Sound` is the class to use to play sounds.
+   :class:`Sound` is the class to use to play sounds.
 
    It provides:
 
@@ -344,25 +377,25 @@ Sound
        * Ability to modify output parameters in real-time (pitch, volume, ...)
        * 3D spatial features (position, attenuation, ...).
 
-   :class:`sfml.audio.Sound` is perfect for playing short sounds that can fit 
+   :class:`Sound` is perfect for playing short sounds that can fit 
    in memory and require no latency, like foot steps or gun shots. For 
    longer sounds, like background musics or long speeches, rather see 
-   :class:`sfml.audio.Music` (which is based on streaming).
+   :class:`Music` (which is based on streaming).
 
    In order to work, a sound must be given a buffer of audio data to 
-   play. Audio data (samples) is stored in :class:`sfml.audio.SoundBuffer`, and 
-   attached to a sound with the :func:`sfml.audio.SoundBuffer.buffer` function. 
+   play. Audio data (samples) is stored in :class:`SoundBuffer`, and 
+   attached to a sound with the :func:`SoundBuffer.buffer` function. 
    The buffer object attached to a sound must remain alive as long as 
    the sound uses it, so don't delete it explicitly with the operator 
-   *del*. Note that multiple sounds can use the same sound buffer at 
+   **del**. Note that multiple sounds can use the same sound buffer at 
    the same time.
 
    Usage example::
 
-      try: buffer = sfml.audio.SoundBuffer.from_file("sound.wav")
+      try: buffer = sf.SoundBuffer.from_file("sound.wav")
       except IOError: exit(1)
 
-      sound = sfml.audio.Sound()
+      sound = sf.Sound()
       sound.buffer = buffer
       sound.play()
 
@@ -402,9 +435,9 @@ Sound
       Get/set the source buffer containing the audio data to play.
 
       It is important to note that the sound buffer is not copied, thus 
-      the `sfml.audio.SoundBuffer` instance must remain alive as long as it is 
+      the :class:`SoundBuffer` instance must remain alive as long as it is 
       attached to the sound (don't explicitly delete it with the opartor 
-      *del*).
+      **del**).
       
       :rtype: :class:`sfml.audio.SoundBuffer`
       
@@ -441,7 +474,7 @@ SoundStream
 
    Abstract base class for streamed audio sources.
 
-   Unlike audio buffers (see :class:`sfml.audio.SoundBuffer`), audio streams 
+   Unlike audio buffers (see :class:`SoundBuffer`), audio streams 
    are never completely loaded in memory.
 
    Instead, the audio data is acquired continuously while the stream is 
@@ -453,16 +486,16 @@ SoundStream
    memory) or files that would take a lot of time to be received 
    (sounds played over the network).
 
-   :class:`sfml.audio.SoundStream` is a base class that doesn't care about the 
+   :class:`SoundStream` is a base class that doesn't care about the 
    stream source, which is left to the derived class. pySFML provides a 
-   built-in specialization for big files (see :class:`sfml.audio.Music`). No 
+   built-in specialization for big files (see :class:`Music`). No 
    network stream source is provided, but you can write your own by 
    combining this class with the network module.
 
    A derived class has to override two virtual functions:
 
-       - :func:`on_get_data` fills a new chunk of audio data to be played
-       - :func:`on_seek` changes the current playing position in the source
+       - :meth:`on_get_data` fills a new chunk of audio data to be played
+       - :meth:`on_seek` changes the current playing position in the source
 
    It is important to note that each :class:`SoundStream` is played in 
    its own separate thread, so that the streaming loop doesn't block 
@@ -474,9 +507,9 @@ SoundStream
 
    Usage example::
 
-      class CustomStream(sfml.audio.SoundStream):
+      class CustomStream(sf.SoundStream):
          def __init__(self):
-            sfml.audio.SoundStream.__init__(self) # don't forget this
+            sf.SoundStream.__init__(self) # don't forget this
             
          def open(location):
             # open the source and get audio settings
@@ -570,7 +603,7 @@ SoundStream
 
       :rtype: an :class:`sfml.audio.SoundSource`'s contant
 
-   .. method::initialize(channel_count, sample_rate)
+   .. method:: initialize(channel_count, sample_rate)
    
       Define the audio stream parameters.
 
@@ -584,7 +617,7 @@ SoundStream
       :param integer channel_count: Number of channels of the stream
       :param integer sample_rate: Sample rate, in samples per second 
       
-   .. method::on_get_data(data)
+   .. method:: on_get_data(data)
    
       Request a new chunk of audio samples from the stream source.
 
@@ -596,7 +629,7 @@ SoundStream
       :param sfml.audio.Chunk data: Chunk data to fill
       :return: True to continue playback, false to stop
       
-   .. method::on_seek(time_offset)
+   .. method:: on_seek(time_offset)
    
       Change the current playing position in the stream source.
 
@@ -620,21 +653,21 @@ Music
    of loading it entirely, you avoid saturating the memory and have 
    almost no loading delay.
 
-   Apart from that, an :class:`sfml.audio.Music` has almost the same features as 
-   the :class:`sfml.audio.SoundBuffer` / :class:`sfml.audio.Sound` pair: you can 
+   Apart from that, an :class:`Music` has almost the same features as 
+   the :class:`SoundBuffer` / :class:`Sound` pair: you can 
    play/pause/stop it, request its parameters (channels, sample rate), 
    change the way it is played (pitch, volume, 3D position, ...), etc.
 
    As a sound stream, a music is played in its own thread in order not 
    to block the rest of the program. This means that you can leave the 
-   music alone after calling :func:`play`, it will manage itself very well.
+   music alone after calling :meth:`play`, it will manage itself very well.
 
       Usage example::
 
          # declare a new music
-         music = sfml.audio.Music()
+         music = sf.Music()
 
-         try: music = sfml.audio.Music.open_from_file("music.ogg")
+         try: music = sf.Music.from_file("music.ogg")
          except IOError: exit(1)
 
          # change some parameters
@@ -648,33 +681,33 @@ Music
 
    .. method:: Music()
    
-      If you try to instantiate an :class:`sfml.audio.Music` directly, it will 
+      If you try to instantiate an :class:`Music` directly, it will 
       raise an error saying that you must use its specific constructors: 
-      :meth:`open_from_file` or :meth:`open_from_memory`.
+      :meth:`from_file` or :meth:`from_memory`.
       
-   .. classmethod:: open_from_file(filename)
+   .. classmethod:: from_file(filename)
    
       Open a music from an audio file.
 
       This function doesn't start playing the music (call :func:`play` 
       to do so). Here is a complete list of all the supported audio 
-      formats: ogg, wav, flac, aiff, au, raw, paf, svx, nist, voc, 
+      formats: **ogg, wav, flac, aiff, au, raw, paf, svx, nist, voc, 
       ircam, w64, mat4, mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, 
-      rf64.
+      rf64**.
 
       :raise: :exc:`IOError` - If loading failed.
       :param str filename: Path of the music file to open
       :rtype: :class:`sfml.audio.Music`
 
-   .. classmethod:: open_from_memory(data)
+   .. classmethod:: from_memory(data)
    
       Open a music from an audio file in memory.
 
       This function doesn't start playing the music (call :func:`play` 
       to do so). Here is a complete list of all the supported audio 
-      formats: ogg, wav, flac, aiff, au, raw, paf, svx, nist, voc, 
+      formats: **ogg, wav, flac, aiff, au, raw, paf, svx, nist, voc, 
       ircam, w64, mat4, mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, 
-      rf64.
+      rf64**.
 
       :raise: :exc:`IOError` - If loading failed.
       :param bytes data: The file data in memory
@@ -693,14 +726,14 @@ SoundRecorder
 
    Abstract base class for capturing sound data.
 
-   :class:`sfml.audio.SoundBuffer` provides a simple interface to access the 
+   :class:`SoundBuffer` provides a simple interface to access the 
    audio recording capabilities of the computer (the microphone).
 
    As an abstract base class, it only cares about capturing sound 
    samples, the task of making something useful with them is left to 
    the derived class. Note that pySFML provides a built-in 
    specialization for saving the captured data to a sound buffer (see 
-   :class:`sfml.audio.SoundBufferRecorder`).
+   :class:`SoundBufferRecorder`).
 
    A derived class has only one method to override:
       
@@ -708,8 +741,8 @@ SoundRecorder
 
    Moreover, two additionnal method can be overriden as well if necessary:
 
-       - func:`On_start` is called before the capture happens, to perform custom initializations
-       - func:`On_stop` is called after the capture ends, to perform custom cleanup
+       - :func:`on_start` is called before the capture happens, to perform custom initializations
+       - :func:`on_stop` is called after the capture ends, to perform custom cleanup
 
    The audio capture feature may not be supported or activated on every 
    platform, thus it is recommended to check its availability with the 
@@ -718,16 +751,16 @@ SoundRecorder
 
    It is important to note that the audio capture happens in a separate 
    thread, so that it doesn't block the rest of the program. In 
-   particular, the :func:`on_process_samples and :func:`on_stop` methods 
+   particular, the :func:`on_process_samples` and :func:`on_stop` methods 
    (but not :func:`on_start`) will be called from this separate thread. 
    It is important to keep this in mind, because you may have to take 
    care of synchronization issues if you share data between threads.
 
    Usage example::
    
-      class CustomRecorder(sfml.audio.SoundRecorder):
+      class CustomRecorder(sf.SoundRecorder):
          def __init__(self):
-            sfml.audio.SoundRecorder.__init__(self)
+            sf.SoundRecorder.__init__(self)
             
          def on_start(self): # optional
             # initialize whatever has to be done before the capture starts
@@ -787,7 +820,7 @@ SoundRecorder
 
       This function should always be called before using the audio 
       capture features. If it returns false, then any attempt to use 
-      :class:`sfml.audio.SoundRecorder` or one of its derived classes will fail.
+      :class:`SoundRecorder` or one of its derived classes will fail.
       
       :return: Whether audio capture is supported or not
       :rtype: bool
@@ -829,8 +862,8 @@ SoundBufferRecorder
    Specialized :class:`SoundRecorder` which stores the captured audio 
    data into a sound buffer.
 
-   :class:`sfml.audio.SoundBufferRecorder` allows to access a recorded sound 
-   through an :class:`sfml.audio.SoundBuffer`, so that it can be played, saved 
+   :class:`SoundBufferRecorder` allows to access a recorded sound 
+   through an :class:`SoundBuffer`, so that it can be played, saved 
    to a file, etc.
 
    It has the same simple interface as its base class (:meth:`start`, 
@@ -838,14 +871,14 @@ SoundBufferRecorder
    buffer (:attr:`buffer`).
 
    As usual, don't forget to call the :func:`is_available` function 
-   before using this class (see :class:`sfml.audio.SoundRecorder` for more 
+   before using this class (see :class:`SoundRecorder` for more 
    details about this).
    
    Usage example::
    
-      if sfml.audio.SoundBufferRecorder.is_available():
+      if sf.SoundBufferRecorder.is_available():
          # record some audio data
-         recorder = sfml.audio.SoundBufferRecorder()
+         recorder = sf.SoundBufferRecorder()
          recorder.start()
          ...
          recorder.stop()
@@ -854,12 +887,12 @@ SoundBufferRecorder
          buffer = recorder.buffer
          
          # save it to a file (for example...)
-         buffer.save_to_file("my_record.ogg")
+         buffer.to_file("my_record.ogg")
          
    
    .. method:: SoundBufferRecorder()
    
-      Construct an :class:`sfml.audio.SoundBufferRecorder`
+      Construct a :class:`SoundBufferRecorder`.
       
    .. attribute:: buffer
 

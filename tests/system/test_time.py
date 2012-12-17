@@ -1,48 +1,25 @@
-# -*- coding: utf-8 -*-
+import pytest
 import sfml.system as sf
 
-def pytest_funcarg__time(request):
-    return {
-        'sec': sf.seconds(5),
-        'mil': sf.milliseconds(5000),
-        'mic': sf.microseconds(5000000)}
+@pytest.fixture(scope='function')
+def time():
+    return dict(
+        micro=sf.microseconds(5000000),
+        milli=sf.milliseconds(5000),
+        sec=sf.seconds(5))
 
-def test_seconds_to_milliseconds(time):
-    ms = time['sec'].milliseconds
-    assert ms == 5000
+def test_to_micro(time):
+    assert time['milli'].microseconds == time['sec'].microseconds == 5000000
 
-def test_seconds_to_microseconds(time):
-    us = time['sec'].microseconds
-    assert us == 5000000
+def test_to_milli(time):
+    assert time['micro'].milliseconds == time['sec'].milliseconds == 5000
 
-def test_miliseconds_to_seconds(time):
-    s = time['mil'].seconds
-    assert s == 5
+def test_to_sec(time):
+    assert time['micro'].seconds == time['milli'].seconds == 5
 
-def test_milliseconds_to_microseconds(time):
-    us = time['mil'].microseconds
-    assert us == 5000000
+def test_zero(time):
+    for t in time.values():
+        t.reset()
 
-def test_microseconds_to_seconds(time):
-    s = time['mic'].seconds
-    assert s == 5
+    assert all(t == sf.Time() == sf.Time.ZERO for t in time.values())
 
-def test_microseconds_to_milliseconds(time):
-    ms = time['mic'].milliseconds
-    assert ms == 5000
-
-def test_add(time):
-    t = time['sec'] + time['mil']
-    assert t.seconds == 10
-
-def test_subtract(time):
-    t = time['sec'] - time['mil']
-    assert t.seconds == 0
-
-def test_iadd(time):
-    time['sec'] += time['mil']
-    assert time['sec'].seconds == 10
-
-def test_isub(time):
-    time['sec'] -= time['mil']
-    assert time['sec'].seconds == 0

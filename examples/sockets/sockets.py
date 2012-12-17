@@ -10,11 +10,9 @@
 
 import sfml.network as sf
 
-try:
-    # python 2 compatabiliy
-    input = raw_input
-except NameError:
-    pass
+# python 2.* compatability
+try: input = raw_input 
+except NameError: pass
 
 def run_tcp_server():
 	""" Launch a server. The server waits for an incoming connection,

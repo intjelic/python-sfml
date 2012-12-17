@@ -10,11 +10,9 @@
 
 import sfml as sf
 
-try:
-    # python 2 compatability
-    input = raw_input
-except NameError:
-    pass
+# python 2.* compatability
+try: input = raw_input 
+except NameError: pass
 
 def main():
 	# check that the device can capture audio

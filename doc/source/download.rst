@@ -1,11 +1,11 @@
 Download
 ========
 Here you'll find all the necessary explainations for installing the binding 
-on your favorite platform. Unfortunately the procedures for the **Mac OSX** and 
-**Fedora** packages are not available yet.
+on your favorite platform. Unfortunately the procedures for the **Mac OSX** 
+is not available yet.
 
 .. contents:: :local:
-
+   :depth: 1
    
 Windows
 -------
@@ -22,10 +22,15 @@ Compillation for this platform is not available yet.
 
 Mac OSX
 -------
-This platform is not supported yet. If you download the source and if 
-you know a bit of Cython, you should be able to compile the source but 
-I advise you to wait for the next release which will have Mac OSX 
-supported.
+Packages for Mac OSX couldn't be made since the official sfml2-rc 
+installer contains issues. Having a lack of Mac OSX 
+knowledges, I couldn't make it work and by consequences was unable to 
+test the bindings as well as creating packages for the platform.
+
+That makes this platform unsupported yet. Anyways, if you download the source 
+and if you know a bit of Cython, you should be able to compile the 
+source but I advise you to wait for the next release which will have 
+Mac OSX supported.
 
 Ubuntu
 ------
@@ -70,8 +75,21 @@ Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad depot, just
 
 Fedora
 ------
-No RPM packages are provided yet. They probably will be for the next 
-release. Meanwhile you'll have to compile by yourself.
+
+SFML2 (release candidate)
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+	* `sfml2-rc1 <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [1.6 MB] [Python 3.2] [64 bit]
+	* `sfml2-examples <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [1.6 MB] [Python 3.2] [64 bit]
+   
+Bindings for SFML2
+^^^^^^^^^^^^^^^^^^
+
+	* `python-sfml2 <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [1.6 MB] [Python 3.2] [64 bit]
+	* `python3-sfml2 <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [1.6 MB] [Python 3.2] [64 bit]
+	* `pysfml2-examples <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [1.6 MB] [Python 3.2] [64 bit]
+
+See Ubuntu section to know what you can do with the example package.
 
 Compilation
 -----------

@@ -10,7 +10,7 @@ IpAddress
 
    Encapsulate an IPv4 network address.
    
-   :class:`sfml.network.IpAddress` is an utility class for manipulating network 
+   :class:`IpAddress` is an utility class for manipulating network 
    addresses.
    
    It provides a set of class methods and conversion attributes to 
@@ -19,22 +19,22 @@ IpAddress
 
    Usage example::
    
-      ip0 = sfml.network.IpAddress()                             # an invalid address
-      ip1 = sfml.network.IpAddress.NONE                          # an invalid address (same as ip0)
-      ip2 = sfml.network.IpAddress.from_string("127.0.0.1")      # the local host address
-      ip3 = sfml.network.IpAddress.BROADCAST                     # the broadcast address
-      ip4 = sfml.network.IpAddress.from_bytes(192, 168, 1, 56)   # a local address
-      ip5 = sfml.network.IpAddress.from_string("my_computer")    # a local address created from a network name
-      ip6 = sfml.network.IpAddress.from_string("89.54.1.169")    # a distant address
-      ip7 = sfml.network.IpAddress.from_string("www.google.com") # a distant address created from a network name
-      ip8 = sfml.network.IpAddress.get_local_address()           # my address on the local network
-      ip9 = sfml.network.IpAddress.get_public_address()          # my address on the internet
+      ip0 = sf.IpAddress()                             # an invalid address
+      ip1 = sf.IpAddress.NONE                          # an invalid address (same as ip0)
+      ip2 = sf.IpAddress.from_string("127.0.0.1")      # the local host address
+      ip3 = sf.IpAddress.BROADCAST                     # the broadcast address
+      ip4 = sf.IpAddress.from_bytes(192, 168, 1, 56)   # a local address
+      ip5 = sf.IpAddress.from_string("my_computer")    # a local address created from a network name
+      ip6 = sf.IpAddress.from_string("89.54.1.169")    # a distant address
+      ip7 = sf.IpAddress.from_string("www.google.com") # a distant address created from a network name
+      ip8 = sf.IpAddress.get_local_address()           # my address on the local network
+      ip9 = sf.IpAddress.get_public_address()          # my address on the internet
 
-   Note that :class:`sfml.network.IpAddress` currently doesn't support IPv6 nor 
+   Note that :class:`IpAddress` currently doesn't support IPv6 nor 
    other types of network addresses.
 
    .. py:data:: NONE
-   
+
       Value representing an empty/invalid address. 
 
    .. py:data:: LOCAL_HOST
@@ -100,7 +100,7 @@ IpAddress
       address, and should be used for optimization purposes only (like 
       sending the address through a socket). The integer produced by 
       this function can then be converted back to a 
-      :class:`sfml.network.IpAddress` with the proper constructor.
+      :class:`IpAddress` with the proper constructor.
 
       :type: integer
       
@@ -116,7 +116,7 @@ IpAddress
 
       :rtype: :class:`sfml.network.IpAddress`
       
-   .. classmethod:: get_public_address([time])
+   .. classmethod:: get_public_address([timeout])
          
       Get the computer's public address.
 
@@ -131,10 +131,33 @@ IpAddress
       limit if you don't want your program to be possibly stuck waiting 
       in case there is a problem; this limit is deactivated by default.
 
-      :param sfml.system.Time time: Maximum time to wait
+      :param sfml.system.Time timeout: Maximum time to wait
       :rtype: :class:`sfml.network.IpAddress`
 
+SocketException
+^^^^^^^^^^^^^^^
+.. py:exception:: SocketException(Exception)
 
+   Main exception defined for all socket exceptions. Most of socket's 
+   method can potentially raise one of the three following exceptions 
+   and you'll use this one to catch any of them in one except statement.
+   
+.. py:exception:: SocketDisconnected(SocketException)
+
+   In **blocking mode**, the socket may raise this exception to warm 
+   you it has been disconnected.
+
+.. py:exception:: SocketNotReady(SocketException)
+
+   In **non-blocking mode**, the socket will raise this exception if 
+   the socket is not ready to send/receive data yet.
+
+.. py:exception:: SocketError(SocketException)
+
+   In ** blocking mode**, the socket may raise this exception to warm 
+   you an unexpected error happened.
+   
+      
 Socket
 ^^^^^^
 
@@ -156,8 +179,7 @@ Socket
 
       In non-blocking mode, all the socket functions will return 
       immediately. If the socket is not ready to complete the requested 
-      operation, the function simply returns the proper status code 
-      (:const:`Socket.NOT_READY`).
+      operation, the function simply raises the exception :exc:`SocketNotReady`.
 
       The default mode, which is blocking, is the one that is generally 
       used, in combination with threads or selectors. The non-blocking 
@@ -210,7 +232,7 @@ TcpSocket
 
       When a socket is connected to a remote host, you can retrieve 
       informations about this host with the :attr:`remote_address` and 
-      :attr:`remote_port attributes`. You can also get the local port 
+      :attr:`remote_port` attributes. You can also get the local port 
       to which the socket is bound (which is automatically chosen when 
       the socket is connected), with the :attr:`local_port` attribute.
 
@@ -229,8 +251,8 @@ TcpSocket
       
          # --- the client ---
          # create a socket and connect it to 192.168.1.50 on port 55001
-         socket = sfml.network.TcpSocket()
-         socket.connect(sfml.network.IpAddress.from_string("192.168.1.50"), 55001)
+         socket = sf.TcpSocket()
+         socket.connect(sf.IpAddress.from_string("192.168.1.50"), 55001)
 
 
          # send a message to the connected host
@@ -244,7 +266,7 @@ TcpSocket
 
          # --- the server ---
          # create a listener to wait for incoming connections on port 55001
-         listener = sfml.network.TcpListener()
+         listener = sf.TcpListener()
          listener.listen(55001)
 
          # wait for a connection
@@ -271,7 +293,7 @@ TcpSocket
       The address of the connected peer.
       
       It the socket is not connected, its value 
-      :const:`sfml.network.IpAddress.NONE`.
+      :const:`IpAddress.NONE`.
       
       :type: :class:`sfml.network.IpAddress`
       
@@ -286,21 +308,13 @@ TcpSocket
    .. py:method:: connect(remote_address, remote_port[, timeout])
    
       Connect the socket to a remote peer.
-      
-      This method raises an exception if something bad happened. 
-      If the TCP socket has been disconnected, it will raise 
-      sfml.network.SocketDisconnected. 
-      If the socket is not ready to send/receive data yet, it will raise
-      sfml.network.SocketNotReady. 
-      If an unexpected error happened, it will raise sfml.network.SocketError. 
-      You may want to catch any of them in one except statement, in 
-      this case, you'll use sfml.network.SocketException which is their base.
-      
+
       In blocking mode, this function may take a while, especially if 
       the remote peer is not reachable. The last parameter allows you 
       to stop trying to connect after a given timeout. If the socket 
       was previously connected, it is first disconnected.
       
+      :raise: :exc:`SocketDisconnected`, :exc:`SocketNotReady` or :exc:`SocketError`
       :param sfml.network.IpAddress remote_address: Address of the remote peer 
       :param integer remote_port: Port of the remote peer 
       :param sfml.system.Time timeout: Optional maximum time to wait
@@ -318,34 +332,22 @@ TcpSocket
       
       This function will fail if the socket is not connected.
 
-      This method raises an exception if something bad happened. 
-      If the TCP socket has been disconnected, it will raise 
-      sfml.network.SocketDisconnected. 
-      If the socket is not ready to send/receive data yet, it will raise
-      sfml.network.SocketNotReady. 
-      If an unexpected error happened, it will raise sfml.network.SocketError. 
-      You may want to catch any of them in one except statement, in 
-      this case, you'll use sfml.network.SocketException which is their base.
-      
+      :raise: :exc:`SocketDisconnected`, :exc:`SocketNotReady` or :exc:`SocketError`
       :param bytes data: The sequence of bytes to send 
       
    .. py:method:: receive(size)
    
       Receive raw data from the remote peer.
       
-      This method raises an exception if something bad happened. 
-      If the TCP socket has been disconnected, it will raise 
-      sfml.network.SocketDisconnected. 
-      If the socket is not ready to send/receive data yet, it will raise
-      sfml.network.SocketNotReady. 
-      If an unexpected error happened, it will raise sfml.network.SocketError. 
-      You may want to catch any of them in one except statement, in 
-      this case, you'll use sfml.network.SocketException which is their base.
+      In blocking mode, this function will wait until some bytes are 
+      actually received. This function will fail if the socket is not 
+      connected.
       
-      In blocking mode, this function will wait until some bytes are actually received. This function will fail if the socket is not connected.
+      .. note:: 
       
-      .. note:: The recieved data's length may be different from the asked length.
+         The recieved data's length may be different from the asked length.
       
+      :raise: :exc:`SocketDisconnected`, :exc:`SocketNotReady` or :exc:`SocketError`
       :param integer size: Maximum number of bytes that can be received
       :return: A sequence of bytes
       :rtype: bytes
@@ -381,7 +383,7 @@ UdpSocket
    low-level functions process a raw sequence of bytes. The high-level
    method is not implemented.
    
-   It is important to note that :class:`sfml.network.UdpSocket` is unable to send 
+   It is important to note that :class:`UdpSocket` is unable to send 
    datagrams bigger than :attr:`MAX_DATAGRAM_SIZE`. In this case, it 
    returns an error and doesn't send anything.
 
@@ -394,12 +396,12 @@ UdpSocket
    
       # --- the client ---
       # create a socket and bind it to the port 55001
-      socket = sfml.network.UdpSocket()
+      socket = sf.UdpSocket()
       socket.bind(55001)
 
       # send a message to 192.168.1.50 on port 55002
-      message = "Hi, I am {0}".format(sfml.network.IpAddress.get_local_address().string)
-      socket.send(message.encode('utf-8'), sfml.network.IpAddress.from_string("192.168.1.50"), 55002)
+      message = "Hi, I am {0}".format(sf.IpAddress.get_local_address().string)
+      socket.send(message.encode('utf-8'), sf.IpAddress.from_string("192.168.1.50"), 55002)
 
       # receive an answer (most likely from 192.168.1.50, but could be anyone else)
       answer, sender, port = socket.receive(1024)
@@ -407,7 +409,7 @@ UdpSocket
 
       # --- the server ---
       # create a socket and bind it to the port 55002
-      socket = sfml.network.UdpSocket()
+      socket = sf.UdpSocket()
       socket.bind(55002)
 
       # receive a message from anyone
@@ -440,15 +442,7 @@ UdpSocket
       available port, and then get the chosen port via the attribute 
       local_port.
       
-      This method raises an exception if something bad happened. 
-      If the TCP socket has been disconnected, it will raise 
-      sfml.network.SocketDisconnected. 
-      If the socket is not ready to send/receive data yet, it will raise
-      sfml.network.SocketNotReady. 
-      If an unexpected error happened, it will raise sfml.network.SocketError. 
-      You may want to catch any of them in one except statement, in 
-      this case, you'll use sfml.network.SocketException which is their base.
-      
+      :raise: :exc:`SocketDisconnected`, :exc:`SocketNotReady` or :exc:`SocketError`
       :param integer port: Port to bind the socket to
       
    .. py:method:: unbind()
@@ -464,18 +458,10 @@ UdpSocket
       Send raw data to a remote peer.
 
       Make sure that size is not greater than 
-      :attr:`UdpSocket.MAX_DATAGRAM_SIZE`, otherwise this function will 
+      :attr:`MAX_DATAGRAM_SIZE`, otherwise this function will 
       fail and no data will be sent.
 
-      This method raises an exception if something bad happened. 
-      If the TCP socket has been disconnected, it will raise 
-      sfml.network.SocketDisconnected. 
-      If the socket is not ready to send/receive data yet, it will raise
-      sfml.network.SocketNotReady. 
-      If an unexpected error happened, it will raise sfml.network.SocketError. 
-      You may want to catch any of them in one except statement, in 
-      this case, you'll use sfml.network.SocketException which is their base.
-      
+      :raise: :exc:`SocketDisconnected`, :exc:`SocketNotReady` or :exc:`SocketError`
       :param bytes data: The sequence of bytes to send 
       :param sfml.network.IpAddress remote_address: Address of the receiver 
       :param integer port: Port of the receiver to send the data to
@@ -484,21 +470,13 @@ UdpSocket
          
       Receive raw data from a remote peer.
 
-      This method raises an exception if something bad happened. 
-      If the TCP socket has been disconnected, it will raise 
-      sfml.network.SocketDisconnected. 
-      If the socket is not ready to send/receive data yet, it will raise
-      sfml.network.SocketNotReady. 
-      If an unexpected error happened, it will raise sfml.network.SocketError. 
-      You may want to catch any of them in one except statement, in 
-      this case, you'll use sfml.network.SocketException which is their base.
-      
       In blocking mode, this function will wait until some bytes are 
       actually received. Be careful to use a buffer which is large 
       enough for the data that you intend to receive, if it is too 
       small then an error will be returned and *all* the data will 
       be lost.
          
+      :raise: :exc:`SocketDisconnected`, :exc:`SocketNotReady` or :exc:`SocketError`
       :param integer size: Maximum number of bytes that can be received
       :return: A tuple with the sequence of bytes received, the remote address and the port used.
       :rtype: tuple (bytes, sfml.network.IpAddress, integer)
@@ -517,14 +495,14 @@ TcpListener
    This is all it can do.
 
    When a new connection is received, you must call accept and the 
-   listener returns a new instance of :class:`sfml.network.TcpSocket` that is 
+   listener returns a new instance of :class:`TcpSocket` that is 
    properly initialized and can be used to communicate with the new 
    client.
 
    Listener sockets are specific to the TCP protocol, UDP sockets are 
    connectionless and can therefore communicate directly. As a 
    consequence, a listener socket will always return the new 
-   connections as sfml.network.TcpSocket instances.
+   connections as :class:`TcpSocket` instances.
 
    A listener is automatically closed on destruction, like all other 
    types of socket. However if you want to stop listening before the 
@@ -533,7 +511,7 @@ TcpListener
    Usage example::
    
       # create a listener socket and make it wait for new connections on port 55001
-      listener = sfml.network.TcpListener()
+      listener = sf.TcpListener()
       listener.listen(55001)
 
       # endless loop that waits for new connections
@@ -541,9 +519,9 @@ TcpListener
          try:
             client = listener.accept()
             
-         except sfml.network.SocketException as error:
+         except sf.SocketException as error:
             print("An error occured! Error: {0}".format(error))
-            exit()
+            exit(1)
             
          # a new client just connected!
          print("New connectionreceived from {0}".format(client.remote_address))
@@ -566,15 +544,7 @@ TcpListener
       listening to another port, it will be stopped first and bound to 
       the new port.
 
-      This method raises an exception if something bad happened. 
-      If the TCP socket has been disconnected, it will raise 
-      sfml.network.SocketDisconnected. 
-      If the socket is not ready to send/receive data yet, it will raise
-      sfml.network.SocketNotReady. 
-      If an unexpected error happened, it will raise sfml.network.SocketError. 
-      You may want to catch any of them in one except statement, in 
-      this case, you'll use sfml.network.SocketException which is their base.
-      
+      :raise: :exc:`SocketDisconnected`, :exc:`SocketNotReady` or :exc:`SocketError`
       :param integer port: Port to listen for new connections
       
    .. py:method:: close()
@@ -591,359 +561,6 @@ TcpListener
       If the socket is in blocking mode, this function will not return 
       until a connection is actually received.
       
-      This method raises an exception if something bad happened. 
-      If the TCP socket has been disconnected, it will raise 
-      sfml.network.SocketDisconnected. 
-      If the socket is not ready to send/receive data yet, it will raise
-      sfml.network.SocketNotReady. 
-      If an unexpected error happened, it will raise sfml.network.SocketError. 
-      You may want to catch any of them in one except statement, in 
-      this case, you'll use sfml.network.SocketException which is their base.
-      
+      :raise: :exc:`SocketDisconnected`, :exc:`SocketNotReady` or :exc:`SocketError`
       :return: :class:`Socket` that holds the new connection
       :rtype: :class:`sfml.network.TcpSocket`
-
-SocketException
-^^^^^^^^^^^^^^^
-
-.. py:exception:: SocketException(Exception)
-.. py:exception:: SocketNotReady(SocketException)
-.. py:exception:: SocketDisconnect(SocketException)
-.. py:exception:: SocketError(SocketException)
-
-SocketSelector
-^^^^^^^^^^^^^^
-
-.. py:class:: SocketSelector()
-
-   .. py:method:: add(socket)
-         
-      Add a new socket to the selector.
-      
-   .. py:method:: remove(socket)
-   
-      Remove a socket from the selector.
-      
-   .. py:method:: clear()
-   
-      Remove all the sockets stored in the selector.
-       
-   .. py:method:: wait([timeout=0])
-   
-      Wait until one or more sockets are ready to receive.
-
-      This function returns as soon as at least one socket has some data available to be received. To know which sockets are ready, use the is_ready() function. If you use a timeout and no socket is ready before the timeout is over, the function returns false.
-
-   .. py:method:: is_ready(socket)
-
-      Test a socket to know if it is ready to receive data. 
-   
-      This function must be used after a call to wait(), to know which sockets are ready to receive data. If a socket is ready, a call to receive() will never block because we know that there is data available to read.
-      Note that if this function returns true for a TcpListener, this means that it is ready to accept a new connection.
-
-
-
-Ftp
-^^^
-
-.. py:class:: FtpResponse()
-
-      Define a FTP response.
-      
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | Status                         | Code | Description                                                                                             |
-      +================================+======+=========================================================================================================+
-      | RESTART_MARKER_REPLY           | 110  | Restart marker reply.                                                                                   |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | SERVICE_READY_SOON             | 120  | Service ready in N minutes.                                                                             |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | DATA_CONNECTION_ALREADY_OPENED | 125  | Data connection already opened, transfer starting.                                                      |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | OPENING_DATA_CONNECTION        | 150  | File status ok, about to open data connection.                                                          |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | OK                             | 200  | Command ok.                                                                                             |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | POINTLESS_COMMAND              | 202  | Command not implemented.                                                                                |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | SYSTEM_STATUS                  | 211  | System status, or system help reply.                                                                    |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | DIRECTORY_STATUS               | 212  | Directory status. .                                                                                     |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | FILE_STATUS                    | 213  | File status.                                                                                            |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | HELP_MESSAGE                   | 214  | Help message.                                                                                           |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | SYSTEM_TYPE                    | 215  | NAME system type, where NAME is an official system name from the list in the Assigned Numbers document. |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | SERVICE_READY                  | 220  | Service ready for new user.                                                                             |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | CLOSING_CONNECTION             | 221  | Service closing control connection.                                                                     |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | DATA_CONNECTION_OPENED         | 225  | Data connection open, no transfer in progress.                                                          |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | CLOSING_DATA_CONNECTION        | 226  | Closing data connection, requested file action successful.                                              |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | ENTERING_PASSIVE_MODE          | 227  | Entering passive mode.                                                                                  |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | LOGGED_IN                      | 230  | User logged in, proceed. Logged out if appropriate.                                                     |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | FILE_ACTION_OK                 | 250  | Requested file action ok.                                                                               |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | DIRECTORY_OK                   | 257  | PATHNAME created.                                                                                       |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | NEED_PASSWORD                  | 331  | User name ok, need password.                                                                            |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | NEED_ACCOUNT_TO_LOG_IN         | 332  | Need account for login.                                                                                 |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | NEED_INFORMATION               | 350  | Requested file action pending further information.                                                      |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | SERVICE_UNAVAILABLE            | 421  | Service not available, closing control connection.                                                      |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | DATA_CONNECTION_UNAVAILABLE    | 425  | Can't open data connection.                                                                             |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | TRANSFER_ABORTED               | 426  | Connection closed, transfer aborted.                                                                    |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | FILE_ACTION_ABORTED            | 450  | Requested file action not taken.                                                                        | 
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | LOCAL_ERROR                    | 451  | Requested action aborted, local error in processing.                                                    |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | INSUFFICIENT_STORAGE_SPACE     | 452  | Requested action not taken; insufficient storage space in system, file unavailable.                     |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | COMMAND_UNKNOWN                | 500  | Syntax error, command unrecognized.                                                                     |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | PARAMETERS_UNKNOWN             | 501  | Syntax error in parameters or arguments.                                                                |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | COMMAND_NOT_IMPLEMENTED        | 502  | Command not implemented.                                                                                |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | BAD_COMMAND_SEQUENCE           | 503  | Bad sequence of commands.                                                                               |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | PARAMETER_NOT_IMPLEMENTED      | 504  | Command not implemented for that parameter.                                                             |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | NOT_LOGGED_IN                  | 530  | Not logged in.                                                                                          |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | NEED_ACCOUNT_TO_STORE          | 532  | Need account for storing files.                                                                         |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | FILE_UNAVAILABLE               | 550  | Requested action not taken, file unavailable.                                                           |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | PAGE_TYPE_UNKNOWN              | 551  | Requested action aborted, page type unknown.                                                            |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | NOT_ENOUGH_MEMORY              | 552  | Requested file action aborted, exceeded storage allocation.                                             |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | FILENAME_NOT_ALLOWED           | 553  | Requested action not taken, file name not allowed.                                                      |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | INVALID_RESPONSE               | 1000 | Response is not a valid FTP one.                                                                        |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | CONNECTION_FAILED              | 1001 | Connection with server failed.                                                                          |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | CONNECTION_CLOSED              | 1002 | Connection with server closed.                                                                          |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-      | INVALID_FILE                   | 1003 | Invalid file to upload / download.                                                                      |
-      +--------------------------------+------+---------------------------------------------------------------------------------------------------------+
-
-   .. py:attribute:: ok
-         
-      Check if the status code means a success.
-
-      This function is defined for convenience, it is equivalent to 
-      testing if the status code is < 400.
-
-   .. py:attribute:: status
-   
-      Get the status code of the response.
-      
-   .. py:attribute:: message
-   
-      Get the full message contained in the response.
-
-
-.. py:class:: FtpDirectoryResponse(FtpResponse)
-
-   .. py:method:: get_directory()
-   
-      Get the directory returned in the response.
-      
-      :rtype: str
-   
-.. py:class:: FtpListingResponse(FtpResponse)
-
-   .. py:method:: get_filenames()
-
-      :rtype: str
-
-.. py:class:: Ftp()
-
-      A FTP client.
-
-      sf::Ftp is a very simple FTP client that allows you to communicate with a FTP server.
-
-      The FTP protocol allows you to manipulate a remote file system (list files, upload, download, create, remove, ...).
-
-      Using the FTP client consists of 4 parts:
-
-          Connecting to the FTP server
-          Logging in (either as a registered user or anonymously)
-          Sending commands to the server
-          Disconnecting (this part can be done implicitely by the destructor)
-
-      Every command returns a FTP response, which contains the status code as well as a message from the server. Some commands such as getWorkingDirectory and getDirectoryListing return additional data, and use a class derived from sf::Ftp::Response to provide this data.
-
-      All commands, especially upload and download, may take some time to complete. This is important to know if you don't want to block your application while the server is completing the task.
-
-      Usage example::
-         
-         # create a new FTP client
-         ftp = sfml.network.Ftp()
-
-         # connect to the server
-         response = ftp.connect(sfml.network.IpAddress.from_string("ftp.myserver.com"))
-         if response.ok: print("Connected")
-
-         # log in
-         response = ftp.login("login", "password");
-         if response.ok: print("Logged in")
-
-         # print the working directory
-         directory_response = ftp.get_working_directory()
-         if directory_response.ok: print("Working directory: {0}".format(directory_response.get_directory))
-
-         # create a new directory
-         response = ftp.create_directory("files")
-         if response.ok: print("Created new directory")
-
-         # upload a file to this new directory
-         response = ftp.upload("local-path/file.txt", "files", sfml.network.Ftp.ASCII)
-         if response.ok: print("File uploaded")
-
-         # disconnect from the server (optional)
-         ftp.disconnect()
-
-      +--------------+----------------------------------------------------------+
-      | TransferMode | Description                                              |
-      +==============+==========================================================+
-      | BINARY       | Binary mode (file is transfered as a sequence of bytes). |
-      +--------------+----------------------------------------------------------+
-      | ASCII        | Text mode using ASCII encoding.                          |
-      +--------------+----------------------------------------------------------+
-      | EBCDIC       | Text mode using EBCDIC encoding.                         |
-      +--------------+----------------------------------------------------------+
-      
-   .. py:method:: connect()
-   
-   .. py:method:: disconnect()
-   
-   .. py:method:: keep_alive()
-   
-   .. py:method:: get_working_directory()
-   
-   .. py:method:: get_directory_listing()
-   
-   .. py:method:: change_directory()
-   
-   .. py:method:: parent_directory()
-   
-   .. py:method:: create_directory()
-   
-   .. py:method:: delete_directory()
-   
-   .. py:method:: rename_file()
-   
-   .. py:method:: delete_file()
-   
-   .. py:method:: download()
-   
-   .. py:method:: upload()
-
-
-
-HTTP
-^^^^
-
-.. py:class:: HttpRequest()
-
-      +--------+----------------------------------------------------------+
-      | Method | Description                                              |
-      +========+==========================================================+
-      | GET    | Request in get mode, standard method to retrieve a page. |
-      +--------+----------------------------------------------------------+
-      | POST   | Request in post mode, usually to send data to a page.    |
-      +--------+----------------------------------------------------------+
-      | HEAD   | Request a page's header only.                            |
-      +--------+----------------------------------------------------------+
-      
-   .. py:attribute:: field
-   
-   .. py:attribute:: method
-   
-   .. py:attribute:: uri
-   
-   .. py:attribute:: http_version
-   
-   .. py:attribute:: body
-
-
-.. py:class:: HttpResponse()
-
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | Status                | Description                                                                                            |
-      +=======================+========================================================================================================+
-      | OK                    | Most common code returned when operation was successful.                                               |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | CREATED               | The resource has successfully been created.                                                            |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | ACCEPTED              | The request has been accepted, but will be processed later by the server.                              |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | NO_CONTENT            | The server didn't send any data in return.                                                             |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | RESET_CONTENT         | The server informs the client that it should clear the view (form) that caused the request to be sent. |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | PARTIAL_CONTENT       | The server has sent a part of the resource, as a response to a partial GET request.                    |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | MULTIPLE_CHOICES      | The requested page can be accessed from several locations.                                             |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | MOVED_PERMANENTLY     | The requested page has permanently moved to a new location.                                            |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | MOVED_TEMPORARILY     | The requested page has temporarily moved to a new location.                                            |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | NOT_MODIFIED          | For conditionnal requests, means the requested page hasn't changed and doesn't need to be refreshed.   |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | BAD_REQUEST           | The server couldn't understand the request (syntax error).                                             |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | UNAUTHORIZED          | The requested page needs an authentification to be accessed.                                           |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | FORBIDDEN             | The requested page cannot be accessed at all, even with authentification.                              |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | NOT_FOUND             | The requested page doesn't exist.                                                                      |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | RANGE_NOT_SATISFIABLE | The server can't satisfy the partial GET request (with a "Range" header field).                        |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | INTERNAL_SERVER_ERROR | The server encountered an unexpected error.                                                            |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | NOT_IMPLEMENTED       | The server doesn't implement a requested feature.                                                      |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | BAD_GATEWAY           | The gateway server has received an error from the source server.                                       |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | SERVICE_NOT_AVAILABLE | The server is temporarily unavailable (overloaded, in maintenance, ...).                               |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | GATEWAY_TIMEOUT       | The gateway server couldn't receive a response from the source server.                                 |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | VERSION_NOT_SUPPORTED | The server doesn't support the requested HTTP version.                                                 |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | INVALID_RESPONSE      | Response is not a valid HTTP one.                                                                      |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-      | CONNECTION_FAILED     | Connection with server failed.                                                                         |
-      +-----------------------+--------------------------------------------------------------------------------------------------------+
-
-   .. py:attribute:: field
-   
-   .. py:attribute:: status
-   
-   .. py:attribute:: major_http_version
-   
-   .. py:attribute:: minor_http_version
-   
-   .. py:attribute:: body
-
-
-.. py:class:: Http(host[, port=0])
-
-   .. py:method:: send_request(request[, timeout=0])

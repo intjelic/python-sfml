@@ -19,12 +19,19 @@ After you've installed `Git <http://git-scm.com/downloads>`_, you may issue
 the following command to obtain the source::
 
     git clone git@github.com:Sonkun/python-sfml2.git
+    cd python-sfml2
 
 The source from the add-ons projects are available as submodules, which may be
 obtained by issuing the following additional commands::
 
     git submodule init
     git submodule update
+
+Alternatively, you may clone the main project and its submodules all at once
+with the following command::
+
+    git clone --recursive git://github.com:Sonkun/python-sfml2.git
+    cd python-sfml2
 
 Resources
 =========
