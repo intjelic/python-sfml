@@ -81,11 +81,11 @@ while window.is_open:
 	# handle events
 	for event in window.events:
 		# window closed or escape key pressed: exit
-		if type(event) is sf.CloseEvent:
+		if event == sf.CloseEvent or event == sf.KeyEvent and event.code is sf.Keyboard.ESCAPE:
 			window.close()
 
 		# space key pressed: play
-		if type(event) is sf.KeyEvent and event.pressed and event.code is sf.Keyboard.SPACE:
+		if event == sf.KeyEvent and event.pressed and event.code is sf.Keyboard.SPACE:
 			if not is_playing:
 				# (re)start the game
 				is_playing = True
