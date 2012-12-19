@@ -35,7 +35,7 @@ Milestones
 
 Next Version
 ------------
-Version 1.2.1 will concentrate on fixing bugs that were unresolved in the
+Version 1.3.0 will concentrate on fixing bugs that were unresolved in the
 |release| release and packaging the bindings for various platforms. 
 In addition, it will be the first version to `officially support Mac OS X`_.
 
