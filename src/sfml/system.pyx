@@ -25,8 +25,6 @@ __all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds',
 			'milliseconds', 'microseconds', 'Vector2', 'Vector3']
 
 dsystem.replace_error_handler()
-number = lambda num: isinstance(num, Number)
-integral = lambda num: number(num) and isinstance(num, Integral)
 
 def pop_error_message():
 	message = dsystem.get_last_error_message().c_str()
@@ -80,47 +78,47 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		setattr(self, {0: 'x', 1: 'y'}[key], value)
 
 	def __add__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector2(self[0] + other, self[1] + other)
 		else:
 			return Vector2(self[0] + other[0], self[1] + other[1])
 
 	def __sub__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector2(self[0] - other, self[1] - other)
 		else:
 			return Vector2(self[0] - other[0], self[1] - other[1])
 
 	def __mul__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector2(self[0] * other, self[1] * other)
 		else:
 			return Vector2(self[0] * other[0], self[1] * other[1])
 
 	def __truediv__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector2(self[0] / other, self[1] / other)
 		else:
 			return Vector2(self[0] / other[0], self[1] / other[1])
 
 	def __floordiv__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector2(self[0] // other, self[1] // other)
 		else:
 			return Vector2(self[0] // other[0], self[1] // other[1])
 
 	def __div__(self, other):
-		if integral(other):
+		if isinstance(other, Integral):
 			return self.__floordiv__(other)
-		elif not integral(other):
+		elif isinstance(other, Number) and not isinstance(other, Integral):
 			return self.__truediv__(other)
-		elif all(integral(i) for i in other):
+		elif all(isinstance(i, Integral) for i in other):
 			return self.__floordiv__(other)
 		else:
 			return self.__truediv__(other)
 
 	def __mod__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector2(self[0] % other, self[1] % other)
 		else:
 			return Vector2(self[0] % other[0], self[1] % other[1])
@@ -129,7 +127,7 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return self // other, self % other
 
 	def __iadd__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] += other
 			self[1] += other
 		else:
@@ -138,7 +136,7 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return self
 
 	def __isub__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] -= other
 			self[1] -= other
 		else:
@@ -147,7 +145,7 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return self
 
 	def __imul__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] *= other
 			self[1] *= other
 		else:
@@ -156,7 +154,7 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return self
 
 	def __itruediv__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] /= other
 			self[1] /= other
 		else:
@@ -165,7 +163,7 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return self
 
 	def __ifloordiv__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] //= other
 			self[1] //= other
 		else:
@@ -174,17 +172,17 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return self
 
 	def __idiv__(self, other):
-		if integral(other):
+		if isinstance(other, Integral):
 			return self.__ifloordiv__(other)
-		elif not integral(other):
+		elif isinstance(other, Number) and not isinstance(other, Integral):
 			return self.__itruediv__(other)
-		elif all(integral(i) for i in other):
+		elif all(isinstance(i, Integral) for i in other):
 			return self.__ifloordiv__(other)
 		else:
 			return self.__itruediv__(other)
 
 	def __imod__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] %= other
 			self[1] %= other
 		else:
@@ -262,7 +260,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		setattr(self, {0: 'x', 1: 'y', 2: 'z'}[key], value)
 
 	def __add__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector3(self[0] + other,
 						   self[1] + other, self[2] + other)
 		else:
@@ -270,7 +268,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 						   self[1] + other[1], self[2] + other[2])
 
 	def __sub__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector3(self[0] - other,
 						   self[1] - other, self[2] - other)
 		else:
@@ -278,7 +276,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 						   self[1] - other[1], self[2] - other[2])
 
 	def __mul__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector3(self[0] * other,
 						   self[1] * other, self[2] * other)
 		else:
@@ -286,7 +284,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 						   self[1] * other[1], self[2] * other[2])
 
 	def __truediv__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector3(self[0] / other,
 						   self[1] / other, self[2] / other)
 		else:
@@ -294,7 +292,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 						   self[1] / other[1], self[2] / other[2])
 
 	def __floordiv__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector3(self[0] // other,
 						   self[1] // other, self[2] // other)
 		else:
@@ -302,17 +300,17 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 						   self[1] // other[1], self[2] // other[2])
 
 	def __div__(self, other):
-		if integral(other):
+		if isinstance(other, Integral):
 			return self.__floordiv__(other)
-		elif not integral(other):
+		elif isinstance(other, Number) and not isinstance(other, Integral):
 			return self.__truediv__(other)
-		elif all(integral(i) for i in other):
+		elif all(isinstance(i, Integral) for i in other):
 			return self.__floordiv__(other)
 		else:
 			return self.__truediv__(other)
 
 	def __mod__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			return Vector3(self[0] % other,
 						   self[1] % other, self[2] % other)
 		else:
@@ -323,7 +321,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return self // other, self % other
 
 	def __iadd__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] += other
 			self[1] += other
 			self[2] += other
@@ -334,7 +332,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return self
 
 	def __isub__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] -= other
 			self[1] -= other
 			self[2] -= other
@@ -345,7 +343,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return self
 
 	def __imul__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] *= other
 			self[1] *= other
 			self[2] *= other
@@ -356,7 +354,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return self
 
 	def __itruediv__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] /= other
 			self[1] /= other
 			self[2] /= other
@@ -367,7 +365,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return self
 
 	def __ifloordiv__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] //= other
 			self[1] //= other
 			self[2] //= other
@@ -378,17 +376,17 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return self
 
 	def __div__(self, other):
-		if integral(other):
+		if isinstance(other, Integral):
 			return self.__ifloordiv__(other)
-		elif not integral(other):
+		elif isinstance(other, Number) and not isinstance(other, Integral):
 			return self.__itruediv__(other)
-		elif all(integral(i) for i in other):
+		elif all(isinstance(i, Integral) for i in other):
 			return self.__ifloordiv__(other)
 		else:
 			return self.__itruediv__(other)
 
 	def __imod__(self, other):
-		if number(other):
+		if isinstance(other, Number):
 			self[0] %= other
 			self[1] %= other
 			self[2] %= other
