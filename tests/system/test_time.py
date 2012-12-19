@@ -33,4 +33,3 @@ def test_zero(time):
         t.reset()
 
     assert all(t == sf.Time() == sf.Time.ZERO for t in time.values())
-

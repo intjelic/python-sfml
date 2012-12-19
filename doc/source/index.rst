@@ -1,23 +1,30 @@
-SFML2 for Python
-================
-This is version |version| of the unofficial Python bindings for `SFML2 <http://www.sfml-dev.org/>`_ 
-released under the `LGPLv3 <http://www.gnu.org/copyleft/lgpl.html>`_ license.
-
-Python bindings really are the perfect way to sketch software using SFML.
-
-By combining the strength of SFML with the ease of the Python language,
-we can provide an amazing tool to quickly build multimedia software.
-
+Python-SFML
+===========
 .. note ::
 
         So far, these bindings have only been tested thoroughly on Linux,
         though minimal testing has been done on Windows.
-	
+
+This is version |version| of the unofficial Python bindings for `SFML`_,
+based on `the first release candidate` and is made available under the terms of
+the `LGPLv3`_ license.
+
+By combining the strength of SFML with the ease of the Python language,
+we can provide an amazing tool to quickly build multimedia software.
+
+These bindings were created in large part by Jonathan De Wachter, with
+significant contributions from Edwin Marshall. Other contributors include 
+Jorge Araya Navarro and Richard Sims. Of course, this bindnig wouldn't have
+been made possible without the work of Laurent Gomilla and Bastien Léonard.
+
+Table of Contents
+=================
+
 .. toctree::
    :maxdepth: 1
    :hidden:
    
-   introduction
+   whatsnew
    download   
    gettingstarted
    examples
@@ -31,9 +38,9 @@ we can provide an amazing tool to quickly build multimedia software.
 
    * .. glossary::
 
-      :doc:`introduction`
-         Explains what this project is, who is responsible, and where this
-         project is going.
+      :doc:`whatsnew`
+         What's new since the last release, and what we have planned for the
+         next one.
 
    * .. glossary::
    
@@ -70,37 +77,8 @@ we can provide an amazing tool to quickly build multimedia software.
       :doc:`addons`
          Documentation for complementary SFML-based libraries that have also
          been ported to Python.
-      
-   
-What's new ?
-------------
 
-**1 October 2012**: sfeMovie
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-`sfeMovie <http://lucas.soltic.perso.luminy.univmed.fr/sfeMovie/>`_ has been
-ported to Python. For documentation and installation instructions, please
-consult the `website <http://openhelbreath/python-sfeMovie>`_. Just as the
-original project depends on SFML being installed, the new sfeMovie bindings
-depend on these SFML bindings.
-
-.. seealso::
-    Github: https://github.com/Sonkun/python-sfemovie
-
-**30 August 2012**: New commands
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Two new commands have been added to the setup script::
-
-   python setup.py doc # generates html documentation
-   python setup.py tests # runs the test suite
-
-
-**16 Juny 2012**: Deprecated some methods
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-`save_to_file()`, `open_from_*()` and `load_from_*()` methods have been deprecated 
-in favor of `from_*()` and `to_file()`.
-
-In addition, `copy()` methods have been deprecated in favor of Python's
-`__copy__()` special methods. 
+.. _SFML: http://www.sfml-dev.org/
+.. _the first release candidate: http://www.sfml-dev.org/download.php#2.0-rc
+.. _LGPLv3: htp://www.gnu.org/copyleft/lgpl.html
+.. _official Python bindings: https://github.com/bastienleonard/pysfml2-cython

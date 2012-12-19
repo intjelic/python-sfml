@@ -14,7 +14,30 @@ summarizes all the large, potentially surprising, changes that you
 should be aware of. You'll be able to start coding serious project with 
 the documentation at hand.
 
-Short example
+Diving In
+---------
+.. note::
+
+    On Windows, typing these commands directly in a console might cause the
+    console to freeze, in which case it is better to save the lines of code
+    (without the '>>>' prompt) to a file to run later. 
+
+Open a terminal and run the Python interpreter. Now we can experiment::
+
+   >>> import sfml as sf
+   >>> w = sf.RenderWindow(sf.VideoMode(640, 480), "My first pySFML Window - or not ?")
+   >>> w.clear(sf.Color.BLUE)
+   >>> w.display()
+   >>> w.size = (800, 600)
+   >>> w.clear(sf.Color.GREEN)
+   >>> w.display()
+   >>> w.title = "Yes, it's my first PySFML Window"
+   >>> w.display()
+   >>> w.capture().show()
+   >>> w.close()
+   >>> exit()
+
+Short Example
 -------------
 As a start, let's compare the python short example with the C++ one. 
 Here it is:
@@ -61,8 +84,8 @@ Here it is:
 First, you can notice the interface is not far different from the 
 original and remains quite the same; the interface has been pythonized.
 
-Importation
-^^^^^^^^^^^
+Importing
+^^^^^^^^^
 In practise, you import the whole library a single namespace **sf**. 
 Doing so imports the five sub-module in one shot (sfml.system, sfml.window, 
 sfml.graphics, sfml.audio and sfml.network).
@@ -92,7 +115,7 @@ Avoid that and prefer:
    sf.sleep(sf.seconds(5))
 
 
-Window creation
+Window Creation
 ^^^^^^^^^^^^^^^
 There's no difference here. if you want to give a style:
 
@@ -100,8 +123,8 @@ There's no difference here. if you want to give a style:
    
    window = sf.RenderWindow(sf.VideoMode(640, 480), "pySFML Window", sf.Style.TITLEBAR | sf.Style.RESIZE)
    
-Load resources
-^^^^^^^^^^^^^^
+Loading Resources
+^^^^^^^^^^^^^^^^^
 Instead of checking everytime if the resource has effectivly been loaded, 
 pysfml2 takes advantages of the Python mechanisms. Just enclose 
 your resource loading processes in a try-except bloc and Python will tell 
@@ -114,7 +137,7 @@ To follow the same convention as the standard Python library and so,
 offer a better integration, open_from_file and load_from_file have been 
 renamed into **from_file**.
 
-Event handling
+Event Handling
 ^^^^^^^^^^^^^^
 To iterate over the pending events, use the generator that Window.events 
 return. It's similar to the polling event process.
@@ -142,8 +165,8 @@ built-in function :func:`type` to determine its type.
 You can get a list of the event class in the documentation, section 
 window, as event handling is located in the window module ;).
 
-Update the screen
-^^^^^^^^^^^^^^^^^
+Updating the Screen
+^^^^^^^^^^^^^^^^^^^
 Don't forget to clear, draw and update the screen.
 
 .. code-block:: python

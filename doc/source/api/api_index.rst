@@ -1,21 +1,23 @@
 API Reference
 =============
+.. note::
 
-Here you will find the project's documentation. It's mainly a 
-translation from the original SFML2's documentation.
-
-.. warning::
-
-   In order **not to pollute** the documenation, **announced depreciations** such 
-   **copy methods** and **open_from**, **save_to** and **load_from methods** **have been 
-   removed**. They still do exists to keep backward compabilities.
+   In order to keep the documentation concise and to the point, deprecated
+   features have been omitted, though they still exist for backward
+   compatability.
 
 .. only:: pdf
 
-   The online doc will always be more up-to-date, with corrections, 
-   you can consult it at any time: http://openhelbreath.net/python-sfml2
+   The online documentation will always be more up-to-date unless built from
+   source. it is always available at http://openhelbreath.net/python-sfml2.
 
-Choose the module:
+All of SFML's api has been exposed to Python, even if Python itself 
+includes a functionally equivalent set of APIs. [#]_
+
+These bindings consist of a top-level :mod:`sfml` package which in-turn is
+composed of five modules, each of which correspond to those provided by the C++
+API:
+
 
 .. hlist::
    :columns: 2
@@ -60,3 +62,12 @@ Choose the module:
    graphics
    audio
    network
+
+.. rubric:: Footnotes
+
+.. [#] For example, we provide bindings for SFML's network module. Even 
+       Though such functionality can be found in Python's socket module, we 
+       believe that its inclusion not only aids developers as they
+       port their software from C++ to Python or vice-versa, but we also find
+       SFML's API more convient in some cases (e.g. when obtaining a public IP
+       address).

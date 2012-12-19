@@ -1,7 +1,9 @@
 Change Log
 ===========
 
-These lists are **not exhaustive**.
+.. note::
+
+    These lists are not exhaustive.
 
 v0.9 -> v1.0
 ------------

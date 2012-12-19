@@ -13,7 +13,7 @@ from __future__ import division
 import pytest
 import sfml.system as sf
 
-@pytest.fixture()
+@pytest.fixture
 def vector():
     return [sf.Vector3(2, 5, 0), sf.Vector3(5, 2, 7)]
 
