@@ -9,6 +9,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import division
+from numbers import Number, Integral
 from copy import deepcopy
 from warnings import warn
 
@@ -20,24 +21,26 @@ cimport dsystem
 from dsystem cimport Int8, Int16, Int32, Int64
 from dsystem cimport Uint8, Uint16, Uint32, Uint64
 
-__all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds', 
+__all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds',
 			'milliseconds', 'microseconds', 'Vector2', 'Vector3']
 
 dsystem.replace_error_handler()
+number = lambda num: isinstance(num, Number)
+integral = lambda num: number(num) and isinstance(num, Integral)
 
 def pop_error_message():
 	message = dsystem.get_last_error_message().c_str()
 	message = message.decode('utf-8')
 	return message
-	
+
 def push_error_message(message):
 	raise NotImplementedError
-	
+
 class SFMLException(Exception):
 	def __init__(self, message=None):
 		if not message: message = pop_error_message()
 		self.message = message
-			
+
 		Exception.__init__(self, message)
 
 	def __str__(self):
@@ -51,7 +54,7 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 	def __init__(self, x=0, y=0):
 		self.x = x
 		self.y = y
-		
+
 	def __repr__(self):
 		return "sf.Vector2({0})".format(self)
 
@@ -61,8 +64,8 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 	def __richcmp__(Vector2 x, y, op):
 		x1, y1 = x
 		try: x2, y2 = y
-		except Exception: return False
-		
+		except TypeError: return False
+
 		if op == 2: return x1 == x2 and y1 == y2
 		elif op == 3: return not (x1 == x2 and y1 == y2)
 		else: raise NotImplementedError
@@ -71,102 +74,100 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return iter((self.x, self.y))
 
 	def __getitem__(self, key):
-		if key == 0: return self.x
-		elif key == 1: return self.y
-		else: raise IndexError
+		p = self.x, self.y
+		return p[key]
 
 	def __setitem__(self, key, value):
-		if key == 0: self.x = value
-		elif key == 1: self.y = value
-		else: raise IndexError
-		
+		p = self.x, self.y
+		p[key] = value
+
 	def __add__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			return Vector2(self[0] + other, self[1] + other)
 		else:
 			return Vector2(self[0] + other[0], self[1] + other[1])
 
 	def __sub__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			return Vector2(self[0] - other, self[1] - other)
 		else:
 			return Vector2(self[0] - other[0], self[1] - other[1])
-		
+
 	def __mul__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			return Vector2(self[0] * other, self[1] * other)
 		else:
 			return Vector2(self[0] * other[0], self[1] * other[1])
-		
+
 	def __truediv__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			return Vector2(self[0] / other, self[1] / other)
 		else:
 			return Vector2(self[0] / other[0], self[1] / other[1])
-			
+
 	def __floordiv__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			return Vector2(self[0] // other, self[1] // other)
 		else:
 			return Vector2(self[0] // other[0], self[1] // other[1])
 
 	def __div__(self, other):
-		if type(other) in [int, long]:
+		if integral(other):
 			return self.__floordiv__(other)
-		elif type(other) in [float, complex]:
+		elif not integral(other):
 			return self.__truediv__(other)
-		elif all([type(i) in [int, long] for i in other]):
+		elif all(integral(i) for i in other):
 			return self.__floordiv__(other)
 		else:
 			return self.__truediv__(other)
 
 	def __mod__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			return Vector2(self[0] % other, self[1] % other)
 		else:
 			return Vector2(self[0] % other[0], self[1] % other[1])
-		
+
 	def __divmod__(self, other):
 		return self // other, self % other
-		
+
 	def __iadd__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] += other
 			self[1] += other
 		else:
 			self[0] += other[0]
 			self[1] += other[1]
 		return self
-		
+
 	def __isub__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] -= other
 			self[1] -= other
 		else:
 			self[0] -= other[0]
 			self[1] -= other[1]
 		return self
-		
+
 	def __imul__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] *= other
 			self[1] *= other
 		else:
 			self[0] *= other[0]
 			self[1] *= other[1]
 		return self
-		
+
 	def __itruediv__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] /= other
 			self[1] /= other
 		else:
 			self[0] /= other[0]
 			self[1] /= other[1]
 		return self
-		
+
 	def __ifloordiv__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] //= other
 			self[1] //= other
 		else:
@@ -175,41 +176,41 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return self
 
 	def __idiv__(self, other):
-		if type(other) in [int, long]:
+		if integral(other):
 			return self.__ifloordiv__(other)
-		elif type(other) in [float, complex]:
+		elif not integral(other):
 			return self.__itruediv__(other)
-		elif all([type(i) in [int, long] for i in other]):
+		elif all(integral(i) for i in other):
 			return self.__ifloordiv__(other)
 		else:
 			return self.__itruediv__(other)
-		
+
 	def __imod__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] %= other
 			self[1] %= other
 		else:
 			self[0] %= other[0]
 			self[1] %= other[1]
 		return self
-		
+
 	def __neg__(self):
 		cdef Vector2 p = Vector2.__new__(Vector2)
 		p.x, p.y = self
 		p.x, p.y = -p.x, -p.y
 		return p
-		
+
 	def __pos__(self):
 		cdef Vector2 p = Vector2.__new__(Vector2)
 		p.x, p.y = self
 		p.x, p.y = +p.x, +p.y
 		return p
-		
+
 	def __copy__(self):
 		cdef Vector2 p = Vector2.__new__(Vector2)
 		p.x, p.y = self
 		return p
-		
+
 	def __deepcopy__(self):
 		cdef Vector2 p = Vector2.__new__(Vector2)
 		p.x, p.y = deepcopy(self.x), deepcopy(self.y)
@@ -237,18 +238,18 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		self.x = x
 		self.y = y
 		self.z = z
-		
+
 	def __repr__(self):
 		return "sf.Vector3({0})".format(self)
 
 	def __str__(self):
 		return "{0}x, {1}y, {2}z".format(self.x, self.y, self.z)
-		
+
 	def __richcmp__(Vector3 x, y, op):
 		x1, y1, z1 = x
 		try: x2, y2, z2 = y
 		except Exception: return False
-		
+
 		if op == 2: return x1 == x2 and y1 == y2 and z1 == z2
 		elif op == 3: return not (x1 == x2 and y1 == y2 and z1 == z2)
 		else: raise NotImplementedError
@@ -257,80 +258,76 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return iter((self.x, self.y, self.z))
 
 	def __getitem__(self, key):
-		if key == 0: return self.x
-		elif key == 1: return self.y
-		elif key == 2: return self.z
-		else: raise IndexError
+		p = self.x, self.y, self.z
+		return p[key]
 
 	def __setitem__(self, key, value):
-		if key == 0: self.x = value
-		elif key == 1: self.y = value
-		elif key == 2: self.z = value
-		else: raise IndexError
-		
+		p = self.x, self.y, self.z
+		p[key] = value
+
 	def __add__(self, other):
-		if type(other) in [int, float, long, complex]:
-			return Vector3(self[0] + other, 
+		if number(other):
+			return Vector3(self[0] + other,
 						   self[1] + other, self[2] + other)
 		else:
-			return Vector3(self[0] + other[0], 
+			return Vector3(self[0] + other[0],
 						   self[1] + other[1], self[2] + other[2])
 
 	def __sub__(self, other):
-		if type(other) in [int, float, long, complex]:
-			return Vector3(self[0] - other, 
+		if number(other):
+			return Vector3(self[0] - other,
 						   self[1] - other, self[2] - other)
 		else:
-			return Vector3(self[0] - other[0], 
+			return Vector3(self[0] - other[0],
 						   self[1] - other[1], self[2] - other[2])
 
 	def __mul__(self, other):
-		if type(other) in [int, float, long, complex]:
-			return Vector3(self[0] * other, 
+		if number(other):
+			return Vector3(self[0] * other,
 						   self[1] * other, self[2] * other)
 		else:
-			return Vector3(self[0] * other[0], 
+			return Vector3(self[0] * other[0],
 						   self[1] * other[1], self[2] * other[2])
-		
+
 	def __truediv__(self, other):
-		if type(other) in [int, float, long, complex]:
-			return Vector3(self[0] / other, 
+		if number(other):
+			return Vector3(self[0] / other,
 						   self[1] / other, self[2] / other)
 		else:
-			return Vector3(self[0] / other[0], 
+			return Vector3(self[0] / other[0],
 						   self[1] / other[1], self[2] / other[2])
-		
+
 	def __floordiv__(self, other):
-		if type(other) in [int, float, long, complex]:
-			return Vector3(self[0] // other, 
+		if number(other):
+			return Vector3(self[0] // other,
 						   self[1] // other, self[2] // other)
 		else:
-			return Vector3(self[0] // other[0], 
+			return Vector3(self[0] // other[0],
 						   self[1] // other[1], self[2] // other[2])
 
 	def __div__(self, other):
-		if type(other) in [int, long]:
+		if integral(other):
 			return self.__floordiv__(other)
-		elif type(other) in [float, complex]:
+		elif not integral(other):
 			return self.__truediv__(other)
-		elif all([type(i) in [int, long] for i in other]):
+		elif all(integral(i) for i in other):
 			return self.__floordiv__(other)
 		else:
 			return self.__truediv__(other)
 
 	def __mod__(self, other):
-		if type(other) in [int, float, long, complex]:
-			return Vector3(self[0] % other, 
+		if number(other):
+			return Vector3(self[0] % other,
 						   self[1] % other, self[2] % other)
 		else:
-			return Vector3(self[0] % other[0], 
+			return Vector3(self[0] % other[0],
 						   self[1] % other[1], self[2] % other[2])
-		
+
 	def __divmod__(self, other):
 		return self // other, self % other
-		
+
 	def __iadd__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] += other
 			self[1] += other
 			self[2] += other
@@ -339,9 +336,9 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[1] += other[1]
 			self[2] += other[2]
 		return self
-		
+
 	def __isub__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] -= other
 			self[1] -= other
 			self[2] -= other
@@ -350,9 +347,9 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[1] -= other[1]
 			self[2] -= other[2]
 		return self
-		
+
 	def __imul__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] *= other
 			self[1] *= other
 			self[2] *= other
@@ -361,9 +358,9 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[1] *= other[1]
 			self[2] *= other[2]
 		return self
-		
+
 	def __itruediv__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] /= other
 			self[1] /= other
 			self[2] /= other
@@ -372,9 +369,9 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[1] /= other[1]
 			self[2] /= other[2]
 		return self
-		
+
 	def __ifloordiv__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] //= other
 			self[1] //= other
 			self[2] //= other
@@ -385,17 +382,17 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return self
 
 	def __div__(self, other):
-		if type(other) in [int, long]:
+		if integral(other):
 			return self.__ifloordiv__(other)
-		elif type(other) in [float, complex]:
+		elif not integral(other):
 			return self.__itruediv__(other)
-		elif all([type(i) in [int, long] for i in other]):
+		elif all(integral(i) for i in other):
 			return self.__ifloordiv__(other)
 		else:
 			return self.__itruediv__(other)
-		
+
 	def __imod__(self, other):
-		if type(other) in [int, float, long, complex]:
+		if number(other):
 			self[0] %= other
 			self[1] %= other
 			self[2] %= other
@@ -404,13 +401,13 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 			self[1] %= other[1]
 			self[2] %= other[2]
 		return self
-		
+
 	def __neg__(self):
 		cdef Vector3 p = Vector3.__new__(Vector3)
 		p.x, p.y, p.z = self
 		p.x, p.y, p.z = -p.x, -p.y, -p.z
 		return p
-		
+
 	def __pos__(self):
 		cdef Vector3 p = Vector3.__new__(Vector3)
 		p.x, p.y, p.z = self
@@ -421,7 +418,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		cdef Vector3 p = Vector3.__new__(Vector3)
 		p.x, p.y, p.z = self
 		return p
-		
+
 	def __deepcopy__(self):
 		cdef Vector3 p = Vector3.__new__(Vector3)
 		p.x, p.y, p.z = deepcopy(self.x), deepcopy(self.y), deepcopy(self.z)
@@ -431,7 +428,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		warn("Please use python's builtin copy.copy() function instead.",
 			 DeprecationWarning)
 		return self.__copy__()
-		
+
 	@classmethod
 	def from_tuple(cls, value):
 		warn("Please use python's builtin argument unpacking feature instead: "
@@ -447,20 +444,20 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 
 	def __init__(self):
 		self.p_this = new dsystem.Time()
-		
+
 	def __dealloc__(self):
 		del self.p_this
 
 	def __repr__(self):
 		return "sf.Time({0}s, {1}ms, {2}µs)".format(self.seconds, self.milliseconds, self.microseconds)
-		
+
 	def __str__(self):
 		return "{0} milliseconds".format(self.milliseconds)
 
 	def __richcmp__(Time x, Time y, int op):
-		if op == 0:   return x.p_this[0] <  y.p_this[0]
+		if op == 0:   return x.p_this[0] <	y.p_this[0]
 		elif op == 2: return x.p_this[0] == y.p_this[0]
-		elif op == 4: return x.p_this[0] >  y.p_this[0]
+		elif op == 4: return x.p_this[0] >	y.p_this[0]
 		elif op == 1: return x.p_this[0] <= y.p_this[0]
 		elif op == 3: return x.p_this[0] != y.p_this[0]
 		elif op == 5: return x.p_this[0] >= y.p_this[0]
@@ -469,12 +466,12 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 		cdef dsystem.Time* p = new dsystem.Time()
 		p[0] = x.p_this[0] + y.p_this[0]
 		return wrap_time(p)
-		
+
 	def __sub__(Time x, Time y):
 		cdef dsystem.Time* p = new dsystem.Time()
 		p[0] = x.p_this[0] - y.p_this[0]
 		return wrap_time(p)
-		
+
 	def __iadd__(self, Time x):
 		self.p_this[0] = self.p_this[0] + x.p_this[0]
 		return self
@@ -511,12 +508,12 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 		cdef dsystem.Time* p = new dsystem.Time()
 		p[0] = self.p_this[0]
 		return wrap_time(p)
-		
+
 	def __deepcopy__(self):
 		cdef dsystem.Time* p = new dsystem.Time()
 		p[0] = self.p_this[0]
 		return wrap_time(p)
-		
+
 
 cdef api object wrap_time(dsystem.Time* p):
 	cdef Time r = Time.__new__(Time)
@@ -537,10 +534,10 @@ cdef class Clock:
 
 	def __repr__(self):
 		return "sf.Clock({0})".format(self.elapsed_time)
-		
+
 	def __str__(self):
 		return "{0}".format(self.elapsed_time)
-		
+
 	property elapsed_time:
 		def __get__(self):
 			cdef dsystem.Time* p = new dsystem.Time()
@@ -556,12 +553,12 @@ def seconds(float amount):
 	cdef dsystem.Time* p = new dsystem.Time()
 	p[0] = dsystem.seconds(amount)
 	return wrap_time(p)
-	
+
 def milliseconds(Int32 amount):
 	cdef dsystem.Time* p = new dsystem.Time()
 	p[0] = dsystem.milliseconds(amount)
 	return wrap_time(p)
-	
+
 def microseconds(Int64 amount):
 	cdef dsystem.Time* p = new dsystem.Time()
 	p[0] = dsystem.microseconds(amount)
