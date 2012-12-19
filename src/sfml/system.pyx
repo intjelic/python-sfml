@@ -74,12 +74,10 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		return iter((self.x, self.y))
 
 	def __getitem__(self, key):
-		p = self.x, self.y
-		return p[key]
+		return (self.x, self.y)[key]
 
 	def __setitem__(self, key, value):
-		p = self.x, self.y
-		p[key] = value
+		setattr(self, {0: 'x', 1: 'y'}[key], value)
 
 	def __add__(self, other):
 		if number(other):
@@ -258,12 +256,10 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return iter((self.x, self.y, self.z))
 
 	def __getitem__(self, key):
-		p = self.x, self.y, self.z
-		return p[key]
+		return (self.x, self.y, self.z)[key]
 
 	def __setitem__(self, key, value):
-		p = self.x, self.y, self.z
-		p[key] = value
+		setattr(self, {0: 'x', 1: 'y', 2: 'z'}[key], value)
 
 	def __add__(self, other):
 		if number(other):
