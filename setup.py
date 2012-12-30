@@ -14,6 +14,62 @@ from setuptools import setup
 from setuptools.command.test import test
 from setuptools.extension import Extension
 
+# python 2.* compatability
+try: input = raw_input 
+except NameError: pass
+
+# check if cython is needed (if c++ files are generated or not)
+NEED_CYTHON = False
+NEED_CYTHON = not os.path.exists('src/sfml/x11.cpp')      or NEED_CYTHON
+NEED_CYTHON = not os.path.exists('src/sfml/system.cpp')   or NEED_CYTHON
+NEED_CYTHON = not os.path.exists('src/sfml/window.cpp')   or NEED_CYTHON
+NEED_CYTHON = not os.path.exists('src/sfml/graphics.cpp') or NEED_CYTHON
+NEED_CYTHON = not os.path.exists('src/sfml/audio.cpp')    or NEED_CYTHON
+NEED_CYTHON = not os.path.exists('src/sfml/network.cpp')  or NEED_CYTHON
+
+# use cython if cython is needed
+USE_CYTHON = False
+USE_CYTHON = NEED_CYTHON or USE_CYTHON
+
+# use cython if explicitly asked for
+USE_CYTHON = "build_ext" in sys.argv or USE_CYTHON
+USE_CYTHON = "--cython" in sys.argv    or USE_CYTHON
+
+# remove cython argument as it's not standard
+try:
+	sys.argv.remove("--cython")
+except ValueError:
+	pass
+
+if USE_CYTHON:
+	try:
+		# in order to proceed we need to import cython module
+		import Cython.Distutils
+
+	except ImportError:
+		# maybe cython is installed in another python version, so let's 
+		# try to compile at hand
+		from subprocess import call
+		try:
+			print("Cython couldn't be found in this version, try others...")
+			print("Cython is trying to compile x11.pyx...")
+			call(["cython", "--cplus", "src/sfml/x11.pyx", "-Iinclude"])
+			print("Cython is compiling system.pyx...")
+			call(["cython", "--cplus", "src/sfml/system.pyx", "-Iinclude"])
+			print("Cython is compiling window.pyx...")
+			call(["cython", "--cplus", "src/sfml/window.pyx", "-Iinclude"])
+			print("Cython is compiling graphics.pyx...")
+			call(["cython", "--cplus", "src/sfml/graphics.pyx", "-Iinclude"])
+			print("Cython is compiling audio.pyx...")
+			call(["cython", "--cplus", "src/sfml/audio.pyx", "-Iinclude"])
+			print("Cython is compiling network.pyx...")
+			call(["cython", "--cplus", "src/sfml/network.pyx", "-Iinclude"])
+			print("Consider installing Cython for this Python version")
+			# cython compilation succeeded, we no longer need cython
+			USE_CYTHON = False
+		except OSError:
+			sys.exit("Couldn't find cython, please install it first")
+			
 class PyTest(test):
 	def finalize_options(self):
 		test.finalize_options(self)
@@ -26,9 +82,7 @@ class PyTest(test):
 		sys.exit(errno)
 
 
-if os.environ.get('USE_CYTHON'):
-	import Cython.Distutils
-
+if USE_CYTHON:
 	x11_source = 'src/sfml/x11.pyx'
 	system_source = 'src/sfml/system.pyx'
 	window_source = 'src/sfml/window.pyx'
@@ -102,7 +156,7 @@ kwargs = dict(
 			tests_require=['pytest>=2.3'],
 			cmdclass = {'test': PyTest})
 
-if os.environ.get('USE_CYTHON'):
+if USE_CYTHON:
 	kwargs['cmdclass'].update({'build_ext': Cython.Distutils.build_ext})
 
 setup(**kwargs)
