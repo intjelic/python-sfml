@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# pySFML2 - Cython SFML Wrapper for Python
-# Copyright 2012, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# pySFML - Python bindings for SFML
+# Copyright 2013, Jonathan De Wachter <dewachter.jonathan@gmail.com>,
+#                 Edwin Marshall <emarshall85@gmail.com>
 #
-# This software is released under the GPLv3 license.
-# You should have received a copy of the GNU General Public License
-# along with this program.	If not, see <http://www.gnu.org/licenses/>.
+# This software is released under the LGPLv3 license.
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import sys
 import os
@@ -134,22 +135,24 @@ with open('README.rst', 'r') as f:
 	long_description = f.read()
 
 kwargs = dict(
-			name='pySFML2',
+			name='sfml',
 			ext_modules=[x11, system, window, graphics, audio, network],
 			package_dir={'': 'src'},
 			packages=['sfml'],
 			version='1.2.0',
-			description='The unofficial Python binding for SFML2',
+			description='Python bindings for SFML',
 			long_description=long_description,
 			author='Jonathan de Wachter, Edwin O Marshall',
 			author_email='dewachter.jonathan@gmail.com, emarshall85@gmail.com',
-			url='http://openhelbreath.be/python-sfml2',
+			url='http://python-sfml.org',
 			license='LGPLv3',
 			classifiers=['Development Status :: 5 - Production/Stable',
 						'Intended Audience :: Developers',
-						'License :: OSI Approved :: GNU General Public License v3 (LGPLv3)',
+						'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
 						'Operating System :: OS Independent',
 						'Programming Language :: Cython',
+						'Programming Language :: C++',
+						'Programming Language :: Python',
 						'Topic :: Games/Entertainment',
 						'Topic :: Multimedia',
 						'Topic :: Software Development :: Libraries :: Python Modules'],
