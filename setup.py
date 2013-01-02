@@ -11,6 +11,8 @@
 
 import sys
 import os
+import platform
+
 from setuptools import setup
 from setuptools.command.test import test
 from setuptools.extension import Extension
@@ -93,6 +95,40 @@ network = extension(
 	[network_source],
 	['sfml-system', 'sfml-network'])
 
+
+# install the C/Cython API in the python directory (its location varies)
+# on Windows: C:\PythonXY\include\pysfml\*.pxd and *.h
+# on Unix:    /usr/include/pythonX.Y/sfml/*.pxd and *.h
+
+# define the include directory
+if platform.system() == 'Windows':
+	include_dir = sys.prefix + "\\include\\pysfml\\"
+else:
+	major, minor, _, _ , _ = sys.version_info
+	include_dir = sys.prefix + "/include/python{0}.{1}/sfml/".format(major, minor)
+
+# list all relevant headers (find in include/ and src/sfml/)
+# key: directory, value: list of headers to place in the directory
+destinations = dict()
+
+for path, subdirs, files in os.walk("include"):
+	# don't forget to remove include/ from the path
+	destination = include_dir + path[8:]
+	destinations[destination] = []
+
+	for name in files:
+		destinations[destination].append(os.path.join(path, name))
+
+for path, subdirs, files in os.walk("src/sfml"):
+	for name in files:
+		if name.endswith(".h"):
+			destinations[include_dir].append(os.path.join(path, name))
+	
+# format data (list of tuple)
+data_files = []
+for key in destinations:
+	data_files.append((key, destinations[key]))
+	
 with open('README.rst', 'r') as f:
 	long_description = f.read()
 
@@ -101,6 +137,7 @@ kwargs = dict(
 			ext_modules=[x11, system, window, graphics, audio, network],
 			package_dir={'': 'src'},
 			packages=['sfml'],
+			data_files=data_files,
 			version='1.2.0',
 			description='Python bindings for SFML',
 			long_description=long_description,
