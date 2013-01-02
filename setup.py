@@ -3,7 +3,7 @@
 #
 # pySFML - Python bindings for SFML
 # Copyright 2013, Jonathan De Wachter <dewachter.jonathan@gmail.com>,
-#                 Edwin Marshall <emarshall85@gmail.com>
+#				  Edwin Marshall <emarshall85@gmail.com>
 #
 # This software is released under the LGPLv3 license.
 # You should have received a copy of the GNU Lesser General Public License
@@ -16,17 +16,19 @@ from setuptools.command.test import test
 from setuptools.extension import Extension
 
 # python 2.* compatability
-try: input = raw_input 
+try: input = raw_input
 except NameError: pass
 
 # check if cython is needed (if c++ files are generated or not)
-NEED_CYTHON = False
-NEED_CYTHON = not os.path.exists('src/sfml/x11.cpp')      or NEED_CYTHON
-NEED_CYTHON = not os.path.exists('src/sfml/system.cpp')   or NEED_CYTHON
-NEED_CYTHON = not os.path.exists('src/sfml/window.cpp')   or NEED_CYTHON
-NEED_CYTHON = not os.path.exists('src/sfml/graphics.cpp') or NEED_CYTHON
-NEED_CYTHON = not os.path.exists('src/sfml/audio.cpp')    or NEED_CYTHON
-NEED_CYTHON = not os.path.exists('src/sfml/network.cpp')  or NEED_CYTHON
+NEED_CYTHON = not all(map(os.path.exists, [
+	'src/sfml/x11.cpp',
+	'src/sfml/system.cpp',
+	'src/sfml/window.cpp',
+	'src/sfml/graphics.cpp',
+	'src/sfml/audio.cpp',
+	'src/sfml/network.cpp']))
+
+print(NEED_CYTHON)
 
 # use cython if cython is needed
 USE_CYTHON = False
@@ -48,7 +50,7 @@ if USE_CYTHON:
 		import Cython.Distutils
 
 	except ImportError:
-		# maybe cython is installed in another python version, so let's 
+		# maybe cython is installed in another python version, so let's
 		# try to compile at hand
 		from subprocess import call
 		try:
@@ -70,7 +72,7 @@ if USE_CYTHON:
 			USE_CYTHON = False
 		except OSError:
 			sys.exit("Couldn't find cython, please install it first")
-			
+
 class PyTest(test):
 	def finalize_options(self):
 		test.finalize_options(self)
