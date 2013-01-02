@@ -1,8 +1,8 @@
 Download
 ========
 Here you'll find all the necessary explainations for installing the binding 
-on your favorite platform. Unfortunately the procedures for the **Mac OSX** 
-and **Windows 8** are not available yet.
+on your favorite platform. Unfortunately the procedures for **Mac OSX** 
+and **Windows 8** are not yet available.
 
 .. contents:: :local:
    :depth: 1
@@ -11,16 +11,16 @@ Windows
 -------
 Simply download the correct installer and follow the instructions. 
 
-.. warning::
+.. note:: 
 
-	You may need to run the following installers in **compatibility mode **
-	for Windows XP at least otherwise it will result a **crash during 
-	the installation process**. Don't ask me why.
+    If you experience issues during installation, try running the installer
+    again in compatibility mode:
+
+        1. Right-click the installer and select "Properties"
+        2. Navigate to the "Compatibility" tab.
+        3. Check "Run this program in compatibility mode for"
+        4. Select "Windows XP (Service Pack 3)
 	
-	E.g: On Windows 7: Right-click on the executable -> Properties -> 
-	Compatibility tab -> Check "Run this program in compability mode for
-	-> choose Window XP (Service Pack 3).
-
 * `pySFML-1.2.0.win32-py2.6.exe <http://python-sfml.org/1.2/downloads/pySFML-1.2.0.win32-py2.6.exe>`_ [1.6 MB] [Python 2.6] [32 bit]
 * `pySFML-1.2.0.win32-py2.7.exe <http://python-sfml.org/1.2/downloads/pySFML-1.2.0.win32-py2.7.exe>`_ [1.6 MB] [Python 2.7] [32 bit]
 * `pySFML-1.2.0.win32-py3.2.exe <http://python-sfml.org/1.2/downloads/pySFML-1.2.0.win32-py3.2.exe>`_ [1.6 MB] [Python 3.2] [32 bit]
@@ -31,18 +31,14 @@ Simply download the correct installer and follow the instructions.
 Mac OSX
 -------
 Packages for Mac OSX couldn't be made since the official sfml2-rc 
-installer contains issues. Having a lack of Mac OSX 
-knowledges, I couldn't make it work and by consequences was unable to 
-test the bindings as well as creating packages for the platform.
+installer contains issues. 
 
-That makes this platform unsupported yet. Anyways, if you download the source 
-and if you know a bit of Cython, you should be able to compile the 
-source but I advise you to wait for the next release which will have 
-Mac OSX supported.
+While official support for Mac OSX is slated for the next release, those eager
+should feel free to download the source code and compile manually. 
 
 Ubuntu
 ------
-Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad depot, just type ::
+Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad::
 
    sudo add-apt-repository ppa:sonkun/sfml
    sudo apt-get update
@@ -51,7 +47,7 @@ Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad depot, just
    sudo apt-get install python3-sfml2
 
 .. NOTE::
-   The ppa *sonkun/sfml* provides many packages. The library sfml2.0-rc 
+   The *sonkun/sfml* ppa provides many packages. The library sfml2.0-rc 
    and the binding are included along with their examples. Packages are:
 
       * libsfml2
@@ -80,7 +76,6 @@ Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad depot, just
       pysfml2-spacial-music # not an official sfml example
       pysfml2-pyqt4         # not an official sfml example 
 
-
 Fedora
 ------
 
@@ -99,37 +94,38 @@ Bindings for SFML2
 
 See Ubuntu section to know what you can do with the example package.
 
-ArchLinux
----------
-Packages are available: https://aur.archlinux.org/packages/python-sfml-git/
+Arch Linux
+----------
+Packages are available on the AUR:
+
+    * Python: http://aur.archlinux.org/packages/python-sfml-git/
+    * Python2: https://aur.archlinux.org/packages/python2-sfml-git/
 
 Compilation
 -----------
-The compilation section is split into two sub-sections: one for Unix 
-systems and one for Windows. 
+Before attempting to compile, it is important that you obtain a copy of the
+source code, either from git::
 
-But before entering one of them, download the source tarball 
-`here <http://python-sfml.org/1.2/downloads/pysfml-1.2.tar.gz>`_.
+    git clone git://github.com/Sonkun/python-sfml.git
 
-You'll also need to compile `sfml2-rc <http://python-sfml.org/downloads/sfml2-rc.tar.gz>`_ 
-and `cython 17.3 or later <http://cython.org/>`_ installed on your computer.
+Or as a pre-packaged tarball archive::
+    
+    wget http://python-sfml.org/1.2/downloads/pysfml-1.2.tar.gz
 
-Unix
-^^^^ 
-In order to compile you'll need the Python developement files, X11 and 
-optionally setuptools module for Python in order to run tests.
+You'll also need `sfml2-rc`_ and `cython`_ 0.17.3 installed on your computer.
 
-* python-dev or python3-dev
-* libx11-dev
-* python-setuptools or python3-setuptools
+Linux and Mac OSX
+^^^^^^^^^^^^^^^^^
+In order to compile, you'll need the Python developement files, X11 and 
+the setuptools module for Python.
 
-Then just type the following for python 2::
+To build the bindings for Python, type::
 
-   sudo python setup.py install
-   
-Or this for python 3::
+   python2 setup.py build_ext -i
 
-   sudo python3 setup.py install
+For Python 3::
+
+   python3 setup.py build_ext -i
    
 Windows
 ^^^^^^^
@@ -166,9 +162,9 @@ Open the SDK command window and type::
 	
 Adjust according the targetted architecture (x86 or x84) and mode (release or debug).
 
-Then head to the source directory and::
+Then head to the source directory and type::
 
-	python setup.py install
+    python setup.py build_ext -i
 	
 You'll still need sfml dlls in your source directories unless you copy 
 them in the Python Lib directory (*Python32/Lib/site-packages/sfml/sfml-*.dll*)
@@ -177,3 +173,6 @@ them in the Python Lib directory (*Python32/Lib/site-packages/sfml/sfml-*.dll*)
 	I use an internal version of setup.py to create the available Windows 
 	installers in order to to include dlls, so you don't need to compile 
 	it when using installers.
+
+.. _sfml2-rc: http://python-sfml.org/downloads/sfml2-rc.tar.gz
+.. _cython: http://cython.org
