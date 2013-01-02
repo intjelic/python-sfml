@@ -40,3 +40,10 @@ Resources
 * Documentation: http://openhelbreath.net/python-sfml2/documentation.html
 * Project Page: https://github.com/Sonkun/python-sfml2
 * Website: http://openhelbreath.net/python-sfml2/
+
+Contact Information
+===================
+Feel free to email us with any questions or concerns:
+
+* Jonathan De Wachter: mailto://dewachter.jonathan@gmail.com
+* Edwin Marshall: mailto://emarshall85@gmail.com
