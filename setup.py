@@ -26,16 +26,17 @@ except:
 try: input = raw_input
 except NameError: pass
 
-class PyTest(test):
-	def finalize_options(self):
-		test.finalize_options(self)
-		self.test_args = []
-		self.test_suite = True
+if USE_TEST:
+	class PyTest(test):
+		def finalize_options(self):
+			test.finalize_options(self)
+			self.test_args = []
+			self.test_suite = True
 
-	def run_tests(self):
-		import pytest
-		errno = pytest.main(self.test_args)
-		sys.exit(errno)
+		def run_tests(self):
+			import pytest
+			errno = pytest.main(self.test_args)
+			sys.exit(errno)
 
 
 # check if cython is needed (if c++ files are generated or not)
