@@ -59,6 +59,17 @@ v1.1 -> v1.2
 * :class:`sfml.network.IpAddress` can be compared
 * Ubuntu packages available for 12.04LTS and 12.10
 * Fedora packages available
+* sfeModule available as add-on
+* Fixe bug in sf.MouseMoveEvent.position
+* Fixe various threading issues in the network module (GIL not released)
+* Fixe bug in views returned by sf.RenderTarget (view wasn't linked)
+* Fixe sf.TransformableDrawable (its properties work)
+* Documentation enterely revised
+* Website redesigned
+* Install C/Cython API to code your own extensions using the bindings
+* Window.opened is deprecated, use Window.is_open property instead
+* Improve setup.py to detect Cython and/or force its usage
+
 
    .. official packages for parabola linux
    .. installer script for archlinux
