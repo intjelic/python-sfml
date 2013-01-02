@@ -13,10 +13,15 @@ import sys
 import os
 import platform
 
-from setuptools import setup
-from setuptools.command.test import test
-from setuptools.extension import Extension
-
+try:
+	from setuptools import setup
+	from setuptools.command.test import test
+	from setuptools.extension import Extension
+	USE_TEST=True
+except:
+	from distutils.core import setup, Extension
+	USE_TEST=False
+	
 # python 2.* compatability
 try: input = raw_input
 except NameError: pass
@@ -155,9 +160,12 @@ kwargs = dict(
 						'Topic :: Games/Entertainment',
 						'Topic :: Multimedia',
 						'Topic :: Software Development :: Libraries :: Python Modules'],
-			tests_require=['pytest>=2.3'],
-			cmdclass = {'test': PyTest})
+			cmdclass=dict())
 
+if USE_TEST:
+	kwargs['tests_require']=['pytest>=2.3']
+	kwargs['cmdclass'].update({'test': PyTest})
+			
 if USE_CYTHON:
 	try:
 		from Cython.Distutils import build_ext
