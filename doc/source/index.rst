@@ -1,5 +1,5 @@
-Python-SFML
-===========
+Python bindings for SFML
+========================
 .. note ::
 
         So far, these bindings have only been tested thoroughly on Linux,
@@ -14,7 +14,7 @@ we can provide an amazing tool to quickly build multimedia software.
 
 These bindings were created in large part by Jonathan De Wachter, with
 significant contributions from Edwin Marshall. Other contributors include 
-Jorge Araya Navarro and Richard Sims. Of course, this bindnig wouldn't have
+Jorge Araya Navarro and Richard Sims. Of course, this binding wouldn't have
 been made possible without the work of Laurent Gomilla and Bastien Léonard.
 
 Table of Contents

@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pySFML2'
+project = u'pySFML'
 copyright = u'2012, Jonathan De Wachter'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -211,8 +211,8 @@ latex_logo = "sfml2-logo.png"
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pysfml', u'pySFML Documentation',
+    ('index', 'pySFML', u'pySFML Documentation',
      [u'Jonathan De Wachter'], 1)
 ]
 
-intersphinx_mapping = {'sfemovie': ('http://python-sfml.org/sfemovie', None)}
+intersphinx_mapping = {'sfemovie': ('http://sfemovie.python-sfml.org/1.0', None)}
