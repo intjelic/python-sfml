@@ -53,6 +53,24 @@ except ValueError:
 	USE_CYTHON = NEED_CYTHON or bool(os.environ.get('USE_CYTHON'))
 
 if USE_CYTHON:
+	try:
+		from Cython.Distutils import build_ext
+	except ImportError:
+		from subprocess import call
+		try:
+			if platform.system() != 'Windows':
+				call(["cython", "--cplus", "src/sfml/x11.pyx", "-Iinclude"])
+			call(["cython", "--cplus", "src/sfml/system.pyx", "-Iinclude"])
+			call(["cython", "--cplus", "src/sfml/window.pyx", "-Iinclude"])
+			call(["cython", "--cplus", "src/sfml/graphics.pyx", "-Iinclude"])
+			call(["cython", "--cplus", "src/sfml/audio.pyx", "-Iinclude"])
+			call(["cython", "--cplus", "src/sfml/network.pyx", "-Iinclude"])
+			USE_CYTHON = False
+		except OSError:
+			print("Please install the correct version of cython and run again.")
+			sys.exit(1)
+
+if USE_CYTHON:
 	x11_source = 'src/sfml/x11.pyx'
 	system_source = 'src/sfml/system.pyx'
 	window_source = 'src/sfml/window.pyx'
@@ -137,9 +155,14 @@ for key in destinations:
 with open('README.rst', 'r') as f:
 	long_description = f.read()
 
+if platform.system() == 'Windows':
+	ext_modules=[system, window, graphics, audio, network]
+else:
+	ext_modules=[x11, system, window, graphics, audio, network]
+	
 kwargs = dict(
 			name='sfml',
-			ext_modules=[x11, system, window, graphics, audio, network],
+			ext_modules=ext_modules,
 			package_dir={'': 'src'},
 			packages=['sfml'],
 			data_files=data_files,
@@ -167,11 +190,6 @@ if USE_TEST:
 	kwargs['cmdclass'].update({'test': PyTest})
 			
 if USE_CYTHON:
-	try:
-		from Cython.Distutils import build_ext
-		kwargs['cmdclass'].update({'build_ext': build_ext})
-	except ImportError:
-		print("Please install the correct version of cython and run again.")
-		sys.exit(1)
+	kwargs['cmdclass'].update({'build_ext': build_ext})
 
 setup(**kwargs)
