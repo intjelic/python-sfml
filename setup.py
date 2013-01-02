@@ -162,7 +162,7 @@ else:
 	ext_modules=[x11, system, window, graphics, audio, network]
 	
 kwargs = dict(
-			name='sfml',
+			name='pySFML',
 			ext_modules=ext_modules,
 			package_dir={'': 'src'},
 			packages=['sfml'],
