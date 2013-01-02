@@ -1,0 +1,1397 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Audio &mdash; pySFML 1.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pySFML 1.2.0 documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="api_index.html" />
+    <link rel="next" title="Network" href="network.html" />
+    <link rel="prev" title="Graphics" href="graphics.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="network.html" title="Network"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="graphics.html" title="Graphics"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pySFML 1.2.0 documentation</a> &raquo;</li>
+          <li><a href="api_index.html" accesskey="U">API Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="audio">
+<h1>Audio<a class="headerlink" href="#audio" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#listener" id="id1">Listener</a></li>
+<li><a class="reference internal" href="#chunk" id="id2">Chunk</a></li>
+<li><a class="reference internal" href="#soundbuffer" id="id3">SoundBuffer</a></li>
+<li><a class="reference internal" href="#soundsource" id="id4">SoundSource</a></li>
+<li><a class="reference internal" href="#sound" id="id5">Sound</a></li>
+<li><a class="reference internal" href="#soundstream" id="id6">SoundStream</a></li>
+<li><a class="reference internal" href="#music" id="id7">Music</a></li>
+<li><a class="reference internal" href="#soundrecorder" id="id8">SoundRecorder</a></li>
+<li><a class="reference internal" href="#soundbufferrecorder" id="id9">SoundBufferRecorder</a></li>
+</ul>
+</div>
+<span class="target" id="module-sfml.audio"></span><div class="section" id="listener">
+<h2><a class="toc-backref" href="#id1">Listener</a><a class="headerlink" href="#listener" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sfml.audio.Listener">
+<em class="property">class </em><tt class="descclassname">sfml.audio.</tt><tt class="descname">Listener</tt><a class="headerlink" href="#sfml.audio.Listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>The audio listener is the point in the scene from where all the
+sounds are heard.</p>
+<p>The audio listener defines the global properties of the audio
+environment, it defines where and how sounds and musics are heard.</p>
+<p>If <a class="reference internal" href="graphics.html#sfml.graphics.View" title="sfml.graphics.View"><tt class="xref py py-class docutils literal"><span class="pre">View</span></tt></a> is the eyes of the user, then
+<a class="reference internal" href="#sfml.audio.Listener" title="sfml.audio.Listener"><tt class="xref py py-class docutils literal"><span class="pre">Listener</span></tt></a> is his ears (by the way, they are often linked
+together &#8211; same position, orientation, etc.).</p>
+<p><a class="reference internal" href="#sfml.audio.Listener" title="sfml.audio.Listener"><tt class="xref py py-class docutils literal"><span class="pre">Listener</span></tt></a> is a simple interface, which allows to setup
+the listener in the 3D audio environment (position and direction),
+and to adjust the global volume.</p>
+<p>Because the listener is unique in the scene, <a class="reference internal" href="#sfml.audio.Listener" title="sfml.audio.Listener"><tt class="xref py py-class docutils literal"><span class="pre">Listener</span></tt></a>
+only contains class methods and doesn&#8217;t have to be instanciated.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># move the listener to the position (1, 0, -5)</span>
+<span class="n">sf</span><span class="o">.</span><span class="n">Listener</span><span class="o">.</span><span class="n">set_position</span><span class="p">(</span><span class="n">sfml</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="c"># make it face the right axis (1, 0, 0)</span>
+<span class="n">sf</span><span class="o">.</span><span class="n">Listener</span><span class="o">.</span><span class="n">set_direction</span><span class="p">(</span><span class="n">sfml</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">Vector3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<span class="c"># reduce the global volume</span>
+<span class="n">sf</span><span class="o">.</span><span class="n">Listener</span><span class="o">.</span><span class="n">set_global_volume</span> <span class="o">=</span> <span class="mi">50</span>
+</pre></div>
+</div>
+<dl class="classmethod">
+<dt id="sfml.audio.Listener.get_global_volume">
+<em class="property">classmethod </em><tt class="descname">get_global_volume</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.Listener.get_global_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current value of the global volume.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Current global volume, in the range [0, 100]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.Listener.set_global_volume">
+<em class="property">classmethod </em><tt class="descname">set_global_volume</tt><big>(</big><em>volume</em><big>)</big><a class="headerlink" href="#sfml.audio.Listener.set_global_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the global volume of all the sounds and musics.</p>
+<p>The volume is a number between 0 and 100; it is combined with
+the individual volume of each sound / music. The default value
+for the volume is 100 (maximum).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>volume</strong> (<em>float</em>) &#8211; New global volume, in the range [0, 100]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.Listener.get_position">
+<em class="property">classmethod </em><tt class="descname">get_position</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.Listener.get_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current position of the listener in the scene.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Listener&#8217;s position</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="system.html#sfml.system.Vector3" title="sfml.system.Vector3"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Vector3</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.Listener.set_position">
+<em class="property">classmethod </em><tt class="descname">set_position</tt><big>(</big><em>position</em><big>)</big><a class="headerlink" href="#sfml.audio.Listener.set_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the position of the listener in the scene.</p>
+<p>The default listener&#8217;s position is (0, 0, 0).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>position</strong> (<a class="reference internal" href="system.html#sfml.system.Vector3" title="sfml.system.Vector3"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Vector3</span></tt></a> or tuple) &#8211; New listener&#8217;s position</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.Listener.get_direction">
+<em class="property">classmethod </em><tt class="descname">get_direction</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.Listener.get_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current orientation of the listener in the scene.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Listener&#8217;s orientation</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="system.html#sfml.system.Vector3" title="sfml.system.Vector3"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Vector3</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.Listener.set_direction">
+<em class="property">classmethod </em><tt class="descname">set_direction</tt><big>(</big><em>direction</em><big>)</big><a class="headerlink" href="#sfml.audio.Listener.set_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the orientation of the listener in the scene.</p>
+<p>The orientation defines the 3D axes of the listener (left, up,
+front) in the scene. The orientation vector doesn&#8217;t have to be
+normalized. The default listener&#8217;s orientation is (0, 0, -1).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>direction</strong> (<a class="reference internal" href="system.html#sfml.system.Vector3" title="sfml.system.Vector3"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Vector3</span></tt></a> or tuple) &#8211; New listener&#8217;s orientation</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="chunk">
+<h2><a class="toc-backref" href="#id2">Chunk</a><a class="headerlink" href="#chunk" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sfml.audio.Chunk">
+<em class="property">class </em><tt class="descclassname">sfml.audio.</tt><tt class="descname">Chunk</tt><a class="headerlink" href="#sfml.audio.Chunk" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#sfml.audio.Chunk" title="sfml.audio.Chunk"><tt class="xref py py-class docutils literal"><span class="pre">Chunk</span></tt></a> represents internally an array of <strong>Int16</strong> which
+are sound samples.</p>
+<p>It provides utilities to manipulate such an array in Python and a
+property <a class="reference internal" href="#sfml.audio.Chunk.data" title="sfml.audio.Chunk.data"><tt class="xref py py-attr docutils literal"><span class="pre">data</span></tt></a> to access the underlying data representation.</p>
+<dl class="method">
+<dt id="sfml.audio.Chunk.__len__">
+<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.Chunk.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of sample.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.Chunk.__getitem__">
+<tt class="descname">__getitem__</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#sfml.audio.Chunk.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an access to a sample by its index.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.Chunk.__setitem__">
+<tt class="descname">__setitem__</tt><big>(</big><em>index</em>, <em>vertex</em><big>)</big><a class="headerlink" href="#sfml.audio.Chunk.__setitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a sample value by its index.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.Chunk.data">
+<tt class="descname">data</tt><a class="headerlink" href="#sfml.audio.Chunk.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a <strong>copy</strong> of the data inside. This returns a byte array twice
+larger than the chunck&#8217;s lenght.</p>
+<p>Set a new array of sample. This array is an array of bytes (which
+will be converted internally in an array of <strong>Int16</strong>) and its
+lenght must be an even number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bytes or string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="soundbuffer">
+<h2><a class="toc-backref" href="#id3">SoundBuffer</a><a class="headerlink" href="#soundbuffer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sfml.audio.SoundBuffer">
+<em class="property">class </em><tt class="descclassname">sfml.audio.</tt><tt class="descname">SoundBuffer</tt><a class="headerlink" href="#sfml.audio.SoundBuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Storage for audio samples defining a sound.</p>
+<p>A sound buffer holds the data of a sound, which is an array of
+audio samples.</p>
+<p>A sample is a 16 bits signed integer that defines the amplitude of
+the sound at a given time. The sound is then restituted by playing
+these samples at a high rate (for example, 44100 samples per second
+is the standard rate used for playing CDs). In short, audio samples
+are like texture pixels, and an <a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a> is similar
+to an <a class="reference internal" href="graphics.html#sfml.graphics.Texture" title="sfml.graphics.Texture"><tt class="xref py py-class docutils literal"><span class="pre">Texture</span></tt></a>.</p>
+<p>A sound buffer can be loaded from a file (see
+<a class="reference internal" href="#sfml.audio.SoundBuffer.from_file" title="sfml.audio.SoundBuffer.from_file"><tt class="xref py py-func docutils literal"><span class="pre">from_file()</span></tt></a> for the complete list of supported
+formats), from memory or directly from an array of samples. It can
+also be saved back to a file.</p>
+<p>Sound buffers alone are not very useful: they hold the audio data
+but cannot be played. To do so, you need to use the
+<a class="reference internal" href="#sfml.audio.Sound" title="sfml.audio.Sound"><tt class="xref py py-class docutils literal"><span class="pre">Sound</span></tt></a> class, which provides functions to
+play/pause/stop the sound as well as changing the way it is
+outputted (volume, pitch, 3D position, ...). This separation allows
+more flexibility and better performances: indeed a
+<a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a> is a heavy resource, and any operation on
+it is slow (often too slow for real-time applications). On the
+other side, an <a class="reference internal" href="#sfml.audio.Sound" title="sfml.audio.Sound"><tt class="xref py py-class docutils literal"><span class="pre">Sound</span></tt></a> is a lightweight object, which can
+use the audio data of a sound buffer and change the way it is
+played without actually modifying that data. Note that it is also
+possible to bind several <a class="reference internal" href="#sfml.audio.Sound" title="sfml.audio.Sound"><tt class="xref py py-class docutils literal"><span class="pre">Sound</span></tt></a> instances to the same
+<a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a>.</p>
+<p>It is important to note that the <a class="reference internal" href="#sfml.audio.Sound" title="sfml.audio.Sound"><tt class="xref py py-class docutils literal"><span class="pre">Sound</span></tt></a> instance doesn&#8217;t
+copy the buffer that it uses, it only keeps a reference to it.
+Thus, an <a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a> must not be destructed while it is
+used by an <a class="reference internal" href="#sfml.audio.Sound" title="sfml.audio.Sound"><tt class="xref py py-class docutils literal"><span class="pre">Sound</span></tt></a> (i.e. never write a function that uses
+a local <a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a> instance for loading a sound).</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># load a new sound buffer from a file</span>
+<span class="k">try</span><span class="p">:</span> <span class="nb">buffer</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">SoundBuffer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s">&quot;data/sound.wav&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span> <span class="nb">exit</span><span class="p">()</span>
+
+<span class="c"># create a sound source and bind it to the buffer</span>
+<span class="n">sound1</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sound</span><span class="p">()</span>
+<span class="n">sound1</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="nb">buffer</span>
+
+<span class="c"># play the sound</span>
+<span class="n">sound1</span><span class="o">.</span><span class="n">play</span><span class="p">();</span>
+<span class="nb">input</span><span class="p">()</span>
+
+<span class="c"># create another sound source bound to the same buffer</span>
+<span class="n">sound2</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sound</span><span class="p">(</span><span class="nb">buffer</span><span class="p">)</span>
+
+<span class="c"># play it with higher pitch -- the first sound remains unchanged</span>
+<span class="n">sound2</span><span class="o">.</span><span class="n">pitch</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">sound2</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="sfml.audio.SoundBuffer.SoundBuffer">
+<tt class="descname">SoundBuffer</tt><big>(</big><span class="optional">[</span><em>buffer</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfml.audio.SoundBuffer.SoundBuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>If you try to instantiate an <a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a> directly, it
+will raise an error saying that you have to use its specific
+constructors: <cite>from_file</cite>, <cite>from_memory</cite> or
+<cite>from_samples</cite></p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.SoundBuffer.from_file">
+<em class="property">classmethod </em><tt class="descname">from_file</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#sfml.audio.SoundBuffer.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the sound buffer from a file.</p>
+<p>Here is a complete list of all the supported audio formats: <strong>ogg,
+wav, flac, aiff, au, raw, paf, svx, nist, voc, ircam, w64, mat4,
+mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64</strong>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raise :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> - The SoundBuffer failed to load</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; Path of the sound file to load</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundBuffer</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.SoundBuffer.from_memory">
+<em class="property">classmethod </em><tt class="descname">from_memory</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#sfml.audio.SoundBuffer.from_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the sound buffer from a file in memory.</p>
+<p>Here is a complete list of all the supported audio formats: ogg,
+wav, <strong>flac, aiff, au, raw, paf, svx, nist, voc, ircam, w64, mat4,
+mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64</strong>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raise :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> - The SoundBuffer failed to load</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; The file data</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundBuffer</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.SoundBuffer.from_samples">
+<em class="property">classmethod </em><tt class="descname">from_samples</tt><big>(</big><em>samples</em>, <em>channel_count</em>, <em>sample_rate</em><big>)</big><a class="headerlink" href="#sfml.audio.SoundBuffer.from_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the sound buffer from an array of audio samples.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raise :</th><td class="field-body"><p class="first"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> - The SoundBuffer failed to load</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>samples</strong> (<a class="reference internal" href="#sfml.audio.Chunk" title="sfml.audio.Chunk"><em>sfml.audio.Chunk</em></a>) &#8211; The samples</li>
+<li><strong>channel_count</strong> (<em>integer</em>) &#8211; Number of channels (1 = mono, 2 = stereo, ...)</li>
+<li><strong>sample_rate</strong> (<em>integer</em>) &#8211; Sample rate (number of samples to play per second)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundBuffer</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.SoundBuffer.to_file">
+<tt class="descname">to_file</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#sfml.audio.SoundBuffer.to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the sound buffer to an audio file.</p>
+<p>Here is a complete list of all the supported audio formats: <strong>ogg,
+wav, flac, aiff, au, raw, paf, svx, nist, voc, ircam, w64, mat4,
+mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64</strong>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raise :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> - The SoundBuffer failed to save</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; Path of the sound file to write</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundBuffer.channels_count">
+<tt class="descname">channels_count</tt><a class="headerlink" href="#sfml.audio.SoundBuffer.channels_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of channels used by the sound.</p>
+<p>If the sound is mono then the number of channels will be 1, 2 for
+stereo, etc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundBuffer.duration">
+<tt class="descname">duration</tt><a class="headerlink" href="#sfml.audio.SoundBuffer.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the total duration of the sound.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="system.html#sfml.system.Time" title="sfml.system.Time"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Time</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundBuffer.sample_rate">
+<tt class="descname">sample_rate</tt><a class="headerlink" href="#sfml.audio.SoundBuffer.sample_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the sample rate of the sound.</p>
+<p>The sample rate is the number of samples played per second. The
+higher, the better the quality (for example, 44100 samples/s is
+CD quality).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundBuffer.samples">
+<tt class="descname">samples</tt><a class="headerlink" href="#sfml.audio.SoundBuffer.samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the audio samples stored in the buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#sfml.audio.Chunk" title="sfml.audio.Chunk"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.Chunk</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="soundsource">
+<h2><a class="toc-backref" href="#id4">SoundSource</a><a class="headerlink" href="#soundsource" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sfml.audio.SoundSource">
+<em class="property">class </em><tt class="descclassname">sfml.audio.</tt><tt class="descname">SoundSource</tt><a class="headerlink" href="#sfml.audio.SoundSource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class defining a sound&#8217;s properties.</p>
+<p><a class="reference internal" href="#sfml.audio.SoundSource" title="sfml.audio.SoundSource"><tt class="xref py py-class docutils literal"><span class="pre">SoundSource</span></tt></a> is not meant to be used directly, it only
+serves as a common base for all audio objects that can live in the
+audio environment.</p>
+<p>It defines several properties for the sound: pitch, volume,
+position, attenuation, etc. All of them can be changed at any time
+with no impact on performances.</p>
+<dl class="data">
+<dt id="sfml.audio.SoundSource.STOPPED">
+<tt class="descname">STOPPED</tt><a class="headerlink" href="#sfml.audio.SoundSource.STOPPED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sound is not playing.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sfml.audio.SoundSource.PAUSED">
+<tt class="descname">PAUSED</tt><a class="headerlink" href="#sfml.audio.SoundSource.PAUSED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sound is paused.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sfml.audio.SoundSource.PLAYING">
+<tt class="descname">PLAYING</tt><a class="headerlink" href="#sfml.audio.SoundSource.PLAYING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sound is playing.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundSource.pitch">
+<tt class="descname">pitch</tt><a class="headerlink" href="#sfml.audio.SoundSource.pitch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get/set the pitch of the sound.</p>
+<p>The pitch represents the perceived fundamental frequency of a
+sound; thus you can make a sound more acute or grave by changing
+its pitch. A side effect of changing the pitch is to modify the
+playing speed of the sound as well. The default value for the
+pitch is 1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundSource.volume">
+<tt class="descname">volume</tt><a class="headerlink" href="#sfml.audio.SoundSource.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get/set the volume of the sound.</p>
+<p>The volume is a value between 0 (mute) and 100 (full volume). The
+default value for the volume is 100.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundSource.position">
+<tt class="descname">position</tt><a class="headerlink" href="#sfml.audio.SoundSource.position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get/set the 3D position of the sound in the audio scene.</p>
+<p>Only sounds with one channel (mono sounds) can be spatialized.
+The default position of a sound is (0, 0, 0).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="system.html#sfml.system.Vector3" title="sfml.system.Vector3"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Vector3</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundSource.relative_to_listener">
+<tt class="descname">relative_to_listener</tt><a class="headerlink" href="#sfml.audio.SoundSource.relative_to_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the sound&#8217;s position relative to the listener or absolute.</p>
+<p>Making a sound relative to the listener will ensure that it will
+always be played the same way regardless the position of the
+listener. This can be useful for non-spatialized sounds, sounds
+that are produced by the listener, or sounds attached to it. The
+default value is false (position is absolute).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundSource.min_distance">
+<tt class="descname">min_distance</tt><a class="headerlink" href="#sfml.audio.SoundSource.min_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>The minimum distance of the sound.</p>
+<p>The &#8220;minimum distance&#8221; of a sound is the maximum distance at
+which it is heard at its maximum volume. Further than the minimum
+distance, it will start to fade out according to its attenuation
+factor. A value of 0 (&#8220;inside the head of the listener&#8221;) is an
+invalid value and is forbidden. The default value of the minimum
+distance is 1.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundSource.attenuation">
+<tt class="descname">attenuation</tt><a class="headerlink" href="#sfml.audio.SoundSource.attenuation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get/set the attenuation factor of the sound.</p>
+<p>The attenuation is a multiplicative factor which makes the sound
+more or less loud according to its distance from the listener.
+An attenuation of 0 will produce a non-attenuated sound, i.e. its
+volume will always be the same whether it is heard from near or
+from far. On the other hand, an attenuation value such as 100
+will make the sound fade out very quickly as it gets further from
+the listener. The default value of the attenuation is 1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="sound">
+<h2><a class="toc-backref" href="#id5">Sound</a><a class="headerlink" href="#sound" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sfml.audio.Sound">
+<em class="property">class </em><tt class="descclassname">sfml.audio.</tt><tt class="descname">Sound</tt><big>(</big><em>SoundSource</em><big>)</big><a class="headerlink" href="#sfml.audio.Sound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Regular sound that can be played in the audio environment.</p>
+<p><a class="reference internal" href="#sfml.audio.Sound" title="sfml.audio.Sound"><tt class="xref py py-class docutils literal"><span class="pre">Sound</span></tt></a> is the class to use to play sounds.</p>
+<p>It provides:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Control (play, pause, stop)</li>
+<li>Ability to modify output parameters in real-time (pitch, volume, ...)</li>
+<li>3D spatial features (position, attenuation, ...).</li>
+</ul>
+</div></blockquote>
+<p><a class="reference internal" href="#sfml.audio.Sound" title="sfml.audio.Sound"><tt class="xref py py-class docutils literal"><span class="pre">Sound</span></tt></a> is perfect for playing short sounds that can fit
+in memory and require no latency, like foot steps or gun shots. For
+longer sounds, like background musics or long speeches, rather see
+<a class="reference internal" href="#sfml.audio.Music" title="sfml.audio.Music"><tt class="xref py py-class docutils literal"><span class="pre">Music</span></tt></a> (which is based on streaming).</p>
+<p>In order to work, a sound must be given a buffer of audio data to
+play. Audio data (samples) is stored in <a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a>, and
+attached to a sound with the <tt class="xref py py-func docutils literal"><span class="pre">SoundBuffer.buffer()</span></tt> function.
+The buffer object attached to a sound must remain alive as long as
+the sound uses it, so don&#8217;t delete it explicitly with the operator
+<strong>del</strong>. Note that multiple sounds can use the same sound buffer at
+the same time.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">try</span><span class="p">:</span> <span class="nb">buffer</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">SoundBuffer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s">&quot;sound.wav&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span> <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">sound</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sound</span><span class="p">()</span>
+<span class="n">sound</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="nb">buffer</span>
+<span class="n">sound</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="sfml.audio.Sound.Sound">
+<tt class="descname">Sound</tt><big>(</big><span class="optional">[</span><em>buffer</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfml.audio.Sound.Sound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct the sound with a buffer or if not provided construct an
+empty sound.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>buffer</strong> (<a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><em>sfml.audio.SoundBuffer</em></a>) &#8211; Sound buffer containing the audio data to play with the sound</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.Sound.play">
+<tt class="descname">play</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.Sound.play" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start or resume playing the sound.</p>
+<p>This function starts the stream if it was stopped, resumes it if
+it was paused, and restarts it from beginning if it was it
+already playing. This function uses its own thread so that it
+doesn&#8217;t block the rest of the program while the sound is played.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.Sound.pause">
+<tt class="descname">pause</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.Sound.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pause the sound.</p>
+<p>This function pauses the sound if it was playing, otherwise
+(sound already paused or stopped) it has no effect.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.Sound.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.Sound.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop playing the sound.</p>
+<p>This function stops the sound if it was playing or paused, and
+does nothing if it was already stopped. It also resets the
+playing position (unlike <a class="reference internal" href="#sfml.audio.Sound.pause" title="sfml.audio.Sound.pause"><tt class="xref py py-func docutils literal"><span class="pre">pause()</span></tt></a>).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.Sound.buffer">
+<tt class="descname">buffer</tt><a class="headerlink" href="#sfml.audio.Sound.buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get/set the source buffer containing the audio data to play.</p>
+<p>It is important to note that the sound buffer is not copied, thus
+the <a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a> instance must remain alive as long as it is
+attached to the sound (don&#8217;t explicitly delete it with the opartor
+<strong>del</strong>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundBuffer</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.Sound.loop">
+<tt class="descname">loop</tt><a class="headerlink" href="#sfml.audio.Sound.loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/tell whether or not the sound should loop after reaching the
+end.</p>
+<p>If set, the sound will restart from beginning after reaching the
+end and so on, until it is stopped or <cite>loop</cite> is set at false
+again. The default looping state for sound is false.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.Sound.playing_offset">
+<tt class="descname">playing_offset</tt><a class="headerlink" href="#sfml.audio.Sound.playing_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the current playing position of the sound.</p>
+<p>The playing position can be changed when the sound is either
+paused or playing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="system.html#sfml.system.Time" title="sfml.system.Time"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Time</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.Sound.status">
+<tt class="descname">status</tt><a class="headerlink" href="#sfml.audio.Sound.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current status of the sound (stopped, paused, playing)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">an <a class="reference internal" href="#sfml.audio.SoundSource" title="sfml.audio.SoundSource"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundSource</span></tt></a>&#8216;s contant</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="soundstream">
+<h2><a class="toc-backref" href="#id6">SoundStream</a><a class="headerlink" href="#soundstream" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sfml.audio.SoundStream">
+<em class="property">class </em><tt class="descclassname">sfml.audio.</tt><tt class="descname">SoundStream</tt><big>(</big><em>SoundSource</em><big>)</big><a class="headerlink" href="#sfml.audio.SoundStream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base class for streamed audio sources.</p>
+<p>Unlike audio buffers (see <a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a>), audio streams
+are never completely loaded in memory.</p>
+<p>Instead, the audio data is acquired continuously while the stream is
+playing. This behaviour allows to play a sound with no loading
+delay, and keeps the memory consumption very low.</p>
+<p>Sound sources that need to be streamed are usually big
+files (compressed audio musics that would eat hundreds of MB in
+memory) or files that would take a lot of time to be received
+(sounds played over the network).</p>
+<p><a class="reference internal" href="#sfml.audio.SoundStream" title="sfml.audio.SoundStream"><tt class="xref py py-class docutils literal"><span class="pre">SoundStream</span></tt></a> is a base class that doesn&#8217;t care about the
+stream source, which is left to the derived class. pySFML provides a
+built-in specialization for big files (see <a class="reference internal" href="#sfml.audio.Music" title="sfml.audio.Music"><tt class="xref py py-class docutils literal"><span class="pre">Music</span></tt></a>). No
+network stream source is provided, but you can write your own by
+combining this class with the network module.</p>
+<p>A derived class has to override two virtual functions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="#sfml.audio.SoundStream.on_get_data" title="sfml.audio.SoundStream.on_get_data"><tt class="xref py py-meth docutils literal"><span class="pre">on_get_data()</span></tt></a> fills a new chunk of audio data to be played</li>
+<li><a class="reference internal" href="#sfml.audio.SoundStream.on_seek" title="sfml.audio.SoundStream.on_seek"><tt class="xref py py-meth docutils literal"><span class="pre">on_seek()</span></tt></a> changes the current playing position in the source</li>
+</ul>
+</div></blockquote>
+<p>It is important to note that each <a class="reference internal" href="#sfml.audio.SoundStream" title="sfml.audio.SoundStream"><tt class="xref py py-class docutils literal"><span class="pre">SoundStream</span></tt></a> is played in
+its own separate thread, so that the streaming loop doesn&#8217;t block
+the rest of the program. In particular, the <a class="reference internal" href="#sfml.audio.SoundStream.on_get_data" title="sfml.audio.SoundStream.on_get_data"><tt class="xref py py-func docutils literal"><span class="pre">on_get_data()</span></tt></a> and
+<a class="reference internal" href="#sfml.audio.SoundStream.on_seek" title="sfml.audio.SoundStream.on_seek"><tt class="xref py py-func docutils literal"><span class="pre">on_seek()</span></tt></a> virtual functions may sometimes be called from this
+separate thread. It is important to keep this in mind, because you
+may have to take care of synchronization issues if you share data
+between threads.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">CustomStream</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">SoundStream</span><span class="p">):</span>
+   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="n">sf</span><span class="o">.</span><span class="n">SoundStream</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c"># don&#39;t forget this</span>
+
+   <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="n">location</span><span class="p">):</span>
+      <span class="c"># open the source and get audio settings</span>
+      <span class="o">...</span>
+      <span class="n">channel_count</span> <span class="o">=</span> <span class="o">...</span>
+      <span class="n">sample_rate</span> <span class="o">=</span> <span class="o">...</span>
+
+      <span class="c"># initialize the stream -- important!</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">channel_count</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">)</span>
+
+   <span class="k">def</span> <span class="nf">on_get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+      <span class="c"># fill the chunk with audio data from the stream source</span>
+      <span class="n">data</span> <span class="o">+=</span> <span class="n">another_chunk</span>
+
+      <span class="c"># return true to continue playing</span>
+      <span class="k">return</span> <span class="bp">True</span>
+
+   <span class="k">def</span> <span class="nf">on_seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_offset</span><span class="p">):</span>
+      <span class="c"># change the current position in the stream source</span>
+      <span class="o">...</span>
+
+<span class="c"># usage</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">CustomStream</span><span class="p">()</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;path/to/stream&quot;</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="sfml.audio.SoundStream.play">
+<tt class="descname">play</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.SoundStream.play" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start or resume playing the audio stream.</p>
+<p>This function starts the stream if it was stopped, resumes it if
+it was paused, and restarts it from beginning if it was it
+already playing. This function uses its own thread so that it
+doesn&#8217;t block the rest of the program while the stream is played.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.SoundStream.pause">
+<tt class="descname">pause</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.SoundStream.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pause the audio stream.</p>
+<p>This function pauses the stream if it was playing, otherwise
+(stream already paused or stopped) it has no effect.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.SoundStream.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.SoundStream.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop playing the audio stream.</p>
+<p>This function stops the stream if it was playing or paused, and
+does nothing if it was already stopped. It also resets the
+playing position (unlike <a class="reference internal" href="#sfml.audio.SoundStream.pause" title="sfml.audio.SoundStream.pause"><tt class="xref py py-func docutils literal"><span class="pre">pause()</span></tt></a>).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundStream.channel_count">
+<tt class="descname">channel_count</tt><a class="headerlink" href="#sfml.audio.SoundStream.channel_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of channels of the stream.</p>
+<p>1 channel means a mono sound, 2 means stereo, etc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundStream.sample_rate">
+<tt class="descname">sample_rate</tt><a class="headerlink" href="#sfml.audio.SoundStream.sample_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the stream sample rate of the stream.</p>
+<p>The sample rate is the number of audio samples played per second.
+The higher, the better the quality.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundStream.loop">
+<tt class="descname">loop</tt><a class="headerlink" href="#sfml.audio.SoundStream.loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set/tell whether or not the stream should loop after reaching the
+end.</p>
+<p>If set, the stream will restart from beginning after reaching the
+end and so on, until it is stopped or <a class="reference internal" href="#sfml.audio.SoundStream.loop" title="sfml.audio.SoundStream.loop"><tt class="xref py py-attr docutils literal"><span class="pre">loop</span></tt></a> is set at
+false again. The default looping state for streams is false.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundStream.playing_offset">
+<tt class="descname">playing_offset</tt><a class="headerlink" href="#sfml.audio.SoundStream.playing_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the current playing position of the stream.</p>
+<p>The playing position can be changed when the stream is either
+paused or playing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="system.html#sfml.system.Time" title="sfml.system.Time"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Time</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundStream.status">
+<tt class="descname">status</tt><a class="headerlink" href="#sfml.audio.SoundStream.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current status of the stream (stopped, paused, playing)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">an <a class="reference internal" href="#sfml.audio.SoundSource" title="sfml.audio.SoundSource"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundSource</span></tt></a>&#8216;s contant</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.SoundStream.initialize">
+<tt class="descname">initialize</tt><big>(</big><em>channel_count</em>, <em>sample_rate</em><big>)</big><a class="headerlink" href="#sfml.audio.SoundStream.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the audio stream parameters.</p>
+<p>This function must be called by derived classes as soon as they
+know the audio settings of the stream to play. Any attempt to
+manipulate the stream (<a class="reference internal" href="#sfml.audio.SoundStream.play" title="sfml.audio.SoundStream.play"><tt class="xref py py-func docutils literal"><span class="pre">play()</span></tt></a>, ...) before calling this
+function will fail. It can be called multiple times if the
+settings of the audio stream change, but only when the stream is
+stopped.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>channel_count</strong> (<em>integer</em>) &#8211; Number of channels of the stream</li>
+<li><strong>sample_rate</strong> (<em>integer</em>) &#8211; Sample rate, in samples per second</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.SoundStream.on_get_data">
+<tt class="descname">on_get_data</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#sfml.audio.SoundStream.on_get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request a new chunk of audio samples from the stream source.</p>
+<p>This function must be overriden by derived classes to provide the
+audio samples to play. It is called continuously by the streaming
+loop, in a separate thread. The source can choose to stop the
+streaming loop at any time, by returning false to the caller.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference internal" href="#sfml.audio.Chunk" title="sfml.audio.Chunk"><em>sfml.audio.Chunk</em></a>) &#8211; Chunk data to fill</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True to continue playback, false to stop</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.SoundStream.on_seek">
+<tt class="descname">on_seek</tt><big>(</big><em>time_offset</em><big>)</big><a class="headerlink" href="#sfml.audio.SoundStream.on_seek" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the current playing position in the stream source.</p>
+<p>This function must be overriden by derived classes to allow
+random seeking into the stream source.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>time_offset</strong> (<a class="reference internal" href="system.html#sfml.system.Time" title="sfml.system.Time"><em>sfml.system.Time</em></a>) &#8211; New playing position, relative to the beginning of the stream</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="music">
+<h2><a class="toc-backref" href="#id7">Music</a><a class="headerlink" href="#music" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sfml.audio.Music">
+<em class="property">class </em><tt class="descclassname">sfml.audio.</tt><tt class="descname">Music</tt><big>(</big><em>SoundStream</em><big>)</big><a class="headerlink" href="#sfml.audio.Music" title="Permalink to this definition">¶</a></dt>
+<dd><p>Streamed music played from an audio file.</p>
+<p>Musics are sounds that are streamed rather than completely loaded in
+memory.</p>
+<p>This is especially useful for compressed musics that usually take
+hundreds of MB when they are uncompressed: by streaming it instead
+of loading it entirely, you avoid saturating the memory and have
+almost no loading delay.</p>
+<p>Apart from that, an <a class="reference internal" href="#sfml.audio.Music" title="sfml.audio.Music"><tt class="xref py py-class docutils literal"><span class="pre">Music</span></tt></a> has almost the same features as
+the <a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a> / <a class="reference internal" href="#sfml.audio.Sound" title="sfml.audio.Sound"><tt class="xref py py-class docutils literal"><span class="pre">Sound</span></tt></a> pair: you can
+play/pause/stop it, request its parameters (channels, sample rate),
+change the way it is played (pitch, volume, 3D position, ...), etc.</p>
+<p>As a sound stream, a music is played in its own thread in order not
+to block the rest of the program. This means that you can leave the
+music alone after calling <tt class="xref py py-meth docutils literal"><span class="pre">play()</span></tt>, it will manage itself very well.</p>
+<blockquote>
+<div><p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># declare a new music</span>
+<span class="n">music</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Music</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span> <span class="n">music</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Music</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s">&quot;music.ogg&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span> <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c"># change some parameters</span>
+<span class="n">music</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c"># change its 3D position</span>
+<span class="n">music</span><span class="o">.</span><span class="n">pitch</span> <span class="o">=</span> <span class="mi">2</span>             <span class="c"># increase the pitch</span>
+<span class="n">music</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="mi">50</span>           <span class="c"># reduce the volume</span>
+<span class="n">music</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="bp">True</span>           <span class="c"># make it loop</span>
+
+<span class="c"># play it</span>
+<span class="n">music</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="method">
+<dt id="sfml.audio.Music.Music">
+<tt class="descname">Music</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.Music.Music" title="Permalink to this definition">¶</a></dt>
+<dd><p>If you try to instantiate an <a class="reference internal" href="#sfml.audio.Music" title="sfml.audio.Music"><tt class="xref py py-class docutils literal"><span class="pre">Music</span></tt></a> directly, it will
+raise an error saying that you must use its specific constructors:
+<a class="reference internal" href="#sfml.audio.Music.from_file" title="sfml.audio.Music.from_file"><tt class="xref py py-meth docutils literal"><span class="pre">from_file()</span></tt></a> or <a class="reference internal" href="#sfml.audio.Music.from_memory" title="sfml.audio.Music.from_memory"><tt class="xref py py-meth docutils literal"><span class="pre">from_memory()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.Music.from_file">
+<em class="property">classmethod </em><tt class="descname">from_file</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#sfml.audio.Music.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a music from an audio file.</p>
+<p>This function doesn&#8217;t start playing the music (call <tt class="xref py py-func docutils literal"><span class="pre">play()</span></tt>
+to do so). Here is a complete list of all the supported audio
+formats: <strong>ogg, wav, flac, aiff, au, raw, paf, svx, nist, voc,
+ircam, w64, mat4, mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k,
+rf64</strong>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raise :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> - If loading failed.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; Path of the music file to open</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#sfml.audio.Music" title="sfml.audio.Music"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.Music</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.Music.from_memory">
+<em class="property">classmethod </em><tt class="descname">from_memory</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#sfml.audio.Music.from_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a music from an audio file in memory.</p>
+<p>This function doesn&#8217;t start playing the music (call <tt class="xref py py-func docutils literal"><span class="pre">play()</span></tt>
+to do so). Here is a complete list of all the supported audio
+formats: <strong>ogg, wav, flac, aiff, au, raw, paf, svx, nist, voc,
+ircam, w64, mat4, mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k,
+rf64</strong>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raise :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> - If loading failed.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; The file data in memory</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#sfml.audio.Music" title="sfml.audio.Music"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.Music</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.Music.duration">
+<tt class="descname">duration</tt><a class="headerlink" href="#sfml.audio.Music.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the total duration of the music</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="system.html#sfml.system.Time" title="sfml.system.Time"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Time</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="soundrecorder">
+<h2><a class="toc-backref" href="#id8">SoundRecorder</a><a class="headerlink" href="#soundrecorder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sfml.audio.SoundRecorder">
+<em class="property">class </em><tt class="descclassname">sfml.audio.</tt><tt class="descname">SoundRecorder</tt><a class="headerlink" href="#sfml.audio.SoundRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base class for capturing sound data.</p>
+<p><a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a> provides a simple interface to access the
+audio recording capabilities of the computer (the microphone).</p>
+<p>As an abstract base class, it only cares about capturing sound
+samples, the task of making something useful with them is left to
+the derived class. Note that pySFML provides a built-in
+specialization for saving the captured data to a sound buffer (see
+<a class="reference internal" href="#sfml.audio.SoundBufferRecorder" title="sfml.audio.SoundBufferRecorder"><tt class="xref py py-class docutils literal"><span class="pre">SoundBufferRecorder</span></tt></a>).</p>
+<p>A derived class has only one method to override:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="#sfml.audio.SoundRecorder.on_process_samples" title="sfml.audio.SoundRecorder.on_process_samples"><tt class="xref py py-func docutils literal"><span class="pre">on_process_samples()</span></tt></a> provides the new chunks of audio samples while the capture happens</li>
+</ul>
+</div></blockquote>
+<p>Moreover, two additionnal method can be overriden as well if necessary:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="#sfml.audio.SoundRecorder.on_start" title="sfml.audio.SoundRecorder.on_start"><tt class="xref py py-func docutils literal"><span class="pre">on_start()</span></tt></a> is called before the capture happens, to perform custom initializations</li>
+<li><a class="reference internal" href="#sfml.audio.SoundRecorder.on_stop" title="sfml.audio.SoundRecorder.on_stop"><tt class="xref py py-func docutils literal"><span class="pre">on_stop()</span></tt></a> is called after the capture ends, to perform custom cleanup</li>
+</ul>
+</div></blockquote>
+<p>The audio capture feature may not be supported or activated on every
+platform, thus it is recommended to check its availability with the
+<a class="reference internal" href="#sfml.audio.SoundRecorder.is_available" title="sfml.audio.SoundRecorder.is_available"><tt class="xref py py-func docutils literal"><span class="pre">is_available()</span></tt></a> function. If it returns false, then any attempt
+to use an audio recorder will fail.</p>
+<p>It is important to note that the audio capture happens in a separate
+thread, so that it doesn&#8217;t block the rest of the program. In
+particular, the <a class="reference internal" href="#sfml.audio.SoundRecorder.on_process_samples" title="sfml.audio.SoundRecorder.on_process_samples"><tt class="xref py py-func docutils literal"><span class="pre">on_process_samples()</span></tt></a> and <a class="reference internal" href="#sfml.audio.SoundRecorder.on_stop" title="sfml.audio.SoundRecorder.on_stop"><tt class="xref py py-func docutils literal"><span class="pre">on_stop()</span></tt></a> methods
+(but not <a class="reference internal" href="#sfml.audio.SoundRecorder.on_start" title="sfml.audio.SoundRecorder.on_start"><tt class="xref py py-func docutils literal"><span class="pre">on_start()</span></tt></a>) will be called from this separate thread.
+It is important to keep this in mind, because you may have to take
+care of synchronization issues if you share data between threads.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">CustomRecorder</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">SoundRecorder</span><span class="p">):</span>
+   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="n">sf</span><span class="o">.</span><span class="n">SoundRecorder</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+   <span class="k">def</span> <span class="nf">on_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c"># optional</span>
+      <span class="c"># initialize whatever has to be done before the capture starts</span>
+      <span class="o">...</span>
+
+      <span class="c"># return true to start playing</span>
+      <span class="k">return</span> <span class="bp">True</span>
+
+
+   <span class="k">def</span> <span class="nf">on_process_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+    <span class="c"># do something with the new chunk of samples (store them, send them, ...)</span>
+    <span class="o">...</span>
+
+    <span class="c"># return true to continue playing</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+   <span class="k">def</span> <span class="nf">on_stop</span><span class="p">():</span> <span class="c"># optional</span>
+      <span class="c"># clean up whatever has to be done after the capture ends</span>
+      <span class="o">...</span>
+
+<span class="c"># usage</span>
+<span class="k">if</span> <span class="n">CustomRecorder</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+   <span class="n">recorder</span> <span class="o">=</span> <span class="n">CustomRecorder</span><span class="p">()</span>
+   <span class="n">recorder</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+   <span class="o">...</span>
+   <span class="n">recorder</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="sfml.audio.SoundRecorder.start">
+<tt class="descname">start</tt><big>(</big><span class="optional">[</span><em>sample_rate=44100</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfml.audio.SoundRecorder.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the capture.</p>
+<p>The <em>sample_rate</em> parameter defines the number of audio samples
+captured per second. The higher, the better the quality (for
+example, 44100 samples/sec is CD quality). This function uses its
+own thread so that it doesn&#8217;t block the rest of the program while
+the capture runs. Please note that only one capture can happen at
+the same time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sample_rate</strong> (<em>integer</em>) &#8211; Desired capture rate, in number of samples per second</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.SoundRecorder.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.SoundRecorder.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the capture.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundRecorder.sample_rate">
+<tt class="descname">sample_rate</tt><a class="headerlink" href="#sfml.audio.SoundRecorder.sample_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the sample rate.</p>
+<p>The sample rate defines the number of audio samples captured per
+second. The higher, the better the quality (for example, 44100
+samples/sec is CD quality).</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="sfml.audio.SoundRecorder.is_available">
+<em class="property">classmethod </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.SoundRecorder.is_available" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the system supports audio capture.</p>
+<p>This function should always be called before using the audio
+capture features. If it returns false, then any attempt to use
+<a class="reference internal" href="#sfml.audio.SoundRecorder" title="sfml.audio.SoundRecorder"><tt class="xref py py-class docutils literal"><span class="pre">SoundRecorder</span></tt></a> or one of its derived classes will fail.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Whether audio capture is supported or not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.SoundRecorder.on_start">
+<tt class="descname">on_start</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.SoundRecorder.on_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start capturing audio data.</p>
+<p>This method may be overriden by a derived class if something has
+to be done every time a new capture starts. If not, this method
+can be ignored; the default implementation does nothing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True to start the capture, or false to abort it</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.SoundRecorder.on_process_samples">
+<tt class="descname">on_process_samples</tt><big>(</big><em>samples</em><big>)</big><a class="headerlink" href="#sfml.audio.SoundRecorder.on_process_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process a new chunk of recorded samples.</p>
+<p>This method is called every time a new chunk of recorded data is
+available. The derived class can then do whatever it wants with
+it (storing it, playing it, sending it over the network, etc.).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>samples</strong> (<a class="reference internal" href="#sfml.audio.Chunk" title="sfml.audio.Chunk"><em>sfml.audio.Chunk</em></a>) &#8211; The new chunk of recorded samples</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True to continue the capture, or false to stop it</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfml.audio.SoundRecorder.on_stop">
+<tt class="descname">on_stop</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.SoundRecorder.on_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop capturing audio data.</p>
+<p>This method may be overriden by a derived class if something has
+to be done every time the capture ends. If not, this method can
+be ignored; the default implementation does nothing.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="soundbufferrecorder">
+<h2><a class="toc-backref" href="#id9">SoundBufferRecorder</a><a class="headerlink" href="#soundbufferrecorder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sfml.audio.SoundBufferRecorder">
+<em class="property">class </em><tt class="descclassname">sfml.audio.</tt><tt class="descname">SoundBufferRecorder</tt><big>(</big><em>SoundRecorder</em><big>)</big><a class="headerlink" href="#sfml.audio.SoundBufferRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specialized <a class="reference internal" href="#sfml.audio.SoundRecorder" title="sfml.audio.SoundRecorder"><tt class="xref py py-class docutils literal"><span class="pre">SoundRecorder</span></tt></a> which stores the captured audio
+data into a sound buffer.</p>
+<p><a class="reference internal" href="#sfml.audio.SoundBufferRecorder" title="sfml.audio.SoundBufferRecorder"><tt class="xref py py-class docutils literal"><span class="pre">SoundBufferRecorder</span></tt></a> allows to access a recorded sound
+through an <a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">SoundBuffer</span></tt></a>, so that it can be played, saved
+to a file, etc.</p>
+<p>It has the same simple interface as its base class (<tt class="xref py py-meth docutils literal"><span class="pre">start()</span></tt>,
+<tt class="xref py py-meth docutils literal"><span class="pre">stop()</span></tt>) and adds a property to retrieve the recorded sound
+buffer (<a class="reference internal" href="#sfml.audio.SoundBufferRecorder.buffer" title="sfml.audio.SoundBufferRecorder.buffer"><tt class="xref py py-attr docutils literal"><span class="pre">buffer</span></tt></a>).</p>
+<p>As usual, don&#8217;t forget to call the <tt class="xref py py-func docutils literal"><span class="pre">is_available()</span></tt> function
+before using this class (see <a class="reference internal" href="#sfml.audio.SoundRecorder" title="sfml.audio.SoundRecorder"><tt class="xref py py-class docutils literal"><span class="pre">SoundRecorder</span></tt></a> for more
+details about this).</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">sf</span><span class="o">.</span><span class="n">SoundBufferRecorder</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+   <span class="c"># record some audio data</span>
+   <span class="n">recorder</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">SoundBufferRecorder</span><span class="p">()</span>
+   <span class="n">recorder</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+   <span class="o">...</span>
+   <span class="n">recorder</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+   <span class="c"># get the buffer containing the captured audio data</span>
+   <span class="nb">buffer</span> <span class="o">=</span> <span class="n">recorder</span><span class="o">.</span><span class="n">buffer</span>
+
+   <span class="c"># save it to a file (for example...)</span>
+   <span class="nb">buffer</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s">&quot;my_record.ogg&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="sfml.audio.SoundBufferRecorder.SoundBufferRecorder">
+<tt class="descname">SoundBufferRecorder</tt><big>(</big><big>)</big><a class="headerlink" href="#sfml.audio.SoundBufferRecorder.SoundBufferRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a <a class="reference internal" href="#sfml.audio.SoundBufferRecorder" title="sfml.audio.SoundBufferRecorder"><tt class="xref py py-class docutils literal"><span class="pre">SoundBufferRecorder</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sfml.audio.SoundBufferRecorder.buffer">
+<tt class="descname">buffer</tt><a class="headerlink" href="#sfml.audio.SoundBufferRecorder.buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the sound buffer containing the captured audio data.</p>
+<p>The sound buffer is valid only after the capture has ended. This
+attribute provides a read-only access to the internal sound
+buffer, but it can be copied if you need to make any modification
+to it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#sfml.audio.SoundBuffer" title="sfml.audio.SoundBuffer"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundBuffer</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Audio</a><ul>
+<li><a class="reference internal" href="#listener">Listener</a></li>
+<li><a class="reference internal" href="#chunk">Chunk</a></li>
+<li><a class="reference internal" href="#soundbuffer">SoundBuffer</a></li>
+<li><a class="reference internal" href="#soundsource">SoundSource</a></li>
+<li><a class="reference internal" href="#sound">Sound</a></li>
+<li><a class="reference internal" href="#soundstream">SoundStream</a></li>
+<li><a class="reference internal" href="#music">Music</a></li>
+<li><a class="reference internal" href="#soundrecorder">SoundRecorder</a></li>
+<li><a class="reference internal" href="#soundbufferrecorder">SoundBufferRecorder</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="graphics.html"
+                        title="previous chapter">Graphics</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="network.html"
+                        title="next chapter">Network</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/audio.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="network.html" title="Network"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="graphics.html" title="Graphics"
+             >previous</a> |</li>
+        <li><a href="../index.html">pySFML 1.2.0 documentation</a> &raquo;</li>
+          <li><a href="api_index.html" >API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Jonathan De Wachter.
+      Last updated on Jan 02, 2013.
+    </div>
+  </body>
+</html>

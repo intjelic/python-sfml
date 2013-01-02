@@ -1,0 +1,343 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting started &mdash; pySFML 1.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pySFML 1.2.0 documentation" href="index.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Download" href="download.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="Examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="download.html" title="Download"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pySFML 1.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>This binding is easy to apprehend and learn if you come from the C++
+library; class, methods and functions names are the same. We&#8217;ll see here
+step by step everything you need to know to get started with pysfml2!</p>
+<p>Of course, you need first to have pySFML2 downloaded and installed on
+your computer. To do that, read the <a class="reference internal" href="download.html"><em>download</em></a>  section, it provides all
+explanations you&#8217;ll need to install on your favourite platform. At worst,
+you&#8217;ll need to compile.</p>
+<p>After reading this you can jump to the single <a class="reference internal" href="tutorials.html#tutorials-reference"><em>Tutorials</em></a> that
+summarizes all the large, potentially surprising, changes that you
+should be aware of. You&#8217;ll be able to start coding serious project with
+the documentation at hand.</p>
+<div class="section" id="diving-in">
+<h2>Diving In<a class="headerlink" href="#diving-in" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">On Windows, typing these commands directly in a console might cause the
+console to freeze, in which case it is better to save the lines of code
+(without the &#8216;&gt;&gt;&gt;&#8217; prompt) to a file to run later.</p>
+</div>
+<p>Open a terminal and run the Python interpreter. Now we can experiment:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sfml</span> <span class="kn">as</span> <span class="nn">sf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">),</span> <span class="s">&quot;My first pySFML Window - or not ?&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">BLUE</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Yes, it&#39;s my first PySFML Window&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">capture</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">exit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="short-example">
+<h2>Short Example<a class="headerlink" href="#short-example" title="Permalink to this headline">¶</a></h2>
+<p>As a start, let&#8217;s compare the python short example with the C++ one.
+Here it is:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml</span> <span class="kn">as</span> <span class="nn">sf</span>
+
+
+<span class="c"># create the main window</span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">),</span> <span class="s">&quot;pySFML Window&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+   <span class="c"># load a sprite to display</span>
+   <span class="n">texture</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Texture</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s">&quot;cute_image.png&quot;</span><span class="p">)</span>
+   <span class="n">sprite</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Sprite</span><span class="p">(</span><span class="n">texture</span><span class="p">)</span>
+
+   <span class="c"># create some graphical text to display</span>
+   <span class="n">font</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s">&quot;arial.ttf&quot;</span><span class="p">)</span>
+   <span class="n">text</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="s">&quot;Hello SFML&quot;</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+   <span class="c"># load music to play</span>
+   <span class="n">music</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Music</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s">&quot;nice_music.ogg&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span> <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c"># play the music</span>
+<span class="n">music</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+
+<span class="c"># start the game loop</span>
+<span class="k">while</span> <span class="n">window</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+   <span class="c"># process events</span>
+   <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+      <span class="c"># close window: exit</span>
+      <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">event</span><span class="p">)</span> <span class="ow">is</span> <span class="n">sf</span><span class="o">.</span><span class="n">CloseEvent</span><span class="p">:</span>
+         <span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+   <span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span> <span class="c"># clear screen</span>
+   <span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span> <span class="c"># draw the sprite</span>
+   <span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="c"># draw the string</span>
+   <span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span> <span class="c"># update the window</span>
+</pre></div>
+</td></tr></table></div>
+<p>First, you can notice the interface is not far different from the
+original and remains quite the same; the interface has been pythonized.</p>
+<div class="section" id="importing">
+<h3>Importing<a class="headerlink" href="#importing" title="Permalink to this headline">¶</a></h3>
+<p>In practise, you import the whole library a single namespace <strong>sf</strong>.
+Doing so imports the five sub-module in one shot (sfml.system, sfml.window,
+sfml.graphics, sfml.audio and sfml.network).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml</span> <span class="kn">as</span> <span class="nn">sf</span>
+</pre></div>
+</div>
+<p>You also could have written:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml</span>
+</pre></div>
+</div>
+<p>But in that case, every function and class have to be plainly specified.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># make your app sleep 5 seconds</span>
+<span class="n">sfml</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sfml</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">seconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Avoid that and prefer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sfml</span> <span class="kn">as</span> <span class="nn">sf</span>
+<span class="n">sf</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">seconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="window-creation">
+<h3>Window Creation<a class="headerlink" href="#window-creation" title="Permalink to this headline">¶</a></h3>
+<p>There&#8217;s no difference here. if you want to give a style:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">RenderWindow</span><span class="p">(</span><span class="n">sf</span><span class="o">.</span><span class="n">VideoMode</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">),</span> <span class="s">&quot;pySFML Window&quot;</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">TITLEBAR</span> <span class="o">|</span> <span class="n">sf</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">RESIZE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="loading-resources">
+<h3>Loading Resources<a class="headerlink" href="#loading-resources" title="Permalink to this headline">¶</a></h3>
+<p>Instead of checking everytime if the resource has effectivly been loaded,
+pysfml2 takes advantages of the Python mechanisms. Just enclose
+your resource loading processes in a try-except bloc and Python will tell
+you when something goes wrong.</p>
+<p>As you can see in the code, it will trigger an exception IOError in
+accordance with the Python&#8217;s exception rules.</p>
+<p>To follow the same convention as the standard Python library and so,
+offer a better integration, open_from_file and load_from_file have been
+renamed into <strong>from_file</strong>.</p>
+</div>
+<div class="section" id="event-handling">
+<h3>Event Handling<a class="headerlink" href="#event-handling" title="Permalink to this headline">¶</a></h3>
+<p>To iterate over the pending events, use the generator that Window.events
+return. It&#8217;s similar to the polling event process.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="api/window.html#sfml.window.Window.poll_event" title="sfml.window.Window.poll_event"><tt class="xref py py-meth docutils literal"><span class="pre">sfml.window.Window.poll_event()</span></tt></a> and <a class="reference internal" href="api/window.html#sfml.window.Window.wait_event" title="sfml.window.Window.wait_event"><tt class="xref py py-meth docutils literal"><span class="pre">sfml.window.Window.wait_event()</span></tt></a> do exist.</p>
+</div>
+<p>Once you get an event you need to process it. To do that, you need to
+check its type as you would do in C++. pysfml2 doesn&#8217;t provides
+the attribute <strong>type</strong> that tells you what event it is (keyboard event,
+mouse event, mouse move event, etc). Therefore you need to use the
+built-in function <tt class="xref py py-func docutils literal"><span class="pre">type()</span></tt> to determine its type.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">event</span><span class="p">)</span> <span class="ow">is</span> <span class="n">sf</span><span class="o">.</span><span class="n">CloseEvent</span><span class="p">:</span>
+   <span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can get a list of the event class in the documentation, section
+window, as event handling is located in the window module ;).</p>
+</div>
+<div class="section" id="updating-the-screen">
+<h3>Updating the Screen<a class="headerlink" href="#updating-the-screen" title="Permalink to this headline">¶</a></h3>
+<p>Don&#8217;t forget to clear, draw and update the screen.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span> <span class="c"># clear screen</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">sprite</span><span class="p">)</span> <span class="c"># draw the sprite</span>
+<span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="c"># draw the string</span>
+<span class="n">window</span><span class="o">.</span><span class="n">display</span><span class="p">()</span> <span class="c"># update the window</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="vectors">
+<h2>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<p>As Python is not a typed language, you don&#8217;t have to care about the
+type when you use sf::Vector&lt;T&gt;. Python just needs to know if it&#8217;s a
+two or three dimensional vector, after, you can store any numeric type
+inside.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vector2</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Vector2</span><span class="p">()</span>
+<span class="n">vector2</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">vector2</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mf">1.16</span>
+
+<span class="n">vector3</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">Vector3</span><span class="p">()</span>
+<span class="n">vector3</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="mf">0.333333333</span><span class="p">)</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">vector3</span> <span class="c"># you can unpack the vector</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting started</a><ul>
+<li><a class="reference internal" href="#diving-in">Diving In</a></li>
+<li><a class="reference internal" href="#short-example">Short Example</a><ul>
+<li><a class="reference internal" href="#importing">Importing</a></li>
+<li><a class="reference internal" href="#window-creation">Window Creation</a></li>
+<li><a class="reference internal" href="#loading-resources">Loading Resources</a></li>
+<li><a class="reference internal" href="#event-handling">Event Handling</a></li>
+<li><a class="reference internal" href="#updating-the-screen">Updating the Screen</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vectors">Vectors</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="download.html"
+                        title="previous chapter">Download</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="examples.html"
+                        title="next chapter">Examples</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/gettingstarted.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="Examples"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="download.html" title="Download"
+             >previous</a> |</li>
+        <li><a href="index.html">pySFML 1.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Jonathan De Wachter.
+      Last updated on Jan 02, 2013.
+    </div>
+  </body>
+</html>

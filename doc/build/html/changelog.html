@@ -1,0 +1,207 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Change Log &mdash; pySFML 1.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pySFML 1.2.0 documentation" href="index.html" />
+    <link rel="prev" title="Add-Ons" href="addons.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="addons.html" title="Add-Ons"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pySFML 1.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="change-log">
+<h1>Change Log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These lists are not exhaustive.</p>
+</div>
+<div class="section" id="v0-9-v1-0">
+<h2>v0.9 -&gt; v1.0<a class="headerlink" href="#v0-9-v1-0" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="api/system.html#module-sfml.system" title="sfml.system"><tt class="xref py py-mod docutils literal"><span class="pre">sfml.system</span></tt></a> module updated to the new API interface</li>
+<li><a class="reference internal" href="api/window.html#module-sfml.window" title="sfml.window"><tt class="xref py py-mod docutils literal"><span class="pre">sfml.window</span></tt></a> module updated to the new API interface</li>
+<li><a class="reference internal" href="api/graphics.html#module-sfml.graphics" title="sfml.graphics"><tt class="xref py py-mod docutils literal"><span class="pre">sfml.graphics</span></tt></a> module updated to the new API interface</li>
+<li><a class="reference internal" href="api/audio.html#module-sfml.audio" title="sfml.audio"><tt class="xref py py-mod docutils literal"><span class="pre">sfml.audio</span></tt></a> module updated to the new API interface</li>
+<li><a class="reference internal" href="api/network.html#module-sfml.network" title="sfml.network"><tt class="xref py py-mod docutils literal"><span class="pre">sfml.network</span></tt></a> module updated to the new API interface</li>
+<li>Code entirely clean and follow convention</li>
+<li><a class="reference internal" href="api/audio.html#module-sfml.audio" title="sfml.audio"><tt class="xref py py-mod docutils literal"><span class="pre">sfml.audio</span></tt></a> module imports <a class="reference internal" href="api/system.html#module-sfml.system" title="sfml.system"><tt class="xref py py-mod docutils literal"><span class="pre">sfml.system</span></tt></a> system module with it</li>
+<li>The official ftp example implemented</li>
+</ul>
+</div>
+<div class="section" id="v1-0-v1-1">
+<h2>v1.0 -&gt; v1.1<a class="headerlink" href="#v1-0-v1-1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Position</span></tt> moved to built-in type and renamed <a class="reference internal" href="api/system.html#sfml.system.Vector2" title="sfml.system.Vector2"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Vector2</span></tt></a></li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Size</span></tt> removed; use <a class="reference internal" href="api/system.html#sfml.system.Vector2" title="sfml.system.Vector2"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Vector2</span></tt></a> instead</li>
+<li><a class="reference internal" href="api/system.html#sfml.system.Vector3" title="sfml.system.Vector3"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Vector3</span></tt></a> added</li>
+<li>Full variable/method/function/class name are clean</li>
+<li>Error message handler implemented</li>
+<li>open/load functions raises IOError and not sfml.system.SFMLException</li>
+<li><a class="reference internal" href="api/graphics.html#sfml.graphics.Shader" title="sfml.graphics.Shader"><tt class="xref py py-class docutils literal"><span class="pre">sfml.graphics.Shader</span></tt></a>&#8216;s constants (VERTEX and FRAGMENT) removed</li>
+<li><a class="reference internal" href="api/graphics.html#sfml.graphics.Shader" title="sfml.graphics.Shader"><tt class="xref py py-class docutils literal"><span class="pre">sfml.graphics.Shader</span></tt></a>&#8216;s constructors implemented</li>
+<li><a class="reference internal" href="api/graphics.html#sfml.graphics.Shader.set_parameter" title="sfml.graphics.Shader.set_parameter"><tt class="xref py py-meth docutils literal"><span class="pre">sfml.graphics.Shader.set_parameter()</span></tt></a> implemented</li>
+<li><a class="reference internal" href="api/graphics.html#sfml.graphics.Texture.update" title="sfml.graphics.Texture.update"><tt class="xref py py-meth docutils literal"><span class="pre">sfml.graphics.Texture.update()</span></tt></a> implemented</li>
+<li><a class="reference internal" href="api/graphics.html#sfml.graphics.Vertex" title="sfml.graphics.Vertex"><tt class="xref py py-class docutils literal"><span class="pre">sfml.graphics.Vertex</span></tt></a> implemented</li>
+<li><a class="reference internal" href="api/graphics.html#sfml.graphics.VertexArray" title="sfml.graphics.VertexArray"><tt class="xref py py-class docutils literal"><span class="pre">sfml.graphics.VertexArray</span></tt></a> implemented</li>
+<li>Shader example added</li>
+<li>Pong example added</li>
+<li><a class="reference internal" href="api/graphics.html#sfml.graphics.Color" title="sfml.graphics.Color"><tt class="xref py py-class docutils literal"><span class="pre">sfml.graphics.Color</span></tt></a> are unpackable</li>
+<li><a class="reference internal" href="api/network.html#module-sfml.network" title="sfml.network"><tt class="xref py py-mod docutils literal"><span class="pre">sfml.network</span></tt></a> module uses <a class="reference internal" href="api/system.html#sfml.system.Time" title="sfml.system.Time"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Time</span></tt></a></li>
+<li><a class="reference internal" href="api/audio.html#module-sfml.audio" title="sfml.audio"><tt class="xref py py-mod docutils literal"><span class="pre">sfml.audio</span></tt></a> module uses <a class="reference internal" href="api/system.html#sfml.system.Time" title="sfml.system.Time"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Time</span></tt></a></li>
+<li><a class="reference internal" href="api/graphics.html#sfml.graphics.Image.show" title="sfml.graphics.Image.show"><tt class="xref py py-meth docutils literal"><span class="pre">sfml.graphics.Image.show()</span></tt></a> is implemented and platform-independant</li>
+<li><a class="reference internal" href="api/audio.html#sfml.audio.SoundStream" title="sfml.audio.SoundStream"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundStream</span></tt></a> and <a class="reference internal" href="api/audio.html#sfml.audio.SoundRecorder" title="sfml.audio.SoundRecorder"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundRecorder</span></tt></a> can be subclassed</li>
+</ul>
+</div>
+<div class="section" id="v1-1-v1-2">
+<h2>v1.1 -&gt; v1.2<a class="headerlink" href="#v1-1-v1-2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The license has changed: GPLv3 -&gt; LGPLv3</li>
+<li>Unit tests implemented</li>
+<li>Load/open/create methods are depreciated (use <cite>from_foo</cite> instead) <a class="footnote-reference" href="#id3" id="id1">[1]</a></li>
+<li>Save/convertion methods are depreciated (use <cite>to_bar</cite> instead) <a class="footnote-reference" href="#id4" id="id2">[2]</a></li>
+<li>Copy methods are depreciated (use the copy module instead)</li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">sfml.Window.events</span></tt> returns now a generator</li>
+<li>Voip example implemented</li>
+<li>Improved <a class="reference internal" href="api/audio.html#sfml.audio.Chunk" title="sfml.audio.Chunk"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.Chunk</span></tt></a></li>
+<li>Fixe bug in <a class="reference internal" href="api/audio.html#sfml.audio.SoundStream" title="sfml.audio.SoundStream"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundStream</span></tt></a></li>
+<li><a class="reference internal" href="api/graphics.html#sfml.graphics.View.move" title="sfml.graphics.View.move"><tt class="xref py py-meth docutils literal"><span class="pre">sfml.graphics.View.move()</span></tt></a> takes now two integer (x and y) instead of a vector</li>
+<li>Fixe bug in <a class="reference internal" href="api/audio.html#sfml.audio.SoundRecorder" title="sfml.audio.SoundRecorder"><tt class="xref py py-class docutils literal"><span class="pre">sfml.audio.SoundRecorder</span></tt></a> (when calling stop())</li>
+<li><a class="reference internal" href="api/system.html#sfml.system.sleep" title="sfml.system.sleep"><tt class="xref py py-func docutils literal"><span class="pre">sfml.system.sleep()</span></tt></a> works now well in multi-threaded application</li>
+<li><a class="reference internal" href="api/graphics.html#sfml.graphics.Color" title="sfml.graphics.Color"><tt class="xref py py-class docutils literal"><span class="pre">sfml.graphics.Color</span></tt></a> is copiable via the copy module</li>
+<li>Added unary operator to <a class="reference internal" href="api/system.html#sfml.system.Vector2" title="sfml.system.Vector2"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Vector2</span></tt></a> and <a class="reference internal" href="api/system.html#sfml.system.Vector3" title="sfml.system.Vector3"><tt class="xref py py-class docutils literal"><span class="pre">sfml.system.Vector3</span></tt></a></li>
+<li>Fixed <a class="reference internal" href="api/graphics.html#sfml.graphics.Rectangle.bottom" title="sfml.graphics.Rectangle.bottom"><tt class="xref py py-attr docutils literal"><span class="pre">sfml.graphics.Rectangle.bottom</span></tt></a></li>
+<li><a class="reference internal" href="api/network.html#sfml.network.IpAddress" title="sfml.network.IpAddress"><tt class="xref py py-class docutils literal"><span class="pre">sfml.network.IpAddress</span></tt></a> can be compared</li>
+<li>Ubuntu packages available for 12.04LTS and 12.10</li>
+<li>Fedora packages available</li>
+<li>Installer script for Arch Linux users available</li>
+<li>sfeModule available as add-on</li>
+<li>Fixe bug in sf.MouseMoveEvent.position</li>
+<li>Fixe various threading issues in the network module (GIL not released)</li>
+<li>Fixe bug in views returned by sf.RenderTarget (view wasn&#8217;t linked)</li>
+<li>Fixe sf.TransformableDrawable (its properties work)</li>
+<li>Documentation enterely revised</li>
+<li>Website redesigned</li>
+<li>Install C/Cython API to code your own extensions using the bindings</li>
+<li>Window.opened is deprecated, use Window.is_open property instead</li>
+<li>Improve setup.py to detect Cython and/or force its usage</li>
+</ul>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>E.g: <strong>Do not use</strong> sf.Texture.load_from_file(filename) but <strong>sf.Texture.from_file(filename)</strong> instead.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>E.g: <strong>Do not use</strong> sf.Texture.image.save_to_file() but <strong>sf.Texture.to_image().to_file()</strong> .</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/sfml2-logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Change Log</a><ul>
+<li><a class="reference internal" href="#v0-9-v1-0">v0.9 -&gt; v1.0</a></li>
+<li><a class="reference internal" href="#v1-0-v1-1">v1.0 -&gt; v1.1</a></li>
+<li><a class="reference internal" href="#v1-1-v1-2">v1.1 -&gt; v1.2</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="addons.html"
+                        title="previous chapter">Add-Ons</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/changelog.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="addons.html" title="Add-Ons"
+             >previous</a> |</li>
+        <li><a href="index.html">pySFML 1.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Jonathan De Wachter.
+      Last updated on Jan 02, 2013.
+    </div>
+  </body>
+</html>
