@@ -78,19 +78,7 @@ Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad::
 
 Fedora
 ------
-
-SFML2 (release candidate)
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-	* `sfml2-rc1 <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [Python 3.2] [64 bit]
-	* `sfml2-examples <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [Python 3.2] [64 bit]
-   
-Bindings for SFML2
-^^^^^^^^^^^^^^^^^^
-
-	* `python-sfml2 <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [Python 3.2] [64 bit]
-	* `python3-sfml2 <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [Python 3.2] [64 bit]
-	* `pysfml2-examples <http://openhelbreath.net/python-sfml2/downloads/pySFML2-1.2.0.win64-py3.2.exe>`_ [Python 3.2] [64 bit]
+Packages are available `here <http://python-sfml.org/1.2/downloads>`_
 
 See Ubuntu section to know what you can do with the example package.
 

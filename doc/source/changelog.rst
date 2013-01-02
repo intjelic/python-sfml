@@ -59,6 +59,7 @@ v1.1 -> v1.2
 * :class:`sfml.network.IpAddress` can be compared
 * Ubuntu packages available for 12.04LTS and 12.10
 * Fedora packages available
+* Installer script for Arch Linux users available
 * sfeModule available as add-on
 * Fixe bug in sf.MouseMoveEvent.position
 * Fixe various threading issues in the network module (GIL not released)
@@ -69,10 +70,6 @@ v1.1 -> v1.2
 * Install C/Cython API to code your own extensions using the bindings
 * Window.opened is deprecated, use Window.is_open property instead
 * Improve setup.py to detect Cython and/or force its usage
-
-
-   .. official packages for parabola linux
-   .. installer script for archlinux
 
 .. [#] E.g: **Do not use** sf.Texture.load_from_file(filename) but **sf.Texture.from_file(filename)** instead.
 .. [#] E.g: **Do not use** sf.Texture.image.save_to_file() but **sf.Texture.to_image().to_file()** .
