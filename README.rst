@@ -44,5 +44,5 @@ Contact Information
 ===================
 Feel free to email us with any questions or concerns:
 
-* `Jonathan De Wachter <mailto://dewachter.jonathan@gmail.com>`_
-* `Edwin Marshall <mailto://emarshall85@gmail.com>`_
+* `Jonathan De Wachter <mailto:dewachter.jonathan@gmail.com>`_
+* `Edwin Marshall <mailto:emarshall85@gmail.com>`_
