@@ -11,7 +11,7 @@ Milestones
 1 October 2012 : sfeMovie
    `sfeMovie <http://lucas.soltic.perso.luminy.univmed.fr/sfeMovie/>`_ has been
    ported to Python. For documentation and installation instructions, please
-   consult the `website <http://python-sfml.org/sfemovie>`_. Just as the
+   consult the `website <http://sfemovie.python-sfml.org>`_. Just as the
    original project depends on SFML, the new sfeMovie bindings
    depend on these SFML bindings.
 
@@ -39,5 +39,5 @@ Version 1.3.0 will concentrate on fixing bugs that were unresolved in the
 |release| release and packaging the bindings for various platforms. 
 In addition, it will be the first version to `officially support Mac OS X`_.
 
-.. _officially support Mac OS X: http://github.com/Sonkun/python-sfml2/issues/44
-.. _issues page on github: http://github.com/Sonkun/python-sfml2/issues
+.. _officially support Mac OS X: http://github.com/Sonkun/python-sfml/issues/44
+.. _issues page on github: http://github.com/Sonkun/python-sfml/issues

@@ -11,24 +11,32 @@
 
 import sys
 import os
-from setuptools import setup
-from setuptools.command.test import test
-from setuptools.extension import Extension
+import platform
 
+try:
+	from setuptools import setup
+	from setuptools.command.test import test
+	from setuptools.extension import Extension
+	USE_TEST=True
+except:
+	from distutils.core import setup, Extension
+	USE_TEST=False
+	
 # python 2.* compatability
 try: input = raw_input
 except NameError: pass
 
-class PyTest(test):
-	def finalize_options(self):
-		test.finalize_options(self)
-		self.test_args = []
-		self.test_suite = True
+if USE_TEST:
+	class PyTest(test):
+		def finalize_options(self):
+			test.finalize_options(self)
+			self.test_args = []
+			self.test_suite = True
 
-	def run_tests(self):
-		import pytest
-		errno = pytest.main(self.test_args)
-		sys.exit(errno)
+		def run_tests(self):
+			import pytest
+			errno = pytest.main(self.test_args)
+			sys.exit(errno)
 
 
 # check if cython is needed (if c++ files are generated or not)
@@ -44,6 +52,24 @@ try:
 	USE_CYTHON = NEED_CYTHON or bool(int(os.environ.get('USE_CYTHON', 0)))
 except ValueError:
 	USE_CYTHON = NEED_CYTHON or bool(os.environ.get('USE_CYTHON'))
+
+if USE_CYTHON:
+	try:
+		from Cython.Distutils import build_ext
+	except ImportError:
+		from subprocess import call
+		try:
+			if platform.system() != 'Windows':
+				call(["cython", "--cplus", "src/sfml/x11.pyx", "-Iinclude"])
+			call(["cython", "--cplus", "src/sfml/system.pyx", "-Iinclude"])
+			call(["cython", "--cplus", "src/sfml/window.pyx", "-Iinclude"])
+			call(["cython", "--cplus", "src/sfml/graphics.pyx", "-Iinclude"])
+			call(["cython", "--cplus", "src/sfml/audio.pyx", "-Iinclude"])
+			call(["cython", "--cplus", "src/sfml/network.pyx", "-Iinclude"])
+			USE_CYTHON = False
+		except OSError:
+			print("Please install the correct version of cython and run again.")
+			sys.exit(1)
 
 if USE_CYTHON:
 	x11_source = 'src/sfml/x11.pyx'
@@ -93,14 +119,54 @@ network = extension(
 	[network_source],
 	['sfml-system', 'sfml-network'])
 
+
+# install the C/Cython API in the python directory (its location varies)
+# on Windows: C:\PythonXY\include\pysfml\*.pxd and *.h
+# on Unix:    /usr/include/pythonX.Y/sfml/*.pxd and *.h
+
+# define the include directory
+if platform.system() == 'Windows':
+	include_dir = sys.prefix + "\\include\\pysfml\\"
+else:
+	major, minor, _, _ , _ = sys.version_info
+	include_dir = sys.prefix + "/include/python{0}.{1}/sfml/".format(major, minor)
+
+# list all relevant headers (find in include/ and src/sfml/)
+# key: directory, value: list of headers to place in the directory
+destinations = dict()
+
+for path, subdirs, files in os.walk("include"):
+	# don't forget to remove include/ from the path
+	destination = include_dir + path[8:]
+	destinations[destination] = []
+
+	for name in files:
+		destinations[destination].append(os.path.join(path, name))
+
+for path, subdirs, files in os.walk("src/sfml"):
+	for name in files:
+		if name.endswith(".h"):
+			destinations[include_dir].append(os.path.join(path, name))
+	
+# format data (list of tuple)
+data_files = []
+for key in destinations:
+	data_files.append((key, destinations[key]))
+	
 with open('README.rst', 'r') as f:
 	long_description = f.read()
 
+if platform.system() == 'Windows':
+	ext_modules=[system, window, graphics, audio, network]
+else:
+	ext_modules=[x11, system, window, graphics, audio, network]
+	
 kwargs = dict(
-			name='sfml',
-			ext_modules=[x11, system, window, graphics, audio, network],
+			name='pySFML',
+			ext_modules=ext_modules,
 			package_dir={'': 'src'},
 			packages=['sfml'],
+			data_files=data_files,
 			version='1.2.0',
 			description='Python bindings for SFML',
 			long_description=long_description,
@@ -118,15 +184,13 @@ kwargs = dict(
 						'Topic :: Games/Entertainment',
 						'Topic :: Multimedia',
 						'Topic :: Software Development :: Libraries :: Python Modules'],
-			tests_require=['pytest>=2.3'],
-			cmdclass = {'test': PyTest})
+			cmdclass=dict())
 
+if USE_TEST:
+	kwargs['tests_require']=['pytest>=2.3']
+	kwargs['cmdclass'].update({'test': PyTest})
+			
 if USE_CYTHON:
-	try:
-		from Cython.Distutils import build_ext
-		kwargs['cmdclass'].update({'build_ext': build_ext})
-	except ImportError:
-		print("Please install the correct version of cython and run again.")
-		sys.exit(1)
+	kwargs['cmdclass'].update({'build_ext': build_ext})
 
 setup(**kwargs)

@@ -18,8 +18,8 @@ Getting the Code
 After you've installed `Git <http://git-scm.com/downloads>`_, you may issue
 the following command to obtain the source::
 
-    git clone git@github.com:Sonkun/python-sfml2.git
-    cd python-sfml2
+    git clone git@github.com:Sonkun/python-sfml.git
+    cd python-sfml
 
 The source from the add-ons projects are available as submodules, which may be
 obtained by issuing the following additional commands::
@@ -30,16 +30,15 @@ obtained by issuing the following additional commands::
 Alternatively, you may clone the main project and its submodules all at once
 with the following command::
 
-    git clone --recursive git://github.com:Sonkun/python-sfml2.git
-    cd python-sfml2
+    git clone --recursive git://github.com:Sonkun/python-sfml.git
+    cd python-sfml
 
 Resources
 =========
-
-* Bug Tracker: http://github.com/Sonkun/python-sfml2/issues
-* Documentation: http://openhelbreath.net/python-sfml2/documentation.html
-* Project Page: https://github.com/Sonkun/python-sfml2
-* Website: http://openhelbreath.net/python-sfml2/
+* Website: http://python-sfml.org
+* Project Page: https://github.com/Sonkun/python-sfml
+* Documentation: http://python-sfml.org/1.2
+* Bug Tracker: http://github.com/Sonkun/python-sfml/issues
 
 Contact Information
 ===================
