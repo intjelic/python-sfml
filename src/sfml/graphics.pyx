@@ -893,10 +893,6 @@ cdef class Font:
 		p = <dgraphics.Texture*>&self.p_this.getTexture(character_size)
 		return wrap_texture(p, False)
 
-	@classmethod
-	def get_default_font(cls):
-		return wrap_font(<dgraphics.Font*>&dgraphics.font.getDefaultFont(), False)
-
 cdef Font wrap_font(dgraphics.Font *p, bint d=True):
 	cdef Font r = Font.__new__(Font)
 	r.p_this = p

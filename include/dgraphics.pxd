@@ -17,7 +17,7 @@ from dsystem cimport IntRect, FloatRect
 from dsystem cimport *
 from dwindow cimport *
 
-cimport blendmode, primitivetype, texture, shader, text, font, renderstates
+cimport blendmode, primitivetype, texture, shader, text, renderstates
 
 cdef extern from *:
 	ctypedef unsigned char* const_Uint8_ptr "const unsigned char*"
