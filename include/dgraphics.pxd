@@ -141,7 +141,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void setParameter(char*, Texture&)
 		void setParameter(char*, shader.CurrentTextureType)
 		void bind()
-		void unbind()
 		
 	cdef cppclass RenderStates:
 		RenderStates()

@@ -1128,9 +1128,6 @@ cdef class Shader:
 	
 	def bind(self):
 		self.p_this.bind()
-
-	def unbind(self):
-		self.p_this.unbind()
 		
 	@classmethod
 	def is_available(cls):
