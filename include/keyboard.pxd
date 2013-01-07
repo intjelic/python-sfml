@@ -69,7 +69,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Keyboard":
 		Dash
 		Space
 		Return
-		Back
+		BackSpace
 		Tab
 		PageUp
 		PageDown

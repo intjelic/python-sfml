@@ -868,7 +868,7 @@ cdef class Keyboard:
 	DASH = dwindow.keyboard.Dash
 	SPACE = dwindow.keyboard.Space
 	RETURN = dwindow.keyboard.Return
-	BACK = dwindow.keyboard.Back
+	BACK_SPACE = dwindow.keyboard.BackSpace
 	TAB = dwindow.keyboard.Tab
 	PAGE_UP = dwindow.keyboard.PageUp
 	PAGE_DOWN = dwindow.keyboard.PageDown
