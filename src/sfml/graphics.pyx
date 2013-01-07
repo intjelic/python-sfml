@@ -1854,14 +1854,22 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 		cdef dsystem.IntRect p = self.p_rendertarget.getViewport(view.p_this[0])
 		return intrect_to_rectangle(&p)
 		
-	def convert_coords(self, point, View view=None):
+	def map_pixel_to_coords(self, point, View view=None):
 		cdef dsystem.Vector2f ret
 
-		if not view: ret = self.p_rendertarget.convertCoords(vector2_to_vector2i(point))
-		else: ret = self.p_rendertarget.convertCoords(vector2_to_vector2i(point), view.p_this[0])
+		if not view: ret = self.p_rendertarget.mapPixelToCoords(vector2_to_vector2i(point))
+		else: ret = self.p_rendertarget.mapPixelToCoords(vector2_to_vector2i(point), view.p_this[0])
 
 		return Vector2(ret.x, ret.y)
-			
+		
+	def map_coords_to_pixel(self, point, View view=None):
+		cdef dsystem.Vector2i ret
+
+		if not view: ret = self.p_rendertarget.mapCoordsToPixel(vector2_to_vector2f(point))
+		else: ret = self.p_rendertarget.mapCoordsToPixel(vector2_to_vector2f(point), view.p_this[0])
+
+		return Vector2(ret.x, ret.y)
+		
 	def draw(self, Drawable drawable, RenderStates states=None):
 		if not states: self.p_rendertarget.draw(drawable.p_drawable[0])
 		else: self.p_rendertarget.draw(drawable.p_drawable[0], states.p_this[0])
@@ -1940,14 +1948,22 @@ cdef class RenderWindow(Window):
 		cdef dsystem.IntRect p = self.p_this.getViewport(view.p_this[0])
 		return intrect_to_rectangle(&p)
 		
-	def convert_coords(self, point, View view=None):
+	def map_pixel_to_coords(self, point, View view=None):
 		cdef dsystem.Vector2f ret
 
-		if not view: ret = self.p_this.convertCoords(vector2_to_vector2i(point))
-		else: ret = self.p_this.convertCoords(vector2_to_vector2i(point), view.p_this[0])
+		if not view: ret = self.p_this.mapPixelToCoords(vector2_to_vector2i(point))
+		else: ret = self.p_this.mapPixelToCoords(vector2_to_vector2i(point), view.p_this[0])
 
 		return Vector2(ret.x, ret.y)
+		
+	def map_coords_to_pixel(self, point, View view=None):
+		cdef dsystem.Vector2i ret
 
+		if not view: ret = self.p_this.mapCoordsToPixel(vector2_to_vector2f(point))
+		else: ret = self.p_this.mapCoordsToPixel(vector2_to_vector2f(point), view.p_this[0])
+
+		return Vector2(ret.x, ret.y)
+		
 	def draw(self, Drawable drawable, RenderStates states=None):
 		if not states: self.p_this.draw(drawable.p_drawable[0])
 		else: self.p_this.draw(drawable.p_drawable[0], states.p_this[0])
