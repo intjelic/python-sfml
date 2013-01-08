@@ -1295,9 +1295,9 @@ cdef class TransformableDrawable(Drawable):
 		if self.__class__ == TransformableDrawable:
 			raise NotImplementedError('TransformableDrawable is abstact')
 		
-		if self.__class__ not in [Sprite, Shape, Text]:
-			self.p_transformable = new dgraphics.Transformable()
-			
+	def __init__(self, *args, **kwargs):
+		self.p_transformable = new dgraphics.Transformable()
+
 	property position:
 		def __get__(self):
 			return Vector2(self.p_transformable.getPosition().x, self.p_transformable.getPosition().y)
