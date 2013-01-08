@@ -14,7 +14,7 @@ cdef extern from "<string>" namespace "std":
 	cdef cppclass string:
 		char* c_str()
 
-cdef extern from "error.hpp":
+cdef extern from "pysfml/error.hpp":
 	void replace_error_handler()
 	string get_last_error_message()
 

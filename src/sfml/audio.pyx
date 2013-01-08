@@ -16,15 +16,15 @@ cimport cython
 from libc.stdlib cimport malloc, free
 from libc.string cimport memcpy
 
-from dsystem cimport Int8, Int16, Int32, Int64
-from dsystem cimport Uint8, Uint16, Uint32, Uint64
-from dsystem cimport Vector3f
+from pysfml.dsystem cimport Int8, Int16, Int32, Int64
+from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
+from pysfml.dsystem cimport Vector3f
 
-cimport dsystem, daudio
+from pysfml cimport dsystem, daudio
 
 from sfml.system import SFMLException, pop_error_message, push_error_message
 
-cdef extern from "system.h":
+cdef extern from "pysfml/system.h":
 	cdef class sfml.system.Vector3 [object PyVector3Object]:
 		cdef public object x
 		cdef public object y

@@ -17,9 +17,9 @@ cimport cython
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
-cimport dsystem
-from dsystem cimport Int8, Int16, Int32, Int64
-from dsystem cimport Uint8, Uint16, Uint32, Uint64
+from pysfml cimport dsystem
+from pysfml.dsystem cimport Int8, Int16, Int32, Int64
+from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 __all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds',
 			'milliseconds', 'microseconds', 'Vector2', 'Vector3']

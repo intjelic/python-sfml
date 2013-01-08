@@ -137,7 +137,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 		Context()
 		bint setActive(bint)
 
-cdef extern from "derivablewindow.hpp":
+cdef extern from "pysfml/derivablewindow.hpp":
 	cdef cppclass DerivableWindow:
 		DerivableWindow()
 		DerivableWindow(VideoMode, char*)

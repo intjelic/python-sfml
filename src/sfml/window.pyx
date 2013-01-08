@@ -14,9 +14,9 @@ from cython.operator cimport dereference as deref, preincrement as inc
 
 from libcpp.vector cimport vector
 
-cimport dsystem, dwindow
-from dsystem cimport Int8, Int16, Int32, Int64
-from dsystem cimport Uint8, Uint16, Uint32, Uint64
+from pysfml cimport dsystem, dwindow
+from pysfml.dsystem cimport Int8, Int16, Int32, Int64
+from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 
 __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',

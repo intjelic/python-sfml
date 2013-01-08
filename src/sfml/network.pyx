@@ -15,10 +15,10 @@ from libc.stdlib cimport *
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
-from dsystem cimport Int8, Int16, Int32, Int64
-from dsystem cimport Uint8, Uint16, Uint32, Uint64
+from pysfml.dsystem cimport Int8, Int16, Int32, Int64
+from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
 
-cimport dsystem, dnetwork
+from pysfml cimport dsystem, dnetwork
 
 from sfml.system import SFMLException, pop_error_message, push_error_message
 

@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-cimport dx11
+from pysfml cimport dx11
 
 # This function is needed to flush the screen when we integrate pySFML 
 # to PyQt

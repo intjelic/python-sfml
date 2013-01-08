@@ -14,9 +14,9 @@ from cython.operator cimport preincrement as inc
 
 from libcpp.vector cimport vector
 
-cimport dsystem, dwindow, dgraphics
-from dsystem cimport Int8, Int16, Int32, Int64
-from dsystem cimport Uint8, Uint16, Uint32, Uint64
+from pysfml cimport dsystem, dwindow, dgraphics
+from pysfml.dsystem cimport Int8, Int16, Int32, Int64
+from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
 
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 
 			'Image', 'Texture', 'Glyph', 'Font', 'Shader', 

@@ -92,12 +92,12 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 		SoundBufferRecorder()
 		SoundBuffer& getBuffer()
 		
-cdef extern from "derivablesoundstream.hpp":
+cdef extern from "pysfml/derivablesoundstream.hpp":
 	cdef cppclass DerivableSoundStream:
 		DerivableSoundStream(void*)
 		void initialize(unsigned int, unsigned int)
 		
-cdef extern from "derivablesoundrecorder.hpp":
+cdef extern from "pysfml/derivablesoundrecorder.hpp":
 	cdef cppclass DerivableSoundRecorder:
 		DerivableSoundRecorder(void*)
 		

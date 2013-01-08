@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "derivabledrawable.hpp"
+#include "pysfml/derivabledrawable.hpp"
 #include <iostream>
 
 DerivableDrawable::DerivableDrawable(void* pyobj):

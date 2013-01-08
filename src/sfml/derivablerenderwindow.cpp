@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "derivablerenderwindow.hpp"
+#include "pysfml/derivablerenderwindow.hpp"
 
 
 DerivableRenderWindow::DerivableRenderWindow():

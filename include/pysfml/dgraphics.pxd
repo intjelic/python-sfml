@@ -22,7 +22,7 @@ cimport blendmode, primitivetype, texture, shader, text, renderstates
 cdef extern from *:
 	ctypedef unsigned char* const_Uint8_ptr "const unsigned char*"
 
-cdef extern from "derivabledrawable.hpp":
+cdef extern from "pysfml/derivabledrawable.hpp":
 	cdef cppclass DerivableDrawable:
 		DerivableDrawable(void*)
 
@@ -353,7 +353,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void display()
 		Texture& getTexture()
 		
-cdef extern from "derivablerenderwindow.hpp":
+cdef extern from "pysfml/derivablerenderwindow.hpp":
 	cdef cppclass DerivableRenderWindow:
 		DerivableRenderWindow()
 		DerivableRenderWindow(VideoMode, char*)
