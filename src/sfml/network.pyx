@@ -449,7 +449,7 @@ cdef class FtpListingResponse(FtpResponse):
 	property filenames:
 		def __get__(self):
 			cdef list r = []	
-			cdef vector[string]* filenames = <vector[string]*>&self.p_this.getFilenames()
+			cdef vector[string]* filenames = <vector[string]*>&self.p_this.getListing()
 			cdef vector[string].iterator filename = filenames.begin()
 			cdef string temp
 			while filename != filenames.end():

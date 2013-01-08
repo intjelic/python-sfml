@@ -36,5 +36,5 @@ cdef extern from "SFML/Network.hpp" namespace "sf::Ftp":
 	cdef cppclass ListingResponse:
 		ListingResponse()
 		ListingResponse(Response&, vector[char]&)
-		vector[string]&	getFilenames()
+		vector[string]&	getListing()
 		bint isOk()
