@@ -224,7 +224,7 @@ cdef class Rectangle:
 		p.size = self.size.copy()
 		return p
 		
-cdef class Color:
+cdef public class Color [type PyColorType, object PyColorObject]:
 	BLACK = Color(0, 0, 0)
 	WHITE = Color(255, 255, 255)
 	RED = Color(255, 0, 0)
@@ -1141,7 +1141,7 @@ cdef Shader wrap_shader(dgraphics.Shader *p, bint d=True):
 	return r
 
 
-cdef class RenderStates:
+cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObject]:
 	DEFAULT = wrap_renderstates(<dgraphics.RenderStates*>&dgraphics.renderstates.Default, False)
 	
 	cdef dgraphics.RenderStates *p_this
@@ -1287,8 +1287,7 @@ cdef class Transformable:
 			p[0] = self.p_this.getInverseTransform()
 			return wrap_transform(p)
 
-
-cdef class TransformableDrawable(Drawable):
+cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableType, object PyTransformableDrawableObject]:
 	cdef dgraphics.Transformable *p_transformable
 	
 	def __cinit__(self, *args, **kwargs):
