@@ -120,8 +120,10 @@ if platform.system() == 'Windows':
 	headers.pop('x11.h')
 else:
 	major, minor, _, _ , _ = sys.version_info
+
 	include_dir = os.path.join(
 		sys.prefix, 'include', 'python{0}.{1}'.format(major, minor), 'pysfml')
+
 
 # list all relevant headers (find in include/ and src/sfml/)
 # key: directory, value: list of headers to place in the directory
