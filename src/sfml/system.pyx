@@ -11,7 +11,6 @@
 from __future__ import division
 from numbers import Number, Integral
 from copy import deepcopy
-from warnings import warn
 
 cimport cython
 from libcpp.string cimport string
@@ -212,18 +211,6 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		p.x, p.y = deepcopy(self.x), deepcopy(self.y)
 		return p
 
-	def copy(self):
-		warn("Please use python's builtin copy.copy() function instead.",
-			 DeprecationWarning)
-		return self.__copy__()
-
-	@classmethod
-	def from_tuple(cls, value):
-		warn("Please use python's builtin argument unpacking feature instead: "
-			 "Vector2(*tuple).", DeprecationWarning)
-
-		return cls(value[0], value[1])
-
 
 cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 	cdef public object x
@@ -417,18 +404,6 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		cdef Vector3 p = Vector3.__new__(Vector3)
 		p.x, p.y, p.z = deepcopy(self.x), deepcopy(self.y), deepcopy(self.z)
 		return p
-
-	def copy(self):
-		warn("Please use python's builtin copy.copy() function instead.",
-			 DeprecationWarning)
-		return self.__copy__()
-
-	@classmethod
-	def from_tuple(cls, value):
-		warn("Please use python's builtin argument unpacking feature instead: "
-			 "Vector3(*tuple).", DeprecationWarning)
-
-		return cls(value[0], value[1], value[3])
 
 
 cdef public class Time[type PyTimeType, object PyTimeObject]:

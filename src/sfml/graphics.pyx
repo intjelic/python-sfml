@@ -31,7 +31,6 @@ numeric_type = [int, long, float, long]
 
 import os, tempfile, struct, subprocess, sys
 from copy import copy, deepcopy
-from warnings import warn
 
 from sfml.system import SFMLException
 from sfml.system import pop_error_message, push_error_message
@@ -462,11 +461,6 @@ cdef class Image:
 		raise SFMLException("sf.Pixels's array points on NULL - It would create an empty image")
 
 	@classmethod
-	def create_from_pixels(cls, Pixels pixels):
-		warn('Please use Image.from_pixels(pixels) instead.', DeprecationWarning)
-		return cls.from_pixels(pixels)
-
-	@classmethod
 	def from_file(cls, filename):
 		cdef dgraphics.Image *p = new dgraphics.Image()
 		cdef char* encoded_filename	
@@ -481,11 +475,6 @@ cdef class Image:
 		raise IOError(pop_error_message())
 
 	@classmethod
-	def load_from_file(cls, filename):
-		warn('Please use Image.from_file(filename) instead.', DeprecationWarning)
-		return cls.from_file(filename)
-
-	@classmethod
 	def from_memory(cls, bytes data):
 		cdef dgraphics.Image *p = new dgraphics.Image()
 
@@ -495,11 +484,6 @@ cdef class Image:
 		del p
 		raise IOError(pop_error_message())
 
-	@classmethod
-	def load_from_memory(cls, bytes data):
-		warn('Please use Image.from_memory(data) instead.', DeprecationWarning)
-		return cls.from_memory(data)
-
 	def to_file(self, filename):
 		cdef char* encoded_filename	
 			
@@ -508,11 +492,6 @@ cdef class Image:
 
 		if not self.p_this.saveToFile(encoded_filename): raise IOError(pop_error_message())
 
-	def save_to_file(self, filename):
-		warn('Please use Image.to_file(filename) instead.', DeprecationWarning)
-		return self.to_file(filename)
-
-	
 	property size:
 		def __get__(self):
 			return Vector2(self.p_this.getSize().x, self.p_this.getSize().y)
@@ -631,11 +610,6 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 		raise IOError(pop_error_message())
 
 	@classmethod
-	def load_from_file(cls, filename, area=None):
-		warn('Please use Texture.from_file(filename, area) instead.', DeprecationWarning)
-		return cls.from_file(filename, area)
-
-	@classmethod
 	def from_memory(cls, bytes data, area=None):
 		cdef dgraphics.Texture *p = new dgraphics.Texture()
 		
@@ -649,11 +623,6 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 		raise IOError(pop_error_message())
 
 	@classmethod
-	def load_from_memory(cls, bytes data, area=None):
-		warn('Please use Texture.from_memory(data, area) instead.', DeprecationWarning)
-		return cls.from_memory(data, area)
-		
-	@classmethod
 	def from_image(cls, Image image, area=None):
 		cdef dgraphics.Texture *p = new dgraphics.Texture()
 		
@@ -665,11 +634,6 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 		
 		del p
 		raise IOError(pop_error_message())
-
-	@classmethod
-	def load_from_image(cls, Image image, area=None):
-		warn('Please use Texture.from_image(image, area) instead.', DeprecationWarning)
-		return cls.from_image(image, area)
 
 	property size:
 		def __get__(self):
@@ -702,10 +666,6 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 		p[0] = self.p_this.copyToImage()
 		return wrap_image(p)
 
-	def copy_to_image(self):
-		warn('Please use Texture.to_image() instead.', DeprecationWarning)
-		return self.to_image()
-	
 	def update(self, *args, **kwargs):
 		if len(args) == 0:
 			raise UserWarning("No arguments provided. It requires at least one.")
@@ -858,11 +818,6 @@ cdef class Font:
 		raise IOError(pop_error_message())
 	
 	@classmethod
-	def load_from_file(cls, filename):
-		warn('Please use Font.from_file(data) instead.', DeprecationWarning)
-		return cls.from_file(filename)
-
-	@classmethod
 	def from_memory(cls, bytes data):
 		cdef dgraphics.Font *p = new dgraphics.Font()
 
@@ -871,11 +826,6 @@ cdef class Font:
 			
 		del p
 		raise IOError(pop_error_message())
-
-	@classmethod
-	def load_from_memory(cls, bytes data):
-		warn('Please use Font.from_memory(data) instead.', DeprecationWarning)
-		return cls.from_memory(data)
 
 	def get_glyph(self, Uint32 code_point, unsigned int character_size, bint bold):
 		cdef dgraphics.Glyph *p = new dgraphics.Glyph()
@@ -938,25 +888,7 @@ cdef class Shader:
 			
 		del p
 		raise IOError(pop_error_message())
-		
-	@classmethod
-	def load_from_file(cls, vertex, fragment):
-		warn('Please use Shader.from_file(vertex, fragment) instead.', 
-			 DeprecationWarning)
-		return cls.from_file(vertex, fragment)
 
-	@classmethod
-	def load_vertex_from_file(cls, filename):
-		warn('Please use Shader.from_file(vertex=filename) instead.', 
-			 DeprecationWarning)
-		return cls.from_file(vertex=filename)
-		
-	@classmethod
-	def load_fragment_from_file(cls, filename):
-		warn('Please use Shader.from_file(fragment=filename) instead.', 
-			 DeprecationWarning)
-		return cls.from_file(fragment=filename)
-		
 	@classmethod
 	def from_memory(cls, char* vertex=NULL, char* fragment=NULL):
 		cdef dgraphics.Shader *p = new dgraphics.Shader()
@@ -975,31 +907,6 @@ cdef class Shader:
 			return Shader.vertex_from_memory(vertex)
 		elif fragment: 
 			return Shader.fragment_from_memory(fragment)
-
-	@classmethod
-	def load_from_memory(cls, char* vertex, char* fragment):
-		warn('Please use Shader.from_memory(vertex, fragment) instead.', DeprecationWarning)
-		return cls.from_memory(vertex, fragment)
-		
-	@classmethod
-	def load_vertex_from_memory(cls, char* vertex):
-		warn('Please use Shader.from_memory(vertex=vertex) instead.', DeprecationWarning)
-		return cls.from_memory(vertex=vertex)
-		
-	@classmethod
-	def vertex_from_memory(cls, char* vertex):
-		warn('Please use Shader.from_memory(vertex=vertex) instead.', DeprecationWarning)
-		return cls.from_memory(vertex=vertex)
-		
-	@classmethod
-	def load_fragment_from_memory(cls, char* fragment):
-		warn('Please use Shader.from_memory(fragment=fragment) instead.', DeprecationWarning)
-		return cls.from_memory(fragment=fragment)
-		
-	@classmethod
-	def fragment_from_memory(cls, char* fragment):
-		warn('Please use Shader.from_memory(fragment=fragment) instead.', DeprecationWarning)
-		return cls.from_memory(fragment=fragment)
 
 	def set_parameter(self, *args, **kwargs):
 		if len(args) == 0:

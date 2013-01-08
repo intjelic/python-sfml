@@ -9,7 +9,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 cimport cython
-from warnings import warn
 from cython.operator cimport dereference as deref, preincrement as inc
 
 from libcpp.vector cimport vector
@@ -692,11 +691,6 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 	property is_open:
 		def __get__(self):
 			return self.p_window.isOpen()
-
-	property opened:
-		def __get__(self):
-			warn("Please use 'is_open' instead.", DeprecationWarning)
-			return self.is_open
 
 	property settings:
 		def __get__(self):
