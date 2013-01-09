@@ -21,6 +21,11 @@ cdef extern from "pysfml/graphics.h":
 	cdef class sfml.graphics.TransformableDrawable(Drawable) [object PyTransformableDrawableObject]:
 		cdef dgraphics.Transformable *p_transformable
 
+	cdef class sfml.graphics.RenderTarget [object PyRenderTargetObject]:
+		cdef dgraphics.RenderTarget *p_rendertarget
+		
+	cdef class sfml.graphics.RenderStates [object PyRenderStatesObject]:
+		pass
 
 cdef inline Color wrap_color(dgraphics.Color *p):
 	cdef Color r = Color.__new__(Color)
