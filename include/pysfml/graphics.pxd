@@ -14,7 +14,13 @@ from pysfml cimport dgraphics
 cdef extern from "pysfml/graphics.h":
 	cdef class sfml.graphics.Color [object PyColorObject]:
 		cdef dgraphics.Color *p_this
+	
+	cdef class sfml.graphics.Drawable [object PyDrawableObject]:
+		cdef dgraphics.Drawable *p_drawable
 		
+	cdef class sfml.graphics.TransformableDrawable(Drawable) [object PyTransformableDrawableObject]:
+		cdef dgraphics.Transformable *p_transformable
+
 
 cdef inline Color wrap_color(dgraphics.Color *p):
 	cdef Color r = Color.__new__(Color)
