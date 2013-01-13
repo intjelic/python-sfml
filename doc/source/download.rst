@@ -38,16 +38,26 @@ should feel free to download the source code and compile manually.
 
 Ubuntu
 ------
+.. warning::
+
+	For those who used this package repository, note it has been renamed 
+	from `sfml` to `sfml-stable`. Please delete the old one and add the 
+	new one::
+		
+		sudo add-apt-repository --remove ppa:sonkun/sfml
+		sudo add-apt-repository ppa:sonkun/sfml-stable
+		sudo apt-get update
+		
 Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad::
 
-   sudo add-apt-repository ppa:sonkun/sfml
+   sudo add-apt-repository ppa:sonkun/sfml-stable
    sudo apt-get update
    sudo apt-get install python-sfml
    # or
    sudo apt-get install python3-sfml
 
 .. NOTE::
-   The *sonkun/sfml* ppa provides many packages. The library sfml2.0-rc 
+   The *sonkun/sfml-stable* ppa provides many packages. The library sfml2.0-rc 
    and the binding are included along with their examples. Packages are:
 
       * libsfml
@@ -70,11 +80,11 @@ Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad::
       sfml-X11
       sfml-voip
 
-      pysfml2-sound # will run the same example but it's actually a python script that uses the binding
-      pysfml2-pong
-      pysfml2-sockets
-      pysfml2-spacial-music # not an official sfml example
-      pysfml2-pyqt4         # not an official sfml example 
+      pysfml-sound # will run the same example but it's actually a python script that uses the binding
+      pysfml-pong
+      pysfml-sockets
+      pysfml-spacial-music # not an official sfml example
+      pysfml-pyqt4         # not an official sfml example 
 
 Fedora
 ------
