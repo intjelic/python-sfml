@@ -1862,8 +1862,12 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 		return intrect_to_rectangle(&p)
 		
 	def convert_coords(self, point, View view=None):
-		if not view: self.p_rendertarget.convertCoords(vector2_to_vector2i(point))
-		else: self.p_rendertarget.convertCoords(vector2_to_vector2i(point), view.p_this[0])
+		cdef dsystem.Vector2f ret
+
+		if not view: ret = self.p_rendertarget.convertCoords(vector2_to_vector2i(point))
+		else: ret = self.p_rendertarget.convertCoords(vector2_to_vector2i(point), view.p_this[0])
+
+		return Vector2(ret.x, ret.y)
 			
 	def draw(self, Drawable drawable, RenderStates states=None):
 		if not states: self.p_rendertarget.draw(drawable.p_drawable[0])
@@ -1944,9 +1948,13 @@ cdef class RenderWindow(Window):
 		return intrect_to_rectangle(&p)
 		
 	def convert_coords(self, point, View view=None):
-		if not view: self.p_this.convertCoords(vector2_to_vector2i(point))
-		else: self.p_this.convertCoords(vector2_to_vector2i(point), view.p_this[0])
-			
+		cdef dsystem.Vector2f ret
+
+		if not view: ret = self.p_this.convertCoords(vector2_to_vector2i(point))
+		else: ret = self.p_this.convertCoords(vector2_to_vector2i(point), view.p_this[0])
+
+		return Vector2(ret.x, ret.y)
+
 	def draw(self, Drawable drawable, RenderStates states=None):
 		if not states: self.p_this.draw(drawable.p_drawable[0])
 		else: self.p_this.draw(drawable.p_drawable[0], states.p_this[0])

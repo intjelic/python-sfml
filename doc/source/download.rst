@@ -42,33 +42,33 @@ Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad::
 
    sudo add-apt-repository ppa:sonkun/sfml
    sudo apt-get update
-   sudo apt-get install python-sfml2
+   sudo apt-get install python-sfml
    # or
-   sudo apt-get install python3-sfml2
+   sudo apt-get install python3-sfml
 
 .. NOTE::
    The *sonkun/sfml* ppa provides many packages. The library sfml2.0-rc 
    and the binding are included along with their examples. Packages are:
 
-      * libsfml2
-      * libsfml2-dev
-      * libsfml2-dbg
-      * libsfml2-doc
-      * sfml2-examples
+      * libsfml
+      * libsfml-dev
+      * libsfml-dbg
+      * libsfml-doc
+      * sfml-examples
 
-      * python-sfml2
-      * python3-sfml2
-      * python-sfml2-doc
-      * pysfml2-examples
+      * python-sfml
+      * python3-sfml
+      * python-sfml-doc
+      * pysfml-examples
 
    Once example packages are installed you may want to launch them to 
    see if the library works well with your graphics card. To do that  
    just run the following commands. ::
 
-      sfml2-sound # will run the example 'sound'
-      sfml2-shader
-      sfml2-x11
-      sfml2-voip
+      sfml-sound # will run the example 'sound'
+      sfml-shader
+      sfml-X11
+      sfml-voip
 
       pysfml2-sound # will run the same example but it's actually a python script that uses the binding
       pysfml2-pong
