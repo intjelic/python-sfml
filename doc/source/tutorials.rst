@@ -231,9 +231,9 @@ both :class:`.Drawable` and :class:`.Transformable`.
    That way your class inherits from properties such `position`, `rotation` 
    etc and their methods `move()`, `rotate()` etc. ::
 
-      class MyDrawable(sfTransformableDrawable):
+      class MyDrawable(sf.TransformableDrawable):
           def __init__(self):
-              sfDrawable.__init__(self)
+              sf.Drawable.__init__(self)
               
           def draw(self, target, states):
               states.transform.combine(self.transformable.transform)
