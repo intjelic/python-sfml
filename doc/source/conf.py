@@ -215,4 +215,5 @@ man_pages = [
      [u'Jonathan De Wachter'], 1)
 ]
 
-intersphinx_mapping = {'sfemovie': ('http://sfemovie.python-sfml.org/1.0', None)}
+intersphinx_mapping = {'sfemovie': ('http://sfemovie.python-sfml.org/1.0', None),
+                       'python': ('http://docs.python.org/3.3', None)}
