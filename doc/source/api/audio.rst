@@ -1,7 +1,7 @@
 Audio
 =====
+.. module:: sfml.audio
 .. contents:: :local:
-.. py:module:: sfml.audio
 
 Listener
 ^^^^^^^^
@@ -660,7 +660,8 @@ Music
 
    As a sound stream, a music is played in its own thread in order not 
    to block the rest of the program. This means that you can leave the 
-   music alone after calling :meth:`play`, it will manage itself very well.
+   music alone after calling :meth:`~SoundStream.play`, it will manage 
+   itself very well.
 
       Usage example::
 
