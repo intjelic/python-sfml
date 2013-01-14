@@ -1,9 +1,9 @@
 Window
 ======
+.. module:: sfml.window
 .. contents:: :local:
    :depth: 1
    
-.. py:module:: sfml.window
 
 Style
 ^^^^^

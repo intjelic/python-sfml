@@ -1,7 +1,7 @@
 Network
 =======
+.. module:: sfml.network
 .. contents:: :local:
-.. py:module:: sfml.network
 
 IpAddress
 ^^^^^^^^^

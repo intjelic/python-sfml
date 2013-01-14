@@ -1,7 +1,7 @@
 System
 ======
+.. module:: sfml.system
 .. contents:: :local:
-.. py:module:: sfml.system
 
 Time
 ^^^^
