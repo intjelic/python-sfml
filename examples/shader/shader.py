@@ -50,7 +50,7 @@ class Pixelate(Effect):
 	def on_load(self):
 		try:
 			# load the texture and initialize the sprite
-			self.texture = sf.Texture.load_from_file("data/background.jpg")
+			self.texture = sf.Texture.from_file("data/background.jpg")
 			self.sprite = sf.Sprite(self.texture)
 			
 			# load the shader
@@ -150,10 +150,10 @@ class Edge(Effect):
 		self.surface.smooth = True
 		
 		# load the textures
-		self.background_texture = sf.Texture.load_from_file("data/sfml.png")
+		self.background_texture = sf.Texture.from_file("data/sfml.png")
 		self.background_texture.smooth = True
 		
-		self.entity_texture = sf.Texture.load_from_file("data/devices.png")
+		self.entity_texture = sf.Texture.from_file("data/devices.png")
 		self.entity_texture.smooth = True
 		
 		# initialize the background sprite
@@ -210,7 +210,7 @@ if __name__ == "__main__":
 	
 	# create the message background
 	try:
-		text_background_texture = sf.Texture.load_from_file("data/text-background.png")
+		text_background_texture = sf.Texture.from_file("data/text-background.png")
 	
 	except IOError as error:
 		print("An error occured: {0}".format(error))
@@ -222,7 +222,7 @@ if __name__ == "__main__":
 	
 	# load the messages font
 	try:
-		font = sf.Font.load_from_file("data/sansation.ttf")
+		font = sf.Font.from_file("data/sansation.ttf")
 	
 	except IOError as error:
 		print("An error occured: {0}".format(error))
