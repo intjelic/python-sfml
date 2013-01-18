@@ -101,8 +101,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void update(Image&, unsigned int, unsigned int)
 		void update(Window&)
 		void update(Window&, unsigned int, unsigned int)
-		void bind()
-		void bind(texture.CoordinateType)
 		void setSmooth(bint)
 		bint isSmooth()
 		void setRepeated(bint)
@@ -140,7 +138,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void setParameter(char*, Transform&)
 		void setParameter(char*, Texture&)
 		void setParameter(char*, shader.CurrentTextureType)
-		void bind()
 		
 	cdef cppclass RenderStates:
 		RenderStates()

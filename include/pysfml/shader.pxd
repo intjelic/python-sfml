@@ -8,6 +8,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
+from pysfml.dgraphics cimport Shader
+
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
 	cdef struct CurrentTextureType:
 		pass
@@ -17,5 +20,6 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
 	cdef enum Type:
 		Vertex
 		Fragment
-		
+
 	cdef bint isAvailable()
+	cdef void bind(Shader*)

@@ -721,8 +721,12 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 			x, y = position
 			self.p_this.update(window.p_window[0], <unsigned int>x, <unsigned int>y)
 
-	def bind(self, dgraphics.texture.CoordinateType coordinate_type=dgraphics.texture.Normalized):
-		self.p_this.bind(coordinate_type)
+	@classmethod
+	def bind(cls, Texture texture=None, dgraphics.texture.CoordinateType coordinate_type=dgraphics.texture.Normalized):
+		if not texture:
+			dgraphics.texture.bind(NULL, coordinate_type)
+		else:
+			dgraphics.texture.bind(texture.p_this, coordinate_type)
 
 	property smooth:
 		def __get__(self):
@@ -1033,8 +1037,12 @@ cdef class Shader:
 		
 		self.p_this.setParameter(encoded_name, dgraphics.shader.CurrentTexture)
 	
-	def bind(self):
-		self.p_this.bind()
+	@classmethod
+	def bind(cls, Shader shader=None):
+		if not shader:
+			dgraphics.shader.bind(NULL)
+		else:
+			dgraphics.shader.bind(shader.p_this)
 		
 	@classmethod
 	def is_available(cls):
