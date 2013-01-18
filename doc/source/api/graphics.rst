@@ -1546,13 +1546,6 @@ Shader
          # ... render OpenGL geometry ...
          shader.unbind()
 
-   .. py:method:: unbind()
-   
-      Unbind the shader (deactivate it)
-
-      This function is normally for internal use only, unless you want 
-      to use the shader with a custom OpenGL rendering instead of a 
-      pySFML drawable.
       
 RenderStates
 ^^^^^^^^^^^^
