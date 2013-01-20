@@ -8,6 +8,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+"""
+.. module:: system
+	:platform: Unix, Windows
+
+.. moduleauthor:: Jonathan De Wachter <dewachter.jonathan@gmail.com>
+
+"""
+
 from __future__ import division
 from numbers import Number, Integral
 from copy import deepcopy
@@ -432,11 +440,23 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 
 
 cdef public class Time[type PyTimeType, object PyTimeObject]:
+	"""
+	Represents a time value.
+
+	:cvar Time ZERO: predefined "zero" time value
+	:ivar Time seconds: the time value in seconds
+	:ivar Time milliseconds: the time value in milliseconds
+	:ivar Time microseconds: return the time in microseconds
+
+
+	"""
+
 	ZERO = wrap_time(<dsystem.Time*>&dsystem.time.Zero)
 
 	cdef dsystem.Time *p_this
 
 	def __init__(self):
+		"""Construct a :class:`Time` equivalent to :const:`ZERO`"""
 		self.p_this = new dsystem.Time()
 
 	def __dealloc__(self):
@@ -496,6 +516,7 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 			self.p_this[0] = dsystem.microseconds(microseconds)
 
 	def reset(self):
+		"""reset the time to 0."""
 		self.milliseconds = 0
 
 	def __copy__(self):
