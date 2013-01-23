@@ -69,7 +69,7 @@ w, h = video_size
 window = sf.RenderWindow(sf.VideoMode(w, h, bpp), 'pySFML - Image preview')
 window.framerate_limit = 60
 
-texture = sf.Texture.load_from_image(image)
+texture = sf.Texture.from_image(image)
 sprite = sf.Sprite(texture)
 
 while window.is_open:
