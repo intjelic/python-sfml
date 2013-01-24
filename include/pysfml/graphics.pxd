@@ -53,3 +53,12 @@ cdef inline Color wrap_color(dgraphics.Color *p):
 	cdef Color r = Color.__new__(Color)
 	r.p_this = p
 	return r
+
+cdef inline ConvexShape wrap_convexshape(dgraphics.ConvexShape *p):
+	cdef ConvexShape r = ConvexShape.__new__(ConvexShape)
+	r.p_this = p
+	r.p_drawable = <dgraphics.Drawable*>p
+	r.p_transformable = <dgraphics.Transformable*>p
+	r.p_shape = <dgraphics.Shape*>p
+	
+	return r

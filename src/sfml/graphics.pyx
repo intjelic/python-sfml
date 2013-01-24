@@ -1526,7 +1526,16 @@ cdef public class ConvexShape(Shape)[type PyConvexShapeType, object PyConvexShap
 	def set_point(self, unsigned int index, point):
 		self.p_this.setPoint(index, vector2_to_vector2f(point))
 
-		
+
+cdef api object wrap_convexshape(dgraphics.ConvexShape *p):
+	cdef ConvexShape r = ConvexShape.__new__(ConvexShape)
+	r.p_this = p
+	r.p_drawable = <dgraphics.Drawable*>p
+	r.p_transformable = <dgraphics.Transformable*>p
+	r.p_shape = <dgraphics.Shape*>p
+	
+	return r
+	
 cdef class RectangleShape(Shape):
 	cdef dgraphics.RectangleShape *p_this
 	
