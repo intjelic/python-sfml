@@ -21,7 +21,11 @@ cdef extern from "pysfml/graphics.h":
 	
 	cdef class sfml.graphics.Image [object PyImageObject]:
 		cdef dgraphics.Image *p_this
-
+	
+	cdef class sfml.graphics.Texture [object PyTextureObject]:
+		cdef dgraphics.Texture *p_this
+		cdef bint               delete_this
+		
 	cdef class sfml.graphics.Drawable [object PyDrawableObject]:
 		cdef dgraphics.Drawable *p_drawable
 		
