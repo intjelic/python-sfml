@@ -8,13 +8,20 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-
+from pysfml.system cimport Vector2
 from pysfml cimport dgraphics
 
 cdef extern from "pysfml/graphics.h":
+	cdef class sfml.graphics.Rectangle [object PyRectangleObject]:
+		cdef public Vector2 position
+		cdef public Vector2 size
+	
 	cdef class sfml.graphics.Color [object PyColorObject]:
 		cdef dgraphics.Color *p_this
 	
+	cdef class sfml.graphics.Image [object PyImageObject]:
+		cdef dgraphics.Image *p_this
+
 	cdef class sfml.graphics.Drawable [object PyDrawableObject]:
 		cdef dgraphics.Drawable *p_drawable
 		

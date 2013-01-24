@@ -108,7 +108,7 @@ class PrimitiveType:
 	QUADS = dgraphics.primitivetype.Quads
 	
 	
-cdef class Rectangle:
+cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
 	cdef public Vector2 position
 	cdef public Vector2 size
 
@@ -408,7 +408,7 @@ cdef Transformable wrap_transformable(dgraphics.Transformable *p):
 	return r
 
 
-cdef class Image:
+cdef public class Image[type PyImageType, object PyImageObject]:
 	cdef dgraphics.Image *p_this
 	
 	def __init__(self):
