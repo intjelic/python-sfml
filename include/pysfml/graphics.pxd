@@ -27,7 +27,18 @@ cdef extern from "pysfml/graphics.h":
 		
 	cdef class sfml.graphics.TransformableDrawable(Drawable) [object PyTransformableDrawableObject]:
 		cdef dgraphics.Transformable *p_transformable
-
+		
+	cdef class sfml.graphics.Sprite(TransformableDrawable) [object PySpriteObject]:
+		cdef dgraphics.Sprite *p_this
+		cdef Texture           m_texture
+		
+	cdef class sfml.graphics.Shape(TransformableDrawable) [object PyShapeObject]:
+		cdef dgraphics.Shape *p_shape
+		cdef Texture          m_texture
+		
+	cdef class sfml.graphics.ConvexShape(Shape) [object PyConvexShapeObject]:
+		cdef dgraphics.ConvexShape *p_this
+	
 	cdef class sfml.graphics.RenderTarget [object PyRenderTargetObject]:
 		cdef dgraphics.RenderTarget *p_rendertarget
 		

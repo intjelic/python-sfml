@@ -1265,7 +1265,8 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
 		def __get__(self):
 			return wrap_transformable(self.p_transformable)
 
-cdef class Sprite(TransformableDrawable):
+
+cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpriteObject]:
 	cdef dgraphics.Sprite *p_this
 	cdef Texture           m_texture
 	
@@ -1403,7 +1404,7 @@ cdef class Text(TransformableDrawable):
 		return Vector2(p.x, p.y)
 
 
-cdef class Shape(TransformableDrawable):
+cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeObject]:
 	cdef dgraphics.Shape *p_shape
 	cdef Texture          m_texture
 	
@@ -1503,8 +1504,7 @@ cdef class CircleShape(Shape):
 		def __set__(self, unsigned int count):
 			self.p_this.setPointCount(count)
 
-
-cdef class ConvexShape(Shape):
+cdef public class ConvexShape(Shape)[type PyConvexShapeType, object PyConvexShapeObject]:
 	cdef dgraphics.ConvexShape *p_this
 	
 	def __cinit__(self, unsigned int point_count=0):
