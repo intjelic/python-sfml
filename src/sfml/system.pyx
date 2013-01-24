@@ -406,6 +406,13 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return p
 
 
+cdef api object wrap_vector2f(dsystem.Vector2f* p):
+	cdef Vector2 r = Vector2.__new__(Vector2)
+	r.x = p.x
+	r.y = p.y
+	return r
+
+
 cdef public class Time[type PyTimeType, object PyTimeObject]:
 	ZERO = wrap_time(<dsystem.Time*>&dsystem.time.Zero)
 
@@ -532,3 +539,4 @@ def microseconds(Int64 amount):
 	cdef dsystem.Time* p = new dsystem.Time()
 	p[0] = dsystem.microseconds(amount)
 	return wrap_time(p)
+

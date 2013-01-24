@@ -19,3 +19,8 @@ cdef inline object wrap_time(dsystem.Time* p):
 	cdef Time r = Time.__new__(Time)
 	r.p_this = p
 	return r
+
+cdef extern from "pysfml/system.h":
+	cdef class sfml.system.Vector2 [object PyVector2Object]:
+		cdef public object x
+		cdef public object y
