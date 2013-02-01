@@ -312,7 +312,7 @@ cdef public class Color [type PyColorType, object PyColorObject]:
 		p.r, p.g, p.b, p.a = self
 		return p
 
-cdef Color wrap_color(dgraphics.Color *p):
+cdef api object wrap_color(dgraphics.Color *p):
 	cdef Color r = Color.__new__(Color)
 	r.p_this = p
 	return r
