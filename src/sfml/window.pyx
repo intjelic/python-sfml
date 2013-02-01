@@ -54,7 +54,8 @@ cdef class Style:
 	FULLSCREEN = dwindow.style.Fullscreen
 	DEFAULT = dwindow.style.Default
 
-cdef class Event:
+
+cdef public class Event[type PyEventType, object PyEventObject]:
 	PRESSED = True
 	RELEASED = False
 	GAINED = True
@@ -89,6 +90,7 @@ cdef class Event:
 
 		def __set__(self, dwindow.event.EventType type):
 			self.p_this.type = type
+
 
 cdef Event wrap_event(dwindow.Event *p):
 	cdef Event event
