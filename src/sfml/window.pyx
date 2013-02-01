@@ -675,7 +675,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 				(<dwindow.DerivableWindow*>self.p_window).set_pyobj(<void*>self)
 
 	def __dealloc__(self):
-		if self.__class__.__name__ != 'RenderWindow':
+		if self.__class__.__name__ == 'Window':
 			del self.p_window
 
 	def recreate(self, VideoMode mode, title, Uint32 style=dwindow.style.Default, ContextSettings settings=None):
