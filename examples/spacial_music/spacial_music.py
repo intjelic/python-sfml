@@ -8,99 +8,114 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
 import sfml as sf
 
 def main(song):
-    window = sf.RenderWindow(sf.VideoMode(800, 800), "pySFML - Spacial Music")
-    window.framerate_limit = 60
-    
-    # load a song and make sure it can be spacialized
-    try:
-        music = sf.Music.from_file(song)
-        
-    except IOError as error:
-        print("An error occured during the loading data process:\n" + str(error))
-        exit()
+	window = sf.RenderWindow(sf.VideoMode(600, 600), "pySFML - Spacial Music")
+	window.framerate_limit = 60
 
-    if music.channel_count != 1:
-        print("Only sounds with one channel (mono sounds) can be spatialized.")
-        print("This song ({0}) has {1} channels.".format(SONG, music.channels_count))
-        exit()
+	# load one font, one song and two textures
+	try:
+		font = sf.Font.from_file("data/sansation.ttf")
+		music = sf.Music.from_file(song)
+		
+		texture = sf.Texture.from_file("data/speaker.gif")
+		speaker = sf.Sprite(texture)
+		speaker.position = -texture.size // 2
+		print(speaker.position)
+		
+		texture = sf.Texture.from_file("data/head_kid.png")
+		hears = sf.Sprite(texture)
+		hears.origin = texture.size // 2
+		
+	except IOError:
+		exit(1)
+			
+	# create a text that display instructions
+	instructions = "Up/Down        Move hears along Y axis\n"
+	instructions += "Left/Right       Move hears along X axis\n"
+	instructions += "Plus/Minus     Move hears along Z axis"
+	instructions = sf.Text(instructions, font, 12)
+	instructions.position = (70, 250)
+	instructions.color = sf.Color.BLACK
 
-    # by default, the music is not relative to the listener
-    #music.relative_to_listener = True
-    
-    hears_position = sf.Vector3(25, 25, 0)
-    speaker_position = sf.Vector3(350, 348, 0)
-    
-    sf.Listener.set_position(hears_position)
-    music.position = speaker_position
-    
-    try:
-        hears_texture = sf.Texture.from_file("data/head_kid.png")
-        speaker_texture = sf.Texture.from_file("data/speaker.gif")
-        
-    except IOError as error:
-        print("An error occured during the loading data process:\n" + str(error))
-        exit()
-        
-    hears = sf.Sprite(hears_texture)
-    x, y, _ = hears_position
-    hears.position = sf.Vector2(x, y)
-    
-    speaker = sf.Sprite(speaker_texture)
-    x, y, _ = speaker_position
-    speaker.position = sf.Vector2(x, y)
-    
-    music.min_distance = 200
-    music.attenuation = 1
-    
-    music.loop = True
-    music.play()
-    
-    loop = True
-    while loop:
-        for event in window.events:
-            if type(event) is sf.CloseEvent:
-                loop = False
-                
-            elif type(event) is sf.KeyEvent and event.pressed:
-                if event.code is sf.Keyboard.UP:
-                    hears_position.y -= 5
-                    sf.Listener.set_position(hears_position)
-                    
-                    x, y, _ = hears_position
-                    hears.position = (x, y)
-                    
-                elif event.code is sf.Keyboard.DOWN:
-                    hears_position.y += 5
-                    sf.Listener.set_position(hears_position)
-                    
-                    x, y, _ = hears_position
-                    hears.position = (x, y)
-                    
-                elif event.code is sf.Keyboard.LEFT:
-                    hears_position.x -= 5
-                    sf.Listener.set_position(hears_position)
-                    
-                    x, y, _ = hears_position
-                    hears.position = (x, y)
-                    
-                elif event.code is sf.Keyboard.RIGHT:
-                    hears_position.x += 5
-                    sf.Listener.set_position(hears_position)
-                    
-                    x, y, _ = hears_position
-                    hears.position = (x, y)
+	# make sure the song is monothread so it can be spacialized
+	if music.channel_count != 1:
+		print("Only sounds with one channel (mono sounds) can be spatialized.")
+		print("This song ({0}) has {1} channels.".format(SONG, music.channels_count))
+		exit(1)
+
+	# setup the music properties
+	music.relative_to_listener = False
+	music.min_distance = 200
+	music.attenuation = 1
+
+	# initialize some values before entering the main loop
+	position = sf.Vector3(-250, -250, 0)
+	sf.Listener.set_position(position)	
+	
+	x, y, _ = position
+	hears.position = (x, y)
+	
+	running = True	
+
+	# move the view to make coord (0, 0) appears on the center of the screen
+	window.default_view.move(-300, -300)
+
+	# start the music before entering the main loop
+	music.loop = True
+	music.play()
+		
+	# start the main loop
+	while running:
+		for event in window.events:
+			if type(event) is sf.CloseEvent:
+				running = False
+				
+			elif type(event) is sf.KeyEvent and event.pressed:
+				if event.code is sf.Keyboard.UP:
+					position.y -= 5
+					
+				elif event.code is sf.Keyboard.DOWN:
+					position.y += 5
+					
+				elif event.code is sf.Keyboard.LEFT:
+					position.x -= 5
+					
+				elif event.code is sf.Keyboard.RIGHT:
+					position.x += 5
+				
+				elif event.code is sf.Keyboard.ADD:
+					if position.z < 400:
+						position.z += 5
+				
+				elif event.code is sf.Keyboard.SUBTRACT:
+					if position.z > -400:  
+						position.z -= 5
+				
+				# update the listener and the hears position
+				sf.Listener.set_position(position)
+				
+				x, y, z = position
+				hears.position = (x, y)
+				hears.ratio = (1, 1) + sf.Vector2(z, z)/400.
+				
+		# clear screen, draw images and text and display them
+		window.clear(sf.Color.WHITE)
+		
+		if position.z >= 0:
+			window.draw(speaker)
+			window.draw(hears)
+		else:
+			window.draw(hears)
+			window.draw(speaker)
+			
+		window.draw(instructions)
+		window.display()
+		
+	window.close()
 
 
-        window.clear(sf.Color.WHITE)
-        window.draw(speaker)
-        window.draw(hears)
-        window.display()
-        
-    window.close()
-    
-    
 if __name__ == "__main__":
     main("data/mario.flac")
