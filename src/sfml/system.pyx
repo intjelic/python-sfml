@@ -11,6 +11,7 @@
 from __future__ import division
 from numbers import Number, Integral
 from copy import deepcopy
+import threading
 
 cimport cython
 from libcpp.string cimport string
@@ -20,8 +21,10 @@ from pysfml cimport dsystem
 from pysfml.dsystem cimport Int8, Int16, Int32, Int64
 from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
 
+
 __all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds',
-			'milliseconds', 'microseconds', 'Vector2', 'Vector3']
+			'milliseconds', 'microseconds', 'Vector2', 'Vector3', 
+			'Thread', 'Lock', 'Mutex']
 
 dsystem.replace_error_handler()
 
@@ -540,3 +543,41 @@ def microseconds(Int64 amount):
 	p[0] = dsystem.microseconds(amount)
 	return wrap_time(p)
 
+
+cdef class Mutex:
+	cdef object _lock
+	
+	def __cinit__(self):
+		self._lock = threading.RLock()
+		
+	def lock(self):
+		self._lock.acquire()
+		
+	def unlock(self):
+		self._lock.release()
+
+cdef class Lock:
+	cdef Mutex _mutex
+	
+	def __init__(self, Mutex mutex):
+		self._mutex = mutex
+		mutex.lock()
+		
+	def __dealloc__(self):
+		self._mutex.unlock()
+	
+
+cdef class Thread:
+	cdef object _thread
+	
+	def __init__(self, functor, *args, **kwargs):
+		self._thread = threading.Thread(target=functor, args=args, kwargs=kwargs)
+		
+	def launch(self): 
+		self._thread.start()
+	
+	def wait(self): 
+		self._thread.join()
+		
+	def terminate(self):
+		self._thread._Thread__stop()
