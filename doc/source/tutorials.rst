@@ -320,3 +320,11 @@ Easily attach an icon to your window ::
 
 	icon = sf.Image.from_file("data/icon.bmp")
 	window.icon = icon.pixels
+
+
+Officials tutorials
+-------------------
+.. toctree::
+   :maxdepth: 1
+   
+   tutorials/threads
