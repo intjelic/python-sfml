@@ -29,18 +29,10 @@ cdef extern from "DerivableSoundRecorder.hpp":
 	cdef cppclass DerivableSoundRecorder:
 		DerivableSoundRecorder(void*)
 
-
+from pysfml.system cimport Vector3, Time
 from sfml.system import SFMLException, pop_error_message, push_error_message
 
-cdef extern from "pysfml/system.h":
-	cdef class sfml.system.Vector3 [object PyVector3Object]:
-		cdef public object x
-		cdef public object y
-		cdef public object z
-		
-	cdef class sfml.system.Time [object PyTimeObject]:
-		cdef sf.Time *p_this
-		
+
 cdef Vector3 vector3f_to_vector3(sf.Vector3f* vector):
 	return Vector3(vector.x, vector.y, vector.z)
 

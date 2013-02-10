@@ -50,31 +50,8 @@ from copy import copy, deepcopy
 from sfml.system import SFMLException
 from sfml.system import pop_error_message, push_error_message
 
-cdef extern from "system.h":
-	cdef class sfml.system.Vector2 [object PyVector2Object]:
-		cdef public object x
-		cdef public object y
-			
-	cdef class sfml.system.Vector3 [object PyVector3Object]:
-		cdef public object x
-		cdef public object y
-		cdef public object z
-
-cdef extern from "window.h":
-	cdef class sfml.window.Window [object PyWindowObject]:
-		cdef sf.Window *p_window
-		
-	cdef class sfml.window.VideoMode [object PyVideoModeObject]:
-		cdef sf.VideoMode *p_this
-		
-	cdef class sfml.window.ContextSettings [object PyContextSettingsObject]:
-		cdef sf.ContextSettings *p_this
-		
-	cdef class sfml.window.Pixels [object PyPixelsObject]:
-		cdef Uint8          *p_array
-		cdef unsigned int    m_width
-		cdef unsigned int    m_height
-
+from pysfml.system cimport Vector2, Vector3
+from pysfml.window cimport VideoMode, ContextSettings, Pixels, Window
 
 cdef Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 	cdef Pixels r = Pixels.__new__(Pixels)

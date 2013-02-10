@@ -36,15 +36,7 @@ __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
 			'Window', 'Keyboard', 'Joystick', 'Mouse', 'Context']
 
 
-cdef extern from "system.h":
-	cdef class sfml.system.Vector2 [object PyVector2Object]:
-		cdef public object x
-		cdef public object y
-
-	cdef class sfml.system.Vector3 [object PyVector3Object]:
-		cdef public object x
-		cdef public object y
-		cdef public object z
+from pysfml.system cimport Vector2, Vector3
 
 
 # utility functions for sf.Vector2

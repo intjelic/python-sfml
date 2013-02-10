@@ -19,14 +19,9 @@ cimport libcpp.sfml as sf
 from libcpp.sfml cimport Int8, Int16, Int32, Int64
 from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 
-
+from pysfml.system cimport Time
 from sfml.system import SFMLException, pop_error_message, push_error_message
 
-cdef extern from "system.h":
-
-	cdef class sfml.system.Time [object PyTimeObject]:
-		cdef sf.Time *p_this
-		
 
 cdef class IpAddress:
 	cdef sf.IpAddress *p_this
