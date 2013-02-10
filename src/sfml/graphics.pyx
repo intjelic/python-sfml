@@ -1208,9 +1208,9 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
 	def __cinit__(self, *args, **kwargs):
 		if self.__class__ == TransformableDrawable:
 			raise NotImplementedError('TransformableDrawable is abstact')
-		
-	def __init__(self, *args, **kwargs):
-		self.p_transformable = new dgraphics.Transformable()
+
+		if self.__class__ not in [Sprite, Shape, Text]:
+			self.p_transformable = new dgraphics.Transformable()
 
 	property position:
 		def __get__(self):
