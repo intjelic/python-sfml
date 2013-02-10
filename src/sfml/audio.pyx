@@ -15,11 +15,10 @@ cimport cython
 from libc.stdlib cimport malloc, free
 from libc.string cimport memcpy
 
-from pysfml.dsystem cimport Int8, Int16, Int32, Int64
-from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
-from pysfml.dsystem cimport Vector3f
-
-from pysfml cimport dsystem, daudio
+cimport libcpp.sfml as sf
+from libcpp.sfml cimport Int8, Int16, Int32, Int64
+from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
+from libcpp.sfml cimport Vector3f
 
 from sfml.system import SFMLException, pop_error_message, push_error_message
 
@@ -30,16 +29,16 @@ cdef extern from "pysfml/system.h":
 		cdef public object z
 		
 	cdef class sfml.system.Time [object PyTimeObject]:
-		cdef dsystem.Time *p_this
+		cdef sf.Time *p_this
 		
-cdef Vector3 vector3f_to_vector3(dsystem.Vector3f* vector):
+cdef Vector3 vector3f_to_vector3(sf.Vector3f* vector):
 	return Vector3(vector.x, vector.y, vector.z)
 
-cdef dsystem.Vector3f vector3_to_vector3f(vector):
+cdef sf.Vector3f vector3_to_vector3f(vector):
 	x, y, z = vector
-	return dsystem.Vector3f(x, y, z)
+	return sf.Vector3f(x, y, z)
 
-cdef Time wrap_time(dsystem.Time* p):
+cdef Time wrap_time(sf.Time* p):
 	cdef Time r = Time.__new__(Time)
 	r.p_this = p
 	return r
@@ -51,31 +50,31 @@ cdef class Listener:
 
 	@classmethod
 	def get_global_volume(cls):
-		return daudio.listener.getGlobalVolume()
+		return sf.listener.getGlobalVolume()
 
 	@classmethod
 	def set_global_volume(cls, float volume):
-		daudio.listener.setGlobalVolume(volume)
+		sf.listener.setGlobalVolume(volume)
 
 	@classmethod
 	def get_position(cls):
-		cdef Vector3f v = daudio.listener.getPosition()
+		cdef Vector3f v = sf.listener.getPosition()
 		return vector3f_to_vector3(&v)
 		
 	@classmethod
 	def set_position(cls, position):
 		x, y, z = position
-		daudio.listener.setPosition(x, y, z)
+		sf.listener.setPosition(x, y, z)
 
 	@classmethod
 	def get_direction(cls):
-		cdef Vector3f v = daudio.listener.getDirection()
+		cdef Vector3f v = sf.listener.getDirection()
 		return vector3f_to_vector3(&v)
 
 	@classmethod
 	def set_direction(cls, direction):
 		x, y, z = direction
-		daudio.listener.setDirection(x, y, z)
+		sf.listener.setDirection(x, y, z)
 
 cdef class Chunk:
 	cdef Int16* m_samples
@@ -140,7 +139,7 @@ cdef api object wrap_chunk(Int16* samples, unsigned int sample_count, bint delet
 	return r
 
 cdef class SoundBuffer:
-	cdef daudio.SoundBuffer *p_this
+	cdef sf.SoundBuffer *p_this
 	cdef bint                delete_this
 	
 	def __init__(self):
@@ -154,7 +153,7 @@ cdef class SoundBuffer:
 
 	@classmethod
 	def from_file(cls, filename):
-		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
+		cdef sf.SoundBuffer *p = new sf.SoundBuffer()
 		cdef char* encoded_filename
 		
 		encoded_filename_temporary = filename.encode('UTF-8')	
@@ -167,7 +166,7 @@ cdef class SoundBuffer:
 
 	@classmethod
 	def from_memory(cls, bytes data):
-		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
+		cdef sf.SoundBuffer *p = new sf.SoundBuffer()
 		
 		if p.loadFromMemory(<char*>data, len(data)): return wrap_soundbuffer(p)
 
@@ -176,7 +175,7 @@ cdef class SoundBuffer:
 
 	@classmethod
 	def from_samples(cls, Chunk samples, unsigned int channel_count, unsigned int sample_rate):
-		cdef daudio.SoundBuffer *p = new daudio.SoundBuffer()
+		cdef sf.SoundBuffer *p = new sf.SoundBuffer()
 		
 		if p.loadFromSamples(samples.m_samples, samples.m_sampleCount, channel_count, sample_rate):
 			return wrap_soundbuffer(p)
@@ -209,11 +208,11 @@ cdef class SoundBuffer:
 
 	property duration:
 		def __get__(self):
-			cdef dsystem.Time* p = new dsystem.Time()
+			cdef sf.Time* p = new sf.Time()
 			p[0] = self.p_this.getDuration()
 			return wrap_time(p)
 
-cdef SoundBuffer wrap_soundbuffer(daudio.SoundBuffer *p, bint delete_this=True):
+cdef SoundBuffer wrap_soundbuffer(sf.SoundBuffer *p, bint delete_this=True):
 	cdef SoundBuffer r = SoundBuffer.__new__(SoundBuffer)
 	r.p_this = p
 	r.delete_this = delete_this
@@ -221,11 +220,11 @@ cdef SoundBuffer wrap_soundbuffer(daudio.SoundBuffer *p, bint delete_this=True):
 
 
 cdef class SoundSource:
-	STOPPED = daudio.soundsource.Stopped
-	PAUSED = daudio.soundsource.Paused
-	PLAYING = daudio.soundsource.Playing
+	STOPPED = sf.soundsource.Stopped
+	PAUSED = sf.soundsource.Paused
+	PLAYING = sf.soundsource.Playing
 
-	cdef daudio.SoundSource *p_soundsource
+	cdef sf.SoundSource *p_soundsource
 
 	def __init__(self, *args, **kwargs):
 		raise UserWarning("This class is not meant to be used directly")
@@ -276,12 +275,12 @@ cdef class SoundSource:
 
 
 cdef class Sound(SoundSource):
-	cdef daudio.Sound *p_this	
+	cdef sf.Sound *p_this	
 	cdef SoundBuffer   m_buffer
 
 	def __init__(self, SoundBuffer buffer=None):
-		self.p_this = new daudio.Sound()
-		self.p_soundsource = <daudio.SoundSource*>self.p_this
+		self.p_this = new sf.Sound()
+		self.p_soundsource = <sf.SoundSource*>self.p_this
 		
 		if buffer: self.buffer = buffer
 
@@ -317,7 +316,7 @@ cdef class Sound(SoundSource):
 
 	property playing_offset:
 		def __get__(self):
-			cdef dsystem.Time* p = new dsystem.Time()
+			cdef sf.Time* p = new sf.Time()
 			p[0] = self.p_this.getPlayingOffset()
 			return wrap_time(p)
 
@@ -330,15 +329,15 @@ cdef class Sound(SoundSource):
 
 
 cdef class SoundStream(SoundSource):
-	cdef daudio.SoundStream *p_soundstream
+	cdef sf.SoundStream *p_soundstream
 	
 	def __init__(self):
 		if self.__class__ == SoundStream:
 			raise NotImplementedError("SoundStream is abstract")
 
 		elif self.__class__ not in [Music]:
-			self.p_soundstream = <daudio.SoundStream*> new daudio.DerivableSoundStream(<void*>self)
-			self.p_soundsource = <daudio.SoundSource*>self.p_soundstream
+			self.p_soundstream = <sf.SoundStream*> new sf.DerivableSoundStream(<void*>self)
+			self.p_soundsource = <sf.SoundSource*>self.p_soundstream
 			
 	def play(self):
 		self.p_soundstream.play()
@@ -363,7 +362,7 @@ cdef class SoundStream(SoundSource):
 			
 	property playing_offset:
 		def __get__(self):
-			cdef dsystem.Time* p = new dsystem.Time()
+			cdef sf.Time* p = new sf.Time()
 			p[0] = self.p_soundstream.getPlayingOffset()
 			return wrap_time(p)
 
@@ -379,13 +378,13 @@ cdef class SoundStream(SoundSource):
 
 	def initialize(self, unsigned int channel_count, unsigned int sample_rate):
 		if self.__class__ not in [Music]:
-			(<daudio.DerivableSoundStream*>self.p_soundstream).initialize(channel_count, sample_rate)
+			(<sf.DerivableSoundStream*>self.p_soundstream).initialize(channel_count, sample_rate)
 			
 	def on_get_data(self, data): pass
 	def on_seek(self, time_offset): pass
 
 cdef class Music(SoundStream):
-	cdef daudio.Music *p_this
+	cdef sf.Music *p_this
 	
 	def __init__(self):
 		raise NotImplementedError("Use specific constructor")
@@ -395,7 +394,7 @@ cdef class Music(SoundStream):
 
 	@classmethod
 	def from_file(cls, filename):
-		cdef daudio.Music *p = new daudio.Music()
+		cdef sf.Music *p = new sf.Music()
 		cdef char* encoded_filename	
 
 		encoded_filename_temporary = filename.encode('UTF-8')	
@@ -408,7 +407,7 @@ cdef class Music(SoundStream):
 
 	@classmethod
 	def from_memory(cls, bytes data):
-		cdef daudio.Music *p = new daudio.Music()
+		cdef sf.Music *p = new sf.Music()
 
 		if p.openFromMemory(<char*>data, len(data)): return wrap_music(p)
 
@@ -417,28 +416,28 @@ cdef class Music(SoundStream):
 
 	property duration:
 		def __get__(self):
-			cdef dsystem.Time* p = new dsystem.Time()
+			cdef sf.Time* p = new sf.Time()
 			p[0] = self.p_this.getDuration()
 			return wrap_time(p)
 
 
-cdef Music wrap_music(daudio.Music *p):
+cdef Music wrap_music(sf.Music *p):
 	cdef Music r = Music.__new__(Music)
 	r.p_this = p
-	r.p_soundstream = <daudio.SoundStream*>p
-	r.p_soundsource = <daudio.SoundSource*>p
+	r.p_soundstream = <sf.SoundStream*>p
+	r.p_soundsource = <sf.SoundSource*>p
 	return r
 
 
 cdef class SoundRecorder:
-	cdef daudio.SoundRecorder *p_soundrecorder
+	cdef sf.SoundRecorder *p_soundrecorder
 
 	def __init__(self):
 		if self.__class__ == SoundRecorder:
 			raise NotImplementedError("SoundRecorder is abstract")
 			
 		elif self.__class__ is not SoundBufferRecorder:
-			self.p_soundrecorder = <daudio.SoundRecorder*>new daudio.DerivableSoundRecorder(<void*>self)
+			self.p_soundrecorder = <sf.SoundRecorder*>new sf.DerivableSoundRecorder(<void*>self)
 
 	def __dealloc__(self):
 		if self.__class__ is SoundRecorder:
@@ -456,7 +455,7 @@ cdef class SoundRecorder:
 			
 	@classmethod
 	def is_available(cls):
-		return daudio.soundrecorder.isAvailable()
+		return sf.soundrecorder.isAvailable()
 
 	def on_start(self):
 		return True
@@ -468,14 +467,14 @@ cdef class SoundRecorder:
 		pass
 
 cdef class SoundBufferRecorder(SoundRecorder):
-	cdef daudio.SoundBufferRecorder *p_this
+	cdef sf.SoundBufferRecorder *p_this
 	cdef SoundBuffer                 m_buffer
 
 	def __init__(self):
-		self.p_this = new daudio.SoundBufferRecorder()
-		self.p_soundrecorder = <daudio.SoundRecorder*>self.p_this
+		self.p_this = new sf.SoundBufferRecorder()
+		self.p_soundrecorder = <sf.SoundRecorder*>self.p_this
 
-		self.m_buffer = wrap_soundbuffer(<daudio.SoundBuffer*>&self.p_this.getBuffer(), False)
+		self.m_buffer = wrap_soundbuffer(<sf.SoundBuffer*>&self.p_this.getBuffer(), False)
 		
 	def __dealloc__(self):
 		del self.p_this

@@ -8,28 +8,30 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
 from __future__ import division
 from numbers import Number, Integral
 from copy import deepcopy
 import threading
 
 cimport cython
+
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
-from pysfml cimport dsystem
-from pysfml.dsystem cimport Int8, Int16, Int32, Int64
-from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
+cimport libcpp.sfml as sf
+from libcpp.sfml cimport Int8, Int16, Int32, Int64
+from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 
 
 __all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds',
 			'milliseconds', 'microseconds', 'Vector2', 'Vector3', 
 			'Thread', 'Lock', 'Mutex']
 
-dsystem.replace_error_handler()
+sf.replace_error_handler()
 
 def pop_error_message():
-	message = dsystem.get_last_error_message().c_str()
+	message = sf.get_last_error_message().c_str()
 	message = message.decode('utf-8')
 	return message
 
@@ -409,7 +411,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		return p
 
 
-cdef api object wrap_vector2f(dsystem.Vector2f* p):
+cdef api object wrap_vector2f(sf.Vector2f* p):
 	cdef Vector2 r = Vector2.__new__(Vector2)
 	r.x = p.x
 	r.y = p.y
@@ -417,12 +419,12 @@ cdef api object wrap_vector2f(dsystem.Vector2f* p):
 
 
 cdef public class Time[type PyTimeType, object PyTimeObject]:
-	ZERO = wrap_time(<dsystem.Time*>&dsystem.time.Zero)
+	ZERO = wrap_time(<sf.Time*>&sf.time.Zero)
 
-	cdef dsystem.Time *p_this
+	cdef sf.Time *p_this
 
 	def __init__(self):
-		self.p_this = new dsystem.Time()
+		self.p_this = new sf.Time()
 
 	def __dealloc__(self):
 		del self.p_this
@@ -442,12 +444,12 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 		elif op == 5: return x.p_this[0] >= y.p_this[0]
 
 	def __add__(Time x, Time y):
-		cdef dsystem.Time* p = new dsystem.Time()
+		cdef sf.Time* p = new sf.Time()
 		p[0] = x.p_this[0] + y.p_this[0]
 		return wrap_time(p)
 
 	def __sub__(Time x, Time y):
-		cdef dsystem.Time* p = new dsystem.Time()
+		cdef sf.Time* p = new sf.Time()
 		p[0] = x.p_this[0] - y.p_this[0]
 		return wrap_time(p)
 
@@ -464,49 +466,49 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 			return self.p_this.asSeconds()
 
 		def __set__(self, float seconds):
-			self.p_this[0] = dsystem.seconds(seconds)
+			self.p_this[0] = sf.seconds(seconds)
 
 	property milliseconds:
 		def __get__(self):
 			return self.p_this.asMilliseconds()
 
 		def __set__(self, Int32 milliseconds):
-			self.p_this[0] = dsystem.milliseconds(milliseconds)
+			self.p_this[0] = sf.milliseconds(milliseconds)
 
 	property microseconds:
 		def __get__(self):
 			return self.p_this.asMicroseconds()
 
 		def __set__(self, Int64 microseconds):
-			self.p_this[0] = dsystem.microseconds(microseconds)
+			self.p_this[0] = sf.microseconds(microseconds)
 
 	def reset(self):
 		self.milliseconds = 0
 
 	def __copy__(self):
-		cdef dsystem.Time* p = new dsystem.Time()
+		cdef sf.Time* p = new sf.Time()
 		p[0] = self.p_this[0]
 		return wrap_time(p)
 
 	def __deepcopy__(self):
-		cdef dsystem.Time* p = new dsystem.Time()
+		cdef sf.Time* p = new sf.Time()
 		p[0] = self.p_this[0]
 		return wrap_time(p)
 
 
-cdef api object wrap_time(dsystem.Time* p):
+cdef api object wrap_time(sf.Time* p):
 	cdef Time r = Time.__new__(Time)
 	r.p_this = p
 	return r
 
 def sleep(Time duration):
-	with nogil: dsystem.sleep(duration.p_this[0])
+	with nogil: sf.sleep(duration.p_this[0])
 
 cdef class Clock:
-	cdef dsystem.Clock *p_this
+	cdef sf.Clock *p_this
 
 	def __cinit__(self):
-		self.p_this = new dsystem.Clock()
+		self.p_this = new sf.Clock()
 
 	def __dealloc__(self):
 		del self.p_this
@@ -519,28 +521,28 @@ cdef class Clock:
 
 	property elapsed_time:
 		def __get__(self):
-			cdef dsystem.Time* p = new dsystem.Time()
+			cdef sf.Time* p = new sf.Time()
 			p[0] = self.p_this.getElapsedTime()
 			return wrap_time(p)
 
 	def restart(self):
-		cdef dsystem.Time* p = new dsystem.Time()
+		cdef sf.Time* p = new sf.Time()
 		p[0] = self.p_this.restart()
 		return wrap_time(p)
 
 def seconds(float amount):
-	cdef dsystem.Time* p = new dsystem.Time()
-	p[0] = dsystem.seconds(amount)
+	cdef sf.Time* p = new sf.Time()
+	p[0] = sf.seconds(amount)
 	return wrap_time(p)
 
 def milliseconds(Int32 amount):
-	cdef dsystem.Time* p = new dsystem.Time()
-	p[0] = dsystem.milliseconds(amount)
+	cdef sf.Time* p = new sf.Time()
+	p[0] = sf.milliseconds(amount)
 	return wrap_time(p)
 
 def microseconds(Int64 amount):
-	cdef dsystem.Time* p = new dsystem.Time()
-	p[0] = dsystem.microseconds(amount)
+	cdef sf.Time* p = new sf.Time()
+	p[0] = sf.microseconds(amount)
 	return wrap_time(p)
 
 

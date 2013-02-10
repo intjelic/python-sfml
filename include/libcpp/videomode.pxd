@@ -8,11 +8,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-cdef extern from "SFML/Window.hpp" namespace "sf::Style":
-	cdef enum Style:
-		None
-		Titlebar
-		Resize
-		Close
-		Fullscreen
-		Default
+
+from libcpp.vector cimport vector
+from libcpp.sfml cimport VideoMode
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf::VideoMode":
+    cdef VideoMode& getDesktopMode()
+    cdef vector[VideoMode]& getFullscreenModes()

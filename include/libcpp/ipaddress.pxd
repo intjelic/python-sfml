@@ -8,8 +8,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from dsystem cimport Time
-from dnetwork cimport IpAddress
+
+from libcpp.sfml cimport Time
+from libcpp.sfml cimport IpAddress
 
 cdef extern from "SFML/Network.hpp" namespace "sf::IpAddress":
     cdef IpAddress getLocalAddress()

@@ -9,17 +9,20 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-from pysfml.dgraphics cimport Shader
+from libcpp.sfml cimport Vector2i
+from libcpp.sfml cimport Window
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
-	cdef struct CurrentTextureType:
-		pass
-	
-	cdef CurrentTextureType CurrentTexture
-	
-	cdef enum Type:
-		Vertex
-		Fragment
+cdef extern from "SFML/Window.hpp" namespace "sf::Mouse":
+	cdef enum Button:
+		Left
+		Right
+		Middle
+		XButton1
+		XButton2
+		ButtonCount
 
-	cdef bint isAvailable()
-	cdef void bind(Shader*)
+	bint isButtonPressed(Button)
+	Vector2i getPosition()
+	Vector2i getPosition(Window&)
+	void setPosition(Vector2i&)
+	void setPosition(Vector2i&, Window&)

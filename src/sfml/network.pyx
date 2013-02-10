@@ -15,28 +15,27 @@ from libc.stdlib cimport *
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
-from pysfml.dsystem cimport Int8, Int16, Int32, Int64
-from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
-
-from pysfml cimport dsystem, dnetwork
+cimport libcpp.sfml as sf
+from libcpp.sfml cimport Int8, Int16, Int32, Int64
+from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 
 from sfml.system import SFMLException, pop_error_message, push_error_message
 
 cdef extern from "system.h":
 
 	cdef class sfml.system.Time [object PyTimeObject]:
-		cdef dsystem.Time *p_this
+		cdef sf.Time *p_this
 		
 
 cdef class IpAddress:
-	cdef dnetwork.IpAddress *p_this
+	cdef sf.IpAddress *p_this
 
-	NONE = wrap_ipaddress(<dnetwork.IpAddress*>&dnetwork.ipaddress.None)
-	LOCAL_HOST = wrap_ipaddress(<dnetwork.IpAddress*>&dnetwork.ipaddress.LocalHost)
-	BROADCAST = wrap_ipaddress(<dnetwork.IpAddress*>&dnetwork.ipaddress.Broadcast)
+	#NONE = wrap_ipaddress(<sf.IpAddress*>&sf.ipaddress.None)
+	LOCAL_HOST = wrap_ipaddress(<sf.IpAddress*>&sf.ipaddress.LocalHost)
+	BROADCAST = wrap_ipaddress(<sf.IpAddress*>&sf.ipaddress.Broadcast)
 
 	def __init__(self):
-		self.p_this = new dnetwork.IpAddress()
+		self.p_this = new sf.IpAddress()
 
 	def __dealloc__(self):
 		del self.p_this
@@ -61,17 +60,17 @@ cdef class IpAddress:
 		encoded_string_temporary = _string.encode('UTF-8')	
 		encoded_string = string(<char*>encoded_string_temporary)
 		
-		cdef dnetwork.IpAddress *p = new dnetwork.IpAddress(encoded_string)
+		cdef sf.IpAddress *p = new sf.IpAddress(encoded_string)
 		return wrap_ipaddress(p)
 
 	@classmethod
 	def from_integer(self, Uint32 address):
-		cdef dnetwork.IpAddress *p = new dnetwork.IpAddress(address)
+		cdef sf.IpAddress *p = new sf.IpAddress(address)
 		return wrap_ipaddress(p)
 		
 	@classmethod
 	def from_bytes(self, Uint8 b1, Uint8 b2, Uint8 b3, Uint8 b4):
-		cdef dnetwork.IpAddress *p = new dnetwork.IpAddress(b1, b2, b3, b4)
+		cdef sf.IpAddress *p = new sf.IpAddress(b1, b2, b3, b4)
 		return wrap_ipaddress(p)
 
 	property string:
@@ -84,31 +83,31 @@ cdef class IpAddress:
 		
 	@classmethod
 	def get_local_address(self):
-		cdef dnetwork.IpAddress* p = new dnetwork.IpAddress()
-		p[0] = dnetwork.ipaddress.getLocalAddress()
+		cdef sf.IpAddress* p = new sf.IpAddress()
+		p[0] = sf.ipaddress.getLocalAddress()
 		return wrap_ipaddress(p)
 
 	@classmethod
 	def get_public_address(self, Time timeout=None):
-		cdef dnetwork.IpAddress* p = new dnetwork.IpAddress()
-		if not timeout: p[0] = dnetwork.ipaddress.getPublicAddress()
-		else: p[0] = dnetwork.ipaddress.getPublicAddress(timeout.p_this[0])
+		cdef sf.IpAddress* p = new sf.IpAddress()
+		if not timeout: p[0] = sf.ipaddress.getPublicAddress()
+		else: p[0] = sf.ipaddress.getPublicAddress(timeout.p_this[0])
 		return wrap_ipaddress(p)
 
-cdef wrap_ipaddress(dnetwork.IpAddress* p):
+cdef wrap_ipaddress(sf.IpAddress* p):
 	cdef IpAddress r = IpAddress.__new__(IpAddress)
 	r.p_this = p
 	return r
 
 cdef class Socket:
-	DONE = dnetwork.socket.Done
-	NOT_READY = dnetwork.socket.NotReady
-	DISCONNECTED = dnetwork.socket.Disconnected
-	ERROR = dnetwork.socket.Error
+	DONE = sf.socket.Done
+	NOT_READY = sf.socket.NotReady
+	DISCONNECTED = sf.socket.Disconnected
+	ERROR = sf.socket.Error
 
-	ANY_PORT = dnetwork.socket.AnyPort
+	ANY_PORT = sf.socket.AnyPort
 
-	cdef dnetwork.Socket *p_socket
+	cdef sf.Socket *p_socket
 
 	def __init__(self):
 		if self.__class__ == Socket:
@@ -129,11 +128,11 @@ class SocketError(SocketException): pass
 
 
 cdef class TcpListener(Socket):
-	cdef dnetwork.TcpListener *p_this
+	cdef sf.TcpListener *p_this
 	
 	def __init__(self):
-		self.p_this = new dnetwork.TcpListener()
-		self.p_socket = <dnetwork.Socket*>self.p_this
+		self.p_this = new sf.TcpListener()
+		self.p_socket = <sf.Socket*>self.p_this
 		
 	def __dealloc__(self):
 		del self.p_this
@@ -149,14 +148,14 @@ cdef class TcpListener(Socket):
 			return self.p_this.getLocalPort()
 			
 	def listen(self, unsigned short port):
-		cdef dnetwork.socket.Status status = self.p_this.listen(port)
+		cdef sf.socket.Status status = self.p_this.listen(port)
 		
-		if status is not dnetwork.socket.Done:
-			if status is dnetwork.socket.NotReady:
+		if status is not sf.socket.Done:
+			if status is sf.socket.NotReady:
 				raise SocketNotReady()
-			elif status is dnetwork.socket.Disconnected:
+			elif status is sf.socket.Disconnected:
 				raise SocketDisconnected()
-			elif status is dnetwork.socket.Error:
+			elif status is sf.socket.Error:
 				raise SocketError()
 
 	def close(self):
@@ -164,28 +163,28 @@ cdef class TcpListener(Socket):
 		
 	def accept(self):
 		cdef TcpSocket socket = TcpSocket()
-		cdef dnetwork.socket.Status status
+		cdef sf.socket.Status status
 		
 		with nogil:
 			status = self.p_this.accept(socket.p_this[0])
 		
-		if status is not dnetwork.socket.Done:
-			if status is dnetwork.socket.NotReady:
+		if status is not sf.socket.Done:
+			if status is sf.socket.NotReady:
 				raise SocketNotReady()
-			elif status is dnetwork.socket.Disconnected:
+			elif status is sf.socket.Disconnected:
 				raise SocketDisconnected()
-			elif status is dnetwork.socket.Error:
+			elif status is sf.socket.Error:
 				raise SocketError()
 				
 		return socket
 
 
 cdef class TcpSocket(Socket):
-	cdef dnetwork.TcpSocket *p_this
+	cdef sf.TcpSocket *p_this
 
 	def __init__(self):
-		self.p_this = new dnetwork.TcpSocket()
-		self.p_socket = <dnetwork.Socket*>self.p_this
+		self.p_this = new sf.TcpSocket()
+		self.p_socket = <sf.Socket*>self.p_this
 		
 	def __dealloc__(self):
 		del self.p_this
@@ -202,7 +201,7 @@ cdef class TcpSocket(Socket):
 			
 	property remote_address:
 		def __get__(self):
-			cdef dnetwork.IpAddress *p = new dnetwork.IpAddress()
+			cdef sf.IpAddress *p = new sf.IpAddress()
 			p[0] = self.p_this.getRemoteAddress()
 			return wrap_ipaddress(p)
 			
@@ -211,7 +210,7 @@ cdef class TcpSocket(Socket):
 			return self.p_this.getRemotePort()
 			
 	def connect(self, IpAddress remote_address, unsigned short remote_port, Time timeout=None):
-		cdef dnetwork.socket.Status status
+		cdef sf.socket.Status status
 
 		if not timeout:
 			with nogil:
@@ -220,60 +219,60 @@ cdef class TcpSocket(Socket):
 			with nogil:
 				status = self.p_this.connect(remote_address.p_this[0], remote_port, timeout.p_this[0])
 		
-		if status is not dnetwork.socket.Done:
-			if status is dnetwork.socket.NotReady:
+		if status is not sf.socket.Done:
+			if status is sf.socket.NotReady:
 				raise SocketNotReady()
-			elif status is dnetwork.socket.Disconnected:
+			elif status is sf.socket.Disconnected:
 				raise SocketDisconnected()
-			elif status is dnetwork.socket.Error:
+			elif status is sf.socket.Error:
 				raise SocketError()
 
 	def disconnect(self):
 		self.p_this.disconnect()
 
 	def send(self, bytes data):
-		cdef dnetwork.socket.Status status
+		cdef sf.socket.Status status
 		cdef char* cdata = <char*>data
 		cdef size_t cdata_len = len(data)
 		
 		with nogil:
 			status = self.p_this.send(cdata, cdata_len)
 		
-		if status is not dnetwork.socket.Done:
-			if status is dnetwork.socket.NotReady:
+		if status is not sf.socket.Done:
+			if status is sf.socket.NotReady:
 				raise SocketNotReady()
-			elif status is dnetwork.socket.Disconnected:
+			elif status is sf.socket.Disconnected:
 				raise SocketDisconnected()
-			elif status is dnetwork.socket.Error:
+			elif status is sf.socket.Error:
 				raise SocketError()
 
 	def receive(self, size_t size):
 		cdef char* data = <char*>malloc(size * sizeof(char))
 		cdef size_t received = 0
-		cdef dnetwork.socket.Status status
+		cdef sf.socket.Status status
 		
 		with nogil:
 			status = self.p_this.receive(data, size, received)
 		
-		if status is not dnetwork.socket.Done:
-			if status is dnetwork.socket.NotReady:
+		if status is not sf.socket.Done:
+			if status is sf.socket.NotReady:
 				raise SocketNotReady()
-			elif status is dnetwork.socket.Disconnected:
+			elif status is sf.socket.Disconnected:
 				raise SocketDisconnected()
-			elif status is dnetwork.socket.Error:
+			elif status is sf.socket.Error:
 				raise SocketError()
 				
 		return <bytes>(data)[:received]
 
 
 cdef class UdpSocket(Socket):
-	cdef dnetwork.UdpSocket *p_this
+	cdef sf.UdpSocket *p_this
 	
-	MAX_DATAGRAM_SIZE = dnetwork.udpsocket.MaxDatagramSize
+	MAX_DATAGRAM_SIZE = sf.udpsocket.MaxDatagramSize
 
 	def __init__(self):
-		self.p_this = new dnetwork.UdpSocket()
-		self.p_socket = <dnetwork.Socket*>self.p_this
+		self.p_this = new sf.UdpSocket()
+		self.p_socket = <sf.Socket*>self.p_this
 
 	def __dealloc__(self):
 		del self.p_this
@@ -283,28 +282,28 @@ cdef class UdpSocket(Socket):
 			return self.p_this.getLocalPort()
 	   
 	def bind(self, unsigned short port):
-		cdef dnetwork.socket.Status status = self.p_this.bind(port)
+		cdef sf.socket.Status status = self.p_this.bind(port)
 		
-		if status is not dnetwork.socket.Done:
-			if status is dnetwork.socket.NotReady:
+		if status is not sf.socket.Done:
+			if status is sf.socket.NotReady:
 				raise SocketNotReady()
-			elif status is dnetwork.socket.Disconnected:
+			elif status is sf.socket.Disconnected:
 				raise SocketDisconnected()
-			elif status is dnetwork.socket.Error:
+			elif status is sf.socket.Error:
 				raise SocketError()
 				
 	def unbind(self):
 		self.p_this.unbind()
 		
 	def send(self, bytes data, IpAddress remote_address, unsigned short remote_port):
-		cdef dnetwork.socket.Status status = self.p_this.send(<char*>data, len(data), remote_address.p_this[0], remote_port)
+		cdef sf.socket.Status status = self.p_this.send(<char*>data, len(data), remote_address.p_this[0], remote_port)
 		
-		if status is not dnetwork.socket.Done:
-			if status is dnetwork.socket.NotReady:
+		if status is not sf.socket.Done:
+			if status is sf.socket.NotReady:
 				raise SocketNotReady()
-			elif status is dnetwork.socket.Disconnected:
+			elif status is sf.socket.Disconnected:
 				raise SocketDisconnected()
-			elif status is dnetwork.socket.Error:
+			elif status is sf.socket.Error:
 				raise SocketError()
 
 	def receive(self, size_t size):
@@ -312,24 +311,24 @@ cdef class UdpSocket(Socket):
 		cdef size_t received = 0
 		cdef IpAddress remote_address = IpAddress()
 		cdef unsigned short port = 0
-		cdef dnetwork.socket.Status status = self.p_this.receive(data, size, received, remote_address.p_this[0], port)
+		cdef sf.socket.Status status = self.p_this.receive(data, size, received, remote_address.p_this[0], port)
 		
-		if status is not dnetwork.socket.Done:
-			if status is dnetwork.socket.NotReady:
+		if status is not sf.socket.Done:
+			if status is sf.socket.NotReady:
 				raise SocketNotReady()
-			elif status is dnetwork.socket.Disconnected:
+			elif status is sf.socket.Disconnected:
 				raise SocketDisconnected()
-			elif status is dnetwork.socket.Error:
+			elif status is sf.socket.Error:
 				raise SocketError()
 				
 		return (<bytes>(data)[:received], remote_address, port)
 
 
 cdef class SocketSelector:
-	cdef dnetwork.SocketSelector *p_this
+	cdef sf.SocketSelector *p_this
 
 	def __init__(self):
-		self.p_this = new dnetwork.SocketSelector()
+		self.p_this = new sf.SocketSelector()
 
 	def __dealloc__(self):
 		del self.p_this
@@ -360,51 +359,51 @@ cdef class SocketSelector:
 
 
 cdef class FtpResponse:
-	RESTART_MARKER_REPLY = dnetwork.ftp.response.RestartMarkerReply
-	SERVICE_READY_SOON = dnetwork.ftp.response.ServiceReadySoon
-	DATA_CONNECTION_ALREADY_OPENED = dnetwork.ftp.response.DataConnectionAlreadyOpened
-	OPENING_DATA_CONNECTION = dnetwork.ftp.response.OpeningDataConnection
-	OK = dnetwork.ftp.response.Ok
-	POINTLESS_COMMAND = dnetwork.ftp.response.PointlessCommand
-	SYSTEM_STATUS = dnetwork.ftp.response.SystemStatus
-	DIRECTORY_STATUS = dnetwork.ftp.response.DirectoryStatus
-	FILE_STATUS = dnetwork.ftp.response.FileStatus
-	HELP_MESSAGE = dnetwork.ftp.response.HelpMessage
-	SYSTEM_TYPE = dnetwork.ftp.response.SystemType
-	SERVICE_READY = dnetwork.ftp.response.ServiceReady
-	CLOSING_CONNECTION = dnetwork.ftp.response.ClosingConnection
-	DATA_CONNECTION_OPENED = dnetwork.ftp.response.DataConnectionOpened
-	CLOSING_DATA_CONNECTION = dnetwork.ftp.response.ClosingDataConnection
-	ENTERING_PASSIVE_MODE = dnetwork.ftp.response.EnteringPassiveMode
-	LOGGED_IN = dnetwork.ftp.response.LoggedIn
-	FILE_ACTION_OK = dnetwork.ftp.response.FileActionOk
-	DIRECTORY_OK = dnetwork.ftp.response.DirectoryOk
-	NEED_PASSWORD = dnetwork.ftp.response.NeedPassword
-	NEED_ACCOUNT_TO_LOG_IN = dnetwork.ftp.response.NeedAccountToLogIn
-	NEED_INFORMATION = dnetwork.ftp.response.NeedInformation
-	SERVICE_UNAVAILABLE = dnetwork.ftp.response.ServiceUnavailable
-	DATA_CONNECTION_UNAVAILABLE = dnetwork.ftp.response.DataConnectionUnavailable
-	TRANSFER_ABORTED = dnetwork.ftp.response.TransferAborted
-	FILE_ACTION_ABORTED = dnetwork.ftp.response.FileActionAborted
-	LOCAL_ERROR = dnetwork.ftp.response.LocalError
-	INSUFFICIENT_STORAGE_SPACE = dnetwork.ftp.response.InsufficientStorageSpace
-	COMMAND_UNKNOWN = dnetwork.ftp.response.CommandUnknown
-	PARAMETERS_UNKNOWN = dnetwork.ftp.response.ParametersUnknown
-	COMMAND_NOT_IMPLEMENTED = dnetwork.ftp.response.CommandNotImplemented
-	BAD_COMMAND_SEQUENCE = dnetwork.ftp.response.BadCommandSequence
-	PARAMETER_NOT_IMPLEMENTED = dnetwork.ftp.response.ParameterNotImplemented
-	NOT_LOGGED_IN = dnetwork.ftp.response.NotLoggedIn
-	NEED_ACCOUNT_TO_STORE = dnetwork.ftp.response.NeedAccountToStore
-	FILE_UNAVAILABLE = dnetwork.ftp.response.FileUnavailable
-	PAGE_TYPE_UNKNOWN = dnetwork.ftp.response.PageTypeUnknown
-	NOT_ENOUGH_MEMORY = dnetwork.ftp.response.NotEnoughMemory
-	FILENAME_NOT_ALLOWED = dnetwork.ftp.response.FilenameNotAllowed
-	INVALID_RESPONSE = dnetwork.ftp.response.InvalidResponse
-	CONNECTION_FAILED = dnetwork.ftp.response.ConnectionFailed
-	CONNECTION_CLOSED = dnetwork.ftp.response.ConnectionClosed
-	INVALID_FILE = dnetwork.ftp.response.InvalidFile
+	RESTART_MARKER_REPLY = sf.ftp.response.RestartMarkerReply
+	SERVICE_READY_SOON = sf.ftp.response.ServiceReadySoon
+	DATA_CONNECTION_ALREADY_OPENED = sf.ftp.response.DataConnectionAlreadyOpened
+	OPENING_DATA_CONNECTION = sf.ftp.response.OpeningDataConnection
+	OK = sf.ftp.response.Ok
+	POINTLESS_COMMAND = sf.ftp.response.PointlessCommand
+	SYSTEM_STATUS = sf.ftp.response.SystemStatus
+	DIRECTORY_STATUS = sf.ftp.response.DirectoryStatus
+	FILE_STATUS = sf.ftp.response.FileStatus
+	HELP_MESSAGE = sf.ftp.response.HelpMessage
+	SYSTEM_TYPE = sf.ftp.response.SystemType
+	SERVICE_READY = sf.ftp.response.ServiceReady
+	CLOSING_CONNECTION = sf.ftp.response.ClosingConnection
+	DATA_CONNECTION_OPENED = sf.ftp.response.DataConnectionOpened
+	CLOSING_DATA_CONNECTION = sf.ftp.response.ClosingDataConnection
+	ENTERING_PASSIVE_MODE = sf.ftp.response.EnteringPassiveMode
+	LOGGED_IN = sf.ftp.response.LoggedIn
+	FILE_ACTION_OK = sf.ftp.response.FileActionOk
+	DIRECTORY_OK = sf.ftp.response.DirectoryOk
+	NEED_PASSWORD = sf.ftp.response.NeedPassword
+	NEED_ACCOUNT_TO_LOG_IN = sf.ftp.response.NeedAccountToLogIn
+	NEED_INFORMATION = sf.ftp.response.NeedInformation
+	SERVICE_UNAVAILABLE = sf.ftp.response.ServiceUnavailable
+	DATA_CONNECTION_UNAVAILABLE = sf.ftp.response.DataConnectionUnavailable
+	TRANSFER_ABORTED = sf.ftp.response.TransferAborted
+	FILE_ACTION_ABORTED = sf.ftp.response.FileActionAborted
+	LOCAL_ERROR = sf.ftp.response.LocalError
+	INSUFFICIENT_STORAGE_SPACE = sf.ftp.response.InsufficientStorageSpace
+	COMMAND_UNKNOWN = sf.ftp.response.CommandUnknown
+	PARAMETERS_UNKNOWN = sf.ftp.response.ParametersUnknown
+	COMMAND_NOT_IMPLEMENTED = sf.ftp.response.CommandNotImplemented
+	BAD_COMMAND_SEQUENCE = sf.ftp.response.BadCommandSequence
+	PARAMETER_NOT_IMPLEMENTED = sf.ftp.response.ParameterNotImplemented
+	NOT_LOGGED_IN = sf.ftp.response.NotLoggedIn
+	NEED_ACCOUNT_TO_STORE = sf.ftp.response.NeedAccountToStore
+	FILE_UNAVAILABLE = sf.ftp.response.FileUnavailable
+	PAGE_TYPE_UNKNOWN = sf.ftp.response.PageTypeUnknown
+	NOT_ENOUGH_MEMORY = sf.ftp.response.NotEnoughMemory
+	FILENAME_NOT_ALLOWED = sf.ftp.response.FilenameNotAllowed
+	INVALID_RESPONSE = sf.ftp.response.InvalidResponse
+	CONNECTION_FAILED = sf.ftp.response.ConnectionFailed
+	CONNECTION_CLOSED = sf.ftp.response.ConnectionClosed
+	INVALID_FILE = sf.ftp.response.InvalidFile
 
-	cdef dnetwork.ftp.Response *p_response
+	cdef sf.ftp.Response *p_response
 
 	def __repr__(self):
 		return "sf.FtpResponse({0})".format(self)
@@ -425,7 +424,7 @@ cdef class FtpResponse:
 			return self.p_response.getMessage().c_str()
 
 cdef class FtpDirectoryResponse(FtpResponse):
-	cdef dnetwork.ftp.DirectoryResponse *p_this
+	cdef sf.ftp.DirectoryResponse *p_this
 
 	def __init__(self):
 		raise NotImplementedError("Not meant to be instantiated")
@@ -438,7 +437,7 @@ cdef class FtpDirectoryResponse(FtpResponse):
 	   
     
 cdef class FtpListingResponse(FtpResponse):
-	cdef dnetwork.ftp.ListingResponse *p_this
+	cdef sf.ftp.ListingResponse *p_this
 
 	def __init__(self):
 		raise NotImplementedError("Not meant to be instantiated")
@@ -459,40 +458,40 @@ cdef class FtpListingResponse(FtpResponse):
 
 			return tuple(r)
 
-cdef wrap_ftpresponse(dnetwork.ftp.Response* p):
+cdef wrap_ftpresponse(sf.ftp.Response* p):
 	cdef FtpResponse r = FtpResponse.__new__(FtpResponse)
 	r.p_response = p
 	return r
 
 
-cdef wrap_ftpdirectoryresponse(dnetwork.ftp.DirectoryResponse* p):
+cdef wrap_ftpdirectoryresponse(sf.ftp.DirectoryResponse* p):
 	cdef FtpDirectoryResponse r = FtpDirectoryResponse.__new__(FtpDirectoryResponse)
 	r.p_this = p
-	r.p_response = <dnetwork.ftp.Response*>p
+	r.p_response = <sf.ftp.Response*>p
 	return r
 
 
-cdef wrap_ftplistingresponse(dnetwork.ftp.ListingResponse* p):
+cdef wrap_ftplistingresponse(sf.ftp.ListingResponse* p):
 	cdef FtpListingResponse r = FtpListingResponse.__new__(FtpListingResponse)
 	r.p_this = p
-	r.p_response = <dnetwork.ftp.Response*>p
+	r.p_response = <sf.ftp.Response*>p
 	return r
 
 cdef class Ftp:
-	BINARY = dnetwork.ftp.Binary
-	ASCII = dnetwork.ftp.Ascii
-	EBCDIC = dnetwork.ftp.Ebcdic
+	BINARY = sf.ftp.Binary
+	ASCII = sf.ftp.Ascii
+	EBCDIC = sf.ftp.Ebcdic
 
-	cdef dnetwork.Ftp *p_this
+	cdef sf.Ftp *p_this
 
 	def __init__(self):
-		self.p_this = new dnetwork.Ftp()
+		self.p_this = new sf.Ftp()
 		
 	def __dealloc__(self):
 		del self.p_this
 		
 	def connect(self, IpAddress server, unsigned short port=21, Time timeout=None):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		if not timeout:
 			with nogil: response[0] = self.p_this.connect(server.p_this[0], port)
@@ -502,12 +501,12 @@ cdef class Ftp:
 		return wrap_ftpresponse(response)
 		
 	def disconnect(self):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		response[0] = self.p_this.disconnect()
 		return wrap_ftpresponse(response)
 		
 	def login(self, str name=None, str message=""):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		encoded_name_temporary = name.encode('UTF-8')
 		encoded_message_temporary = message.encode('UTF-8')
@@ -522,7 +521,7 @@ cdef class Ftp:
 		return wrap_ftpresponse(response)
 
 	def keep_alive(self):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		with nogil: 
 			response[0] = self.p_this.keepAlive()
@@ -534,8 +533,8 @@ cdef class Ftp:
 		# creating an empty object. We must cheat by passing an empty
 		# Ftp::Reponse that we must destruct when the DirectoryResponse
 		# is destroyed.
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
-		cdef dnetwork.ftp.DirectoryResponse* directory_response = new dnetwork.ftp.DirectoryResponse(response[0])
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
+		cdef sf.ftp.DirectoryResponse* directory_response = new sf.ftp.DirectoryResponse(response[0])
 		del response
 		
 		with nogil:
@@ -549,9 +548,9 @@ cdef class Ftp:
 		# Ftp::Reponse and a false vector of char*. We must destruct
 		# what we had allocated to cheat on when the ListingResponse
 		# is destroyed.
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		cdef vector[char] falseList
-		cdef dnetwork.ftp.ListingResponse* listing_response = new dnetwork.ftp.ListingResponse(response[0], falseList)
+		cdef sf.ftp.ListingResponse* listing_response = new sf.ftp.ListingResponse(response[0], falseList)
 		del response
 		
 		encoded_directory_temporary = directory.encode('UTF-8')
@@ -563,7 +562,7 @@ cdef class Ftp:
 		return wrap_ftplistingresponse(listing_response)
 		
 	def change_directory(self, str directory):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		encoded_directory_temporary = directory.encode('UTF-8')
 		cdef char* encoded_directory = encoded_directory_temporary
@@ -574,7 +573,7 @@ cdef class Ftp:
 		return wrap_ftpresponse(response)
 
 	def parent_directory(self):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		with nogil:
 			response[0] = self.p_this.parentDirectory()
@@ -582,7 +581,7 @@ cdef class Ftp:
 		return wrap_ftpresponse(response)
 		
 	def create_directory(self, str name):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		encoded_name_temporary = name.encode('UTF-8')
 		cdef char* encoded_name = encoded_name_temporary
@@ -593,7 +592,7 @@ cdef class Ftp:
 		return wrap_ftpresponse(response)
 		
 	def delete_directory(self, str name):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		encoded_name_temporary = name.encode('UTF-8')
 		cdef char* encoded_name = encoded_name_temporary
@@ -604,7 +603,7 @@ cdef class Ftp:
 		return wrap_ftpresponse(response)
 		
 	def rename_file(self, str filename, str newname):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		encoded_filename_temporary = filename.encode('UTF-8')
 		encoded_newname_temporary = newname.encode('UTF-8')
@@ -617,7 +616,7 @@ cdef class Ftp:
 		return wrap_ftpresponse(response)
 		
 	def delete_file(self, str name):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		encoded_name_temporary = name.encode('UTF-8')
 		cdef char* encoded_name = encoded_name_temporary
@@ -627,8 +626,8 @@ cdef class Ftp:
 			
 		return wrap_ftpresponse(response)
 		
-	def download(self, str remotefile, str localpath, dnetwork.ftp.TransferMode mode=dnetwork.ftp.Binary):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+	def download(self, str remotefile, str localpath, sf.ftp.TransferMode mode=sf.ftp.Binary):
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		encoded_remotefile_temporary = remotefile.encode('UTF-8')
 		encoded_localpath_temporary = localpath.encode('UTF-8')
@@ -640,8 +639,8 @@ cdef class Ftp:
 			
 		return wrap_ftpresponse(response)
 		
-	def upload(self, str localfile, str remotepath, dnetwork.ftp.TransferMode mode=dnetwork.ftp.Binary):
-		cdef dnetwork.ftp.Response* response = new dnetwork.ftp.Response()
+	def upload(self, str localfile, str remotepath, sf.ftp.TransferMode mode=sf.ftp.Binary):
+		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		
 		encoded_localfile_temporary = localfile.encode('UTF-8')
 		encoded_remotepath_temporary = remotepath.encode('UTF-8')
@@ -655,14 +654,14 @@ cdef class Ftp:
 
 
 cdef class HttpRequest:
-	GET = dnetwork.http.request.Get
-	POST = dnetwork.http.request.Post
-	HEAD = dnetwork.http.request.Head
+	GET = sf.http.request.Get
+	POST = sf.http.request.Post
+	HEAD = sf.http.request.Head
 
-	cdef dnetwork.http.Request *p_this
+	cdef sf.http.Request *p_this
 
-	def __init__(self, bytes uri=b"/", dnetwork.http.request.Method method=dnetwork.http.request.Get, bytes body=b""):
-		self.p_this = new dnetwork.http.Request(string(uri), method, string(body))
+	def __init__(self, bytes uri=b"/", sf.http.request.Method method=sf.http.request.Get, bytes body=b""):
+		self.p_this = new sf.http.Request(string(uri), method, string(body))
 
 	def __dealloc__(self):
 		del self.p_this
@@ -674,7 +673,7 @@ cdef class HttpRequest:
 			self.p_this.setField(string(field), string(value))
 
 	property method:
-		def __set__(self, dnetwork.http.request.Method method):
+		def __set__(self, sf.http.request.Method method):
 			self.p_this.setMethod(method)
 			
 	property uri:
@@ -693,31 +692,31 @@ cdef class HttpRequest:
 
 
 cdef class HttpResponse:
-	OK = dnetwork.http.response.Ok
-	CREATED = dnetwork.http.response.Created
-	ACCEPTED = dnetwork.http.response.Accepted
-	NO_CONTENT = dnetwork.http.response.NoContent
-	RESET_CONTENT = dnetwork.http.response.ResetContent
-	PARTIAL_CONTENT = dnetwork.http.response.PartialContent
-	MULTIPLE_CHOICES = dnetwork.http.response.MultipleChoices
-	MOVED_PERMANENTLY = dnetwork.http.response.MovedPermanently
-	MOVED_TEMPORARILY = dnetwork.http.response.MovedTemporarily
-	NOT_MODIFIED = dnetwork.http.response.NotModified
-	BAD_REQUEST = dnetwork.http.response.BadRequest
-	UNAUTHORIZED = dnetwork.http.response.Unauthorized
-	FORBIDDEN = dnetwork.http.response.Forbidden
-	NOT_FOUND = dnetwork.http.response.NotFound
-	RANGE_NOT_SATISFIABLE = dnetwork.http.response.RangeNotSatisfiable
-	INTERNAL_SERVER_ERROR = dnetwork.http.response.InternalServerError
-	NOT_IMPLEMENTED = dnetwork.http.response.NotImplemented
-	BAD_GATEWAY = dnetwork.http.response.BadGateway
-	SERVICE_NOT_AVAILABLE = dnetwork.http.response.ServiceNotAvailable
-	GATEWAY_TIMEOUT = dnetwork.http.response.GatewayTimeout
-	VERSION_NOT_SUPPORTED = dnetwork.http.response.VersionNotSupported
-	INVALID_RESPONSE = dnetwork.http.response.InvalidResponse
-	CONNECTION_FAILED = dnetwork.http.response.ConnectionFailed
+	OK = sf.http.response.Ok
+	CREATED = sf.http.response.Created
+	ACCEPTED = sf.http.response.Accepted
+	NO_CONTENT = sf.http.response.NoContent
+	RESET_CONTENT = sf.http.response.ResetContent
+	PARTIAL_CONTENT = sf.http.response.PartialContent
+	MULTIPLE_CHOICES = sf.http.response.MultipleChoices
+	MOVED_PERMANENTLY = sf.http.response.MovedPermanently
+	MOVED_TEMPORARILY = sf.http.response.MovedTemporarily
+	#NOT_MODIFIED = sf.http.response.NotModified
+	#BAD_REQUEST = sf.http.response.BadRequest
+	UNAUTHORIZED = sf.http.response.Unauthorized
+	FORBIDDEN = sf.http.response.Forbidden
+	NOT_FOUND = sf.http.response.NotFound
+	RANGE_NOT_SATISFIABLE = sf.http.response.RangeNotSatisfiable
+	INTERNAL_SERVER_ERROR = sf.http.response.InternalServerError
+	NOT_IMPLEMENTED = sf.http.response.NotImplemented
+	BAD_GATEWAY = sf.http.response.BadGateway
+	SERVICE_NOT_AVAILABLE = sf.http.response.ServiceNotAvailable
+	GATEWAY_TIMEOUT = sf.http.response.GatewayTimeout
+	VERSION_NOT_SUPPORTED = sf.http.response.VersionNotSupported
+	INVALID_RESPONSE = sf.http.response.InvalidResponse
+	CONNECTION_FAILED = sf.http.response.ConnectionFailed
 
-	cdef dnetwork.http.Response *p_this
+	cdef sf.http.Response *p_this
 
 	def __init__(self):
 		raise NotImplementedError("Not meant to be instantiated!")
@@ -744,22 +743,22 @@ cdef class HttpResponse:
 		def __get__(self):
 			return self.p_this.getBody().c_str()
 
-cdef wrap_httpresponse(dnetwork.http.Response *p):
+cdef wrap_httpresponse(sf.http.Response *p):
 	cdef HttpResponse r = HttpResponse.__new__(HttpResponse)
 	r.p_this = p
 	return r
 	
 cdef class Http:
-	cdef dnetwork.Http *p_this
+	cdef sf.Http *p_this
 
 	def __init__(self, bytes host, unsigned short port=0):
-		self.p_this = new dnetwork.Http(string(host), port)
+		self.p_this = new sf.Http(string(host), port)
 
 	def __dealloc__(self):
 		del self.p_this
 
 	def send_request(self, HttpRequest request, Time timeout=None):
-		cdef dnetwork.http.Response* p = new dnetwork.http.Response()
+		cdef sf.http.Response* p = new sf.http.Response()
 		
 		if not timeout: 
 			with nogil: p[0] = self.p_this.sendRequest(request.p_this[0])

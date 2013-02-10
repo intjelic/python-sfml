@@ -8,15 +8,18 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from pysfml.dgraphics cimport Texture
 
+from libcpp.sfml cimport Shader
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Texture":
-	cdef unsigned int getMaximumSize()
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
+	cdef struct CurrentTextureType:
+		pass
+	
+	cdef CurrentTextureType CurrentTexture
+	
+	cdef enum Type:
+		Vertex
+		Fragment
 
-	cdef enum CoordinateType:
-		Normalized
-		Pixels
-
-	cdef void bind(Texture*)
-	cdef void bind(Texture*, CoordinateType)
+	cdef bint isAvailable()
+	cdef void bind(Shader*)

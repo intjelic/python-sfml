@@ -14,9 +14,9 @@ from cython.operator cimport preincrement as inc
 
 from libcpp.vector cimport vector
 
-from pysfml cimport dsystem, dwindow, dgraphics
-from pysfml.dsystem cimport Int8, Int16, Int32, Int64
-from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
+cimport libcpp.sfml as sf
+from libcpp.sfml cimport Int8, Int16, Int32, Int64
+from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 
 			'Image', 'Texture', 'Glyph', 'Font', 'Shader', 
@@ -47,13 +47,13 @@ cdef extern from "system.h":
 
 cdef extern from "window.h":
 	cdef class sfml.window.Window [object PyWindowObject]:
-		cdef dwindow.Window *p_window
+		cdef sf.Window *p_window
 		
 	cdef class sfml.window.VideoMode [object PyVideoModeObject]:
-		cdef dwindow.VideoMode *p_this
+		cdef sf.VideoMode *p_this
 		
 	cdef class sfml.window.ContextSettings [object PyContextSettingsObject]:
-		cdef dwindow.ContextSettings *p_this
+		cdef sf.ContextSettings *p_this
 		
 	cdef class sfml.window.Pixels [object PyPixelsObject]:
 		cdef Uint8          *p_array
@@ -67,45 +67,45 @@ cdef Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 	return r
 	
 # utility functions for sf.Vector2
-cdef dsystem.Vector2i vector2_to_vector2i(vector):
+cdef sf.Vector2i vector2_to_vector2i(vector):
 	x, y = vector
-	return dsystem.Vector2i(x, y)
+	return sf.Vector2i(x, y)
 	
-cdef dsystem.Vector2f vector2_to_vector2f(vector):
+cdef sf.Vector2f vector2_to_vector2f(vector):
 	x, y = vector
-	return dsystem.Vector2f(x, y)
+	return sf.Vector2f(x, y)
 
 # utility functions for sf.Rectangle
-cdef dsystem.FloatRect rectangle_to_floatrect(rectangle):
+cdef sf.FloatRect rectangle_to_floatrect(rectangle):
 	l, t, w, h = rectangle
-	return dsystem.FloatRect(l, t, w, h)
+	return sf.FloatRect(l, t, w, h)
 	
-cdef dsystem.IntRect rectangle_to_intrect(rectangle):
+cdef sf.IntRect rectangle_to_intrect(rectangle):
 	l, t, w, h = rectangle
-	return dsystem.IntRect(l, t, w, h)
+	return sf.IntRect(l, t, w, h)
 
-cdef Rectangle intrect_to_rectangle(dsystem.IntRect* intrect):
+cdef Rectangle intrect_to_rectangle(sf.IntRect* intrect):
 	return Rectangle((intrect.left, intrect.top), (intrect.width, intrect.height))
 
-cdef Rectangle floatrect_to_rectangle(dsystem.FloatRect* floatrect):
+cdef Rectangle floatrect_to_rectangle(sf.FloatRect* floatrect):
 	return Rectangle((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
 
 
 class BlendMode:
-	BLEND_ALPHA = dgraphics.blendmode.BlendAlpha
-	BLEND_ADD = dgraphics.blendmode.BlendAdd
-	BLEND_MULTIPLY = dgraphics.blendmode.BlendMultiply
-	BLEND_NONE = dgraphics.blendmode.BlendNone
+	BLEND_ALPHA = sf.blendmode.BlendAlpha
+	BLEND_ADD = sf.blendmode.BlendAdd
+	BLEND_MULTIPLY = sf.blendmode.BlendMultiply
+	BLEND_NONE = sf.blendmode.BlendNone
 
 
 class PrimitiveType:
-	POINTS = dgraphics.primitivetype.Points
-	LINES = dgraphics.primitivetype.Lines
-	LINES_STRIP = dgraphics.primitivetype.LinesStrip
-	TRIANGLES = dgraphics.primitivetype.Triangles
-	TRIANGLES_STRIP = dgraphics.primitivetype.TrianglesStrip
-	TRIANGLES_FAN = dgraphics.primitivetype.TrianglesFan
-	QUADS = dgraphics.primitivetype.Quads
+	POINTS = sf.primitivetype.Points
+	LINES = sf.primitivetype.Lines
+	LINES_STRIP = sf.primitivetype.LinesStrip
+	TRIANGLES = sf.primitivetype.Triangles
+	TRIANGLES_STRIP = sf.primitivetype.TrianglesStrip
+	TRIANGLES_FAN = sf.primitivetype.TrianglesFan
+	QUADS = sf.primitivetype.Quads
 	
 	
 cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
@@ -234,10 +234,10 @@ cdef public class Color [type PyColorType, object PyColorObject]:
 	CYAN = Color(0, 255, 255)
 	TRANSPARENT = Color(0, 0, 0, 0)
 
-	cdef dgraphics.Color *p_this
+	cdef sf.Color *p_this
 
 	def __cinit__(self, Uint8 r=0, Uint8 g=0, Uint8 b=0, Uint8 a=255):
-		self.p_this = new dgraphics.Color(r, g, b, a)
+		self.p_this = new sf.Color(r, g, b, a)
 
 	def __dealloc__(self):
 		del self.p_this
@@ -312,18 +312,18 @@ cdef public class Color [type PyColorType, object PyColorObject]:
 		p.r, p.g, p.b, p.a = self
 		return p
 
-cdef api object wrap_color(dgraphics.Color *p):
+cdef api object wrap_color(sf.Color *p):
 	cdef Color r = Color.__new__(Color)
 	r.p_this = p
 	return r
 
 
 cdef class Transform:
-	cdef dgraphics.Transform *p_this
+	cdef sf.Transform *p_this
 	cdef bint                 delete_this
 	
 	def __init__(self):
-		self.p_this = new dgraphics.Transform()
+		self.p_this = new sf.Transform()
 		self.delete_this = True
 
 	def __dealloc__(self):
@@ -350,7 +350,7 @@ cdef class Transform:
 	@classmethod
 	def from_values(self, float a00, float a01, float a02, float a10, float a11, float a12, float a20, float a21, float a22):
 		cdef Transform r = Transform.__new__(Transform)
-		r.p_this = new dgraphics.Transform(a00, a01, a02, a10, a11, a12, a20, a21, a22)
+		r.p_this = new sf.Transform(a00, a01, a02, a10, a11, a12, a20, a21, a22)
 		return r
 
 	property matrix:
@@ -359,16 +359,16 @@ cdef class Transform:
 		
 	property inverse:
 		def __get__(self):
-			cdef dgraphics.Transform *p = new dgraphics.Transform()
+			cdef sf.Transform *p = new sf.Transform()
 			p[0] = self.p_this.getInverse()
 			return wrap_transform(p)
 	
 	def transform_point(self, point):
-		cdef dsystem.Vector2f p = self.p_this.transformPoint(vector2_to_vector2f(point))
+		cdef sf.Vector2f p = self.p_this.transformPoint(vector2_to_vector2f(point))
 		return Vector2(p.x, p.y)
 		
 	def transform_rectangle(self, rectangle):
-		cdef dsystem.FloatRect p = self.p_this.transformRect(rectangle_to_floatrect(rectangle))
+		cdef sf.FloatRect p = self.p_this.transformRect(rectangle_to_floatrect(rectangle))
 		return Rectangle((p.top, p.left), (p.width, p.height))
 		
 	def combine(self, Transform transform):
@@ -396,20 +396,20 @@ cdef class Transform:
 		return self
 		
 		
-cdef Transform wrap_transform(dgraphics.Transform *p, bint d=True):
+cdef Transform wrap_transform(sf.Transform *p, bint d=True):
 	cdef Transform r = Transform.__new__(Transform)
 	r.p_this = p
 	r.delete_this = d
 	return r
 	
-cdef Transformable wrap_transformable(dgraphics.Transformable *p):
+cdef Transformable wrap_transformable(sf.Transformable *p):
 	cdef Transformable r = Transformable.__new__(Transformable)
 	r.p_this = p
 	return r
 
 
 cdef public class Image[type PyImageType, object PyImageObject]:
-	cdef dgraphics.Image *p_this
+	cdef sf.Image *p_this
 	
 	def __init__(self):
 		raise UserWarning("Use a specific constructor")
@@ -418,7 +418,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 		del self.p_this
 		
 	def __getitem__(self, tuple v):
-		cdef dgraphics.Color *p = new dgraphics.Color()
+		cdef sf.Color *p = new sf.Color()
 		p[0] = self.p_this.getPixel(v[0], v[1])
 		return wrap_color(p)
 
@@ -426,35 +426,35 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 		self.p_this.setPixel(k[0], k[1], v.p_this[0])
 
 	def __copy__(self):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+		cdef sf.Image *p = new sf.Image()
 		p[0] = self.p_this[0]
 		return wrap_image(p)
 		
 	def __deepcopy__(self):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+		cdef sf.Image *p = new sf.Image()
 		p[0] = self.p_this[0]
 		return wrap_image(p)
 		
 	@classmethod
 	def create(cls, unsigned int width, unsigned int height, Color color=None):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+		cdef sf.Image *p = new sf.Image()
 		if not color: p.create(width, height)
 		else: p.create(width, height, color.p_this[0])
 		return wrap_image(p)
 		
 	@classmethod
 	def from_size(cls, unsigned int width, unsigned int height, Color color=None):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+		cdef sf.Image *p = new sf.Image()
 		if not color: p.create(width, height)
 		else: p.create(width, height, color.p_this[0])
 		return wrap_image(p)
 
 	@classmethod
 	def from_pixels(cls, Pixels pixels):
-		cdef dgraphics.Image *p
+		cdef sf.Image *p
 		
 		if pixels.p_array != NULL:
-			p = new dgraphics.Image()
+			p = new sf.Image()
 			p.create(pixels.m_width, pixels.m_height, pixels.p_array)
 			return wrap_image(p)
 			
@@ -462,7 +462,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 
 	@classmethod
 	def from_file(cls, filename):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+		cdef sf.Image *p = new sf.Image()
 		cdef char* encoded_filename	
 
 		encoded_filename_temporary = filename.encode('UTF-8')	
@@ -476,7 +476,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 
 	@classmethod
 	def from_memory(cls, bytes data):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+		cdef sf.Image *p = new sf.Image()
 
 		if p.loadFromMemory(<char*>data, len(data)):
 			return wrap_image(p)
@@ -509,7 +509,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 	
 	def blit(self, Image source, dest, source_rect=None, bint apply_alpha=False):
 		x, y = dest
-		if not source_rect: self.p_this.copy(source.p_this[0], x, y, dsystem.IntRect(0, 0, 0, 0), apply_alpha)
+		if not source_rect: self.p_this.copy(source.p_this[0], x, y, sf.IntRect(0, 0, 0, 0), apply_alpha)
 		else: self.p_this.copy(source.p_this[0], x, y, rectangle_to_intrect(source_rect), apply_alpha)
 	
 	property pixels:
@@ -535,22 +535,22 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 		subprocess.Popen([sys.executable, script_filename, temporaryfile_filename])
 
 	def copy(self):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+		cdef sf.Image *p = new sf.Image()
 		p[0] = self.p_this[0]
 		return wrap_image(p)
 
 
-cdef Image wrap_image(dgraphics.Image *p):
+cdef Image wrap_image(sf.Image *p):
 	cdef Image r = Image.__new__(Image)
 	r.p_this = p
 	return r
 
 
 cdef public class Texture[type PyTextureType, object PyTextureObject]:
-	NORMALIZED = dgraphics.texture.Normalized
-	PIXELS = dgraphics.texture.Pixels
+	NORMALIZED = sf.texture.Normalized
+	PIXELS = sf.texture.Pixels
 	
-	cdef dgraphics.Texture *p_this
+	cdef sf.Texture *p_this
 	cdef bint               delete_this
 	
 	def __init__(self):
@@ -560,21 +560,21 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 		if self.delete_this: del self.p_this
 
 	def __copy__(self):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		cdef sf.Texture *p = new sf.Texture()
 		p[0] = self.p_this[0]
 		return wrap_texture(p)
 		
 	def __deepcopy__(self):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		cdef sf.Texture *p = new sf.Texture()
 		p[0] = self.p_this[0]
 		return wrap_texture(p)
 		
 	def draw(self, RenderTarget target, states):
-		target.p_rendertarget.draw((<dgraphics.Drawable*>self.p_this)[0])
+		target.p_rendertarget.draw((<sf.Drawable*>self.p_this)[0])
 		
 	@classmethod
 	def create(cls, unsigned int width, unsigned int height):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		cdef sf.Texture *p = new sf.Texture()
 		
 		if p.create(width, height):
 			return wrap_texture(p)
@@ -584,7 +584,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 		
 	@classmethod
 	def from_size(cls, unsigned int width, unsigned int height):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		cdef sf.Texture *p = new sf.Texture()
 		
 		if p.create(width, height):
 			return wrap_texture(p)
@@ -594,7 +594,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 
 	@classmethod
 	def from_file(cls, filename, area=None):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		cdef sf.Texture *p = new sf.Texture()
 		cdef char* encoded_filename
 		
 		encoded_filename_temporary = filename.encode('UTF-8')	
@@ -604,33 +604,33 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 			if p.loadFromFile(encoded_filename): return wrap_texture(p)
 		else:
 			l, t, w, h = area
-			if p.loadFromFile(encoded_filename, dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
+			if p.loadFromFile(encoded_filename, sf.IntRect(l, t, w, h)): return wrap_texture(p)
 			
 		del p
 		raise IOError(pop_error_message())
 
 	@classmethod
 	def from_memory(cls, bytes data, area=None):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		cdef sf.Texture *p = new sf.Texture()
 		
 		if not area:
 			if p.loadFromMemory(<char*>data, len(data)): return wrap_texture(p)
 		else:
 			l, t, w, h = area
-			if p.loadFromMemory(<char*>data, len(data), dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
+			if p.loadFromMemory(<char*>data, len(data), sf.IntRect(l, t, w, h)): return wrap_texture(p)
 	
 		del p
 		raise IOError(pop_error_message())
 
 	@classmethod
 	def from_image(cls, Image image, area=None):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		cdef sf.Texture *p = new sf.Texture()
 		
 		if not area:
 			if p.loadFromImage(image.p_this[0]): return wrap_texture(p)
 		else:
 			l, t, w, h = area
-			if p.loadFromImage(image.p_this[0], dsystem.IntRect(l, t, w, h)): return wrap_texture(p)
+			if p.loadFromImage(image.p_this[0], sf.IntRect(l, t, w, h)): return wrap_texture(p)
 		
 		del p
 		raise IOError(pop_error_message())
@@ -657,12 +657,12 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 			raise NotImplemented
 
 	def copy_to_image(self):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+		cdef sf.Image *p = new sf.Image()
 		p[0] = self.p_this.copyToImage()
 		return wrap_image(p)
 	
 	def to_image(self):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+		cdef sf.Image *p = new sf.Image()
 		p[0] = self.p_this.copyToImage()
 		return wrap_image(p)
 
@@ -722,11 +722,11 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 			self.p_this.update(window.p_window[0], <unsigned int>x, <unsigned int>y)
 
 	@classmethod
-	def bind(cls, Texture texture=None, dgraphics.texture.CoordinateType coordinate_type=dgraphics.texture.Normalized):
+	def bind(cls, Texture texture=None, sf.texture.CoordinateType coordinate_type=sf.texture.Normalized):
 		if not texture:
-			dgraphics.texture.bind(NULL, coordinate_type)
+			sf.texture.bind(NULL, coordinate_type)
 		else:
-			dgraphics.texture.bind(texture.p_this, coordinate_type)
+			sf.texture.bind(texture.p_this, coordinate_type)
 
 	property smooth:
 		def __get__(self):
@@ -743,16 +743,16 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 			self.p_this.setRepeated(repeated)
 
 	def copy(self):
-		cdef dgraphics.Texture *p = new dgraphics.Texture()
+		cdef sf.Texture *p = new sf.Texture()
 		p[0] = self.p_this[0]
 		return wrap_texture(p)
 		
 	@classmethod
 	def get_maximum_size(cls):
-		return dgraphics.texture.getMaximumSize()
+		return sf.texture.getMaximumSize()
 		
 		
-cdef Texture wrap_texture(dgraphics.Texture *p, bint d=True):
+cdef Texture wrap_texture(sf.Texture *p, bint d=True):
 	cdef Texture r = Texture.__new__(Texture)
 	r.p_this = p
 	r.delete_this = d
@@ -760,10 +760,10 @@ cdef Texture wrap_texture(dgraphics.Texture *p, bint d=True):
 
 
 cdef class Glyph:
-	cdef dgraphics.Glyph *p_this
+	cdef sf.Glyph *p_this
 
 	def __init__(self):
-		self.p_this = new dgraphics.Glyph()
+		self.p_this = new sf.Glyph()
 
 	def __dealloc__(self):
 		del self.p_this
@@ -790,14 +790,14 @@ cdef class Glyph:
 			self.p_this.textureRect = rectangle_to_intrect(texture_rectangle)
 
 
-cdef Glyph wrap_glyph(dgraphics.Glyph *p):
+cdef Glyph wrap_glyph(sf.Glyph *p):
 	cdef Glyph r = Glyph.__new__(Glyph)
 	r.p_this = p
 	return r
 
 
 cdef class Font:
-	cdef dgraphics.Font *p_this
+	cdef sf.Font *p_this
 	cdef bint            delete_this
 	cdef Texture         m_texture
 	
@@ -809,7 +809,7 @@ cdef class Font:
 
 	@classmethod
 	def from_file(cls, filename):
-		cdef dgraphics.Font *p = new dgraphics.Font()
+		cdef sf.Font *p = new sf.Font()
 		cdef char* encoded_filename	
 
 		encoded_filename_temporary = filename.encode('UTF-8')	
@@ -823,7 +823,7 @@ cdef class Font:
 	
 	@classmethod
 	def from_memory(cls, bytes data):
-		cdef dgraphics.Font *p = new dgraphics.Font()
+		cdef sf.Font *p = new sf.Font()
 
 		if p.loadFromMemory(<char*>data, len(data)):
 			return wrap_font(p)
@@ -832,7 +832,7 @@ cdef class Font:
 		raise IOError(pop_error_message())
 
 	def get_glyph(self, Uint32 code_point, unsigned int character_size, bint bold):
-		cdef dgraphics.Glyph *p = new dgraphics.Glyph()
+		cdef sf.Glyph *p = new sf.Glyph()
 		p[0] = self.p_this.getGlyph(code_point, character_size, bold)
 		return wrap_glyph(p)
 
@@ -843,11 +843,11 @@ cdef class Font:
 		return self.p_this.getLineSpacing(character_size)
 
 	def get_texture(self, unsigned int character_size):
-		cdef dgraphics.Texture *p
-		p = <dgraphics.Texture*>&self.p_this.getTexture(character_size)
+		cdef sf.Texture *p
+		p = <sf.Texture*>&self.p_this.getTexture(character_size)
 		return wrap_texture(p, False)
 
-cdef Font wrap_font(dgraphics.Font *p, bint d=True):
+cdef Font wrap_font(sf.Font *p, bint d=True):
 	cdef Font r = Font.__new__(Font)
 	r.p_this = p
 	r.delete_this = d
@@ -855,7 +855,7 @@ cdef Font wrap_font(dgraphics.Font *p, bint d=True):
 
 	
 cdef class Shader:
-	cdef dgraphics.Shader *p_this
+	cdef sf.Shader *p_this
 	cdef bint              delete_this
 	
 	def __init__(self):
@@ -866,7 +866,7 @@ cdef class Shader:
 
 	@classmethod
 	def from_file(cls, vertex=None, fragment=None):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
+		cdef sf.Shader *p = new sf.Shader()
 		cdef char* encoded_vertex_filename
 		cdef char* encoded_fragment_filename
 		
@@ -882,10 +882,10 @@ cdef class Shader:
 			if p.loadFromFile(encoded_vertex_filename, encoded_fragment_filename):
 				return wrap_shader(p)
 		elif vertex:
-			if p.loadFromFile(encoded_vertex_filename, dgraphics.shader.Vertex):
+			if p.loadFromFile(encoded_vertex_filename, sf.shader.Vertex):
 				return wrap_shader(p)
 		elif fragment:
-			if p.loadFromFile(encoded_fragment_filename, dgraphics.shader.Fragment):
+			if p.loadFromFile(encoded_fragment_filename, sf.shader.Fragment):
 				return wrap_shader(p)
 		else:
 			raise TypeError("This method takes at least 1 argument (0 given)")
@@ -895,7 +895,7 @@ cdef class Shader:
 
 	@classmethod
 	def from_memory(cls, char* vertex=NULL, char* fragment=NULL):
-		cdef dgraphics.Shader *p = new dgraphics.Shader()
+		cdef sf.Shader *p = new sf.Shader()
 
 		if vertex is None and fragment is None:
 			raise TypeError("This method takes at least 1 argument (0 given)")
@@ -994,7 +994,7 @@ cdef class Shader:
 		encoded_name = encoded_name_temporary
 		
 		x, y = vector
-		self.p_this.setParameter(encoded_name, dsystem.Vector2f(x, y))
+		self.p_this.setParameter(encoded_name, sf.Vector2f(x, y))
 	
 	def set_vector3_paramater(self, name, vector): 
 		cdef char* encoded_name
@@ -1003,7 +1003,7 @@ cdef class Shader:
 		encoded_name = encoded_name_temporary
 
 		x, y, z = vector
-		self.p_this.setParameter(encoded_name, dsystem.Vector3f(x, y, z))
+		self.p_this.setParameter(encoded_name, sf.Vector3f(x, y, z))
 	
 	def set_color_parameter(self, name, Color color): 
 		cdef char* encoded_name
@@ -1035,21 +1035,21 @@ cdef class Shader:
 		encoded_name_temporary = name.encode('UTF-8')	
 		encoded_name = encoded_name_temporary
 		
-		self.p_this.setParameter(encoded_name, dgraphics.shader.CurrentTexture)
+		self.p_this.setParameter(encoded_name, sf.shader.CurrentTexture)
 	
 	@classmethod
 	def bind(cls, Shader shader=None):
 		if not shader:
-			dgraphics.shader.bind(NULL)
+			sf.shader.bind(NULL)
 		else:
-			dgraphics.shader.bind(shader.p_this)
+			sf.shader.bind(shader.p_this)
 		
 	@classmethod
 	def is_available(cls):
-		return dgraphics.shader.isAvailable()
+		return sf.shader.isAvailable()
 
 
-cdef Shader wrap_shader(dgraphics.Shader *p, bint d=True):
+cdef Shader wrap_shader(sf.Shader *p, bint d=True):
 	cdef Shader r = Shader.__new__(Shader)
 	r.p_this = p
 	r.delete_this = d
@@ -1057,16 +1057,16 @@ cdef Shader wrap_shader(dgraphics.Shader *p, bint d=True):
 
 
 cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObject]:
-	DEFAULT = wrap_renderstates(<dgraphics.RenderStates*>&dgraphics.renderstates.Default, False)
+	DEFAULT = wrap_renderstates(<sf.RenderStates*>&sf.renderstates.Default, False)
 	
-	cdef dgraphics.RenderStates *p_this
+	cdef sf.RenderStates *p_this
 	cdef bint                    delete_this
 	cdef Transform               m_transform
 	cdef Texture                 m_texture
 	cdef Shader                  m_shader
 	
-	def __init__(self, dgraphics.blendmode.BlendMode blend_mode=dgraphics.blendmode.BlendAlpha, Transform transform=None, Texture texture=None, Shader shader=None):
-		self.p_this = new dgraphics.RenderStates()
+	def __init__(self, sf.blendmode.BlendMode blend_mode=sf.blendmode.BlendAlpha, Transform transform=None, Texture texture=None, Shader shader=None):
+		self.p_this = new sf.RenderStates()
 		
 		self.m_transform = wrap_transform(&self.p_this.transform, False)
 		self.m_texture = None
@@ -1084,7 +1084,7 @@ cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObj
 		def __get__(self):
 			return self.p_this.blendMode
 			
-		def __set__(self, dgraphics.blendmode.BlendMode blend_mode):
+		def __set__(self, sf.blendmode.BlendMode blend_mode):
 			self.p_this.blendMode = blend_mode
 
 	property transform:
@@ -1110,45 +1110,45 @@ cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObj
 			self.p_this.shader = shader.p_this			
 			self.m_shader = shader
 
-cdef RenderStates wrap_renderstates(dgraphics.RenderStates *p, bint d=True):
+cdef RenderStates wrap_renderstates(sf.RenderStates *p, bint d=True):
 	cdef RenderStates r = RenderStates.__new__(RenderStates)
 	r.p_this = p
 	r.delete_this = d
 	r.m_transform = wrap_transform(&p.transform, False)
-	if p.texture: r.m_texture = wrap_texture(<dgraphics.Texture*>p.texture, False)
+	if p.texture: r.m_texture = wrap_texture(<sf.Texture*>p.texture, False)
 	else: r.m_texture = None
-	if p.shader: r.m_shader = wrap_shader(<dgraphics.Shader*>p.shader, False)
+	if p.shader: r.m_shader = wrap_shader(<sf.Shader*>p.shader, False)
 	else: r.m_shader = None
 	return r
 	
-cdef api object api_wrap_renderstates(dgraphics.RenderStates *p):
+cdef api object api_wrap_renderstates(sf.RenderStates *p):
 	cdef RenderStates r = RenderStates.__new__(RenderStates)
 	r.p_this = p
 	r.delete_this = False
 	r.m_transform = wrap_transform(&p.transform, False)
-	if p.texture: r.m_texture = wrap_texture(<dgraphics.Texture*>p.texture, False)
+	if p.texture: r.m_texture = wrap_texture(<sf.Texture*>p.texture, False)
 	else: r.m_texture = None
-	if p.shader: r.m_shader = wrap_shader(<dgraphics.Shader*>p.shader, False)
+	if p.shader: r.m_shader = wrap_shader(<sf.Shader*>p.shader, False)
 	else: r.m_shader = None
 	return r
 
 
 cdef public class Drawable[type PyDrawableType, object PyDrawableObject]:
-	cdef dgraphics.Drawable *p_drawable
+	cdef sf.Drawable *p_drawable
 	
 	def __cinit__(self, *args, **kwargs):
 		if self.__class__ == Drawable:
 			raise NotImplementedError('Drawable is abstact')
 			
-		self.p_drawable = <dgraphics.Drawable*>new dgraphics.DerivableDrawable(<void*>self)
+		self.p_drawable = <sf.Drawable*>new sf.DerivableDrawable(<void*>self)
 			
 	def draw(self, RenderTarget target, RenderStates states): pass
 	
 cdef class Transformable:
-	cdef dgraphics.Transformable *p_this
+	cdef sf.Transformable *p_this
 	
 	def __cinit__(self):
-		self.p_this = new dgraphics.Transformable()
+		self.p_this = new sf.Transformable()
 
 	def __dealloc__(self):
 		del self.p_this
@@ -1192,25 +1192,25 @@ cdef class Transformable:
 				
 	property transform:
 		def __get__(self):
-			cdef dgraphics.Transform *p = new dgraphics.Transform()
+			cdef sf.Transform *p = new sf.Transform()
 			p[0] = self.p_this.getTransform()
 			return wrap_transform(p)
 		
 	property inverse_transform:
 		def __get__(self):
-			cdef dgraphics.Transform *p = new dgraphics.Transform()
+			cdef sf.Transform *p = new sf.Transform()
 			p[0] = self.p_this.getInverseTransform()
 			return wrap_transform(p)
 
 cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableType, object PyTransformableDrawableObject]:
-	cdef dgraphics.Transformable *p_transformable
+	cdef sf.Transformable *p_transformable
 	
 	def __cinit__(self, *args, **kwargs):
 		if self.__class__ == TransformableDrawable:
 			raise NotImplementedError('TransformableDrawable is abstact')
 
 		if self.__class__ not in [Sprite, Shape, Text]:
-			self.p_transformable = new dgraphics.Transformable()
+			self.p_transformable = new sf.Transformable()
 
 	property position:
 		def __get__(self):
@@ -1251,13 +1251,13 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
 		
 	property transform:
 		def __get__(self):
-			cdef dgraphics.Transform *p = new dgraphics.Transform()
+			cdef sf.Transform *p = new sf.Transform()
 			p[0] = self.p_transformable.getTransform()
 			return wrap_transform(p)
 		
 	property inverse_transform:
 		def __get__(self):
-			cdef dgraphics.Transform *p = new dgraphics.Transform()
+			cdef sf.Transform *p = new sf.Transform()
 			p[0] = self.p_transformable.getInverseTransform()
 			return wrap_transform(p)
 			
@@ -1267,17 +1267,17 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
 
 
 cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpriteObject]:
-	cdef dgraphics.Sprite *p_this
+	cdef sf.Sprite *p_this
 	cdef Texture           m_texture
 	
 	def __cinit__(self, Texture texture, rectangle=None):
-		if not rectangle: self.p_this = new dgraphics.Sprite(texture.p_this[0])
+		if not rectangle: self.p_this = new sf.Sprite(texture.p_this[0])
 		else:
 			l, t, w, h = rectangle
-			self.p_this = new dgraphics.Sprite(texture.p_this[0], dsystem.IntRect(l, t, w, h))
+			self.p_this = new sf.Sprite(texture.p_this[0], sf.IntRect(l, t, w, h))
 			
-		self.p_drawable = <dgraphics.Drawable*>self.p_this
-		self.p_transformable = <dgraphics.Transformable*>self.p_this
+		self.p_drawable = <sf.Drawable*>self.p_this
+		self.p_transformable = <sf.Transformable*>self.p_this
 		
 		self.m_texture = texture
 		
@@ -1285,7 +1285,7 @@ cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpri
 		del self.p_this
 
 	def draw(self, RenderTarget target, RenderStates states):
-		target.p_rendertarget.draw((<dgraphics.Drawable*>self.p_this)[0])
+		target.p_rendertarget.draw((<sf.Drawable*>self.p_this)[0])
 	
 	property texture:
 		def __get__(self):
@@ -1297,14 +1297,14 @@ cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpri
 
 	property texture_rectangle:
 		def __get__(self):
-			return intrect_to_rectangle(<dsystem.IntRect*>(&self.p_this.getTextureRect()))
+			return intrect_to_rectangle(<sf.IntRect*>(&self.p_this.getTextureRect()))
 			
 		def __set__(self, rectangle):
 			self.p_this.setTextureRect(rectangle_to_intrect(rectangle))
 
 	property color:
 		def __get__(self):
-			cdef dgraphics.Color* p = new dgraphics.Color()
+			cdef sf.Color* p = new sf.Color()
 			p[0] = self.p_this.getColor()
 			return wrap_color(p)
 			
@@ -1313,28 +1313,28 @@ cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpri
 
 	property local_bounds:
 		def __get__(self):
-			cdef dsystem.FloatRect p = self.p_this.getLocalBounds()
+			cdef sf.FloatRect p = self.p_this.getLocalBounds()
 			return floatrect_to_rectangle(&p)
 		
 	property global_bounds:
 		def __get__(self):
-			cdef dsystem.FloatRect p = self.p_this.getGlobalBounds()
+			cdef sf.FloatRect p = self.p_this.getGlobalBounds()
 			return floatrect_to_rectangle(&p)
 
 
 cdef class Text(TransformableDrawable):
-	REGULAR    = dgraphics.text.Regular
-	BOLD       = dgraphics.text.Bold
-	ITALIC     = dgraphics.text.Italic
-	UNDERLINED = dgraphics.text.Underlined
+	REGULAR    = sf.text.Regular
+	BOLD       = sf.text.Bold
+	ITALIC     = sf.text.Italic
+	UNDERLINED = sf.text.Underlined
 
-	cdef dgraphics.Text *p_this
+	cdef sf.Text *p_this
 	cdef Font            m_font
 
 	def __init__(self, string=None, Font font=None, unsigned int character_size=30):
-		self.p_this = new dgraphics.Text()
-		self.p_drawable = <dgraphics.Drawable*>self.p_this
-		self.p_transformable = <dgraphics.Transformable*>self.p_this
+		self.p_this = new sf.Text()
+		self.p_drawable = <sf.Drawable*>self.p_this
+		self.p_transformable = <sf.Transformable*>self.p_this
 		
 		if string: self.string = string
 		if font: self.font = font
@@ -1356,7 +1356,7 @@ cdef class Text(TransformableDrawable):
 			encoded_string_temporary = string.encode('utf-8')	
 			encoded_string = encoded_string_temporary
 			
-			self.p_this.setString(dgraphics.String(encoded_string))
+			self.p_this.setString(sf.String(encoded_string))
 					
 	property font:
 		def __get__(self):
@@ -1382,7 +1382,7 @@ cdef class Text(TransformableDrawable):
 
 	property color:
 		def __get__(self):
-			cdef dgraphics.Color* p = new dgraphics.Color()
+			cdef sf.Color* p = new sf.Color()
 			p[0] = self.p_this.getColor()
 			return wrap_color(p)
 			
@@ -1391,21 +1391,21 @@ cdef class Text(TransformableDrawable):
 
 	property local_bounds:
 		def __get__(self):
-			cdef dsystem.FloatRect p = self.p_this.getLocalBounds()
+			cdef sf.FloatRect p = self.p_this.getLocalBounds()
 			return floatrect_to_rectangle(&p)
 
 	property global_bounds:
 		def __get__(self):
-			cdef dsystem.FloatRect p = self.p_this.getGlobalBounds()
+			cdef sf.FloatRect p = self.p_this.getGlobalBounds()
 			return floatrect_to_rectangle(&p)
 
 	def find_character_pos(self, size_t index):
-		cdef dsystem.Vector2f p = self.p_this.findCharacterPos(index)
+		cdef sf.Vector2f p = self.p_this.findCharacterPos(index)
 		return Vector2(p.x, p.y)
 
 
 cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeObject]:
-	cdef dgraphics.Shape *p_shape
+	cdef sf.Shape *p_shape
 	cdef Texture          m_texture
 	
 	def __cinit__(self, *args, **kwargs):
@@ -1413,7 +1413,7 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 			raise NotImplementedError('Shape is abstact')
 
 	def draw(self, RenderTarget target, RenderStates):
-		target.p_rendertarget.draw((<dgraphics.Drawable*>self.p_shape)[0])
+		target.p_rendertarget.draw((<sf.Drawable*>self.p_shape)[0])
 		
 	property texture:
 		def __get__(self):
@@ -1429,14 +1429,14 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 
 	property texture_rectangle:
 		def __get__(self):
-			return intrect_to_rectangle(<dsystem.IntRect*>(&self.p_shape.getTextureRect()))
+			return intrect_to_rectangle(<sf.IntRect*>(&self.p_shape.getTextureRect()))
 			
 		def __set__(self, rectangle):
 			self.p_shape.setTextureRect(rectangle_to_intrect(rectangle))
 		
 	property fill_color:
 		def __get__(self):
-			cdef dgraphics.Color* p = new dgraphics.Color()
+			cdef sf.Color* p = new sf.Color()
 			p[0] = self.p_shape.getFillColor()
 			return wrap_color(p)
 			
@@ -1445,7 +1445,7 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 
 	property outline_color:
 		def __get__(self):
-			cdef dgraphics.Color* p = new dgraphics.Color()
+			cdef sf.Color* p = new sf.Color()
 			p[0] = self.p_shape.getOutlineColor()
 			return wrap_color(p)
 			
@@ -1461,12 +1461,12 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 		
 	property local_bounds:
 		def __get__(self):
-			cdef dsystem.FloatRect p = self.p_shape.getLocalBounds()
+			cdef sf.FloatRect p = self.p_shape.getLocalBounds()
 			return floatrect_to_rectangle(&p)
 
 	property global_bounds:
 		def __get__(self):
-			cdef dsystem.FloatRect p = self.p_shape.getGlobalBounds()
+			cdef sf.FloatRect p = self.p_shape.getGlobalBounds()
 			return floatrect_to_rectangle(&p)
 
 	property point_count:
@@ -1478,14 +1478,14 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 
 
 cdef class CircleShape(Shape):
-	cdef dgraphics.CircleShape *p_this
+	cdef sf.CircleShape *p_this
 	
 	def __cinit__(self, float radius=0, unsigned int point_count=30):
-		self.p_this = new dgraphics.CircleShape(radius, point_count)
+		self.p_this = new sf.CircleShape(radius, point_count)
 
-		self.p_drawable = <dgraphics.Drawable*>self.p_this
-		self.p_transformable = <dgraphics.Transformable*>self.p_this
-		self.p_shape = <dgraphics.Shape*>self.p_this
+		self.p_drawable = <sf.Drawable*>self.p_this
+		self.p_transformable = <sf.Transformable*>self.p_this
+		self.p_shape = <sf.Shape*>self.p_this
 		
 	def __dealloc__(self):
 		del self.p_this
@@ -1505,13 +1505,13 @@ cdef class CircleShape(Shape):
 			self.p_this.setPointCount(count)
 
 cdef public class ConvexShape(Shape)[type PyConvexShapeType, object PyConvexShapeObject]:
-	cdef dgraphics.ConvexShape *p_this
+	cdef sf.ConvexShape *p_this
 	
 	def __cinit__(self, unsigned int point_count=0):
-		self.p_this = new dgraphics.ConvexShape(point_count)
-		self.p_drawable = <dgraphics.Drawable*>self.p_this
-		self.p_transformable = <dgraphics.Transformable*>self.p_this
-		self.p_shape = <dgraphics.Shape*>self.p_this
+		self.p_this = new sf.ConvexShape(point_count)
+		self.p_drawable = <sf.Drawable*>self.p_this
+		self.p_transformable = <sf.Transformable*>self.p_this
+		self.p_shape = <sf.Shape*>self.p_this
 		
 	def __dealloc__(self):
 		del self.p_this
@@ -1527,23 +1527,23 @@ cdef public class ConvexShape(Shape)[type PyConvexShapeType, object PyConvexShap
 		self.p_this.setPoint(index, vector2_to_vector2f(point))
 
 
-cdef api object wrap_convexshape(dgraphics.ConvexShape *p):
+cdef api object wrap_convexshape(sf.ConvexShape *p):
 	cdef ConvexShape r = ConvexShape.__new__(ConvexShape)
 	r.p_this = p
-	r.p_drawable = <dgraphics.Drawable*>p
-	r.p_transformable = <dgraphics.Transformable*>p
-	r.p_shape = <dgraphics.Shape*>p
+	r.p_drawable = <sf.Drawable*>p
+	r.p_transformable = <sf.Transformable*>p
+	r.p_shape = <sf.Shape*>p
 	
 	return r
 	
 cdef class RectangleShape(Shape):
-	cdef dgraphics.RectangleShape *p_this
+	cdef sf.RectangleShape *p_this
 	
 	def __cinit__(self, size=(0, 0)):
-		self.p_this = new dgraphics.RectangleShape(vector2_to_vector2f(size))
-		self.p_drawable = <dgraphics.Drawable*>self.p_this
-		self.p_transformable = <dgraphics.Transformable*>self.p_this
-		self.p_shape = <dgraphics.Shape*>self.p_this
+		self.p_this = new sf.RectangleShape(vector2_to_vector2f(size))
+		self.p_drawable = <sf.Drawable*>self.p_this
+		self.p_transformable = <sf.Transformable*>self.p_this
+		self.p_shape = <sf.Shape*>self.p_this
 		
 	def __dealloc__(self):
 		del self.p_this
@@ -1557,11 +1557,11 @@ cdef class RectangleShape(Shape):
 
 
 cdef class Vertex:
-	cdef dgraphics.Vertex *p_this
+	cdef sf.Vertex *p_this
 	cdef bint              delete_this
 	
 	def __init__(self, position=None, Color color=None, tex_coords=None):
-		self.p_this = new dgraphics.Vertex()
+		self.p_this = new sf.Vertex()
 		self.delete_this = True
 		
 		if position: self.position = position
@@ -1580,7 +1580,7 @@ cdef class Vertex:
 		
 	property color:
 		def __get__(self):
-			cdef dgraphics.Color *p = new dgraphics.Color()
+			cdef sf.Color *p = new sf.Color()
 			p[0] = self.p_this.color
 			return wrap_color(p)
 
@@ -1594,7 +1594,7 @@ cdef class Vertex:
 		def __set__(self, tex_coords):
 			self.p_this.texCoords.x, self.p_this.texCoords.y = tex_coords
 	
-cdef Vertex wrap_vertex(dgraphics.Vertex* p, bint d=True):
+cdef Vertex wrap_vertex(sf.Vertex* p, bint d=True):
 	cdef Vertex r = Vertex.__new__(Vertex)
 	r.p_this = p
 	r.delete_this = d
@@ -1602,11 +1602,11 @@ cdef Vertex wrap_vertex(dgraphics.Vertex* p, bint d=True):
 
 
 cdef class VertexArray(Drawable):
-	cdef dgraphics.VertexArray *p_this
+	cdef sf.VertexArray *p_this
 
-	def __init__(self, dgraphics.primitivetype.PrimitiveType type = dgraphics.primitivetype.Points, unsigned int vertex_count=0):
-		self.p_this = new dgraphics.VertexArray(type, vertex_count)
-		self.p_drawable = <dgraphics.Drawable*>self.p_this
+	def __init__(self, sf.primitivetype.PrimitiveType type = sf.primitivetype.Points, unsigned int vertex_count=0):
+		self.p_this = new sf.VertexArray(type, vertex_count)
+		self.p_drawable = <sf.Drawable*>self.p_this
 		
 	def __dealloc__(self):
 		del self.p_this
@@ -1624,7 +1624,7 @@ cdef class VertexArray(Drawable):
 		self.p_this[0][index] = key.p_this[0]
 		
 	def draw(self, RenderTarget target, states):
-		target.p_rendertarget.draw((<dgraphics.Drawable*>self.p_this)[0])
+		target.p_rendertarget.draw((<sf.Drawable*>self.p_this)[0])
 		
 	def clear(self):
 		self.p_this.clear()
@@ -1639,23 +1639,23 @@ cdef class VertexArray(Drawable):
 		def __get__(self):
 			return self.p_this.getPrimitiveType()
 			
-		def __set__(self, dgraphics.primitivetype.PrimitiveType primitive_type):
+		def __set__(self, sf.primitivetype.PrimitiveType primitive_type):
 			self.p_this.setPrimitiveType(primitive_type)
 			
 	property bounds:
 		def __get__(self):
-			cdef dsystem.FloatRect p = self.p_this.getBounds()
+			cdef sf.FloatRect p = self.p_this.getBounds()
 			return floatrect_to_rectangle(&p)
 
 
 cdef class View:
-	cdef dgraphics.View  *p_this
+	cdef sf.View  *p_this
 	cdef RenderWindow     m_renderwindow
 	cdef RenderTarget     m_rendertarget
 	
 	def __init__(self, rectangle=None):
-		if not rectangle: self.p_this = new dgraphics.View()
-		else: self.p_this = new dgraphics.View(rectangle_to_floatrect(rectangle))
+		if not rectangle: self.p_this = new sf.View()
+		else: self.p_this = new sf.View(rectangle_to_floatrect(rectangle))
 
 	def __dealloc__(self):
 		del self.p_this
@@ -1686,7 +1686,7 @@ cdef class View:
 
 	property viewport:
 		def __get__(self):
-			return floatrect_to_rectangle(<dsystem.FloatRect*>(&self.p_this.getViewport()))
+			return floatrect_to_rectangle(<sf.FloatRect*>(&self.p_this.getViewport()))
 
 		def __set__(self, viewport):
 			self.p_this.setViewport(rectangle_to_floatrect(viewport))
@@ -1697,7 +1697,7 @@ cdef class View:
 		self._update_target()
 	
 	def move(self, float x, float y):
-		self.p_this.move(dsystem.Vector2f(x, y))
+		self.p_this.move(sf.Vector2f(x, y))
 		self._update_target()
 
 	def rotate(self, float angle):
@@ -1710,13 +1710,13 @@ cdef class View:
 	
 	property transform:
 		def __get__(self):
-			cdef dgraphics.Transform *p = new dgraphics.Transform()
+			cdef sf.Transform *p = new sf.Transform()
 			p[0] = self.p_this.getTransform()
 			return wrap_transform(p)
 
 	property inverse_transform:
 		def __get__(self):
-			cdef dgraphics.Transform *p = new dgraphics.Transform()
+			cdef sf.Transform *p = new sf.Transform()
 			p[0] = self.p_this.getInverseTransform()
 			return wrap_transform(p)
 
@@ -1727,18 +1727,18 @@ cdef class View:
 		if self.m_rendertarget:
 			self.m_rendertarget.view = self
 
-cdef View wrap_view(dgraphics.View *p):
+cdef View wrap_view(sf.View *p):
 	cdef View r = View.__new__(View)
 	r.p_this = p
 	return r
 	
-cdef View wrap_view_for_renderwindow(dgraphics.View *p, RenderWindow renderwindow):
+cdef View wrap_view_for_renderwindow(sf.View *p, RenderWindow renderwindow):
 	cdef View r = View.__new__(View)
 	r.p_this = p
 	r.m_renderwindow = renderwindow
 	return r
 	
-cdef View wrap_view_for_rendertarget(dgraphics.View *p, RenderTarget rendertarget):
+cdef View wrap_view_for_rendertarget(sf.View *p, RenderTarget rendertarget):
 	cdef View r = View.__new__(View)
 	r.p_this = p
 	r.m_rendertarget = rendertarget
@@ -1746,7 +1746,7 @@ cdef View wrap_view_for_rendertarget(dgraphics.View *p, RenderTarget rendertarge
 
 
 cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObject]:
-	cdef dgraphics.RenderTarget *p_rendertarget
+	cdef sf.RenderTarget *p_rendertarget
 
 	def __init__(self, *args, **kwargs):
 		if self.__class__ == RenderTarget:
@@ -1758,7 +1758,7 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 		
 	property view:
 		def __get__(self):
-			cdef dgraphics.View *p = new dgraphics.View()
+			cdef sf.View *p = new sf.View()
 			p[0] = self.p_rendertarget.getView()
 			return wrap_view_for_rendertarget(p, self)
 			
@@ -1769,16 +1769,16 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 
 	property default_view:
 		def __get__(self):
-			cdef dgraphics.View *p = new dgraphics.View()
+			cdef sf.View *p = new sf.View()
 			p[0] = self.p_rendertarget.getDefaultView()
 			return wrap_view_for_rendertarget(p, self)
 
 	def get_viewport(self, View view):
-		cdef dsystem.IntRect p = self.p_rendertarget.getViewport(view.p_this[0])
+		cdef sf.IntRect p = self.p_rendertarget.getViewport(view.p_this[0])
 		return intrect_to_rectangle(&p)
 		
 	def map_pixel_to_coords(self, point, View view=None):
-		cdef dsystem.Vector2f ret
+		cdef sf.Vector2f ret
 
 		if not view: ret = self.p_rendertarget.mapPixelToCoords(vector2_to_vector2i(point))
 		else: ret = self.p_rendertarget.mapPixelToCoords(vector2_to_vector2i(point), view.p_this[0])
@@ -1786,7 +1786,7 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 		return Vector2(ret.x, ret.y)
 		
 	def map_coords_to_pixel(self, point, View view=None):
-		cdef dsystem.Vector2i ret
+		cdef sf.Vector2i ret
 
 		if not view: ret = self.p_rendertarget.mapCoordsToPixel(vector2_to_vector2f(point))
 		else: ret = self.p_rendertarget.mapCoordsToPixel(vector2_to_vector2f(point), view.p_this[0])
@@ -1819,29 +1819,29 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 		self.p_rendertarget.resetGLStates()
 
 
-cdef api object wrap_rendertarget(dgraphics.RenderTarget* p):
+cdef api object wrap_rendertarget(sf.RenderTarget* p):
 	cdef RenderTarget r = RenderTarget.__new__(RenderTarget)
 	r.p_rendertarget = p
 	return r
 
 
 cdef class RenderWindow(Window):
-	cdef dgraphics.RenderWindow *p_this
+	cdef sf.RenderWindow *p_this
 	
-	def __init__(self, VideoMode mode, title, Uint32 style=dwindow.style.Default, ContextSettings settings=None):
+	def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
 		cdef char* encoded_title
 		
 		encoded_title_temporary = title.encode(u"ISO-8859-1")
 		encoded_title = encoded_title_temporary
 			
 		if self.__class__ is not RenderWindow:
-			if not settings: self.p_this = <dgraphics.RenderWindow*>new dgraphics.DerivableRenderWindow(mode.p_this[0], encoded_title, style)
-			else: self.p_this = <dgraphics.RenderWindow*>new dgraphics.DerivableRenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])			
+			if not settings: self.p_this = <sf.RenderWindow*>new sf.DerivableRenderWindow(mode.p_this[0], encoded_title, style)
+			else: self.p_this = <sf.RenderWindow*>new sf.DerivableRenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])			
 		else:
-			if not settings: self.p_this = new dgraphics.RenderWindow(mode.p_this[0], encoded_title, style)
-			else: self.p_this = new dgraphics.RenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
+			if not settings: self.p_this = new sf.RenderWindow(mode.p_this[0], encoded_title, style)
+			else: self.p_this = new sf.RenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
 			
-		self.p_window = <dwindow.Window*>self.p_this
+		self.p_window = <sf.Window*>self.p_this
 
 	def __dealloc__(self):
 		del self.p_this
@@ -1852,7 +1852,7 @@ cdef class RenderWindow(Window):
 		
 	property view:
 		def __get__(self):
-			cdef dgraphics.View *p = new dgraphics.View()
+			cdef sf.View *p = new sf.View()
 			p[0] = self.p_this.getView()
 			return wrap_view_for_renderwindow(p, self)
 			
@@ -1863,16 +1863,16 @@ cdef class RenderWindow(Window):
 
 	property default_view:
 		def __get__(self):
-			cdef dgraphics.View *p = new dgraphics.View()
+			cdef sf.View *p = new sf.View()
 			p[0] = self.p_this.getDefaultView()
 			return wrap_view_for_renderwindow(p, self)
 
 	def get_viewport(self, View view):
-		cdef dsystem.IntRect p = self.p_this.getViewport(view.p_this[0])
+		cdef sf.IntRect p = self.p_this.getViewport(view.p_this[0])
 		return intrect_to_rectangle(&p)
 		
 	def map_pixel_to_coords(self, point, View view=None):
-		cdef dsystem.Vector2f ret
+		cdef sf.Vector2f ret
 
 		if not view: ret = self.p_this.mapPixelToCoords(vector2_to_vector2i(point))
 		else: ret = self.p_this.mapPixelToCoords(vector2_to_vector2i(point), view.p_this[0])
@@ -1880,7 +1880,7 @@ cdef class RenderWindow(Window):
 		return Vector2(ret.x, ret.y)
 		
 	def map_coords_to_pixel(self, point, View view=None):
-		cdef dsystem.Vector2i ret
+		cdef sf.Vector2i ret
 
 		if not view: ret = self.p_this.mapCoordsToPixel(vector2_to_vector2f(point))
 		else: ret = self.p_this.mapCoordsToPixel(vector2_to_vector2f(point), view.p_this[0])
@@ -1913,22 +1913,22 @@ cdef class RenderWindow(Window):
 		self.p_this.resetGLStates()
 
 	def capture(self):
-		cdef dgraphics.Image *p = new dgraphics.Image()
+		cdef sf.Image *p = new sf.Image()
 		p[0] = self.p_this.capture()
 		return wrap_image(p)
 
 
 cdef class RenderTexture(RenderTarget):
-	cdef dgraphics.RenderTexture *p_this
+	cdef sf.RenderTexture *p_this
 	cdef Texture                  m_texture
 	
 	def __init__(self, unsigned int width, unsigned int height, bint depthBuffer=False):
-		self.p_this = new dgraphics.RenderTexture()
-		self.p_rendertarget = <dgraphics.RenderTarget*>self.p_this
+		self.p_this = new sf.RenderTexture()
+		self.p_rendertarget = <sf.RenderTarget*>self.p_this
 		
 		self.p_this.create(width, height, depthBuffer)
 		
-		self.m_texture = wrap_texture(<dgraphics.Texture*>&self.p_this.getTexture(), False)
+		self.m_texture = wrap_texture(<sf.Texture*>&self.p_this.getTexture(), False)
 		
 	def __dealloc__(self):
 		del self.p_this
@@ -1952,20 +1952,20 @@ cdef class RenderTexture(RenderTarget):
 			return self.m_texture
 
 cdef class HandledWindow(RenderTarget):
-	cdef dgraphics.RenderWindow *p_this
-	cdef dgraphics.Window       *p_window
+	cdef sf.RenderWindow *p_this
+	cdef sf.Window       *p_window
 	
 	def __init__(self):
-		self.p_this = new dgraphics.RenderWindow()
-		self.p_rendertarget = <dgraphics.RenderTarget*>self.p_this
-		self.p_window = <dwindow.Window*>self.p_this
+		self.p_this = new sf.RenderWindow()
+		self.p_rendertarget = <sf.RenderTarget*>self.p_this
+		self.p_window = <sf.Window*>self.p_this
 		
 	def __dealloc__(self):
 		del self.p_this
 
 	def create(self, unsigned long window_handle, ContextSettings settings=None):
-		if not settings: self.p_this.create(<dwindow.WindowHandle>window_handle)
-		else: self.p_this.create(<dwindow.WindowHandle>window_handle, settings.p_this[0])
+		if not settings: self.p_this.create(<sf.WindowHandle>window_handle)
+		else: self.p_this.create(<sf.WindowHandle>window_handle, settings.p_this[0])
 		
 	def display(self):
 		self.p_window.display()

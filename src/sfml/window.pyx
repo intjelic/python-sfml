@@ -8,14 +8,15 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
 cimport cython
 from cython.operator cimport dereference as deref, preincrement as inc
 
 from libcpp.vector cimport vector
 
-from pysfml cimport dsystem, dwindow
-from pysfml.dsystem cimport Int8, Int16, Int32, Int64
-from pysfml.dsystem cimport Uint8, Uint16, Uint32, Uint64
+cimport libcpp.sfml as sf
+from libcpp.sfml cimport Int8, Int16, Int32, Int64
+from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 
 
 __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
@@ -37,22 +38,22 @@ cdef extern from "system.h":
 
 
 # utility functions for sf.Vector2
-cdef dsystem.Vector2i vector2_to_vector2i(vector):
+cdef sf.Vector2i vector2_to_vector2i(vector):
 	x, y = vector
-	return dsystem.Vector2i(x, y)
+	return sf.Vector2i(x, y)
 
-cdef dsystem.Vector2u vector2_to_vector2u(vector):
+cdef sf.Vector2u vector2_to_vector2u(vector):
 	w, h = vector
-	return dsystem.Vector2u(w, h)
+	return sf.Vector2u(w, h)
 
 
 cdef class Style:
-	NONE = dwindow.style.None
-	TITLEBAR = dwindow.style.Titlebar
-	RESIZE = dwindow.style.Resize
-	CLOSE = dwindow.style.Close
-	FULLSCREEN = dwindow.style.Fullscreen
-	DEFAULT = dwindow.style.Default
+	#NONE = sf.style.None
+	TITLEBAR = sf.style.Titlebar
+	RESIZE = sf.style.Resize
+	CLOSE = sf.style.Close
+	FULLSCREEN = sf.style.Fullscreen
+	DEFAULT = sf.style.Default
 
 
 cdef public class Event[type PyEventType, object PyEventObject]:
@@ -65,10 +66,10 @@ cdef public class Event[type PyEventType, object PyEventObject]:
 	CONNECTED = True
 	DISCONNECTED = False
 
-	cdef dwindow.Event *p_this
+	cdef sf.Event *p_this
 
 	def __init__(self):
-		self.p_this = new dwindow.Event()
+		self.p_this = new sf.Event()
 
 	def __dealloc__(self):
 		del self.p_this
@@ -88,48 +89,48 @@ cdef public class Event[type PyEventType, object PyEventObject]:
 		def __get__(self):
 			return self.p_this.type
 
-		def __set__(self, dwindow.event.EventType type):
+		def __set__(self, sf.event.EventType type):
 			self.p_this.type = type
 
 
-cdef Event wrap_event(dwindow.Event *p):
+cdef Event wrap_event(sf.Event *p):
 	cdef Event event
 
-	if p.type == dwindow.event.Closed:
+	if p.type == sf.event.Closed:
 		event = CloseEvent.__new__(CloseEvent)
-	elif p.type == dwindow.event.Resized:
+	elif p.type == sf.event.Resized:
 		event = ResizeEvent.__new__(ResizeEvent)
-	elif p.type == dwindow.event.LostFocus:
+	elif p.type == sf.event.LostFocus:
 		event = wrap_focusevent(p, Event.LOST)
-	elif p.type == dwindow.event.GainedFocus:
+	elif p.type == sf.event.GainedFocus:
 		event = wrap_focusevent(p, Event.GAINED)
-	elif p.type == dwindow.event.TextEntered:
+	elif p.type == sf.event.TextEntered:
 		event = TextEvent.__new__(TextEvent)
-	elif p.type == dwindow.event.KeyPressed:
+	elif p.type == sf.event.KeyPressed:
 		event = wrap_keyevent(p, Event.PRESSED)
-	elif p.type == dwindow.event.KeyReleased:
+	elif p.type == sf.event.KeyReleased:
 		event = wrap_keyevent(p, Event.RELEASED)
-	elif p.type == dwindow.event.MouseWheelMoved:
+	elif p.type == sf.event.MouseWheelMoved:
 		event = MouseWheelEvent.__new__(MouseWheelEvent)
-	elif p.type == dwindow.event.MouseButtonPressed:
+	elif p.type == sf.event.MouseButtonPressed:
 		event = wrap_mousebuttonevent(p, Event.PRESSED)
-	elif p.type == dwindow.event.MouseButtonReleased:
+	elif p.type == sf.event.MouseButtonReleased:
 		event = wrap_mousebuttonevent(p, Event.RELEASED)
-	elif p.type == dwindow.event.MouseMoved:
+	elif p.type == sf.event.MouseMoved:
 		event = MouseMoveEvent.__new__(MouseMoveEvent)
-	elif p.type == dwindow.event.MouseEntered:
+	elif p.type == sf.event.MouseEntered:
 		event = wrap_mouseevent(p, Event.ENTERED)
-	elif p.type == dwindow.event.MouseLeft:
+	elif p.type == sf.event.MouseLeft:
 		event = wrap_mouseevent(p, Event.LEFT)
-	elif p.type == dwindow.event.JoystickButtonPressed:
+	elif p.type == sf.event.JoystickButtonPressed:
 		event = wrap_joystickbuttonevent(p, Event.PRESSED)
-	elif p.type == dwindow.event.JoystickButtonReleased:
+	elif p.type == sf.event.JoystickButtonReleased:
 		event = wrap_joystickbuttonevent(p, Event.RELEASED)
-	elif p.type == dwindow.event.JoystickMoved:
+	elif p.type == sf.event.JoystickMoved:
 		event = JoystickMoveEvent.__new__(JoystickMoveEvent)
-	elif p.type == dwindow.event.JoystickConnected:
+	elif p.type == sf.event.JoystickConnected:
 		event = wrap_joystickconnectevent(p, Event.CONNECTED)
-	elif p.type == dwindow.event.JoystickDisconnected:
+	elif p.type == sf.event.JoystickDisconnected:
 		event = wrap_joystickconnectevent(p, Event.DISCONNECTED)
 
 	event.p_this = p
@@ -185,7 +186,7 @@ cdef class FocusEvent(Event):
 		def __set__(self, bint lost):
 			self.state = not lost
 
-cdef FocusEvent wrap_focusevent(dwindow.Event *p, bint state):
+cdef FocusEvent wrap_focusevent(sf.Event *p, bint state):
 	cdef FocusEvent r = FocusEvent.__new__(FocusEvent)
 	r.p_this = p
 	r.state = state
@@ -229,7 +230,7 @@ cdef class KeyEvent(Event):
 		def __get__(self):
 			return self.p_this.key.code
 
-		def __set__(self, dwindow.keyboard.Key code):
+		def __set__(self, sf.keyboard.Key code):
 			self.p_this.key.code = code
 
 	property alt:
@@ -260,7 +261,7 @@ cdef class KeyEvent(Event):
 		def __set__(self, bint system):
 			self.p_this.key.system = system
 
-cdef KeyEvent wrap_keyevent(dwindow.Event *p, bint state):
+cdef KeyEvent wrap_keyevent(sf.Event *p, bint state):
 	cdef KeyEvent r = KeyEvent.__new__(KeyEvent)
 	r.p_this = p
 	r.state = state
@@ -317,10 +318,10 @@ cdef class MouseButtonEvent(Event):
 		def __get__(self):
 			return self.p_this.mouseButton.button
 
-		def __set__(self, dwindow.mouse.Button button):
+		def __set__(self, sf.mouse.Button button):
 			self.p_this.mouseButton.button = button
 
-cdef MouseButtonEvent wrap_mousebuttonevent(dwindow.Event *p, bint state):
+cdef MouseButtonEvent wrap_mousebuttonevent(sf.Event *p, bint state):
 	cdef MouseButtonEvent r = MouseButtonEvent.__new__(MouseButtonEvent)
 	r.p_this = p
 	r.state = state
@@ -360,7 +361,7 @@ cdef class MouseEvent(Event):
 		def __set__(self, bint left):
 			self.state = not left
 
-cdef MouseEvent wrap_mouseevent(dwindow.Event *p, bint state):
+cdef MouseEvent wrap_mouseevent(sf.Event *p, bint state):
 	cdef MouseEvent r = MouseEvent.__new__(MouseEvent)
 	r.p_this = p
 	r.state = state
@@ -402,7 +403,7 @@ cdef class JoystickButtonEvent(Event):
 		def __set__(self, unsigned int button):
 			self.p_this.joystickButton.button = button
 
-cdef JoystickButtonEvent wrap_joystickbuttonevent(dwindow.Event *p, bint state):
+cdef JoystickButtonEvent wrap_joystickbuttonevent(sf.Event *p, bint state):
 	cdef JoystickButtonEvent r = JoystickButtonEvent.__new__(JoystickButtonEvent)
 	r.p_this = p
 	r.state = state
@@ -424,7 +425,7 @@ cdef class JoystickMoveEvent(Event):
 		def __get__(self):
 			return self.p_this.joystickMove.axis
 
-		def __set__(self, dwindow.joystick.Axis axis):
+		def __set__(self, sf.joystick.Axis axis):
 			self.p_this.joystickMove.axis = axis
 
 	property position:
@@ -463,7 +464,7 @@ cdef class JoystickConnectEvent(Event):
 		def __set__(self, unsigned int joystick_id):
 			self.p_this.joystickConnect.joystickId = joystick_id
 
-cdef JoystickConnectEvent wrap_joystickconnectevent(dwindow.Event *p, bint state):
+cdef JoystickConnectEvent wrap_joystickconnectevent(sf.Event *p, bint state):
 	cdef JoystickConnectEvent r = JoystickConnectEvent.__new__(JoystickConnectEvent)
 	r.p_this = p
 	r.state = state
@@ -471,11 +472,11 @@ cdef JoystickConnectEvent wrap_joystickconnectevent(dwindow.Event *p, bint state
 
 
 cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
-	cdef dwindow.VideoMode *p_this
+	cdef sf.VideoMode *p_this
 	cdef bint delete_this
 
 	def __init__(self, unsigned int width, unsigned int height, unsigned int bpp=32):
-		self.p_this = new dwindow.VideoMode(width, height, bpp)
+		self.p_this = new sf.VideoMode(width, height, bpp)
 		self.delete_this = True
 
 	def __dealloc__(self):
@@ -530,19 +531,19 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
 
 	@classmethod
 	def get_desktop_mode(cls):
-		cdef dwindow.VideoMode *p = new dwindow.VideoMode()
-		p[0] = dwindow.videomode.getDesktopMode()
+		cdef sf.VideoMode *p = new sf.VideoMode()
+		p[0] = sf.videomode.getDesktopMode()
 
 		return wrap_videomode(p, True)
 
 	@classmethod
 	def get_fullscreen_modes(cls):
 		cdef list modes = []
-		cdef vector[dwindow.VideoMode] *v = new vector[dwindow.VideoMode]()
-		v[0] = dwindow.videomode.getFullscreenModes()
+		cdef vector[sf.VideoMode] *v = new vector[sf.VideoMode]()
+		v[0] = sf.videomode.getFullscreenModes()
 
-		cdef vector[dwindow.VideoMode].iterator it = v.begin()
-		cdef dwindow.VideoMode vm
+		cdef vector[sf.VideoMode].iterator it = v.begin()
+		cdef sf.VideoMode vm
 
 		while it != v.end():
 			vm = deref(it)
@@ -554,7 +555,7 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
 	def is_valid(self):
 		return self.p_this.isValid()
 
-cdef VideoMode wrap_videomode(dwindow.VideoMode *p, bint d):
+cdef VideoMode wrap_videomode(sf.VideoMode *p, bint d):
 	cdef VideoMode r = VideoMode.__new__(VideoMode, 640, 480, 32)
 	r.p_this = p
 	r.delete_this = d
@@ -562,10 +563,10 @@ cdef VideoMode wrap_videomode(dwindow.VideoMode *p, bint d):
 
 
 cdef public class ContextSettings[type PyContextSettingsType, object PyContextSettingsObject]:
-	cdef dwindow.ContextSettings *p_this
+	cdef sf.ContextSettings *p_this
 
 	def __init__(self, unsigned int depth=0, unsigned int stencil=0, unsigned int antialiasing=0, unsigned int major=2, unsigned int minor=0):
-		self.p_this = new dwindow.ContextSettings(depth, stencil, antialiasing, major, minor)
+		self.p_this = new sf.ContextSettings(depth, stencil, antialiasing, major, minor)
 
 	def __dealloc__(self):
 		del self.p_this
@@ -614,7 +615,7 @@ cdef public class ContextSettings[type PyContextSettingsType, object PyContextSe
 		def __set__(self, unsigned int minor_version):
 			self.p_this.minorVersion = minor_version
 
-cdef ContextSettings wrap_contextsettings(dwindow.ContextSettings *v):
+cdef ContextSettings wrap_contextsettings(sf.ContextSettings *v):
 	cdef ContextSettings r = ContextSettings.__new__(ContextSettings)
 	r.p_this = v
 	return r
@@ -650,7 +651,7 @@ cdef public Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 
 
 cdef public class Window[type PyWindowType, object PyWindowObject]:
-	cdef dwindow.Window *p_window
+	cdef sf.Window *p_window
 	cdef bint			 m_visible
 	cdef bint			 m_vertical_synchronization
 
@@ -658,7 +659,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 		self.m_visible = True
 		self.m_vertical_synchronization = False
 
-	def __init__(self, VideoMode mode, title, Uint32 style=dwindow.style.Default, ContextSettings settings=None):
+	def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
 		cdef char* encoded_title
 
 		if self.__class__.__name__ != 'RenderWindow':
@@ -666,19 +667,19 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 			encoded_title = encoded_title_temporary
 
 			if self.__class__ is Window:
-				if not settings: self.p_window = new dwindow.Window(mode.p_this[0], encoded_title, style)
-				else: self.p_window = new dwindow.Window(mode.p_this[0], encoded_title, style, settings.p_this[0])
+				if not settings: self.p_window = new sf.Window(mode.p_this[0], encoded_title, style)
+				else: self.p_window = new sf.Window(mode.p_this[0], encoded_title, style, settings.p_this[0])
 
 			else:
-				if not settings: self.p_window = <dwindow.Window*>new dwindow.DerivableWindow(mode.p_this[0], encoded_title, style)
-				else: self.p_window = <dwindow.Window*>new dwindow.DerivableWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
-				(<dwindow.DerivableWindow*>self.p_window).set_pyobj(<void*>self)
+				if not settings: self.p_window = <sf.Window*>new sf.DerivableWindow(mode.p_this[0], encoded_title, style)
+				else: self.p_window = <sf.Window*>new sf.DerivableWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
+				(<sf.DerivableWindow*>self.p_window).set_pyobj(<void*>self)
 
 	def __dealloc__(self):
 		if self.__class__.__name__ == 'Window':
 			del self.p_window
 
-	def recreate(self, VideoMode mode, title, Uint32 style=dwindow.style.Default, ContextSettings settings=None):
+	def recreate(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
 		cdef char* encoded_title
 
 		encoded_title_temporary = title.encode(u"ISO-8859-1")
@@ -696,7 +697,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
 	property settings:
 		def __get__(self):
-			cdef dwindow.ContextSettings *p = new dwindow.ContextSettings()
+			cdef sf.ContextSettings *p = new sf.ContextSettings()
 			p[0] = self.p_window.getSettings()
 			return wrap_contextsettings(p)
 
@@ -708,22 +709,22 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 			return Window.events_generator(self)
 
 	def events_generator(window):
-		cdef dwindow.Event *p = new dwindow.Event()
+		cdef sf.Event *p = new sf.Event()
 
 		while window.p_window.pollEvent(p[0]):
 			yield wrap_event(p)
-			p = new dwindow.Event()
+			p = new sf.Event()
 
 		del p
 
 	def poll_event(self):
-		cdef dwindow.Event *p = new dwindow.Event()
+		cdef sf.Event *p = new sf.Event()
 
 		if self.p_window.pollEvent(p[0]):
 			return wrap_event(p)
 
 	def wait_event(self):
-		cdef dwindow.Event *p = new dwindow.Event()
+		cdef sf.Event *p = new sf.Event()
 
 		if self.p_window.waitEvent(p[0]):
 			return wrap_event(p)
@@ -805,197 +806,197 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
 
 cdef class Keyboard:
-	A = dwindow.keyboard.A
-	B = dwindow.keyboard.B
-	C = dwindow.keyboard.C
-	D = dwindow.keyboard.D
-	E = dwindow.keyboard.E
-	F = dwindow.keyboard.F
-	G = dwindow.keyboard.G
-	H = dwindow.keyboard.H
-	I = dwindow.keyboard.I
-	J = dwindow.keyboard.J
-	K = dwindow.keyboard.K
-	L = dwindow.keyboard.L
-	M = dwindow.keyboard.M
-	N = dwindow.keyboard.N
-	O = dwindow.keyboard.O
-	P = dwindow.keyboard.P
-	Q = dwindow.keyboard.Q
-	R = dwindow.keyboard.R
-	S = dwindow.keyboard.S
-	T = dwindow.keyboard.T
-	U = dwindow.keyboard.U
-	V = dwindow.keyboard.V
-	W = dwindow.keyboard.W
-	X = dwindow.keyboard.X
-	Y = dwindow.keyboard.Y
-	Z = dwindow.keyboard.Z
-	NUM0 = dwindow.keyboard.Num0
-	NUM1 = dwindow.keyboard.Num1
-	NUM2 = dwindow.keyboard.Num2
-	NUM3 = dwindow.keyboard.Num3
-	NUM4 = dwindow.keyboard.Num4
-	NUM5 = dwindow.keyboard.Num5
-	NUM6 = dwindow.keyboard.Num6
-	NUM7 = dwindow.keyboard.Num7
-	NUM8 = dwindow.keyboard.Num8
-	NUM9 = dwindow.keyboard.Num9
-	ESCAPE = dwindow.keyboard.Escape
-	L_CONTROL = dwindow.keyboard.LControl
-	L_SHIFT = dwindow.keyboard.LShift
-	L_ALT = dwindow.keyboard.LAlt
-	L_SYSTEM = dwindow.keyboard.LSystem
-	R_CONTROL = dwindow.keyboard.RControl
-	R_SHIFT = dwindow.keyboard.RShift
-	R_ALT = dwindow.keyboard.RAlt
-	R_SYSTEM = dwindow.keyboard.RSystem
-	MENU = dwindow.keyboard.Menu
-	L_BRACKET = dwindow.keyboard.LBracket
-	R_BRACKET = dwindow.keyboard.RBracket
-	SEMI_COLON = dwindow.keyboard.SemiColon
-	COMMA = dwindow.keyboard.Comma
-	PERIOD = dwindow.keyboard.Period
-	QUOTE = dwindow.keyboard.Quote
-	SLASH = dwindow.keyboard.Slash
-	BACK_SLASH = dwindow.keyboard.BackSlash
-	TILDE = dwindow.keyboard.Tilde
-	EQUAL = dwindow.keyboard.Equal
-	DASH = dwindow.keyboard.Dash
-	SPACE = dwindow.keyboard.Space
-	RETURN = dwindow.keyboard.Return
-	BACK_SPACE = dwindow.keyboard.BackSpace
-	TAB = dwindow.keyboard.Tab
-	PAGE_UP = dwindow.keyboard.PageUp
-	PAGE_DOWN = dwindow.keyboard.PageDown
-	END = dwindow.keyboard.End
-	HOME = dwindow.keyboard.Home
-	INSERT = dwindow.keyboard.Insert
-	DELETE = dwindow.keyboard.Delete
-	ADD = dwindow.keyboard.Add
-	SUBTRACT = dwindow.keyboard.Subtract
-	MULTIPLY = dwindow.keyboard.Multiply
-	DIVIDE = dwindow.keyboard.Divide
-	LEFT = dwindow.keyboard.Left
-	RIGHT = dwindow.keyboard.Right
-	UP = dwindow.keyboard.Up
-	DOWN = dwindow.keyboard.Down
-	NUMPAD0 = dwindow.keyboard.Numpad0
-	NUMPAD1 = dwindow.keyboard.Numpad1
-	NUMPAD2 = dwindow.keyboard.Numpad2
-	NUMPAD3 = dwindow.keyboard.Numpad3
-	NUMPAD4 = dwindow.keyboard.Numpad4
-	NUMPAD5 = dwindow.keyboard.Numpad5
-	NUMPAD6 = dwindow.keyboard.Numpad6
-	NUMPAD7 = dwindow.keyboard.Numpad7
-	NUMPAD8 = dwindow.keyboard.Numpad8
-	NUMPAD9 = dwindow.keyboard.Numpad9
-	F1 = dwindow.keyboard.F1
-	F2 = dwindow.keyboard.F2
-	F3 = dwindow.keyboard.F3
-	F4 = dwindow.keyboard.F4
-	F5 = dwindow.keyboard.F5
-	F6 = dwindow.keyboard.F6
-	F7 = dwindow.keyboard.F7
-	F8 = dwindow.keyboard.F8
-	F9 = dwindow.keyboard.F9
-	F10 = dwindow.keyboard.F10
-	F11 = dwindow.keyboard.F11
-	F12 = dwindow.keyboard.F12
-	F13 = dwindow.keyboard.F13
-	F14 = dwindow.keyboard.F14
-	F15 = dwindow.keyboard.F15
-	PAUSE = dwindow.keyboard.Pause
-	KEY_COUNT = dwindow.keyboard.KeyCount
+	A = sf.keyboard.A
+	B = sf.keyboard.B
+	C = sf.keyboard.C
+	D = sf.keyboard.D
+	E = sf.keyboard.E
+	F = sf.keyboard.F
+	G = sf.keyboard.G
+	H = sf.keyboard.H
+	I = sf.keyboard.I
+	J = sf.keyboard.J
+	K = sf.keyboard.K
+	L = sf.keyboard.L
+	M = sf.keyboard.M
+	N = sf.keyboard.N
+	O = sf.keyboard.O
+	P = sf.keyboard.P
+	Q = sf.keyboard.Q
+	R = sf.keyboard.R
+	S = sf.keyboard.S
+	T = sf.keyboard.T
+	U = sf.keyboard.U
+	V = sf.keyboard.V
+	W = sf.keyboard.W
+	X = sf.keyboard.X
+	Y = sf.keyboard.Y
+	Z = sf.keyboard.Z
+	NUM0 = sf.keyboard.Num0
+	NUM1 = sf.keyboard.Num1
+	NUM2 = sf.keyboard.Num2
+	NUM3 = sf.keyboard.Num3
+	NUM4 = sf.keyboard.Num4
+	NUM5 = sf.keyboard.Num5
+	NUM6 = sf.keyboard.Num6
+	NUM7 = sf.keyboard.Num7
+	NUM8 = sf.keyboard.Num8
+	NUM9 = sf.keyboard.Num9
+	ESCAPE = sf.keyboard.Escape
+	L_CONTROL = sf.keyboard.LControl
+	L_SHIFT = sf.keyboard.LShift
+	L_ALT = sf.keyboard.LAlt
+	L_SYSTEM = sf.keyboard.LSystem
+	R_CONTROL = sf.keyboard.RControl
+	R_SHIFT = sf.keyboard.RShift
+	R_ALT = sf.keyboard.RAlt
+	R_SYSTEM = sf.keyboard.RSystem
+	MENU = sf.keyboard.Menu
+	L_BRACKET = sf.keyboard.LBracket
+	R_BRACKET = sf.keyboard.RBracket
+	SEMI_COLON = sf.keyboard.SemiColon
+	COMMA = sf.keyboard.Comma
+	PERIOD = sf.keyboard.Period
+	QUOTE = sf.keyboard.Quote
+	SLASH = sf.keyboard.Slash
+	BACK_SLASH = sf.keyboard.BackSlash
+	TILDE = sf.keyboard.Tilde
+	EQUAL = sf.keyboard.Equal
+	DASH = sf.keyboard.Dash
+	SPACE = sf.keyboard.Space
+	RETURN = sf.keyboard.Return
+	BACK_SPACE = sf.keyboard.BackSpace
+	TAB = sf.keyboard.Tab
+	PAGE_UP = sf.keyboard.PageUp
+	PAGE_DOWN = sf.keyboard.PageDown
+	END = sf.keyboard.End
+	HOME = sf.keyboard.Home
+	INSERT = sf.keyboard.Insert
+	DELETE = sf.keyboard.Delete
+	ADD = sf.keyboard.Add
+	SUBTRACT = sf.keyboard.Subtract
+	MULTIPLY = sf.keyboard.Multiply
+	DIVIDE = sf.keyboard.Divide
+	LEFT = sf.keyboard.Left
+	RIGHT = sf.keyboard.Right
+	UP = sf.keyboard.Up
+	DOWN = sf.keyboard.Down
+	NUMPAD0 = sf.keyboard.Numpad0
+	NUMPAD1 = sf.keyboard.Numpad1
+	NUMPAD2 = sf.keyboard.Numpad2
+	NUMPAD3 = sf.keyboard.Numpad3
+	NUMPAD4 = sf.keyboard.Numpad4
+	NUMPAD5 = sf.keyboard.Numpad5
+	NUMPAD6 = sf.keyboard.Numpad6
+	NUMPAD7 = sf.keyboard.Numpad7
+	NUMPAD8 = sf.keyboard.Numpad8
+	NUMPAD9 = sf.keyboard.Numpad9
+	F1 = sf.keyboard.F1
+	F2 = sf.keyboard.F2
+	F3 = sf.keyboard.F3
+	F4 = sf.keyboard.F4
+	F5 = sf.keyboard.F5
+	F6 = sf.keyboard.F6
+	F7 = sf.keyboard.F7
+	F8 = sf.keyboard.F8
+	F9 = sf.keyboard.F9
+	F10 = sf.keyboard.F10
+	F11 = sf.keyboard.F11
+	F12 = sf.keyboard.F12
+	F13 = sf.keyboard.F13
+	F14 = sf.keyboard.F14
+	F15 = sf.keyboard.F15
+	PAUSE = sf.keyboard.Pause
+	KEY_COUNT = sf.keyboard.KeyCount
 
 	def __init__(self):
 		raise NotImplementedError("This class is not meant to be instantiated!")
 
 	@classmethod
 	def is_key_pressed(cls, int key):
-		return dwindow.keyboard.isKeyPressed(<dwindow.keyboard.Key>key)
+		return sf.keyboard.isKeyPressed(<sf.keyboard.Key>key)
 
 
 cdef class Joystick:
-	COUNT = dwindow.joystick.Count
-	BUTTON_COUNT = dwindow.joystick.ButtonCount
-	AXIS_COUNT = dwindow.joystick.AxisCount
+	COUNT = sf.joystick.Count
+	BUTTON_COUNT = sf.joystick.ButtonCount
+	AXIS_COUNT = sf.joystick.AxisCount
 
-	X = dwindow.joystick.X
-	Y = dwindow.joystick.Y
-	Z = dwindow.joystick.Z
-	R = dwindow.joystick.R
-	U = dwindow.joystick.U
-	V = dwindow.joystick.V
-	POV_X = dwindow.joystick.PovX
-	POV_Y = dwindow.joystick.PovY
+	X = sf.joystick.X
+	Y = sf.joystick.Y
+	Z = sf.joystick.Z
+	R = sf.joystick.R
+	U = sf.joystick.U
+	V = sf.joystick.V
+	POV_X = sf.joystick.PovX
+	POV_Y = sf.joystick.PovY
 
 	def __init__(self):
 		raise NotImplementedError("This class is not meant to be instantiated!")
 
 	@classmethod
 	def is_connected(cls, unsigned int joystick):
-		return dwindow.joystick.isConnected(joystick)
+		return sf.joystick.isConnected(joystick)
 
 	@classmethod
 	def get_button_count(cls, unsigned int joystick):
-		return dwindow.joystick.getButtonCount(joystick)
+		return sf.joystick.getButtonCount(joystick)
 
 	@classmethod
 	def has_axis(cls, unsigned int joystick, int axis):
-		return dwindow.joystick.hasAxis(joystick, <dwindow.joystick.Axis>axis)
+		return sf.joystick.hasAxis(joystick, <sf.joystick.Axis>axis)
 
 	@classmethod
 	def is_button_pressed(cls, unsigned int joystick, unsigned int button):
-		return dwindow.joystick.isButtonPressed(joystick, button)
+		return sf.joystick.isButtonPressed(joystick, button)
 
 	@classmethod
 	def get_axis_position(cls, unsigned int joystick, int axis):
-		return dwindow.joystick.getAxisPosition(joystick, <dwindow.joystick.Axis> axis)
+		return sf.joystick.getAxisPosition(joystick, <sf.joystick.Axis> axis)
 
 	@classmethod
 	def update(cls):
-		dwindow.joystick.update()
+		sf.joystick.update()
 
 
 cdef class Mouse:
-	LEFT = dwindow.mouse.Left
-	RIGHT = dwindow.mouse.Right
-	MIDDLE = dwindow.mouse.Middle
-	X_BUTTON1 = dwindow.mouse.XButton1
-	X_BUTTON2 = dwindow.mouse.XButton2
-	BUTTON_COUNT = dwindow.mouse.ButtonCount
+	LEFT = sf.mouse.Left
+	RIGHT = sf.mouse.Right
+	MIDDLE = sf.mouse.Middle
+	X_BUTTON1 = sf.mouse.XButton1
+	X_BUTTON2 = sf.mouse.XButton2
+	BUTTON_COUNT = sf.mouse.ButtonCount
 
 	def __init__(self):
 		raise NotImplementedError("This class is not meant to be instantiated!")
 
 	@classmethod
 	def is_button_pressed(cls, int button):
-		return dwindow.mouse.isButtonPressed(<dwindow.mouse.Button>button)
+		return sf.mouse.isButtonPressed(<sf.mouse.Button>button)
 
 	@classmethod
 	def get_position(cls, Window window=None):
-		cdef dsystem.Vector2i p
+		cdef sf.Vector2i p
 
-		if window is None: p = dwindow.mouse.getPosition()
-		else: p = dwindow.mouse.getPosition(window.p_window[0])
+		if window is None: p = sf.mouse.getPosition()
+		else: p = sf.mouse.getPosition(window.p_window[0])
 
 		return Vector2(p.x, p.y)
 
 	@classmethod
 	def set_position(cls, position, Window window=None):
-		cdef dsystem.Vector2i p
+		cdef sf.Vector2i p
 		p.x, p.y = position
 
-		if window is None: dwindow.mouse.setPosition(p)
-		else: dwindow.mouse.setPosition(p, window.p_window[0])
+		if window is None: sf.mouse.setPosition(p)
+		else: sf.mouse.setPosition(p, window.p_window[0])
 
 
 cdef class Context:
-	cdef dwindow.Context *p_this
+	cdef sf.Context *p_this
 
 	def __init__(self):
-		self.p_this = new dwindow.Context()
+		self.p_this = new sf.Context()
 
 	def __dealloc__(self):
 		del self.p_this

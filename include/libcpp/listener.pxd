@@ -8,7 +8,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from dsystem cimport Vector3f
+from libcpp.sfml cimport Vector3f
 
 cdef extern from "SFML/Audio.hpp" namespace "sf::Listener":
     cdef void setGlobalVolume(float)

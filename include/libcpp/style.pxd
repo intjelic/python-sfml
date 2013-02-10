@@ -8,7 +8,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from dgraphics cimport RenderStates
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::RenderStates":
-	cdef RenderStates Default
+cdef extern from "SFML/Window.hpp" namespace "sf::Style":
+	cdef enum Style:
+		None
+		Titlebar
+		Resize
+		Close
+		Fullscreen
+		Default
