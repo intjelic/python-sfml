@@ -18,6 +18,21 @@ cimport libcpp.sfml as sf
 from libcpp.sfml cimport Int8, Int16, Int32, Int64
 from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 
+cdef extern from "DerivableDrawable.hpp":
+	cdef cppclass DerivableDrawable:
+		DerivableDrawable(void*)
+		
+cdef extern from "DerivableRenderWindow.hpp":
+	cdef cppclass DerivableRenderWindow:
+		DerivableRenderWindow()
+		DerivableRenderWindow(sf.VideoMode, char*)
+		DerivableRenderWindow(sf.VideoMode, char*, unsigned long)
+		DerivableRenderWindow(sf.VideoMode, char*, unsigned long, sf.ContextSettings&)
+		DerivableRenderWindow(sf.WindowHandle window_handle)
+		DerivableRenderWindow(sf.WindowHandle window_handle, sf.ContextSettings&)
+		void set_pyobj(void*)
+
+
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform', 
 			'Image', 'Texture', 'Glyph', 'Font', 'Shader', 
 			'RenderStates', 'Drawable', 'Transformable', 'Sprite', 
@@ -1140,7 +1155,7 @@ cdef public class Drawable[type PyDrawableType, object PyDrawableObject]:
 		if self.__class__ == Drawable:
 			raise NotImplementedError('Drawable is abstact')
 			
-		self.p_drawable = <sf.Drawable*>new sf.DerivableDrawable(<void*>self)
+		self.p_drawable = <sf.Drawable*>new DerivableDrawable(<void*>self)
 			
 	def draw(self, RenderTarget target, RenderStates states): pass
 	
@@ -1835,8 +1850,8 @@ cdef class RenderWindow(Window):
 		encoded_title = encoded_title_temporary
 			
 		if self.__class__ is not RenderWindow:
-			if not settings: self.p_this = <sf.RenderWindow*>new sf.DerivableRenderWindow(mode.p_this[0], encoded_title, style)
-			else: self.p_this = <sf.RenderWindow*>new sf.DerivableRenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])			
+			if not settings: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], encoded_title, style)
+			else: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])			
 		else:
 			if not settings: self.p_this = new sf.RenderWindow(mode.p_this[0], encoded_title, style)
 			else: self.p_this = new sf.RenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])

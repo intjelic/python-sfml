@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "pysfml/derivablesoundstream.hpp"
+#include "DerivableSoundStream.hpp"
 #include <iostream>
 
 DerivableSoundStream::DerivableSoundStream(void* pyobj):

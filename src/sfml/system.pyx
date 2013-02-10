@@ -20,18 +20,26 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 cimport libcpp.sfml as sf
+
 from libcpp.sfml cimport Int8, Int16, Int32, Int64
 from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 
+#cdef extern from "<string>" namespace "std":
+	#cdef cppclass string:
+		#char* c_str()
+
+cdef extern from "error.hpp":
+	void replace_error_handler()
+	string get_last_error_message()
 
 __all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds',
 			'milliseconds', 'microseconds', 'Vector2', 'Vector3', 
 			'Thread', 'Lock', 'Mutex']
 
-sf.replace_error_handler()
+replace_error_handler()
 
 def pop_error_message():
-	message = sf.get_last_error_message().c_str()
+	message = get_last_error_message().c_str()
 	message = message.decode('utf-8')
 	return message
 

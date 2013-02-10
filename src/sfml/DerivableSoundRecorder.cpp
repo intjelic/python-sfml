@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "pysfml/derivablesoundrecorder.hpp"
+#include "DerivableSoundRecorder.hpp"
 #include <iostream>
 
 DerivableSoundRecorder::DerivableSoundRecorder(void* pyobj):

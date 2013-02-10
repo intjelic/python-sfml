@@ -18,6 +18,15 @@ cimport libcpp.sfml as sf
 from libcpp.sfml cimport Int8, Int16, Int32, Int64
 from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 
+cdef extern from "DerivableWindow.hpp":
+	cdef cppclass DerivableWindow:
+		DerivableWindow()
+		DerivableWindow(sf.VideoMode, char*)
+		DerivableWindow(sf.VideoMode, char*, unsigned long)
+		DerivableWindow(sf.VideoMode, char*, unsigned long, sf.ContextSettings&)
+		DerivableWindow(sf.WindowHandle window_handle)
+		DerivableWindow(sf.WindowHandle window_handle, sf.ContextSettings&)
+		void set_pyobj(void*)
 
 __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
 			'CloseEvent', 'ResizeEvent', 'FocusEvent', 'TextEvent',
@@ -25,6 +34,7 @@ __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
 			'MouseMoveEvent', 'MouseEvent', 'JoystickButtonEvent',
 			'JoystickMoveEvent', 'JoystickConnectEvent', 'Pixels',
 			'Window', 'Keyboard', 'Joystick', 'Mouse', 'Context']
+
 
 cdef extern from "system.h":
 	cdef class sfml.system.Vector2 [object PyVector2Object]:
@@ -671,9 +681,9 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 				else: self.p_window = new sf.Window(mode.p_this[0], encoded_title, style, settings.p_this[0])
 
 			else:
-				if not settings: self.p_window = <sf.Window*>new sf.DerivableWindow(mode.p_this[0], encoded_title, style)
-				else: self.p_window = <sf.Window*>new sf.DerivableWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
-				(<sf.DerivableWindow*>self.p_window).set_pyobj(<void*>self)
+				if not settings: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], encoded_title, style)
+				else: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
+				(<DerivableWindow*>self.p_window).set_pyobj(<void*>self)
 
 	def __dealloc__(self):
 		if self.__class__.__name__ == 'Window':

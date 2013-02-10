@@ -15,16 +15,11 @@
 #	Display *XOpenDisplay(char* display_name)
 #	void XFlush(Display* display)
 
-
-cimport time
-
 cdef extern from "<string>" namespace "std":
 	cdef cppclass string:
 		char* c_str()
-
-cdef extern from "pysfml/error.hpp":
-	void replace_error_handler()
-	string get_last_error_message()
+		
+cimport time
 
 cdef extern from "SFML/System.hpp" namespace "sf":
 	# 8 bits integer types
@@ -246,25 +241,11 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 		Context()
 		bint setActive(bint)
 
-cdef extern from "pysfml/derivablewindow.hpp":
-	cdef cppclass DerivableWindow:
-		DerivableWindow()
-		DerivableWindow(VideoMode, char*)
-		DerivableWindow(VideoMode, char*, unsigned long)
-		DerivableWindow(VideoMode, char*, unsigned long, ContextSettings&)
-		DerivableWindow(WindowHandle window_handle)
-		DerivableWindow(WindowHandle window_handle, ContextSettings&)
-		void set_pyobj(void*)
-
 
 cimport blendmode, primitivetype, texture, shader, text, renderstates
 
 cdef extern from *:
 	ctypedef unsigned char* const_Uint8_ptr "const unsigned char*"
-
-cdef extern from "pysfml/derivabledrawable.hpp":
-	cdef cppclass DerivableDrawable:
-		DerivableDrawable(void*)
 
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf":
@@ -616,16 +597,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		bint setActive(bint)
 		void display()
 		Texture& getTexture()
-		
-cdef extern from "pysfml/derivablerenderwindow.hpp":
-	cdef cppclass DerivableRenderWindow:
-		DerivableRenderWindow()
-		DerivableRenderWindow(VideoMode, char*)
-		DerivableRenderWindow(VideoMode, char*, unsigned long)
-		DerivableRenderWindow(VideoMode, char*, unsigned long, ContextSettings&)
-		DerivableRenderWindow(WindowHandle window_handle)
-		DerivableRenderWindow(WindowHandle window_handle, ContextSettings&)
-		void set_pyobj(void*)
+
 
 from libcpp.string cimport string
 cimport listener, soundsource, soundrecorder
@@ -708,15 +680,6 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 		SoundBufferRecorder()
 		SoundBuffer& getBuffer()
 		
-cdef extern from "pysfml/derivablesoundstream.hpp":
-	cdef cppclass DerivableSoundStream:
-		DerivableSoundStream(void*)
-		void initialize(unsigned int, unsigned int)
-		
-cdef extern from "pysfml/derivablesoundrecorder.hpp":
-	cdef cppclass DerivableSoundRecorder:
-		DerivableSoundRecorder(void*)
-
 
 cimport ipaddress, socket, udpsocket, ftp, http
 

@@ -20,6 +20,16 @@ from libcpp.sfml cimport Int8, Int16, Int32, Int64
 from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 from libcpp.sfml cimport Vector3f
 
+cdef extern from "DerivableSoundStream.hpp":
+	cdef cppclass DerivableSoundStream:
+		DerivableSoundStream(void*)
+		void initialize(unsigned int, unsigned int)
+		
+cdef extern from "DerivableSoundRecorder.hpp":
+	cdef cppclass DerivableSoundRecorder:
+		DerivableSoundRecorder(void*)
+
+
 from sfml.system import SFMLException, pop_error_message, push_error_message
 
 cdef extern from "pysfml/system.h":
@@ -336,7 +346,7 @@ cdef class SoundStream(SoundSource):
 			raise NotImplementedError("SoundStream is abstract")
 
 		elif self.__class__ not in [Music]:
-			self.p_soundstream = <sf.SoundStream*> new sf.DerivableSoundStream(<void*>self)
+			self.p_soundstream = <sf.SoundStream*> new DerivableSoundStream(<void*>self)
 			self.p_soundsource = <sf.SoundSource*>self.p_soundstream
 			
 	def play(self):
@@ -378,7 +388,7 @@ cdef class SoundStream(SoundSource):
 
 	def initialize(self, unsigned int channel_count, unsigned int sample_rate):
 		if self.__class__ not in [Music]:
-			(<sf.DerivableSoundStream*>self.p_soundstream).initialize(channel_count, sample_rate)
+			(<DerivableSoundStream*>self.p_soundstream).initialize(channel_count, sample_rate)
 			
 	def on_get_data(self, data): pass
 	def on_seek(self, time_offset): pass
@@ -437,7 +447,7 @@ cdef class SoundRecorder:
 			raise NotImplementedError("SoundRecorder is abstract")
 			
 		elif self.__class__ is not SoundBufferRecorder:
-			self.p_soundrecorder = <sf.SoundRecorder*>new sf.DerivableSoundRecorder(<void*>self)
+			self.p_soundrecorder = <sf.SoundRecorder*>new DerivableSoundRecorder(<void*>self)
 
 	def __dealloc__(self):
 		if self.__class__ is SoundRecorder:
