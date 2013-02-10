@@ -9,14 +9,28 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-from pysfml cimport dwindow
+cimport libcpp.sfml as sf
+from libcpp.sfml cimport Uint8
+
 
 cdef extern from "pysfml/window.h":
-	
+		
+	cdef class sfml.window.VideoMode [object PyVideoModeObject]:
+		cdef sf.VideoMode *p_this
+		
+	cdef class sfml.window.ContextSettings [object PyContextSettingsObject]:
+		cdef sf.ContextSettings *p_this
+		
+	cdef class sfml.window.Pixels [object PyPixelsObject]:
+		cdef Uint8          *p_array
+		cdef unsigned int    m_width
+		cdef unsigned int    m_height	
+		
 	cdef class sfml.window.Event [object PyEventObject]:
-		cdef dwindow.Event *p_this
+		cdef sf.Event *p_this
 		
 	cdef class sfml.window.Window [object PyWindowObject]:
-		cdef dwindow.Window *p_window
+		cdef sf.Window       *p_window
 		cdef bint			 m_visible
 		cdef bint			 m_vertical_synchronization
+

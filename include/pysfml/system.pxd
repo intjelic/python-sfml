@@ -9,13 +9,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-from pysfml cimport dsystem
+cimport libcpp.sfml as sf
 
 cdef extern from "pysfml/system.h":
 	cdef class sfml.system.Time [object PyTimeObject]:
-		cdef dsystem.Time *p_this
+		cdef sf.Time *p_this
 
-cdef inline object wrap_time(dsystem.Time* p):
+cdef inline object wrap_time(sf.Time* p):
 	cdef Time r = Time.__new__(Time)
 	r.p_this = p
 	return r
@@ -24,3 +24,8 @@ cdef extern from "pysfml/system.h":
 	cdef class sfml.system.Vector2 [object PyVector2Object]:
 		cdef public object x
 		cdef public object y
+
+	cdef class sfml.system.Vector3 [object PyVector3Object]:
+		cdef public object x
+		cdef public object y
+		cdef public object z

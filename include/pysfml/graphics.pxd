@@ -8,8 +8,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from pysfml.system cimport Vector2
-from pysfml cimport dgraphics
+
+cimport libcpp.sfml as sf
+from pysfml.system Vector2
 
 cdef extern from "pysfml/graphics.h":
 	cdef class sfml.graphics.Rectangle [object PyRectangleObject]:
@@ -17,48 +18,48 @@ cdef extern from "pysfml/graphics.h":
 		cdef public Vector2 size
 	
 	cdef class sfml.graphics.Color [object PyColorObject]:
-		cdef dgraphics.Color *p_this
+		cdef sf.Color *p_this
 	
 	cdef class sfml.graphics.Image [object PyImageObject]:
-		cdef dgraphics.Image *p_this
+		cdef sf.Image *p_this
 	
 	cdef class sfml.graphics.Texture [object PyTextureObject]:
-		cdef dgraphics.Texture *p_this
+		cdef sf.Texture *p_this
 		cdef bint               delete_this
 		
 	cdef class sfml.graphics.Drawable [object PyDrawableObject]:
-		cdef dgraphics.Drawable *p_drawable
+		cdef sf.Drawable *p_drawable
 		
 	cdef class sfml.graphics.TransformableDrawable(Drawable) [object PyTransformableDrawableObject]:
-		cdef dgraphics.Transformable *p_transformable
+		cdef sf.Transformable *p_transformable
 		
 	cdef class sfml.graphics.Sprite(TransformableDrawable) [object PySpriteObject]:
-		cdef dgraphics.Sprite *p_this
+		cdef sf.Sprite *p_this
 		cdef Texture           m_texture
 		
 	cdef class sfml.graphics.Shape(TransformableDrawable) [object PyShapeObject]:
-		cdef dgraphics.Shape *p_shape
+		cdef sf.Shape *p_shape
 		cdef Texture          m_texture
 		
 	cdef class sfml.graphics.ConvexShape(Shape) [object PyConvexShapeObject]:
-		cdef dgraphics.ConvexShape *p_this
+		cdef sf.ConvexShape *p_this
 	
 	cdef class sfml.graphics.RenderTarget [object PyRenderTargetObject]:
-		cdef dgraphics.RenderTarget *p_rendertarget
+		cdef sf.RenderTarget *p_rendertarget
 		
 	cdef class sfml.graphics.RenderStates [object PyRenderStatesObject]:
 		pass
 
-cdef inline Color wrap_color(dgraphics.Color *p):
+cdef inline Color wrap_color(sf.Color *p):
 	cdef Color r = Color.__new__(Color)
 	r.p_this = p
 	return r
 
-cdef inline ConvexShape wrap_convexshape(dgraphics.ConvexShape *p):
+cdef inline ConvexShape wrap_convexshape(sf.ConvexShape *p):
 	cdef ConvexShape r = ConvexShape.__new__(ConvexShape)
 	r.p_this = p
-	r.p_drawable = <dgraphics.Drawable*>p
-	r.p_transformable = <dgraphics.Transformable*>p
-	r.p_shape = <dgraphics.Shape*>p
+	r.p_drawable = <sf.Drawable*>p
+	r.p_transformable = <sf.Transformable*>p
+	r.p_shape = <sf.Shape*>p
 	
 	return r
