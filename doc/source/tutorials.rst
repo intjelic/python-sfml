@@ -328,3 +328,4 @@ Officials tutorials
    :maxdepth: 1
    
    tutorials/threads
+   tutorials/handling_time
