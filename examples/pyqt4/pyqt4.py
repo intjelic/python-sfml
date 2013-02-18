@@ -23,7 +23,7 @@ from qsfml_canvas import QSFMLCanvas
 class MyCyanCanvas(QSFMLCanvas):
     def __init__(self, parent, position, size):
         QSFMLCanvas.__init__(self, parent, position, size)
-
+        
     def onInit(self):
         self.image = sf.Image.from_file("data/head_kid.png")
         self.texture = sf.Texture.from_image(self.image)

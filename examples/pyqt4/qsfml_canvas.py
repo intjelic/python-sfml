@@ -8,6 +8,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
 import sys, platform
 
 try:
@@ -18,6 +19,7 @@ except ImportError:
     print("Install PyQt4 and sip from Riverbank.")
 
 import sfml as sf
+
 
 class QSFMLCanvas(QWidget):
 	def __init__(self, parent, position, size, frameTime=0):
@@ -70,9 +72,11 @@ class QSFMLCanvas(QWidget):
 			# to ensure that SFML will get an updated view of the windows
 			# create the SFML window with the widget handle
 			if platform.system() == 'Linux':
-				import sfml.x11 as x11
+				from ctypes import cdll
+				x11 = cdll.LoadLibrary("libX11.so")
+                
 				display = sip.unwrapinstance(QX11Info.display())
-				x11.flush_screen(display)
+				x11.XFlush(display)
 
 			self._HandledWindow.create(self.winId())
 
