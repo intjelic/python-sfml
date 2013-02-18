@@ -23,7 +23,6 @@ def main(song):
 		texture = sf.Texture.from_file("data/speaker.gif")
 		speaker = sf.Sprite(texture)
 		speaker.position = -texture.size // 2
-		print(speaker.position)
 		
 		texture = sf.Texture.from_file("data/head_kid.png")
 		hears = sf.Sprite(texture)
