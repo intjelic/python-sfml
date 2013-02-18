@@ -203,14 +203,8 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
 		# there is an intersection
 		if left < right and top < bottom:
 			return Rectangle((left, top), (right-left, bottom-top))
-			
-		
-	def copy(self):
-		cdef Rectangle p = Rectangle.__new__(Rectangle)
-		p.position = self.position.copy()
-		p.size = self.size.copy()
-		return p
-		
+	
+
 cdef public class Color [type PyColorType, object PyColorObject]:
 	BLACK = Color(0, 0, 0)
 	WHITE = Color(255, 255, 255)
@@ -520,11 +514,6 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 		with nogil: sf.sleep(p)
 		with nogil: sf.sleep(p)
 		with nogil: sf.sleep(p)
-
-	def copy(self):
-		cdef sf.Image *p = new sf.Image()
-		p[0] = self.p_this[0]
-		return wrap_image(p)
 
 
 cdef Image wrap_image(sf.Image *p):
