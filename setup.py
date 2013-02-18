@@ -45,7 +45,6 @@ except ImportError:
 			srcdir = 'src/sfml/'
 			modules = glob(srcdir + '*.pyx')
 			errno = 1
-			if platform.system() == 'Windows': modules.remove('x11.pyx')
 
 			for module in modules:
 				try:
@@ -58,7 +57,6 @@ except ImportError:
 
 
 sources = dict(
-	x11 = 'src/sfml/x11.cpp',
 	system = 'src/sfml/system.cpp',
 	window = 'src/sfml/window.cpp',
 	graphics = 'src/sfml/graphics.cpp',
@@ -82,25 +80,23 @@ extension = lambda name, files, libs: Extension(
 	['include', 'src/sfml'], language='c++',
 	libraries=libs)
 
-x11 = extension('x11', [sources['x11']], ['X11'])
-
 system = extension(
 	'system',
 	[sources['system'], 'src/sfml/error.cpp'],
 	['sfml-system', 'sfml-graphics'])
 
 window = extension(
-	'window', [sources['window'], 'src/sfml/derivablewindow.cpp'],
+	'window', [sources['window'], 'src/sfml/DerivableWindow.cpp'],
 	['sfml-system', 'sfml-window'])
 
 graphics = extension(
 	'graphics',
-	[sources['graphics'], 'src/sfml/derivablerenderwindow.cpp', 'src/sfml/derivabledrawable.cpp'],
+	[sources['graphics'], 'src/sfml/DerivableRenderWindow.cpp', 'src/sfml/DerivableDrawable.cpp'],
 	['sfml-system', 'sfml-window', 'sfml-graphics'])
 
 audio = extension(
 	'audio',
-	[sources['audio'], 'src/sfml/derivablesoundrecorder.cpp', 'src/sfml/derivablesoundstream.cpp'],
+	[sources['audio'], 'src/sfml/DerivableSoundRecorder.cpp', 'src/sfml/DerivableSoundStream.cpp'],
 	['sfml-system', 'sfml-audio'])
 
 network = extension(
@@ -116,27 +112,26 @@ network = extension(
 # define the include directory
 headers = glob('src/sfml/*.h')
 if platform.system() == 'Windows':
-	include_dir = os.path.join(sys.prefix, 'include', 'pysfml')
-	headers.pop('x11.h')
+	include_dir = os.path.join(sys.prefix, 'include')
 else:
 	major, minor, _, _ , _ = sys.version_info
 
 	include_dir = os.path.join(
-		sys.prefix, 'include', 'python{0}.{1}'.format(major, minor), 'pysfml')
+		sys.prefix, 'lib', 'python{0}.{1}'.format(major, minor))
 
 
 # list all relevant headers (find in include/ and src/sfml/)
 # key: directory, value: list of headers to place in the directory
 files = {root: [os.path.join(root, fname) for fname in fnames]
 		 for root, dirs, fnames in os.walk('include')}
-files['include'] += glob('src/sfml/*.h')
+files['include/pysfml'] += glob('src/sfml/*.h')
+
 files = [(k.replace('include', include_dir), v) for k, v in files.items()]
 
 with open('README.rst', 'r') as f:
 	long_description = f.read()
 
-ext_modules=[x11, system, window, graphics, audio, network]
-if platform.system() == 'Windows': ext_modules.pop(x11)
+ext_modules=[system, window, graphics, audio, network]
 
 kwargs = dict(
 			name='pySFML',
