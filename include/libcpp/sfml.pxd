@@ -9,12 +9,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-#cdef extern from "X11/Xlib.h":
-#	ctypedef struct Display
-
-#	Display *XOpenDisplay(char* display_name)
-#	void XFlush(Display* display)
-
 cdef extern from "<string>" namespace "std":
 	cdef cppclass string:
 		char* c_str()

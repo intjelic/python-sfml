@@ -8,6 +8,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
+import thread
+
 cimport cython
 from cython.operator cimport dereference as deref
 from cython.operator cimport preincrement as inc
@@ -516,15 +519,14 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 		self.p_this.flipVertically()
 
 	def show(self):
-		script_filename = os.path.dirname(__file__) + "/show.py"
-		temporaryfile_filename = tempfile.mkstemp()[1]
+		cdef sf.Time p = sf.seconds(0.05)
 		
-		with open(temporaryfile_filename, "wb") as temporaryfile:
-			temporaryfile.write(struct.pack("I", self.pixels.width))
-			temporaryfile.write(struct.pack("I", self.pixels.height))
-			temporaryfile.write(self.pixels.data)
-			
-		subprocess.Popen([sys.executable, script_filename, temporaryfile_filename])
+		thread.start_new_thread(show, (self,))
+		
+		with nogil: sf.sleep(p)
+		with nogil: sf.sleep(p)
+		with nogil: sf.sleep(p)
+		with nogil: sf.sleep(p)
 
 	def copy(self):
 		cdef sf.Image *p = new sf.Image()
@@ -1961,3 +1963,49 @@ cdef class HandledWindow(RenderTarget):
 		
 	def display(self):
 		self.p_window.display()
+
+def show(image):
+	lock = thread.allocate_lock()
+	
+	lock.acquire()
+
+	from copy import copy
+	import sfml as sf
+
+	image = copy(image)
+	desktop_mode = sf.VideoMode.get_desktop_mode()
+
+	bpp = desktop_mode.bpp
+
+	if sf.VideoMode(image.width, image.height, bpp) > desktop_mode:
+		video_size = (640, 480)
+	else:
+		video_size = image.size
+		
+	w, h = video_size
+
+	window = sf.RenderWindow(sf.VideoMode(w, h, bpp), 'pySFML - Image preview')
+	window.framerate_limit = 60
+	
+	texture = sf.Texture.from_image(image)
+	sprite = sf.Sprite(texture)
+
+	lock.release()
+	
+	while window.is_open:
+		
+		lock.acquire()		
+		for event in window.events:
+			if type(event) is sf.CloseEvent:
+				window.close()
+				break
+
+		window.active = True
+		window.clear(sf.Color.WHITE)
+		window.draw(sprite)
+		window.display()
+		lock.release()
+		
+		sf.sleep(sf.milliseconds(100))
+
+	window.close()
