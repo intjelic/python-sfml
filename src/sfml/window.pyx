@@ -41,7 +41,7 @@ from pysfml.system cimport to_vector2i, to_vector2u
 
 
 cdef class Style:
-	#NONE = sf.style.None
+	NONE = sf.style.None
 	TITLEBAR = sf.style.Titlebar
 	RESIZE = sf.style.Resize
 	CLOSE = sf.style.Close

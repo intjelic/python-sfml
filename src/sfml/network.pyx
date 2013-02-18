@@ -26,7 +26,7 @@ from sfml.system import SFMLException, pop_error_message, push_error_message
 cdef class IpAddress:
 	cdef sf.IpAddress *p_this
 
-	#NONE = wrap_ipaddress(<sf.IpAddress*>&sf.ipaddress.None)
+	NONE = wrap_ipaddress(<sf.IpAddress*>&sf.ipaddress.None)
 	LOCAL_HOST = wrap_ipaddress(<sf.IpAddress*>&sf.ipaddress.LocalHost)
 	BROADCAST = wrap_ipaddress(<sf.IpAddress*>&sf.ipaddress.Broadcast)
 
