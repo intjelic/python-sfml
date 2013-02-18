@@ -11,10 +11,6 @@
 
 import thread
 
-cimport cython
-from cython.operator cimport dereference as deref
-from cython.operator cimport preincrement as inc
-
 from libcpp.vector cimport vector
 
 cimport libcpp.sfml as sf
@@ -43,11 +39,10 @@ __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
 			'RectangleShape', 'Vertex', 'VertexArray', 'View', 
 			'RenderTarget', 'RenderTexture', 'RenderWindow', 
 			'HandledWindow', 'Rectangle', 'TransformableDrawable']
-			
+
 string_type = [bytes, unicode, str]
 numeric_type = [int, long, float, long]
 
-import os, tempfile, struct, subprocess, sys
 from copy import copy, deepcopy
 
 from sfml.system import SFMLException
@@ -56,27 +51,13 @@ from sfml.system import pop_error_message, push_error_message
 from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2f
 from pysfml.window cimport VideoMode, ContextSettings, Pixels, Window
+from pysfml.graphics cimport to_intrect, to_floatrect
+from pysfml.graphics cimport intrect_to_rectangle, floatrect_to_rectangle
 
 cdef Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 	cdef Pixels r = Pixels.__new__(Pixels)
 	r.p_array, r.m_width, r.m_height = p, w, h
 	return r
-	
-
-# utility functions for sf.Rectangle
-cdef sf.FloatRect rectangle_to_floatrect(rectangle):
-	l, t, w, h = rectangle
-	return sf.FloatRect(l, t, w, h)
-	
-cdef sf.IntRect rectangle_to_intrect(rectangle):
-	l, t, w, h = rectangle
-	return sf.IntRect(l, t, w, h)
-
-cdef Rectangle intrect_to_rectangle(sf.IntRect* intrect):
-	return Rectangle((intrect.left, intrect.top), (intrect.width, intrect.height))
-
-cdef Rectangle floatrect_to_rectangle(sf.FloatRect* floatrect):
-	return Rectangle((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
 
 
 class BlendMode:
@@ -350,7 +331,7 @@ cdef class Transform:
 		return Vector2(p.x, p.y)
 		
 	def transform_rectangle(self, rectangle):
-		cdef sf.FloatRect p = self.p_this.transformRect(rectangle_to_floatrect(rectangle))
+		cdef sf.FloatRect p = self.p_this.transformRect(to_floatrect(rectangle))
 		return Rectangle((p.top, p.left), (p.width, p.height))
 		
 	def combine(self, Transform transform):
@@ -492,7 +473,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 	def blit(self, Image source, dest, source_rect=None, bint apply_alpha=False):
 		x, y = dest
 		if not source_rect: self.p_this.copy(source.p_this[0], x, y, sf.IntRect(0, 0, 0, 0), apply_alpha)
-		else: self.p_this.copy(source.p_this[0], x, y, rectangle_to_intrect(source_rect), apply_alpha)
+		else: self.p_this.copy(source.p_this[0], x, y, to_intrect(source_rect), apply_alpha)
 	
 	property pixels:
 		def __get__(self):
@@ -756,14 +737,14 @@ cdef class Glyph:
 			return intrect_to_rectangle(&self.p_this.bounds)
 			
 		def __set__(self, bounds):
-			self.p_this.bounds = rectangle_to_intrect(bounds)
+			self.p_this.bounds = to_intrect(bounds)
 
 	property texture_rectangle:
 		def __get__(self):
 			return intrect_to_rectangle(&self.p_this.textureRect)
 			
 		def __set__(self, texture_rectangle):
-			self.p_this.textureRect = rectangle_to_intrect(texture_rectangle)
+			self.p_this.textureRect = to_intrect(texture_rectangle)
 
 
 cdef Glyph wrap_glyph(sf.Glyph *p):
@@ -1276,7 +1257,7 @@ cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpri
 			return intrect_to_rectangle(<sf.IntRect*>(&self.p_this.getTextureRect()))
 			
 		def __set__(self, rectangle):
-			self.p_this.setTextureRect(rectangle_to_intrect(rectangle))
+			self.p_this.setTextureRect(to_intrect(rectangle))
 
 	property color:
 		def __get__(self):
@@ -1408,7 +1389,7 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 			return intrect_to_rectangle(<sf.IntRect*>(&self.p_shape.getTextureRect()))
 			
 		def __set__(self, rectangle):
-			self.p_shape.setTextureRect(rectangle_to_intrect(rectangle))
+			self.p_shape.setTextureRect(to_intrect(rectangle))
 		
 	property fill_color:
 		def __get__(self):
@@ -1631,7 +1612,7 @@ cdef class View:
 	
 	def __init__(self, rectangle=None):
 		if not rectangle: self.p_this = new sf.View()
-		else: self.p_this = new sf.View(rectangle_to_floatrect(rectangle))
+		else: self.p_this = new sf.View(to_floatrect(rectangle))
 
 	def __dealloc__(self):
 		del self.p_this
@@ -1665,11 +1646,11 @@ cdef class View:
 			return floatrect_to_rectangle(<sf.FloatRect*>(&self.p_this.getViewport()))
 
 		def __set__(self, viewport):
-			self.p_this.setViewport(rectangle_to_floatrect(viewport))
+			self.p_this.setViewport(to_floatrect(viewport))
 			self._update_target()
 
 	def reset(self, rectangle):
-		self.p_this.reset(rectangle_to_floatrect(rectangle))
+		self.p_this.reset(to_floatrect(rectangle))
 		self._update_target()
 	
 	def move(self, float x, float y):

@@ -10,7 +10,7 @@
 
 
 cimport libcpp.sfml as sf
-from pysfml.system Vector2
+from pysfml.system cimport Vector2
 
 cdef extern from "pysfml/graphics.h":
 	cdef class sfml.graphics.Rectangle [object PyRectangleObject]:
@@ -49,6 +49,20 @@ cdef extern from "pysfml/graphics.h":
 		
 	cdef class sfml.graphics.RenderStates [object PyRenderStatesObject]:
 		pass
+
+cdef inline sf.FloatRect to_floatrect(rectangle):
+	l, t, w, h = rectangle
+	return sf.FloatRect(l, t, w, h)
+	
+cdef inline sf.IntRect to_intrect(rectangle):
+	l, t, w, h = rectangle
+	return sf.IntRect(l, t, w, h)
+
+cdef inline Rectangle intrect_to_rectangle(sf.IntRect* intrect):
+	return Rectangle((intrect.left, intrect.top), (intrect.width, intrect.height))
+
+cdef inline Rectangle floatrect_to_rectangle(sf.FloatRect* floatrect):
+	return Rectangle((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
 
 cdef inline Color wrap_color(sf.Color *p):
 	cdef Color r = Color.__new__(Color)
