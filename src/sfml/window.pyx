@@ -37,16 +37,7 @@ __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
 
 
 from pysfml.system cimport Vector2, Vector3
-
-
-# utility functions for sf.Vector2
-cdef sf.Vector2i vector2_to_vector2i(vector):
-	x, y = vector
-	return sf.Vector2i(x, y)
-
-cdef sf.Vector2u vector2_to_vector2u(vector):
-	w, h = vector
-	return sf.Vector2u(w, h)
+from pysfml.system cimport to_vector2i, to_vector2u
 
 
 cdef class Style:
@@ -736,14 +727,14 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 			return Vector2(self.p_window.getPosition().x, self.p_window.getPosition().y)
 
 		def __set__(self, position):
-			self.p_window.setPosition(vector2_to_vector2i(position))
+			self.p_window.setPosition(to_vector2i(position))
 
 	property size:
 		def __get__(self):
 			return Vector2(self.p_window.getSize().x, self.p_window.getSize().y)
 
 		def __set__(self, size):
-			self.p_window.setSize(vector2_to_vector2u(size))
+			self.p_window.setSize(to_vector2u(size))
 
 	property title:
 		def __set__(self, title):

@@ -29,3 +29,23 @@ cdef extern from "pysfml/system.h":
 		cdef public object x
 		cdef public object y
 		cdef public object z
+
+cdef inline sf.Vector2i to_vector2i(vector):
+	x, y = vector
+	return sf.Vector2i(x, y)
+
+cdef inline sf.Vector2u to_vector2u(vector):
+	w, h = vector
+	return sf.Vector2u(w, h)
+	
+cdef inline sf.Vector2f to_vector2f(vector):
+	w, h = vector
+	return sf.Vector2f(w, h)
+
+cdef inline sf.Vector3f to_vector3f(vector):
+	w, h, z = vector
+	return sf.Vector3f(w, h, z)
+
+cdef inline Vector3 to_vector3(sf.Vector3f* vector):
+	return Vector3(vector.x, vector.y, vector.z)
+

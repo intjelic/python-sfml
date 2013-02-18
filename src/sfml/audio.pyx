@@ -30,15 +30,10 @@ cdef extern from "DerivableSoundRecorder.hpp":
 		DerivableSoundRecorder(void*)
 
 from pysfml.system cimport Vector3, Time
+from pysfml.system cimport to_vector3
 from sfml.system import SFMLException, pop_error_message, push_error_message
 
 
-cdef Vector3 vector3f_to_vector3(sf.Vector3f* vector):
-	return Vector3(vector.x, vector.y, vector.z)
-
-cdef sf.Vector3f vector3_to_vector3f(vector):
-	x, y, z = vector
-	return sf.Vector3f(x, y, z)
 
 cdef Time wrap_time(sf.Time* p):
 	cdef Time r = Time.__new__(Time)
@@ -61,7 +56,7 @@ cdef class Listener:
 	@classmethod
 	def get_position(cls):
 		cdef Vector3f v = sf.listener.getPosition()
-		return vector3f_to_vector3(&v)
+		return to_vector3(&v)
 		
 	@classmethod
 	def set_position(cls, position):
@@ -71,7 +66,7 @@ cdef class Listener:
 	@classmethod
 	def get_direction(cls):
 		cdef Vector3f v = sf.listener.getDirection()
-		return vector3f_to_vector3(&v)
+		return to_vector3(&v)
 
 	@classmethod
 	def set_direction(cls, direction):
@@ -248,7 +243,7 @@ cdef class SoundSource:
 	property position:
 		def __get__(self):
 			cdef Vector3f v = self.p_soundsource.getPosition()
-			return vector3f_to_vector3(&v)
+			return to_vector3(&v)
 
 		def __set__(self, position):
 			x, y, z = position

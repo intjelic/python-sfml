@@ -54,6 +54,7 @@ from sfml.system import SFMLException
 from sfml.system import pop_error_message, push_error_message
 
 from pysfml.system cimport Vector2, Vector3
+from pysfml.system cimport to_vector2i, to_vector2f
 from pysfml.window cimport VideoMode, ContextSettings, Pixels, Window
 
 cdef Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
@@ -61,14 +62,6 @@ cdef Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 	r.p_array, r.m_width, r.m_height = p, w, h
 	return r
 	
-# utility functions for sf.Vector2
-cdef sf.Vector2i vector2_to_vector2i(vector):
-	x, y = vector
-	return sf.Vector2i(x, y)
-	
-cdef sf.Vector2f vector2_to_vector2f(vector):
-	x, y = vector
-	return sf.Vector2f(x, y)
 
 # utility functions for sf.Rectangle
 cdef sf.FloatRect rectangle_to_floatrect(rectangle):
@@ -359,7 +352,7 @@ cdef class Transform:
 			return wrap_transform(p)
 	
 	def transform_point(self, point):
-		cdef sf.Vector2f p = self.p_this.transformPoint(vector2_to_vector2f(point))
+		cdef sf.Vector2f p = self.p_this.transformPoint(to_vector2f(point))
 		return Vector2(p.x, p.y)
 		
 	def transform_rectangle(self, rectangle):
@@ -371,22 +364,22 @@ cdef class Transform:
 		return self
 		
 	def translate(self, offset):
-		self.p_this.translate(vector2_to_vector2f(offset))
+		self.p_this.translate(to_vector2f(offset))
 		return self
 		
 	def rotate(self, float angle, center=None):
 		if not center:
 			self.p_this.rotate(angle)
 		else:
-			self.p_this.rotate(angle, vector2_to_vector2f(center))
+			self.p_this.rotate(angle, to_vector2f(center))
 			
 		return self
 		
 	def scale(self, factor, center=None):
 		if not center:
-			self.p_this.scale(vector2_to_vector2f(factor))
+			self.p_this.scale(to_vector2f(factor))
 		else:
-			self.p_this.scale(vector2_to_vector2f(factor), vector2_to_vector2f(center))
+			self.p_this.scale(to_vector2f(factor), to_vector2f(center))
 			
 		return self
 		
@@ -1152,7 +1145,7 @@ cdef class Transformable:
 			return Vector2(self.p_this.getPosition().x, self.p_this.getPosition().y)
 			
 		def __set__(self, position):
-			self.p_this.setPosition(vector2_to_vector2f(position))
+			self.p_this.setPosition(to_vector2f(position))
 		
 	property rotation:
 		def __get__(self):
@@ -1166,23 +1159,23 @@ cdef class Transformable:
 			return Vector2(self.p_this.getScale().x, self.p_this.getScale().y)
 			
 		def __set__(self, factor):
-			self.p_this.setScale(vector2_to_vector2f(factor))
+			self.p_this.setScale(to_vector2f(factor))
 		
 	property origin:
 		def __get__(self):
 			return Vector2(self.p_this.getOrigin().x, self.p_this.getOrigin().y)
 			
 		def __set__(self, origin):
-			self.p_this.setOrigin(vector2_to_vector2f(origin))
+			self.p_this.setOrigin(to_vector2f(origin))
 		
 	def move(self, offset):
-		self.p_this.move(vector2_to_vector2f(offset))
+		self.p_this.move(to_vector2f(offset))
 		
 	def rotate(self, float angle):
 		self.p_this.rotate(angle)
 
 	def scale(self, factor):
-		self.p_this.scale(vector2_to_vector2f(factor))
+		self.p_this.scale(to_vector2f(factor))
 				
 	property transform:
 		def __get__(self):
@@ -1211,7 +1204,7 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
 			return Vector2(self.p_transformable.getPosition().x, self.p_transformable.getPosition().y)
 			
 		def __set__(self, position):
-			self.p_transformable.setPosition(vector2_to_vector2f(position))
+			self.p_transformable.setPosition(to_vector2f(position))
 		
 	property rotation:
 		def __get__(self):
@@ -1225,23 +1218,23 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
 			return Vector2(self.p_transformable.getScale().x, self.p_transformable.getScale().y)
 			
 		def __set__(self, factor):
-			self.p_transformable.setScale(vector2_to_vector2f(factor))
+			self.p_transformable.setScale(to_vector2f(factor))
 		
 	property origin:
 		def __get__(self):
 			return Vector2(self.p_transformable.getOrigin().x, self.p_transformable.getOrigin().y)
 			
 		def __set__(self, origin):
-			self.p_transformable.setOrigin(vector2_to_vector2f(origin))
+			self.p_transformable.setOrigin(to_vector2f(origin))
 		
 	def move(self, offset):
-		self.p_transformable.move(vector2_to_vector2f(offset))
+		self.p_transformable.move(to_vector2f(offset))
 		
 	def rotate(self, float angle):
 		self.p_transformable.rotate(angle)
 		
 	def scale(self, factor):
-		self.p_transformable.scale(vector2_to_vector2f(factor))
+		self.p_transformable.scale(to_vector2f(factor))
 		
 	property transform:
 		def __get__(self):
@@ -1518,7 +1511,7 @@ cdef public class ConvexShape(Shape)[type PyConvexShapeType, object PyConvexShap
 			self.p_this.setPointCount(count)
 		
 	def set_point(self, unsigned int index, point):
-		self.p_this.setPoint(index, vector2_to_vector2f(point))
+		self.p_this.setPoint(index, to_vector2f(point))
 
 
 cdef api object wrap_convexshape(sf.ConvexShape *p):
@@ -1534,7 +1527,7 @@ cdef class RectangleShape(Shape):
 	cdef sf.RectangleShape *p_this
 	
 	def __cinit__(self, size=(0, 0)):
-		self.p_this = new sf.RectangleShape(vector2_to_vector2f(size))
+		self.p_this = new sf.RectangleShape(to_vector2f(size))
 		self.p_drawable = <sf.Drawable*>self.p_this
 		self.p_transformable = <sf.Transformable*>self.p_this
 		self.p_shape = <sf.Shape*>self.p_this
@@ -1547,7 +1540,7 @@ cdef class RectangleShape(Shape):
 			return Vector2(self.p_this.getSize().x, self.p_this.getSize().y)
 			
 		def __set__(self, size):
-			self.p_this.setSize(vector2_to_vector2f(size))
+			self.p_this.setSize(to_vector2f(size))
 
 
 cdef class Vertex:
@@ -1659,7 +1652,7 @@ cdef class View:
 			return Vector2(self.p_this.getCenter().x, self.p_this.getCenter().y)
 			
 		def __set__(self, center):
-			self.p_this.setCenter(vector2_to_vector2f(center))
+			self.p_this.setCenter(to_vector2f(center))
 			self._update_target()
 
 	property size:
@@ -1667,7 +1660,7 @@ cdef class View:
 			return Vector2(self.p_this.getSize().x, self.p_this.getSize().y)
 			
 		def __set__(self, size):
-			self.p_this.setSize(vector2_to_vector2f(size))
+			self.p_this.setSize(to_vector2f(size))
 			self._update_target()
 
 	property rotation:
@@ -1774,16 +1767,16 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 	def map_pixel_to_coords(self, point, View view=None):
 		cdef sf.Vector2f ret
 
-		if not view: ret = self.p_rendertarget.mapPixelToCoords(vector2_to_vector2i(point))
-		else: ret = self.p_rendertarget.mapPixelToCoords(vector2_to_vector2i(point), view.p_this[0])
+		if not view: ret = self.p_rendertarget.mapPixelToCoords(to_vector2i(point))
+		else: ret = self.p_rendertarget.mapPixelToCoords(to_vector2i(point), view.p_this[0])
 
 		return Vector2(ret.x, ret.y)
 		
 	def map_coords_to_pixel(self, point, View view=None):
 		cdef sf.Vector2i ret
 
-		if not view: ret = self.p_rendertarget.mapCoordsToPixel(vector2_to_vector2f(point))
-		else: ret = self.p_rendertarget.mapCoordsToPixel(vector2_to_vector2f(point), view.p_this[0])
+		if not view: ret = self.p_rendertarget.mapCoordsToPixel(to_vector2f(point))
+		else: ret = self.p_rendertarget.mapCoordsToPixel(to_vector2f(point), view.p_this[0])
 
 		return Vector2(ret.x, ret.y)
 		
@@ -1868,16 +1861,16 @@ cdef class RenderWindow(Window):
 	def map_pixel_to_coords(self, point, View view=None):
 		cdef sf.Vector2f ret
 
-		if not view: ret = self.p_this.mapPixelToCoords(vector2_to_vector2i(point))
-		else: ret = self.p_this.mapPixelToCoords(vector2_to_vector2i(point), view.p_this[0])
+		if not view: ret = self.p_this.mapPixelToCoords(to_vector2i(point))
+		else: ret = self.p_this.mapPixelToCoords(to_vector2i(point), view.p_this[0])
 
 		return Vector2(ret.x, ret.y)
 		
 	def map_coords_to_pixel(self, point, View view=None):
 		cdef sf.Vector2i ret
 
-		if not view: ret = self.p_this.mapCoordsToPixel(vector2_to_vector2f(point))
-		else: ret = self.p_this.mapCoordsToPixel(vector2_to_vector2f(point), view.p_this[0])
+		if not view: ret = self.p_this.mapCoordsToPixel(to_vector2f(point))
+		else: ret = self.p_this.mapCoordsToPixel(to_vector2f(point), view.p_this[0])
 
 		return Vector2(ret.x, ret.y)
 		
