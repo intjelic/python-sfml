@@ -37,6 +37,7 @@ class Effect(sf.Drawable):
 			self.on_draw(target, states)
 		else:
 			error = sf.Text("Shader not\nsupported")
+			error.font = sf.Font.from_file("data/sansation.ttf")
 			error.position = (320, 200)
 			error.character_size = 36
 			target.draw(error, states)	
@@ -78,6 +79,7 @@ class WaveBlur(Effect):
 	def on_load(self):
 		with open("data/text.txt") as file:
 			self.text = sf.Text(file.read())
+			self.text.font = sf.Font.from_file("data/sansation.ttf")
 			self.text.character_size = 22
 			self.text.position = (30, 20)
 		
