@@ -60,7 +60,7 @@ v1.1 -> v1.2
 * Ubuntu packages available for 12.04LTS and 12.10
 * Fedora packages available
 * Installer script for Arch Linux users available
-* sfeModule available as add-on
+* sfeMovie available as add-on
 * Fixe bug in sf.MouseMoveEvent.position
 * Fixe various threading issues in the network module (GIL not released)
 * Fixe bug in views returned by sf.RenderTarget (view wasn't linked)
