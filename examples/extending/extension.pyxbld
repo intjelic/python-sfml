@@ -1,0 +1,7 @@
+def make_ext(modname, pyxfilename):
+    from distutils.extension import Extension
+    return Extension(name=modname,
+                     include_dirs=['/usr/lib/python2.7'],
+                     libraries=['sfml-system', 'sfml-window', 'sfml-graphics'],
+                     sources=[pyxfilename],
+                     language='C++')
