@@ -78,6 +78,12 @@ Table of Contents
          Documentation for complementary SFML-based libraries that have also
          been ported to Python.
 
+   * .. glossary::
+
+      :doc:`c_api`
+         Embed Python code using SFML into your C/C++ application or
+         write your own Python extension using the C/Cython API.
+
 .. _SFML: http://www.sfml-dev.org/
 .. _the first release candidate: http://www.sfml-dev.org/download.php#2.0-rc
 .. _LGPLv3: http://www.gnu.org/copyleft/lgpl.html
