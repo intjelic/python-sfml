@@ -12,7 +12,7 @@
 cdef extern from "<string>" namespace "std":
 	cdef cppclass string:
 		char* c_str()
-		
+
 cimport time
 
 cdef extern from "SFML/System.hpp" namespace "sf":
@@ -31,7 +31,7 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 	# 64 bits integer types
 	ctypedef signed   long long Int64
 	ctypedef unsigned long long Uint64
-	
+
 	cdef cppclass Time:
 		Time()
 		float asSeconds()
@@ -43,18 +43,18 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		bint operator>(Time&)
 		bint operator<=(Time&)
 		bint operator>=(Time&)
-		Time operator+(Time&)		
+		Time operator+(Time&)
 		Time operator-(Time&)
-		Time operator*(Time&) 
-		Time operator/(Time&)    
-		#Time operator-=(Time&, Time)        
+		Time operator*(Time&)
+		Time operator/(Time&)
+		#Time operator-=(Time&, Time)
 		#Time operator+=(Time&, Time)
 		#Time operator*(float)
 		#Time operator*(float)
 		#Time operator*(Int64)
 		#Time operator/(float)
 		#Time operator/(Int64)
-        
+
 	cdef void sleep(Time) nogil
 
 	cdef cppclass Clock:
@@ -81,33 +81,46 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		Vector2u(unsigned int, unsigned int)
 		unsigned int x
 		unsigned int y
-		
+
 	cdef cppclass Vector2f:
 		Vector2f()
 		Vector2f(float, float)
 		float x
 		float y
-		
+
 	cdef cppclass Vector3i:
 		Vector3i()
 		Vector3i(int, int, int)
 		int x
 		int y
 		int z
-		
+
 	cdef cppclass Vector3u:
 		Vector3u()
 		Vector3u(unsigned int, unsigned int, unsigned int)
 		unsigned int x
 		unsigned int y
 		unsigned int z
-		
+
 	cdef cppclass Vector3f:
 		Vector3f()
 		Vector3f(float, float, float)
 		float x
 		float y
 		float z
+
+	cdef cppclass Vector2[T]:
+		Vector2()
+		Vector2(T, T)
+		T x
+		T y
+
+	cdef cppclass Vector3[T]:
+		Vector3()
+		Vector3(T, T)
+		T x
+		T y
+		T z
 
 
 cimport style, event, videomode, keyboard, joystick, mouse
@@ -123,7 +136,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
 		bint control
 		bint shift
 		bint system
-		
+
 	cdef struct TextEvent:
 		Uint32 unicode
 
@@ -158,10 +171,10 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 		event.EventType type
 		SizeEvent size
 		KeyEvent key
-		TextEvent text		
+		TextEvent text
 		MouseMoveEvent mouseMove
 		MouseButtonEvent mouseButton
-		MouseWheelEvent mouseWheel		
+		MouseWheelEvent mouseWheel
 		JoystickMoveEvent joystickMove
 		JoystickButtonEvent joystickButton
 		JoystickConnectEvent joystickConnect
@@ -268,7 +281,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		float top
 		float width
 		float height
-		
+
 	cdef cppclass Color:
 		Color()
 		Color(Uint8 r, Uint8 g, Uint8 b)
@@ -308,7 +321,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 	cdef cppclass Image:
 		Image()
 		void create(unsigned int, unsigned int)
-		void create(unsigned int, unsigned int, const_Uint8_ptr)		
+		void create(unsigned int, unsigned int, const_Uint8_ptr)
 		void create(unsigned int, unsigned int, Color)
 		bint loadFromFile(char*&)
 		bint loadFromMemory(void*, size_t)
@@ -328,7 +341,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 	cdef cppclass Texture:
 		Texture()
 		Texture(Texture&)
-		bint create(unsigned int, unsigned int)	
+		bint create(unsigned int, unsigned int)
 		bint loadFromFile(char*&)
 		bint loadFromFile(char*&, IntRect&)
 		bint loadFromMemory(void*, size_t)
@@ -380,10 +393,10 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void setParameter(char*, Transform&)
 		void setParameter(char*, Texture&)
 		void setParameter(char*, shader.CurrentTextureType)
-		
+
 	cdef cppclass RenderStates:
 		RenderStates()
-		RenderStates(blendmode.BlendMode)		
+		RenderStates(blendmode.BlendMode)
 		RenderStates(Transform&)
 		RenderStates(Texture*)
 		RenderStates(Shader*)
@@ -395,7 +408,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
 	cdef cppclass Drawable:
 		Drawable()
-		
+
 	cdef cppclass Transformable:
 		Transformable()
 		void setPosition(float, float)
@@ -404,11 +417,11 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void setScale(float, float)
 		void setScale(Vector2f&)
 		void setOrigin(float, float)
-		void setOrigin(Vector2f&)	
-		Vector2f& getPosition()		
-		float     getRotation()	
-		Vector2f& getScale()	
-		Vector2f& getOrigin()				
+		void setOrigin(Vector2f&)
+		Vector2f& getPosition()
+		float     getRotation()
+		Vector2f& getScale()
+		Vector2f& getOrigin()
 		Color&    getColor()
 		void move(float, float)
 		void move(Vector2f&)
@@ -464,9 +477,9 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		float getOutlineThickness()
 		FloatRect getLocalBounds()
 		FloatRect getGlobalBounds()
-		unsigned int getPointCount()		
+		unsigned int getPointCount()
 		Vector2f getPoint(unsigned int)
-		
+
 	cdef cppclass CircleShape:
 		CircleShape()
 		CircleShape(float)
@@ -476,7 +489,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void setPointCount(unsigned int)
 		unsigned int getPointCount()
 		Vector2f getPoint(unsigned int)
-		
+
 	cdef cppclass ConvexShape:
 		ConvexShape()
 		ConvexShape(unsigned int)
@@ -484,7 +497,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		unsigned int getPointCount()
 		void setPoint(unsigned int, Vector2f)
 		Vector2f getPoint(unsigned int)
-		
+
 	cdef cppclass RectangleShape:
 		RectangleShape()
 		RectangleShape(Vector2f&)
@@ -492,13 +505,13 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		Vector2f& getSize()
 		unsigned int getPointCount()
 		Vector2f getPoint(unsigned int)
-		
+
 	cdef cppclass Vertex:
 		Vertex()
 		Vector2f position
 		Color color
 		Vector2f texCoords
-		
+
 	cdef cppclass VertexArray:
 		VertexArray()
 		VertexArray(primitivetype.PrimitiveType)
@@ -597,8 +610,8 @@ from libcpp.string cimport string
 cimport listener, soundsource, soundrecorder
 
 cdef extern from "SFML/Audio.hpp" namespace "sf":
-	ctypedef Int16* const_Int16 "const sf::Int16*"	
-	
+	ctypedef Int16* const_Int16 "const sf::Int16*"
+
 	cdef cppclass SoundBuffer:
 		SoundBuffer()
 		bint loadFromFile(char*&)
@@ -606,7 +619,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 		bint loadFromSamples(Int16*, size_t, unsigned int, unsigned int)
 		bint saveToFile(char*&)
 		Int16* getSamples()
-		size_t getSampleCount()	
+		size_t getSampleCount()
 		unsigned int getSampleRate()
 		unsigned int getChannelCount()
 		Time getDuration()
@@ -630,7 +643,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 		Vector3f getPosition()
 		bint isRelativeToListener()
 		float getMinDistance()
-		float getAttenuation() 
+		float getAttenuation()
 
 	cdef cppclass Sound:
 		Sound()
@@ -663,7 +676,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 		Music()
 		bint openFromFile(char*&)
 		bint openFromMemory(void*, size_t)
-		Time getDuration()	
+		Time getDuration()
 
 	cdef cppclass SoundRecorder:
 		void start(unsigned int)
@@ -673,7 +686,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 	cdef cppclass SoundBufferRecorder:
 		SoundBufferRecorder()
 		SoundBuffer& getBuffer()
-		
+
 
 cimport ipaddress, socket, udpsocket, ftp, http
 
@@ -691,10 +704,10 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		bint operator>(IpAddress&)
 		bint operator<=(IpAddress&)
 		bint operator>=(IpAddress&)
-		
+
 	cdef cppclass Socket:
 		void setBlocking(bint)
-		bint isBlocking() 
+		bint isBlocking()
 
 	cdef cppclass TcpListener:
 		TcpListener()
@@ -716,7 +729,7 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 
 	cdef cppclass UdpSocket:
 		UdpSocket()
-		unsigned short getLocalPort()        
+		unsigned short getLocalPort()
 		socket.Status bind(unsigned short)
 		void unbind()
 		socket.Status send(void*, size_t, IpAddress&, unsigned short)
@@ -741,8 +754,8 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		ftp.Response login(char*&, char*&) nogil
 		ftp.Response keepAlive() nogil
 		ftp.DirectoryResponse getWorkingDirectory() nogil
-		ftp.ListingResponse	getDirectoryListing() nogil
-		ftp.ListingResponse	getDirectoryListing(char*&) nogil
+		ftp.ListingResponse getDirectoryListing() nogil
+		ftp.ListingResponse getDirectoryListing(char*&) nogil
 		ftp.Response changeDirectory(char*&) nogil
 		ftp.Response parentDirectory() nogil
 		ftp.Response createDirectory(char*&) nogil
