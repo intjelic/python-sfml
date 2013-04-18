@@ -20,51 +20,62 @@ For example::
 Ftp
 ---
 .. literalinclude:: /../../examples/ftp/ftp.py
+   :lines: 11-
    :linenos:
 
 Pong
 ----
 .. literalinclude:: /../../examples/pong/pong.py
+   :lines: 11-
    :linenos:
 
 PyQt4
 -----
 .. literalinclude:: /../../examples/pyqt4/qsfml_canvas.py
+   :lines: 11-
    :linenos:
 
 Shader
 ------
 .. literalinclude:: /../../examples/shader/shader.py
+   :lines: 11-
    :linenos:
 
 Sockets
 -------
 .. literalinclude:: /../../examples/sockets/sockets.py
+   :lines: 11-
    :linenos:
 
 Sound capture
 -------------
 .. literalinclude:: /../../examples/sound_capture/sound_capture.py
+   :lines: 11-
    :linenos:
 
 Sound
 -----
 .. literalinclude:: /../../examples/sound/sound.py
+   :lines: 11-
    :linenos:
 
 Voip
 ----
 .. literalinclude:: /../../examples/voip/voip.py
+   :lines: 11-
    :linenos:
-   
+
 .. literalinclude:: /../../examples/voip/client.py
+   :lines: 11-
    :linenos:
-   
+
 .. literalinclude:: /../../examples/voip/server.py
+   :lines: 11-
    :linenos:
 
 Spacial Music
 -------------
 .. literalinclude:: /../../examples/spacial_music/spacial_music.py
+   :lines: 11-
    :linenos:
 
