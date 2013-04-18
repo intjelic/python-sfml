@@ -13,7 +13,7 @@ By combining the strength of SFML with the ease of the Python language,
 we can provide an amazing tool to quickly build multimedia software.
 
 These bindings were created in large part by Jonathan De Wachter, with
-significant contributions from Edwin Marshall. Other contributors include 
+significant contributions from Edwin Marshall. Other contributors include
 Jorge Araya Navarro and Richard Sims. Of course, this binding wouldn't have
 been made possible without the work of Laurent Gomilla and Bastien Léonard.
 
@@ -23,9 +23,9 @@ Table of Contents
 .. toctree::
    :maxdepth: 1
    :hidden:
-   
+
    whatsnew
-   download   
+   download
    gettingstarted
    examples
    tutorials
@@ -43,42 +43,42 @@ Table of Contents
          next one.
 
    * .. glossary::
-   
+
       :doc:`download`
          Instructions on where and how to install these bindings for various
          platforms. Includes information on how to compile them from source.
-         
+
    * .. glossary::
-   
+
       :doc:`gettingstarted`
          A gentle introduction to these bindings, covering some basic
          principles.
-      
+
    * .. glossary::
-   
+
       :doc:`examples`
          Practical examples demonstrating how various parts of this binding can
          work together with each other as well as other APIs.
-         
+
    * .. glossary::
-   
+
       :doc:`tutorials`
          Tutorials focusing on the various core principles integral to
          understanding how SFML works.
 
    * .. glossary::
-   
+
       :doc:`api/api_index`
          Complete library reference organized by each of the binding's five
          core modules.
 
    * .. glossary::
-   
+
       :doc:`addons`
          Documentation for complementary SFML-based libraries that have also
          been ported to Python.
 
 .. _SFML: http://www.sfml-dev.org/
 .. _the first release candidate: http://www.sfml-dev.org/download.php#2.0-rc
-.. _LGPLv3: htp://www.gnu.org/copyleft/lgpl.html
+.. _LGPLv3: http://www.gnu.org/copyleft/lgpl.html
 .. _official Python bindings: https://github.com/bastienleonard/pysfml2-cython
