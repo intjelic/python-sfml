@@ -15,20 +15,20 @@
 
 #include "Python.h"
 #include <SFML/Audio.hpp>
-#include "audio_api.h"
-#include "system_api.h"
+#include "pysfml/audio_api.h"
+#include "pysfml/system_api.h"
 
 class DerivableSoundStream : public sf::SoundStream
 {
 public :
 	DerivableSoundStream(void* pyThis);
-	
+
 	void initialize(unsigned int channelCount, unsigned int sampleRate);
-	
+
 protected:
 	virtual bool onGetData(sf::SoundStream::Chunk &data);
 	virtual void onSeek(sf::Time timeOffset);
-	
+
 	PyObject* m_pyobj;
 };
 
