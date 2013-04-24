@@ -28,22 +28,23 @@ from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 		#char* c_str()
 
 cdef extern from "error.hpp":
-	void replace_error_handler()
-	string get_last_error_message()
+	void restorePythonErrorBuffer()
+	object getLastErrorMessage()
 
-__all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds',
-			'milliseconds', 'microseconds', 'Vector2', 'Vector3',
-			'Thread', 'Lock', 'Mutex']
+__all__ = ['Time', 'sleep', 'Clock', 'seconds', 'milliseconds', 'microseconds',
+			'Vector2', 'Vector3', 'Thread', 'Lock', 'Mutex']
 
-replace_error_handler()
+# expose a function to restore the error handler
+cdef api void restoreErrorHandler():
+	restorePythonErrorBuffer()
 
-def pop_error_message():
-	message = get_last_error_message().c_str()
-	message = message.decode('utf-8')
-	return message
+# expose a function to retrieve the last SFML error
+cdef api object popLastErrorMessage():
+	error = getLastErrorMessage()
 
-def push_error_message(message):
-	raise NotImplementedError
+	# remove the extra \n character (if any)
+	if error[-1] == '\n':
+		error = error[:-1]
 
 class SFMLException(Exception):
 	def __init__(self, message=None):
@@ -55,6 +56,8 @@ class SFMLException(Exception):
 	def __str__(self):
 		return repr(self.message)
 
+# redirect SFML errors to our stream buffer
+restoreErrorHandler()
 
 cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 	cdef public object x

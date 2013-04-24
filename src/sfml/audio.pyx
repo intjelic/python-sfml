@@ -20,6 +20,12 @@ from libcpp.sfml cimport Int8, Int16, Int32, Int64
 from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 from libcpp.sfml cimport Vector3f
 
+
+cdef extern from "pysfml/system_api.h":
+	object popLastErrorMessage()
+	int import_sfml__system()
+import_sfml__system()
+
 cdef extern from "DerivableSoundStream.hpp":
 	cdef cppclass DerivableSoundStream:
 		DerivableSoundStream(void*)
@@ -31,9 +37,6 @@ cdef extern from "DerivableSoundRecorder.hpp":
 
 from pysfml.system cimport Vector3, Time
 from pysfml.system cimport to_vector3
-from sfml.system import SFMLException, pop_error_message, push_error_message
-
-
 
 cdef Time wrap_time(sf.Time* p):
 	cdef Time r = Time.__new__(Time)
@@ -152,14 +155,14 @@ cdef class SoundBuffer:
 	def from_file(cls, filename):
 		cdef sf.SoundBuffer *p = new sf.SoundBuffer()
 		cdef char* encoded_filename
-		
-		encoded_filename_temporary = filename.encode('UTF-8')	
+
+		encoded_filename_temporary = filename.encode('UTF-8')
 		encoded_filename = encoded_filename_temporary
 		
 		if p.loadFromFile(encoded_filename): return wrap_soundbuffer(p)
 		
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	@classmethod
 	def from_memory(cls, bytes data):
@@ -168,17 +171,17 @@ cdef class SoundBuffer:
 		if p.loadFromMemory(<char*>data, len(data)): return wrap_soundbuffer(p)
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	@classmethod
 	def from_samples(cls, Chunk samples, unsigned int channel_count, unsigned int sample_rate):
 		cdef sf.SoundBuffer *p = new sf.SoundBuffer()
-		
+
 		if p.loadFromSamples(samples.m_samples, samples.m_sampleCount, channel_count, sample_rate):
 			return wrap_soundbuffer(p)
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	def to_file(self, filename):
 		cdef char* encoded_filename	
@@ -400,7 +403,7 @@ cdef class Music(SoundStream):
 		if p.openFromFile(encoded_filename): return wrap_music(p)
 		
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	@classmethod
 	def from_memory(cls, bytes data):
@@ -409,7 +412,7 @@ cdef class Music(SoundStream):
 		if p.openFromMemory(<char*>data, len(data)): return wrap_music(p)
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	property duration:
 		def __get__(self):

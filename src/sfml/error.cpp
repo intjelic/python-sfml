@@ -9,34 +9,29 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
+////////////////////////////////////////////////////////////////////////////////
+// Headers
+////////////////////////////////////////////////////////////////////////////////
 #include "error.hpp"
+#include <sstream>
+#include <SFML/System.hpp>
 
-void replace_error_handler()
+static std::stringbuf buffer;
+
+// Insert our own buffer to retrieve and forward errors to Python
+// exceptions. This function allows to restore the Python buffer in case people
+// would interface Python with C++ code and so reredirect the error output.
+void restorePythonErrorBuffer()
 {
-	static std::stringbuf errorbuffer;
-	sf::err().rdbuf(&errorbuffer);
+	sf::err().rdbuf(&buffer);
 }
 
-// This function should return PyObject* but as, i don't know why, 
-// using PyString_FromString triggers 'was not declared in this scope',
-// I temporarly return a std::string.
-std::string get_last_error_message()
+// Return the last error (if any) then clear the buffer to welcome the next one.
+PyObject* getLastErrorMessage()
 {
-	// get the stream buffer
-	std::stringbuf* errorbuffer;
-	errorbuffer = static_cast<std::stringbuf*>(sf::err().rdbuf());
-	
-	// get the error message
-	static std::string errormessage;
-	errormessage = errorbuffer->str();
-	
-	//PyObject* pyerrormessage = PyString_FromString(errormessage.c_str());
-	std::string pyerrormessage = errormessage;
-	
-	// clean the stream buffer to welcome the next error message
-	errormessage.clear();
-	errorbuffer->str(errormessage);
-	
-	return pyerrormessage;
+	// Get the error message then clean the buffer
+	PyObject* error = PyString_FromString(buffer.str().c_str());
+	buffer.str("");
+
+	return error;
 }

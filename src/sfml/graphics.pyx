@@ -18,12 +18,18 @@ except ImportError:
 		start_new_thread = threading._start_new_thread
 		allocate_lock = threading._allocate_lock
 
-
 from libcpp.vector cimport vector
 
 cimport libcpp.sfml as sf
 from libcpp.sfml cimport Int8, Int16, Int32, Int64
 from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
+
+
+cdef extern from "pysfml/system_api.h":
+	object popLastErrorMessage()
+	int import_sfml__system()
+import_sfml__system()
+
 
 cdef extern from "DerivableDrawable.hpp":
 	cdef cppclass DerivableDrawable:
@@ -52,9 +58,6 @@ string_type = [bytes, unicode, str]
 numeric_type = [int, long, float, long]
 
 from copy import copy, deepcopy
-
-from sfml.system import SFMLException
-from sfml.system import pop_error_message, push_error_message
 
 from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2f
@@ -443,7 +446,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 			return wrap_image(p)
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	@classmethod
 	def from_memory(cls, bytes data):
@@ -453,7 +456,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 			return wrap_image(p)
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	def to_file(self, filename):
 		cdef char* encoded_filename
@@ -461,7 +464,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 		encoded_filename_temporary = filename.encode('UTF-8')
 		encoded_filename = encoded_filename_temporary
 
-		if not self.p_this.saveToFile(encoded_filename): raise IOError(pop_error_message())
+		if not self.p_this.saveToFile(encoded_filename): raise IOError(popLastErrorMessage())
 
 	property size:
 		def __get__(self):
@@ -572,7 +575,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 			if p.loadFromFile(encoded_filename, sf.IntRect(l, t, w, h)): return wrap_texture(p)
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	@classmethod
 	def from_memory(cls, bytes data, area=None):
@@ -585,7 +588,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 			if p.loadFromMemory(<char*>data, len(data), sf.IntRect(l, t, w, h)): return wrap_texture(p)
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	@classmethod
 	def from_image(cls, Image image, area=None):
@@ -598,7 +601,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 			if p.loadFromImage(image.p_this[0], sf.IntRect(l, t, w, h)): return wrap_texture(p)
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	property size:
 		def __get__(self):
@@ -784,7 +787,7 @@ cdef class Font:
 			return wrap_font(p)
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	@classmethod
 	def from_memory(cls, bytes data):
@@ -794,7 +797,7 @@ cdef class Font:
 			return wrap_font(p)
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	def get_glyph(self, Uint32 code_point, unsigned int character_size, bint bold):
 		cdef sf.Glyph *p = new sf.Glyph()
@@ -856,7 +859,7 @@ cdef class Shader:
 			raise TypeError("This method takes at least 1 argument (0 given)")
 
 		del p
-		raise IOError(pop_error_message())
+		raise IOError(popLastErrorMessage())
 
 	@classmethod
 	def from_memory(cls, char* vertex=NULL, char* fragment=NULL):
@@ -870,7 +873,7 @@ cdef class Shader:
 				return wrap_shader(p)
 
 			del p
-			raise IOError(pop_error_message())
+			raise IOError(popLastErrorMessage())
 
 		if vertex:
 			return Shader.vertex_from_memory(vertex)
