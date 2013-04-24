@@ -32,7 +32,7 @@ cdef extern from "error.hpp":
 	string get_last_error_message()
 
 __all__ = ['SFMLException', 'Time', 'sleep', 'Clock', 'seconds',
-			'milliseconds', 'microseconds', 'Vector2', 'Vector3', 
+			'milliseconds', 'microseconds', 'Vector2', 'Vector3',
 			'Thread', 'Lock', 'Mutex']
 
 replace_error_handler()
@@ -489,9 +489,6 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 		def __set__(self, Int64 microseconds):
 			self.p_this[0] = sf.microseconds(microseconds)
 
-	def reset(self):
-		self.milliseconds = 0
-
 	def __copy__(self):
 		cdef sf.Time* p = new sf.Time()
 		p[0] = self.p_this[0]
@@ -555,38 +552,38 @@ def microseconds(Int64 amount):
 
 cdef class Mutex:
 	cdef object _lock
-	
+
 	def __cinit__(self):
 		self._lock = threading.RLock()
-		
+
 	def lock(self):
 		self._lock.acquire()
-		
+
 	def unlock(self):
 		self._lock.release()
 
 cdef class Lock:
 	cdef Mutex _mutex
-	
+
 	def __init__(self, Mutex mutex):
 		self._mutex = mutex
 		mutex.lock()
-		
+
 	def __dealloc__(self):
 		self._mutex.unlock()
-	
+
 
 cdef class Thread:
 	cdef object _thread
-	
+
 	def __init__(self, functor, *args, **kwargs):
 		self._thread = threading.Thread(target=functor, args=args, kwargs=kwargs)
-		
-	def launch(self): 
+
+	def launch(self):
 		self._thread.start()
-	
-	def wait(self): 
+
+	def wait(self):
 		self._thread.join()
-		
+
 	def terminate(self):
 		self._thread._Thread__stop()

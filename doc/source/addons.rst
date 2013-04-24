@@ -2,7 +2,7 @@ Add-Ons
 =======
 
 We've also developed bindings to popular utility libraries that add
-functionality not provided by vanilla SFML2. 
+functionality not provided by vanilla SFML2.
 
 sfeMovie
 --------
