@@ -432,7 +432,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 			p.create(pixels.m_width, pixels.m_height, pixels.p_array)
 			return wrap_image(p)
 
-		raise SFMLException("sf.Pixels's array points on NULL - It would create an empty image")
+		raise ValueError("Failed to create texture, invalid array (NULL)")
 
 	@classmethod
 	def from_file(cls, filename):
@@ -548,7 +548,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 			return wrap_texture(p)
 
 		del p
-		raise SFMLException()
+		raise ValueError(popLastErrorMessage())
 
 	@classmethod
 	def from_size(cls, unsigned int width, unsigned int height):
@@ -558,7 +558,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 			return wrap_texture(p)
 
 		del p
-		raise SFMLException()
+		raise ValueError(popLastErrorMessage())
 
 	@classmethod
 	def from_file(cls, filename, area=None):

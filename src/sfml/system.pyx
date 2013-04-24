@@ -46,15 +46,7 @@ cdef api object popLastErrorMessage():
 	if error[-1] == '\n':
 		error = error[:-1]
 
-class SFMLException(Exception):
-	def __init__(self, message=None):
-		if not message: message = pop_error_message()
-		self.message = message
-
-		Exception.__init__(self, message)
-
-	def __str__(self):
-		return repr(self.message)
+	return error
 
 # redirect SFML errors to our stream buffer
 restoreErrorHandler()
