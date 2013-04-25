@@ -74,7 +74,7 @@ class QSFMLCanvas(QWidget):
 			if platform.system() == 'Linux':
 				from ctypes import cdll
 				x11 = cdll.LoadLibrary("libX11.so")
-                
+
 				display = sip.unwrapinstance(QX11Info.display())
 				x11.XFlush(display)
 

@@ -37,7 +37,7 @@ milliseconds or microseconds: ::
    usec = time.microseconds # long
    msec = time.milliseconds # int
    sec = time.seconds       # float
-   
+
 
 Playing with time values
 ------------------------
@@ -51,7 +51,7 @@ such as addition, subtraction, comparison, etc. Times can also be negative.
 
    b1 = t1 == t2
    b2 = t3 > t4
-   
+
 Measuring time
 --------------
 Now that we've seen how to manipulate time values with pySFML, let's see how to

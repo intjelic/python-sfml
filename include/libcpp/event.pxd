@@ -17,7 +17,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
 		GainedFocus
 		TextEntered
 		KeyPressed
-		KeyReleased	
+		KeyReleased
 		MouseWheelMoved
 		MouseButtonPressed
 		MouseButtonReleased

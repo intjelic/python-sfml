@@ -16,44 +16,44 @@ cdef extern from "pysfml/graphics.h":
 	cdef class sfml.graphics.Rectangle [object PyRectangleObject]:
 		cdef public Vector2 position
 		cdef public Vector2 size
-	
+
 	cdef class sfml.graphics.Color [object PyColorObject]:
 		cdef sf.Color *p_this
-	
+
 	cdef class sfml.graphics.Image [object PyImageObject]:
 		cdef sf.Image *p_this
-	
+
 	cdef class sfml.graphics.Texture [object PyTextureObject]:
 		cdef sf.Texture *p_this
 		cdef bint               delete_this
-		
+
 	cdef class sfml.graphics.Drawable [object PyDrawableObject]:
 		cdef sf.Drawable *p_drawable
-		
+
 	cdef class sfml.graphics.TransformableDrawable(Drawable) [object PyTransformableDrawableObject]:
 		cdef sf.Transformable *p_transformable
-		
+
 	cdef class sfml.graphics.Sprite(TransformableDrawable) [object PySpriteObject]:
 		cdef sf.Sprite *p_this
 		cdef Texture           m_texture
-		
+
 	cdef class sfml.graphics.Shape(TransformableDrawable) [object PyShapeObject]:
 		cdef sf.Shape *p_shape
 		cdef Texture          m_texture
-		
+
 	cdef class sfml.graphics.ConvexShape(Shape) [object PyConvexShapeObject]:
 		cdef sf.ConvexShape *p_this
-	
+
 	cdef class sfml.graphics.RenderTarget [object PyRenderTargetObject]:
 		cdef sf.RenderTarget *p_rendertarget
-		
+
 	cdef class sfml.graphics.RenderStates [object PyRenderStatesObject]:
 		pass
 
 cdef inline sf.FloatRect to_floatrect(rectangle):
 	l, t, w, h = rectangle
 	return sf.FloatRect(l, t, w, h)
-	
+
 cdef inline sf.IntRect to_intrect(rectangle):
 	l, t, w, h = rectangle
 	return sf.IntRect(l, t, w, h)
@@ -75,5 +75,5 @@ cdef inline ConvexShape wrap_convexshape(sf.ConvexShape *p):
 	r.p_drawable = <sf.Drawable*>p
 	r.p_transformable = <sf.Transformable*>p
 	r.p_shape = <sf.Shape*>p
-	
+
 	return r

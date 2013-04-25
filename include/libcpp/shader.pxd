@@ -14,9 +14,9 @@ from libcpp.sfml cimport Shader
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
 	cdef struct CurrentTextureType:
 		pass
-	
+
 	cdef CurrentTextureType CurrentTexture
-	
+
 	cdef enum Type:
 		Vertex
 		Fragment

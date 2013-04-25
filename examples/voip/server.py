@@ -14,7 +14,7 @@ import sfml as sf
 from struct import unpack
 
 # python 2.* compatability
-try: input = raw_input 
+try: input = raw_input
 except NameError: pass
 
 AUDIO_DATA, END_OF_STREAM = list(range(1, 3))

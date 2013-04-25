@@ -24,12 +24,12 @@ void DerivableDrawable::draw(sf::RenderTarget& target, sf::RenderStates states) 
 {
     static char format[] = "(O, O)";
 	static char methodName[] = "draw";
-    
+
     PyObject* pyTarget = (PyObject*)(wrap_rendertarget(&target));
     PyObject* pyStates = (PyObject*)(api_wrap_renderstates(&states));
-    
+
     PyObject_CallMethod(m_pyobj, methodName, format, pyTarget, pyStates);
-    
+
 	Py_DECREF(pyTarget);
 	Py_DECREF(pyStates);
 }

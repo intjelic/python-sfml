@@ -11,7 +11,7 @@
 import sfml.network as sf
 
 # python 2.* compatability
-try: input = raw_input 
+try: input = raw_input
 except NameError: pass
 
 def run_tcp_server():

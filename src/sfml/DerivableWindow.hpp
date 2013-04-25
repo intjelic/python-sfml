@@ -25,11 +25,11 @@ public :
 	explicit DerivableWindow(sf::WindowHandle handle, const sf::ContextSettings& settings = sf::ContextSettings());
 
 	void set_pyobj(void* pyobj);
-	
+
 protected:
 	virtual void onCreate();
 	virtual void onResize();
-	
+
 private:
 	PyObject* m_pyobj; // the python object pointer
 };

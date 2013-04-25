@@ -37,7 +37,7 @@ cdef inline sf.Vector2i to_vector2i(vector):
 cdef inline sf.Vector2u to_vector2u(vector):
 	w, h = vector
 	return sf.Vector2u(w, h)
-	
+
 cdef inline sf.Vector2f to_vector2f(vector):
 	w, h = vector
 	return sf.Vector2f(w, h)

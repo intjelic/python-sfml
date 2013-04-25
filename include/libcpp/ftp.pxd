@@ -32,7 +32,7 @@ cdef extern from "SFML/Network.hpp" namespace "sf::Ftp":
 		DirectoryResponse(Response&)
 		string& getDirectory()
 		bint isOk()
-		
+
 	cdef cppclass ListingResponse:
 		ListingResponse()
 		ListingResponse(Response&, vector[char]&)

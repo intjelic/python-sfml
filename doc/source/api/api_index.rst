@@ -11,7 +11,7 @@ API Reference
    The online documentation will always be more up-to-date unless built from
    source. it is always available at http://openhelbreath.net/python-sfml2.
 
-All of SFML's api has been exposed to Python, even if Python itself 
+All of SFML's api has been exposed to Python, even if Python itself
 includes a functionally equivalent set of APIs. [#]_
 
 These bindings consist of a top-level :mod:`sfml` package which in-turn is
@@ -26,37 +26,37 @@ API:
 
       :doc:`system`
          The system module documentation.
-         
+
    * .. glossary::
 
       :doc:`window`
          The window module documentation.
-         
+
    * .. glossary::
 
       :doc:`graphics`
          The graphics module documentation.
-         
+
          **HandledWindow** is not documented, see **PyQt4** integration example.
-         
+
    * .. glossary::
 
       :doc:`audio`
         The audio module documentation.
-         
+
    * .. glossary::
 
       :doc:`network`
-         The network module documentation. 
-         
-         Althought **SocketSelector**, **Ftp** and **Http** classes are implemented, they are not yet documented. 
-         
+         The network module documentation.
+
+         Althought **SocketSelector**, **Ftp** and **Http** classes are implemented, they are not yet documented.
+
          Refer to official examples to know how they work.
 
 .. toctree::
    :maxdepth: 1
    :hidden:
-   
+
    system
    window
    graphics
@@ -65,8 +65,8 @@ API:
 
 .. rubric:: Footnotes
 
-.. [#] For example, we provide bindings for SFML's network module. Even 
-       Though such functionality can be found in Python's socket module, we 
+.. [#] For example, we provide bindings for SFML's network module. Even
+       Though such functionality can be found in Python's socket module, we
        believe that its inclusion not only aids developers as they
        port their software from C++ to Python or vice-versa, but we also find
        SFML's API more convient in some cases (e.g. when obtaining a public IP

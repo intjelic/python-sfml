@@ -150,14 +150,14 @@ cdef class ResizeEvent(Event):
 
 		def __set__(self, unsigned int  width):
 			self.p_this.size.width = width
-			
+
 	property height:
 		def __get__(self):
 			return self.p_this.size.height
 
 		def __set__(self, unsigned int  height):
 			self.p_this.size.height = height
-			
+
 cdef class FocusEvent(Event):
 	cdef bint state
 

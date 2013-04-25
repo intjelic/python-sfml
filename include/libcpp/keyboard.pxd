@@ -113,5 +113,5 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Keyboard":
 		F15
 		Pause
 		KeyCount
-		
+
 	bint isKeyPressed(Key)

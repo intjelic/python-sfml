@@ -57,18 +57,18 @@ clock = sf.Clock()
 
 # start game loop
 while window.is_open:
-	
+
 	# process events
 	for event in window.events:
-	
+
 		# close window : exit
 		if event == sf.CloseEvent:
 			window.close()
-		
+
 		# escape key : exit
 		if event == sf.KeyEvent and event.code == sf.Keyboard.ESCAPE:
 			window.close()
-			
+
 		# adjust the viewport when the window is resized
 		if event == sf.ResizeEvent:
 			glViewport(0, 0, event.width, event.height)

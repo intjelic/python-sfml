@@ -36,10 +36,10 @@ cdef class IpAddress:
 
 	def __repr__(self):
 		return "sf.IpAddress({0})".format(self)
-		
+
 	def __str__(self):
 		return self.string.decode('utf-8')
-		
+
 	def __richcmp__(IpAddress x, IpAddress y, int op):
 		if op == 0:   return x.p_this[0] <  y.p_this[0]
 		elif op == 2: return x.p_this[0] == y.p_this[0]
@@ -47,13 +47,13 @@ cdef class IpAddress:
 		elif op == 1: return x.p_this[0] <= y.p_this[0]
 		elif op == 3: return x.p_this[0] != y.p_this[0]
 		elif op == 5: return x.p_this[0] >= y.p_this[0]
-		
+
 	@classmethod
 	def from_string(self, _string):
 		cdef string encoded_string
-		encoded_string_temporary = _string.encode('UTF-8')	
+		encoded_string_temporary = _string.encode('UTF-8')
 		encoded_string = string(<char*>encoded_string_temporary)
-		
+
 		cdef sf.IpAddress *p = new sf.IpAddress(encoded_string)
 		return wrap_ipaddress(p)
 
@@ -61,7 +61,7 @@ cdef class IpAddress:
 	def from_integer(self, Uint32 address):
 		cdef sf.IpAddress *p = new sf.IpAddress(address)
 		return wrap_ipaddress(p)
-		
+
 	@classmethod
 	def from_bytes(self, Uint8 b1, Uint8 b2, Uint8 b3, Uint8 b4):
 		cdef sf.IpAddress *p = new sf.IpAddress(b1, b2, b3, b4)
@@ -74,7 +74,7 @@ cdef class IpAddress:
 	property integer:
 		def __get__(self):
 			return self.p_this.toInteger()
-		
+
 	@classmethod
 	def get_local_address(self):
 		cdef sf.IpAddress* p = new sf.IpAddress()
@@ -106,11 +106,11 @@ cdef class Socket:
 	def __init__(self):
 		if self.__class__ == Socket:
 			raise NotImplementedError('Socket is abstact')
-		
+
 	property blocking:
 		def __get__(self):
 			return self.p_socket.isBlocking()
-			
+
 		def __set__(self, bint blocking):
 			self.p_socket.setBlocking(blocking)
 
@@ -123,27 +123,27 @@ class SocketError(SocketException): pass
 
 cdef class TcpListener(Socket):
 	cdef sf.TcpListener *p_this
-	
+
 	def __init__(self):
 		self.p_this = new sf.TcpListener()
 		self.p_socket = <sf.Socket*>self.p_this
-		
+
 	def __dealloc__(self):
 		del self.p_this
-		
+
 	def __repr__(self):
 		return "sf.TcpListener({0})".format(self)
-		
+
 	def __str__(self):
 		return str()
 
 	property local_port:
 		def __get__(self):
 			return self.p_this.getLocalPort()
-			
+
 	def listen(self, unsigned short port):
 		cdef sf.socket.Status status = self.p_this.listen(port)
-		
+
 		if status is not sf.socket.Done:
 			if status is sf.socket.NotReady:
 				raise SocketNotReady()
@@ -154,14 +154,14 @@ cdef class TcpListener(Socket):
 
 	def close(self):
 		self.p_this.close()
-		
+
 	def accept(self):
 		cdef TcpSocket socket = TcpSocket()
 		cdef sf.socket.Status status
-		
+
 		with nogil:
 			status = self.p_this.accept(socket.p_this[0])
-		
+
 		if status is not sf.socket.Done:
 			if status is sf.socket.NotReady:
 				raise SocketNotReady()
@@ -169,7 +169,7 @@ cdef class TcpListener(Socket):
 				raise SocketDisconnected()
 			elif status is sf.socket.Error:
 				raise SocketError()
-				
+
 		return socket
 
 
@@ -179,7 +179,7 @@ cdef class TcpSocket(Socket):
 	def __init__(self):
 		self.p_this = new sf.TcpSocket()
 		self.p_socket = <sf.Socket*>self.p_this
-		
+
 	def __dealloc__(self):
 		del self.p_this
 
@@ -192,17 +192,17 @@ cdef class TcpSocket(Socket):
 	property local_port:
 		def __get__(self):
 			return self.p_this.getLocalPort()
-			
+
 	property remote_address:
 		def __get__(self):
 			cdef sf.IpAddress *p = new sf.IpAddress()
 			p[0] = self.p_this.getRemoteAddress()
 			return wrap_ipaddress(p)
-			
+
 	property remote_port:
 		def __get__(self):
 			return self.p_this.getRemotePort()
-			
+
 	def connect(self, IpAddress remote_address, unsigned short remote_port, Time timeout=None):
 		cdef sf.socket.Status status
 
@@ -212,7 +212,7 @@ cdef class TcpSocket(Socket):
 		else:
 			with nogil:
 				status = self.p_this.connect(remote_address.p_this[0], remote_port, timeout.p_this[0])
-		
+
 		if status is not sf.socket.Done:
 			if status is sf.socket.NotReady:
 				raise SocketNotReady()
@@ -228,10 +228,10 @@ cdef class TcpSocket(Socket):
 		cdef sf.socket.Status status
 		cdef char* cdata = <char*>data
 		cdef size_t cdata_len = len(data)
-		
+
 		with nogil:
 			status = self.p_this.send(cdata, cdata_len)
-		
+
 		if status is not sf.socket.Done:
 			if status is sf.socket.NotReady:
 				raise SocketNotReady()
@@ -244,10 +244,10 @@ cdef class TcpSocket(Socket):
 		cdef char* data = <char*>malloc(size * sizeof(char))
 		cdef size_t received = 0
 		cdef sf.socket.Status status
-		
+
 		with nogil:
 			status = self.p_this.receive(data, size, received)
-		
+
 		if status is not sf.socket.Done:
 			if status is sf.socket.NotReady:
 				raise SocketNotReady()
@@ -255,13 +255,13 @@ cdef class TcpSocket(Socket):
 				raise SocketDisconnected()
 			elif status is sf.socket.Error:
 				raise SocketError()
-				
+
 		return <bytes>(data)[:received]
 
 
 cdef class UdpSocket(Socket):
 	cdef sf.UdpSocket *p_this
-	
+
 	MAX_DATAGRAM_SIZE = sf.udpsocket.MaxDatagramSize
 
 	def __init__(self):
@@ -270,14 +270,14 @@ cdef class UdpSocket(Socket):
 
 	def __dealloc__(self):
 		del self.p_this
-		
+
 	property local_port:
 		def __get__(self):
 			return self.p_this.getLocalPort()
-	   
+
 	def bind(self, unsigned short port):
 		cdef sf.socket.Status status = self.p_this.bind(port)
-		
+
 		if status is not sf.socket.Done:
 			if status is sf.socket.NotReady:
 				raise SocketNotReady()
@@ -285,13 +285,13 @@ cdef class UdpSocket(Socket):
 				raise SocketDisconnected()
 			elif status is sf.socket.Error:
 				raise SocketError()
-				
+
 	def unbind(self):
 		self.p_this.unbind()
-		
+
 	def send(self, bytes data, IpAddress remote_address, unsigned short remote_port):
 		cdef sf.socket.Status status = self.p_this.send(<char*>data, len(data), remote_address.p_this[0], remote_port)
-		
+
 		if status is not sf.socket.Done:
 			if status is sf.socket.NotReady:
 				raise SocketNotReady()
@@ -306,7 +306,7 @@ cdef class UdpSocket(Socket):
 		cdef IpAddress remote_address = IpAddress()
 		cdef unsigned short port = 0
 		cdef sf.socket.Status status = self.p_this.receive(data, size, received, remote_address.p_this[0], port)
-		
+
 		if status is not sf.socket.Done:
 			if status is sf.socket.NotReady:
 				raise SocketNotReady()
@@ -314,7 +314,7 @@ cdef class UdpSocket(Socket):
 				raise SocketDisconnected()
 			elif status is sf.socket.Error:
 				raise SocketError()
-				
+
 		return (<bytes>(data)[:received], remote_address, port)
 
 
@@ -326,28 +326,28 @@ cdef class SocketSelector:
 
 	def __dealloc__(self):
 		del self.p_this
-		
+
 	def add(self, Socket socket):
 		self.p_this.add(socket.p_socket[0])
-		
+
 	def remove(self, Socket socket):
 		self.p_this.remove(socket.p_socket[0])
-		
+
 	def clear(self):
 		self.p_this.clear()
-		
+
 	def wait(self, Time timeout=None):
 		cdef bint ret
-		
-		if not timeout: 
+
+		if not timeout:
 			with nogil:
 				ret = self.p_this.wait()
-		else: 
+		else:
 			with nogil:
 				ret = self.p_this.wait(timeout.p_this[0])
-				
+
 		return ret
-		
+
 	def is_ready(self, Socket socket):
 		return self.p_this.isReady(socket.p_socket[0])
 
@@ -404,7 +404,7 @@ cdef class FtpResponse:
 
 	def __str__(self):
 		return "Status: {0} - {1}".format(self.status, self.message)
-		
+
 	property ok:
 		def __get__(self):
 			return self.p_response.isOk()
@@ -412,7 +412,7 @@ cdef class FtpResponse:
 	property status:
 		def __get__(self):
 			return self.p_response.getStatus()
-			
+
 	property message:
 		def __get__(self):
 			return self.p_response.getMessage().c_str()
@@ -422,26 +422,26 @@ cdef class FtpDirectoryResponse(FtpResponse):
 
 	def __init__(self):
 		raise NotImplementedError("Not meant to be instantiated")
-		
+
 	def __dealloc__(self):
 		del self.p_this
-		
+
 	def get_directory(self):
 		return self.p_this.getDirectory().c_str()
-	   
-    
+
+
 cdef class FtpListingResponse(FtpResponse):
 	cdef sf.ftp.ListingResponse *p_this
 
 	def __init__(self):
 		raise NotImplementedError("Not meant to be instantiated")
-		
+
 	def __dealloc__(self):
 		del self.p_this
-		
+
 	property filenames:
 		def __get__(self):
-			cdef list r = []	
+			cdef list r = []
 			cdef vector[string]* filenames = <vector[string]*>&self.p_this.getListing()
 			cdef vector[string].iterator filename = filenames.begin()
 			cdef string temp
@@ -480,28 +480,28 @@ cdef class Ftp:
 
 	def __init__(self):
 		self.p_this = new sf.Ftp()
-		
+
 	def __dealloc__(self):
 		del self.p_this
-		
+
 	def connect(self, IpAddress server, unsigned short port=21, Time timeout=None):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
+
 		if not timeout:
 			with nogil: response[0] = self.p_this.connect(server.p_this[0], port)
 		else:
 			with nogil: response[0] = self.p_this.connect(server.p_this[0], port, timeout.p_this[0])
-		
+
 		return wrap_ftpresponse(response)
-		
+
 	def disconnect(self):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		response[0] = self.p_this.disconnect()
 		return wrap_ftpresponse(response)
-		
+
 	def login(self, str name=None, str message=""):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
+
 		encoded_name_temporary = name.encode('UTF-8')
 		encoded_message_temporary = message.encode('UTF-8')
 		cdef char* encoded_name = encoded_name_temporary
@@ -509,19 +509,19 @@ cdef class Ftp:
 
 		if not name:
 			with nogil: response[0] = self.p_this.login()
-		else: 
+		else:
 			with nogil: response[0] = self.p_this.login(encoded_name, encoded_message)
-			
+
 		return wrap_ftpresponse(response)
 
 	def keep_alive(self):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
-		with nogil: 
+
+		with nogil:
 			response[0] = self.p_this.keepAlive()
-			
+
 		return wrap_ftpresponse(response)
-		
+
 	def get_working_directory(self):
 		# here Ftp::DirectoryResponse's constructors prevent us from
 		# creating an empty object. We must cheat by passing an empty
@@ -530,12 +530,12 @@ cdef class Ftp:
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
 		cdef sf.ftp.DirectoryResponse* directory_response = new sf.ftp.DirectoryResponse(response[0])
 		del response
-		
+
 		with nogil:
 			directory_response[0] = self.p_this.getWorkingDirectory()
-			
+
 		return wrap_ftpdirectoryresponse(directory_response)
-		
+
 	def get_directory_listing(self, str directory=""):
 		# here Ftp::ListingResponse's constructors prevent us from
 		# creating an empty object. We must cheat by passing an empty
@@ -546,104 +546,104 @@ cdef class Ftp:
 		cdef vector[char] falseList
 		cdef sf.ftp.ListingResponse* listing_response = new sf.ftp.ListingResponse(response[0], falseList)
 		del response
-		
+
 		encoded_directory_temporary = directory.encode('UTF-8')
 		cdef char* encoded_directory = encoded_directory_temporary
-		
+
 		with nogil:
 			listing_response[0] = self.p_this.getDirectoryListing(encoded_directory)
-			
+
 		return wrap_ftplistingresponse(listing_response)
-		
+
 	def change_directory(self, str directory):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
+
 		encoded_directory_temporary = directory.encode('UTF-8')
 		cdef char* encoded_directory = encoded_directory_temporary
-		
+
 		with nogil:
 			response[0] = self.p_this.changeDirectory(encoded_directory)
-			
+
 		return wrap_ftpresponse(response)
 
 	def parent_directory(self):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
+
 		with nogil:
 			response[0] = self.p_this.parentDirectory()
-			
+
 		return wrap_ftpresponse(response)
-		
+
 	def create_directory(self, str name):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
+
 		encoded_name_temporary = name.encode('UTF-8')
 		cdef char* encoded_name = encoded_name_temporary
-		
+
 		with nogil:
 			response[0] = self.p_this.createDirectory(encoded_name)
-			
+
 		return wrap_ftpresponse(response)
-		
+
 	def delete_directory(self, str name):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
+
 		encoded_name_temporary = name.encode('UTF-8')
 		cdef char* encoded_name = encoded_name_temporary
-		
+
 		with nogil:
 			response[0] = self.p_this.deleteDirectory(encoded_name)
-			
+
 		return wrap_ftpresponse(response)
-		
+
 	def rename_file(self, str filename, str newname):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
+
 		encoded_filename_temporary = filename.encode('UTF-8')
 		encoded_newname_temporary = newname.encode('UTF-8')
 		cdef char* encoded_filename = encoded_filename_temporary
 		cdef char* encoded_newname = encoded_newname_temporary
-		
+
 		with nogil:
 			response[0] = self.p_this.renameFile(encoded_filename, encoded_newname)
-			
+
 		return wrap_ftpresponse(response)
-		
+
 	def delete_file(self, str name):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
+
 		encoded_name_temporary = name.encode('UTF-8')
 		cdef char* encoded_name = encoded_name_temporary
-		
+
 		with nogil:
 			response[0] = self.p_this.deleteFile(encoded_name)
-			
+
 		return wrap_ftpresponse(response)
-		
+
 	def download(self, str remotefile, str localpath, sf.ftp.TransferMode mode=sf.ftp.Binary):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
+
 		encoded_remotefile_temporary = remotefile.encode('UTF-8')
 		encoded_localpath_temporary = localpath.encode('UTF-8')
 		cdef char* encoded_remotefile = encoded_remotefile_temporary
 		cdef char* encoded_localpath = encoded_localpath_temporary
-		
+
 		with nogil:
 			response[0] = self.p_this.download(encoded_remotefile, encoded_localpath, mode)
-			
+
 		return wrap_ftpresponse(response)
-		
+
 	def upload(self, str localfile, str remotepath, sf.ftp.TransferMode mode=sf.ftp.Binary):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
-		
+
 		encoded_localfile_temporary = localfile.encode('UTF-8')
 		encoded_remotepath_temporary = remotepath.encode('UTF-8')
 		cdef char* encoded_localfile = encoded_localfile_temporary
 		cdef char* encoded_remotepath = encoded_remotepath_temporary
-		
+
 		with nogil:
 			response[0] = self.p_this.upload(encoded_localfile, encoded_remotepath, mode)
-			
+
 		return wrap_ftpresponse(response)
 
 
@@ -659,7 +659,7 @@ cdef class HttpRequest:
 
 	def __dealloc__(self):
 		del self.p_this
-		
+
 	property field:
 		def __set__(self, tuple v):
 			cdef bytes field = v[0]
@@ -669,17 +669,17 @@ cdef class HttpRequest:
 	property method:
 		def __set__(self, sf.http.request.Method method):
 			self.p_this.setMethod(method)
-			
+
 	property uri:
 		def __set__(self, bytes uri):
 			self.p_this.setUri(string(uri))
-			
+
 	property http_version:
 		def __set__(self, tuple value):
 			cdef unsigned int major = value[0]
 			cdef unsigned int minor = value[1]
 			self.p_this.setHttpVersion(major, minor)
-			
+
 	property body:
 		def __set__(self, bytes body):
 			self.p_this.setBody(string(body))
@@ -714,7 +714,7 @@ cdef class HttpResponse:
 
 	def __init__(self):
 		raise NotImplementedError("Not meant to be instantiated!")
-		
+
 	def __dealloc__(self):
 		del self.p_this
 
@@ -741,7 +741,7 @@ cdef wrap_httpresponse(sf.http.Response *p):
 	cdef HttpResponse r = HttpResponse.__new__(HttpResponse)
 	r.p_this = p
 	return r
-	
+
 cdef class Http:
 	cdef sf.Http *p_this
 
@@ -753,10 +753,10 @@ cdef class Http:
 
 	def send_request(self, HttpRequest request, Time timeout=None):
 		cdef sf.http.Response* p = new sf.http.Response()
-		
-		if not timeout: 
+
+		if not timeout:
 			with nogil: p[0] = self.p_this.sendRequest(request.p_this[0])
-		else: 
+		else:
 			with nogil: p[0] = self.p_this.sendRequest(request.p_this[0], timeout.p_this[0])
-			
+
 		return wrap_httpresponse(p)
