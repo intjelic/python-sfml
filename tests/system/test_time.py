@@ -29,7 +29,8 @@ def test_to_sec(time):
     assert time['micro'].seconds == time['milli'].seconds == 5
 
 def test_zero(time):
-    for t in time.values():
-        t.reset()
+    time['sec'].seconds = 0
+    time['milli'].milliseconds = 0
+    time['micro'].microseconds = 0
 
     assert all(t == sf.Time() == sf.Time.ZERO for t in time.values())
