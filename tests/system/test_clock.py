@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # pySFML - Python bindings for SFML
-# Copyright 2013, Edwin Marshall <emarshall85@gmail.com>
+# Copyright 2012-2013, Edwin Marshall <emarshall85@gmail.com>
 #
 # This software is released under the LGPLv3 license.
 # You should have received a copy of the GNU Lesser General Public License
