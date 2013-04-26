@@ -73,6 +73,27 @@ Voip
    :lines: 11-
    :linenos:
 
+
+Embedding
+---------
+.. literalinclude:: /../../examples/embedding/main.cpp
+   :lines: 12-
+   :linenos:
+
+.. literalinclude:: /../../examples/embedding/script.py
+   :lines: 11-
+   :linenos:
+
+Extending
+---------
+.. literalinclude:: /../../examples/extending/extension.pyx
+   :lines: 11-
+   :linenos:
+
+.. literalinclude:: /../../examples/extending/main.py
+   :lines: 11-
+   :linenos:
+
 Spacial Music
 -------------
 .. literalinclude:: /../../examples/spacial_music/spacial_music.py
