@@ -645,12 +645,6 @@ cdef public Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 
 cdef public class Window[type PyWindowType, object PyWindowObject]:
 	cdef sf.Window *p_window
-	cdef bint			 m_visible
-	cdef bint			 m_vertical_synchronization
-
-	def __cinit__(self, *args, **kwargs):
-		self.m_visible = True
-		self.m_vertical_synchronization = False
 
 	def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
 		cdef char* encoded_title
@@ -746,12 +740,8 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 			self.p_window.setIcon(icon.m_width, icon.m_height, icon.p_array)
 
 	property visible:
-		def __get__(self):
-			return self.m_visible
-
 		def __set__(self, bint visible):
 			self.p_window.setVisible(visible)
-			self.m_visible = visible
 
 	def show(self):
 		self.visible = True
@@ -760,12 +750,8 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 		self.visible = False
 
 	property vertical_synchronization:
-		def __get__(self):
-			return self.m_vertical_synchronization
-
 		def __set__(self, bint vertical_synchronization):
 			self.p_window.setVerticalSyncEnabled(vertical_synchronization)
-			self.m_vertical_synchronization = vertical_synchronization
 
 	property mouse_cursor_visible:
 		def __set__(self, bint mouse_cursor_visible):
