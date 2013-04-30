@@ -581,4 +581,7 @@ cdef class Thread:
 		self._thread.join()
 
 	def terminate(self):
-		self._thread._Thread__stop()
+		try:
+			self._thread._Thread__stop()
+		except AttributeError:
+			self._thread._stop()

@@ -18,6 +18,8 @@ except ImportError:
 		start_new_thread = threading._start_new_thread
 		allocate_lock = threading._allocate_lock
 
+from sfml.system import Mutex
+
 from libcpp.vector cimport vector
 
 cimport libcpp.sfml as sf
@@ -1939,9 +1941,8 @@ cdef class HandledWindow(RenderTarget):
 		self.p_window.display()
 
 def show(image):
-	lock = thread.allocate_lock()
-
-	lock.acquire()
+	mutex = Mutex()
+	mutex.lock()
 
 	from copy import copy
 	import sfml as sf
@@ -1964,11 +1965,11 @@ def show(image):
 	texture = sf.Texture.from_image(image)
 	sprite = sf.Sprite(texture)
 
-	lock.release()
+	mutex.unlock()
 
 	while window.is_open:
 
-		lock.acquire()
+		mutex.lock()
 		for event in window.events:
 			if type(event) is sf.CloseEvent:
 				window.close()
@@ -1978,7 +1979,7 @@ def show(image):
 		window.clear(sf.Color.WHITE)
 		window.draw(sprite)
 		window.display()
-		lock.release()
+		mutex.unlock()
 
 		sf.sleep(sf.milliseconds(100))
 
