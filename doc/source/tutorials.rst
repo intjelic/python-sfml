@@ -5,14 +5,24 @@
 
 Tutorials
 =========
-Some knowledge is required to help understand the binding from an SFML2
+Some knowledge is required to help understand the binding from an SFML
 background. After reading this tutorial you should be able to start
 coding serious projects.
 
+.. note::
+
+   I started to translate the `official tutorials`_ and while there are only a
+   few available, they will soon be finished. This page should be replaced with
+   this :doc:`future page</future_tutorials>`.
+
 .. contents:: :local:
+   :depth: 1
+
 
 System
 ------
+Vectors
+^^^^^^^
 To manipulate vectors you use sfml.system.Vector2 or sfml.system.Vector3 and unlike in
 C++ they have no specific type. It means you can set a float, an
 integer or whatever inside. ::
@@ -41,11 +51,39 @@ the seconds, milliseconds or microseconds via a method named
 
    sfml.sleep(time)
 
+Exception
+^^^^^^^^^
+.. warning::
 
+   **sf.SFMLException** has been removed and was replaced with standard
+   exceptions.
+
+SFML functions that may fail raise exception. If you use one of them and want
+to give a specific task in case of failure, you can handle them with a **try...
+except** statement. ::
+
+   try:
+       # huge texture, will fail for sure
+       # (except maybe if you read that in 2075 and if your processor works with light speed)
+       texture = sf.Texture.create(987654321, 987654321)
+   except ValueError as error:
+       print(error) # print the error
+       exit(1)      # maybe quit ?
+
+Note that load/open methods raise a traditional :exc:`IOError`::
+
+   try:
+      music = sf.Music.from_file("song.ogg")
+
+   except IOError:
+      exit(1)
+
+Window
+------
 Event
------
+^^^^^
 The way you handle events in pySFML2 is slightly different from how
-you do it in SFML2 or the official binding.
+you do it in SFML2.
 
 Here, rather than checking that the `type` property matches an event type, you
 check that event is an instance of a particular event class. While you could do
@@ -55,37 +93,37 @@ implements rich comparison operators to make things simpler::
    for event in window.events:
       if event == ...: # provide an event class name
 
-Available event classes and their pysfml2-cython equivalents are shown below:
+Available event classes and their SFML2 equivalents are shown below:
 
-+-------------------------------------------+-------------------------------------+
-| python-sfml2                              | pysfml2-cython                      |
-+===========================================+=====================================+
-| :class:`sfml.window.CloseEvent`           | sfml.Event.CLOSED                   |
-+-------------------------------------------+-------------------------------------+
-| :class:`sfml.window.ResizeEvent`          | sfml.Event.RESIZED                  |
-+-------------------------------------------+-------------------------------------+
-| :class:`sfml.window.FocusEvent`           | sfml.Event.LOST_FOCUS               |
-|                                           | sfml.Event.GAINED_FOCUS             |
-+-------------------------------------------+-------------------------------------+
-| :class:`sfml.window.TextEvent`            | sfml.Event.TEXT_ENTERED             |
-| :class:`sfml.window.KeyEvent`             | sfml.Event.KEY_PRESSED              |
-|                                           | sfml.Event.KEY_RELEASED             |
-+-------------------------------------------+-------------------------------------+
-| :class:`sfml.window.MouseWheelEvent`      | sfml.Event.MOUSE_WHEEL_MOVED        |
-| :class:`sfml.window.MouseButtonEvent`     | sfml.Event.MOUSE_BUTTON_PRESSED     |
-|                                           | sfml.Event.MOUSE_BUTTON_RELEASED    |
-+-------------------------------------------+-------------------------------------+
-| :class:`sfml.window.MouseMoveEvent`       | sfml.Event.MOUSE_MOVED              |
-| :class:`sfml.window.MouseEvent`           | sfml.Event.MOUSE_ENTERED            |
-|                                           | sfml.Event.MOUSE_LEFT               |
-+-------------------------------------------+-------------------------------------+
-| :class:`sfml.window.JoystickButtonEvent`  | sfml.Event.JOYSTICK_BUTTON_PRESSED  |
-|                                           | sfml.Event.JOYSTICK_BUTTON_RELEASED |
-+-------------------------------------------+-------------------------------------+
-| :class:`sfml.window.JoystickMoveEvent`    | sfml.Event.JOYSTICK_MOVED           |
-| :class:`sfml.window.JoystickConnectEvent` | sfml.Event.JOYSTICK_CONNECTED       |
-|                                           | sfml.Event.JOYSTICK_DISCONNECTED    |
-+-------------------------------------------+-------------------------------------+
++-------------------------------------------+-----------------------------------+
+| pySFML                                    | SFML (C++)                        |
++===========================================+===================================+
+| :class:`.CloseEvent`                      | sf::Event::Closed                 |
++-------------------------------------------+-----------------------------------+
+| :class:`sfml.window.ResizeEvent`          | sf::Event::Resized                |
++-------------------------------------------+-----------------------------------+
+| :class:`sfml.window.FocusEvent`           | sf::Event::LostFocus              |
+|                                           | sf::Event::GainedFocus            |
++-------------------------------------------+-----------------------------------+
+| :class:`sfml.window.TextEvent`            | sf::Event::TextEntered            |
+| :class:`sfml.window.KeyEvent`             | sf::Event::KeyPressed             |
+|                                           | sf::Event::KeyReleased            |
++-------------------------------------------+-----------------------------------+
+| :class:`sfml.window.MouseWheelEvent`      | sf::Event::MouseWheelMoved        |
+| :class:`sfml.window.MouseButtonEvent`     | sf::Event::MouseButtonPressed     |
+|                                           | sf::Event::MouseButtonReleased    |
++-------------------------------------------+-----------------------------------+
+| :class:`sfml.window.MouseMoveEvent`       | sf::Event::MouseMoved             |
+| :class:`sfml.window.MouseEvent`           | sf::Event::MouseEntered           |
+|                                           | sf::Event::MouseLeft              |
++-------------------------------------------+-----------------------------------+
+| :class:`sfml.window.JoystickButtonEvent`  | sf::Event::JoystickButtonPressed  |
+|                                           | sf::Event::JoystickButtonReleased |
++-------------------------------------------+-----------------------------------+
+| :class:`sfml.window.JoystickMoveEvent`    | sf::Event::JoystickMoved          |
+| :class:`sfml.window.JoystickConnectEvent` | sf::Event::JoystickConnected      |
+|                                           | sf::Event::JoystickDisconnected   |
++-------------------------------------------+-----------------------------------+
 
 Once you know the type of the event you can get the data inside.::
 
@@ -112,31 +150,11 @@ two "states", you'll have to check it via their properties.::
 
 Read the :class:`.Window` class description for information about events.
 
-Exception
----------
-There's a main exception defined for all pySFML2 methods/functions that
-may fail: :exc:`sfml.system.SFMLException`. If you use one of these method and if you
-want to do a specific task in case of failure, you can handle them
 
-with a **try... except** statement. ::
-
-   try:
-       # huge texture, will fail for sure
-       # (except maybe if you read that in 2075 and if your processor works with light speed)
-       texture = sf.Texture.create(987654321, 987654321)
-   except sf.SFMLException as error:
-       print(error) # print the error
-       exit(1) # maybe quit ?
-
-Note that load/open methods DO NOT raise a :exc:`.SFMLException` but a
-traditional :exc:`IOError`::
-
-   try: music = sf.Music.from_file("song.ogg")
-   except IOError: exit(1)
-
-
+Graphics
+--------
 Rectangle
----------
+^^^^^^^^^
 Although unpacking a rectangle will give you four integers/floats
 (respectively its left, its top, its width and its height) its
 constructor takes two :class:`.Vector2` or tuple; its position and its
@@ -177,7 +195,7 @@ size in hand ::
 
 
 Drawable
---------
+^^^^^^^^
 To create your own drawable just inherit your class from
 :class:`.Drawable`. ::
 
@@ -190,7 +208,7 @@ To create your own drawable just inherit your class from
            target.draw(clothes)
 
 To have a **transformable drawable** you have two implemenation choices. As
-in sfml2, you can either use a transformable internaly and combine
+Like SFML in C++, you can either use a transformable internaly and combine
 your transformable at drawing time **or** ineriths your drawable from
 both :class:`.Drawable` and :class:`.Transformable`.
 
@@ -243,7 +261,16 @@ both :class:`.Drawable` and :class:`.Transformable`.
       mydrawable = MyDrawable()
       mydrawable.position = (20, 30) # we have properties \o/
 
+HandledWindow
+^^^^^^^^^^^^^
+This extra class allows you to have a window handled by an external API
+such as PyQt4. This class is pretty straight forward and you should just
+follow the cookbook for integrating.
 
+.. warning::
+
+   This class exists because of an issue with constructors. I still need to
+   justify it or figure out how I can replace it.
 
 Audio
 -----
@@ -255,11 +282,6 @@ offers access to each sample via the operator [] and you can get
 the data in a `string` for Python 2 or in `bytes` for Python 3 via
 :attr:`.Chunk.data`.
 
-HandledWindow
--------------
-This extra class allows you to have a window handled by an external API
-such as PyQt4. This class is pretty straight forward and you should just
-follow the cookbook for integrating.
 
 Socket
 ------
@@ -274,9 +296,10 @@ error is raised and you just have to handle it. ::
        exit(1)
 
 
-Tricks
-------
-Once you know pySFML2 well you may be interested in knowing some
+Miscellaneous & Tricks
+----------------------
+
+Once you know pySFML well you may be interested in knowing some
 tricks.
 
 Unpacking
@@ -294,6 +317,11 @@ Many classes are unpackable
 
 	r, g, b, a = sf.Color.CYAN
 	left, top, width, height = sf.Rectangle((5, 10), (15, 20))
+
+If you need to discard a value, use _ ::
+
+   # I'm not interested in the alpha value
+   r, g, b, _ = get_color()
 
 sfml.Image.show()
 ^^^^^^^^^^^^^^^^^
@@ -322,10 +350,4 @@ Easily attach an icon to your window ::
 	window.icon = icon.pixels
 
 
-Officials tutorials
--------------------
-.. toctree::
-   :maxdepth: 1
-
-   tutorials/threads
-   tutorials/handling_time
+.. _official tutorials: http://www.sfml-dev.org/tutorials/2.0/
