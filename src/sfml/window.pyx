@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # pySFML - Python bindings for SFML
 # Copyright 2012-2013, Jonathan De Wachter <dewachter.jonathan@gmail.com>

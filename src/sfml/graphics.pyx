@@ -51,6 +51,10 @@ cdef extern from *:
 
 from libc.stdlib cimport malloc, free
 
+cdef extern from "InputStream.hpp":
+	cdef cppclass InputStream:
+		InputStream(object)
+
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
 			'Image', 'Texture', 'Glyph', 'Font', 'Shader',
 			'RenderStates', 'Drawable', 'Transformable', 'Sprite',
@@ -76,7 +80,6 @@ cdef Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 	cdef Pixels r = Pixels.__new__(Pixels)
 	r.p_array, r.m_width, r.m_height = p, w, h
 	return r
-
 
 class BlendMode:
 	BLEND_ALPHA = sf.blendmode.BlendAlpha
@@ -469,6 +472,19 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 		cdef sf.Image *p = new sf.Image()
 
 		if p.loadFromMemory(<char*>data, len(data)):
+			return wrap_image(p)
+
+		del p
+		raise IOError(popLastErrorMessage())
+
+	@classmethod
+	def from_stream(cls, stream):
+		cdef sf.Image *p = new sf.Image()
+		cdef sf.InputStream* cpp_stream = <sf.InputStream*>new InputStream(stream)
+		print(stream)
+		print(id(stream))
+
+		if p.loadFromStream(cpp_stream[0]):
 			return wrap_image(p)
 
 		del p

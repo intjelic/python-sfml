@@ -95,7 +95,7 @@ extension = lambda name, files, libs: Extension(
 
 system = extension(
 	'system',
-	[sources['system'], 'src/sfml/error.cpp'],
+	[sources['system'], 'src/sfml/error.cpp', 'src/sfml/InputStream.cpp'],
 	['sfml-system'])
 
 window = extension(
@@ -104,7 +104,7 @@ window = extension(
 
 graphics = extension(
 	'graphics',
-	[sources['graphics'], 'src/sfml/DerivableRenderWindow.cpp', 'src/sfml/DerivableDrawable.cpp'],
+	[sources['graphics'], 'src/sfml/DerivableRenderWindow.cpp', 'src/sfml/DerivableDrawable.cpp', 'src/sfml/InputStream.cpp'],
 	['sfml-system', 'sfml-window', 'sfml-graphics'])
 
 audio = extension(

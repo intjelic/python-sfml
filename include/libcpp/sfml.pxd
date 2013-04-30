@@ -82,6 +82,8 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		int getSize() const
 		bint isEmpty() const
 
+	cdef cppclass InputStream
+
 	cdef cppclass Vector2[T]:
 		Vector2()
 		Vector2(T, T)
@@ -322,6 +324,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void create(unsigned int, unsigned int, const const_Uint8_ptr)
 		void create(unsigned int, unsigned int, const Color)
 		bint loadFromFile(char*&)
+<<<<<<< HEAD
 		bint loadFromMemory(const void*, size_t)
 		bint loadFromStream(InputStream&)
 		bint saveToFile(const char*&) const
@@ -334,6 +337,20 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void setPixel(unsigned int, unsigned int, const Color&)
 		Color getPixel(unsigned int, unsigned int) const
 		const Uint8* getPixelsPtr() const
+=======
+		bint loadFromMemory(void*, size_t)
+		bint loadFromStream(InputStream&)
+		bint saveToFile(char*&)
+		Vector2u getSize()
+		void createMaskFromColor(Color&)
+		void createMaskFromColor(Color&, Uint8)
+		void copy(Image&, unsigned int, unsigned int)
+		void copy(Image&, unsigned int, unsigned int, IntRect&)
+		void copy(Image&, unsigned int, unsigned int, IntRect&, bint)
+		void setPixel(unsigned int, unsigned int, Color&)
+		Color getPixel(unsigned int, unsigned int)
+		Uint8* getPixelsPtr()
+>>>>>>> 10478ff... Started implemented sf.InputStream (still buggy)
 		void flipHorizontally()
 		void flipVertically()
 

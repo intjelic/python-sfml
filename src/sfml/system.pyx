@@ -12,6 +12,7 @@
 from __future__ import division
 from numbers import Number, Integral
 from copy import deepcopy
+from io import IOBase
 import threading
 
 cimport cython
@@ -37,7 +38,7 @@ cdef extern from "error.hpp":
 	object getLastErrorMessage()
 
 __all__ = ['Time', 'sleep', 'Clock', 'seconds', 'milliseconds', 'microseconds',
-			'Vector2', 'Vector3', 'Thread', 'Lock', 'Mutex']
+			'Vector2', 'Vector3', 'InputStream', 'Thread', 'Lock', 'Mutex']
 
 # expose a function to restore the error handler
 cdef api void restoreErrorHandler():
@@ -442,6 +443,26 @@ cdef api object wrap_vector2f(sf.Vector2f* p):
 	r.y = p.y
 	return r
 
+
+cdef class InputStream:
+	def __init__(self):
+		pass
+
+	def __len__(self):
+		raise NotImplementedError(
+			"Derived classes of sf.InputStream have to override this method")
+
+	def read(self, size):
+		raise NotImplementedError(
+			"Derived classes of sf.InputStream have to override this method")
+
+	def seek(self, position):
+		raise NotImplementedError(
+			"Derived classes of sf.InputStream have to override this method")
+
+	def tell(self):
+		raise NotImplementedError(
+			"Derived classes of sf.InputStream have to override this method")
 
 cdef public class Time[type PyTimeType, object PyTimeObject]:
 	ZERO = wrap_time(<sf.Time*>&sf.time.Zero)
