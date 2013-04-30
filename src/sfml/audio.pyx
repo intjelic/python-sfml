@@ -143,7 +143,7 @@ cdef class SoundBuffer:
 	cdef bint                delete_this
 
 	def __init__(self):
-		raise NotImplementedError("Use specific methods")
+		raise UserWarning("Use specific methods")
 
 	def __dealloc__(self):
 		if self.delete_this: del self.p_this
@@ -387,7 +387,7 @@ cdef class Music(SoundStream):
 	cdef sf.Music *p_this
 
 	def __init__(self):
-		raise NotImplementedError("Use specific constructor")
+		raise UserWarning("Use specific constructor")
 
 	def __dealloc__(self):
 		del self.p_this
