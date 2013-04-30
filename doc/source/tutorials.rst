@@ -349,5 +349,4 @@ Easily attach an icon to your window ::
 	icon = sf.Image.from_file("data/icon.bmp")
 	window.icon = icon.pixels
 
-
 .. _official tutorials: http://www.sfml-dev.org/tutorials/2.0/
