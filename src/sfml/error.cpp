@@ -30,7 +30,12 @@ void restorePythonErrorBuffer()
 PyObject* getLastErrorMessage()
 {
 	// Get the error message then clean the buffer
+#if PY_MAJOR_VERSION >= 3
+	PyObject* error = PyBytes_FromString(buffer.str().c_str());
+#else
 	PyObject* error = PyString_FromString(buffer.str().c_str());
+#endif
+
 	buffer.str("");
 
 	return error;
