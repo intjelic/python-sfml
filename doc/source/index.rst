@@ -9,6 +9,10 @@ This is version |version| of the unofficial Python bindings for `SFML`_,
 based on `the first release candidate` and is made available under the terms of
 the `LGPLv3`_ license.
 
+Consider this version as a **stable** release candidate to version 1.4 since
+they are still remaining minor task regarding the documentation, the unit tests
+and the packaging. You may want to check out the todo lists: :doc:`here </todo>`.
+
 By combining the strength of SFML with the ease of the Python language,
 we can provide an amazing tool to quickly build multimedia software.
 
@@ -32,6 +36,9 @@ Table of Contents
    api/api_index
    addons
    changelog
+   c_api
+   todo
+   future_tutorials
 
 .. hlist::
    :columns: 2
