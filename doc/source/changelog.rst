@@ -5,8 +5,8 @@ Change Log
 
     These lists are not exhaustive.
 
-v0.9 -> v1.0
-------------
+v0.9 -> v1.0 (based on SFML-1.9)
+--------------------------------
 * :mod:`sfml.system` module updated to the new API interface
 * :mod:`sfml.window` module updated to the new API interface
 * :mod:`sfml.graphics` module updated to the new API interface
@@ -17,8 +17,8 @@ v0.9 -> v1.0
 * :mod:`sfml.audio` module imports :mod:`sfml.system` system module with it
 * The official ftp example implemented
 
-v1.0 -> v1.1
-------------
+v1.0 -> v1.1 (based on SFML2-RC)
+--------------------------------
 * :class:`sfml.system.Position` moved to built-in type and renamed :class:`sfml.system.Vector2`
 * :class:`sfml.system.Size` removed; use :class:`sfml.system.Vector2` instead
 * :class:`sfml.system.Vector3` added
@@ -39,10 +39,10 @@ v1.0 -> v1.1
 * :meth:`sfml.graphics.Image.show()` is implemented and platform-independant
 * :class:`sfml.audio.SoundStream` and :class:`sfml.audio.SoundRecorder` can be subclassed
 
-v1.1 -> v1.2
-------------
+v1.1 -> v1.2 (based on SFML2-RC)
+--------------------------------
 * The license has changed: GPLv3 -> LGPLv3
-* Unit tests implemented
+* Unit tests partially implemented
 * Load/open/create methods are depreciated (use `from_foo` instead) [#]_
 * Save/convertion methods are depreciated (use `to_bar` instead) [#]_
 * Copy methods are depreciated (use the copy module instead)
@@ -58,7 +58,6 @@ v1.1 -> v1.2
 * Fixed :attr:`sfml.graphics.Rectangle.bottom`
 * :class:`sfml.network.IpAddress` can be compared
 * Ubuntu packages available for 12.04LTS and 12.10
-* Fedora packages available
 * Installer script for Arch Linux users available
 * sfeMovie available as add-on
 * Fixe bug in sf.MouseMoveEvent.position
@@ -67,9 +66,30 @@ v1.1 -> v1.2
 * Fixe sf.TransformableDrawable (its properties work)
 * Documentation enterely revised
 * Website redesigned
-* Install C/Cython API to code your own extensions using the bindings
+* Install C/Cython API to code your own extensions using the bindings (1/3)
 * Window.opened is deprecated, use Window.is_open property instead
 * Improve setup.py to detect Cython and/or force its usage
+
+
+v1.2 -> v1.3 (based on SFML2)
+-----------------------------
+* Removed deprecated methods
+* Updated all modules to new SFML interface (SFML2)
+* Fixed issue #60 (convert_coords methods return None no matter what)
+* Added intersphinx mapping for official python documentation
+* Install C/Cython API to code your own extensions using the bindings (2/3)
+* Fedora packages available
+* Ubuntu packages available for 13.04LTS
+* Thor library available as add-on
+* Implemented :class:`.Thread`, :class:`.Mutex` and :class:`.Lock`
+* Some official tutorials have been translated
+* Imlemented OpenGL example
+* Spacial music example takes the Z axis into account #25
+* Replaced X11 dependency with ctype usage
+* Added two new examples: extending and embedding.
+* Removed sf.Time.reset function
+* Removed SFMLException and replaced with the standard ones
+* Removed vsync and visibility trackers from sf.Window
 
 .. [#] E.g: **Do not use** sf.Texture.load_from_file(filename) but **sf.Texture.from_file(filename)** instead.
 .. [#] E.g: **Do not use** sf.Texture.image.save_to_file() but **sf.Texture.to_image().to_file()** .
