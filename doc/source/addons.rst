@@ -15,6 +15,13 @@ to play movies::
    movie = sfe.Movie.from_file('some_movie.ovg')
    movie.play()
 
-For complete examples and documentation, please visit the `project page`_.
+For complete examples and documentation, please visit the `sfeMovie project page`_.
 
-.. _project page: http://github.com/Sonkun/python-sfemovie
+Thor
+----
+This add-on allows you to use the Thor library in Python
+
+For complete examples and documentation, please visit the `pyThor project page`_.
+
+.. _sfeMovie project page: http://sfemovie.python-sfml.org
+.. _pyThor project page: http://thor.python-sfml.org

@@ -8,8 +8,30 @@ accomplished, please visit the `issues page on github` and the
 Milestones
 ----------
 
+1 February 2013 : Thor library
+
+   Most of the `Thor <http://www.bromeon.ch/libraries/thor/>`_ library modules
+   have been ported and can be interpolated with the SFML bindings. This port
+   joins sfeMovie in the list of officially supported add-ons.
+
+   .. seealso::
+
+      Website: http://thor.python-sfml.org
+
+      Github: https://github.com/Sonkun/python-thor
+
+1 Decembre 2012 : Version 1.2 is out
+
+   This version includes a C/Cython API allowing you to embbed Python using
+   pySFML to C++ code or write your own Python extension using pySFML.
+
+   The load/open/create methods have been deprecated in favor of their **from_foo**
+   counterparts, which we believe more closely resemble the standard library's
+   naming conventions. Similarly, the save/conversion methods have been
+   deprecated in favor of **to_bar** methods.
+
 1 October 2012 : sfeMovie
-   `sfeMovie <http://lucas.soltic.perso.luminy.univmed.fr/sfeMovie/>`_ has been
+   `sfeMovie <http://lucas.soltic.etu.p.luminy.univmed.fr/sfeMovie/>`_ has been
    ported to Python. For documentation and installation instructions, please
    consult the `website <http://sfemovie.python-sfml.org>`_. Just as the
    original project depends on SFML, the new sfeMovie bindings

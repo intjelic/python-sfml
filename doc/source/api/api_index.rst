@@ -25,33 +25,29 @@ API:
    * .. glossary::
 
       :doc:`system`
-         The system module documentation.
+         Base module of SFML, defining various utilities.
 
    * .. glossary::
 
       :doc:`window`
-         The window module documentation.
+         Provides OpenGL-based windows, and abstractions for events and input
+         handling
 
    * .. glossary::
 
       :doc:`graphics`
-         The graphics module documentation.
-
-         **HandledWindow** is not documented, see **PyQt4** integration example.
+         2D graphics module: sprites, text, shapes, ...
 
    * .. glossary::
 
       :doc:`audio`
-        The audio module documentation.
+        Sounds, streaming (musics or custom sources), recording, spatialization.
 
    * .. glossary::
 
       :doc:`network`
-         The network module documentation.
-
-         Althought **SocketSelector**, **Ftp** and **Http** classes are implemented, they are not yet documented.
-
-         Refer to official examples to know how they work.
+         Socket-based communication, utilities and higher-level network
+         protocols (HTTP, FTP).
 
 .. toctree::
    :maxdepth: 1
