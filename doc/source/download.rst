@@ -21,12 +21,12 @@ Simply download the correct installer and follow the instructions.
         3. Check "Run this program in compatibility mode for"
         4. Select "Windows XP (Service Pack 3)
 
-* `pySFML-1.2.0.win32-py2.6.exe <http://python-sfml.org/1.2/downloads/pySFML-1.2.0.win32-py2.6.exe>`_ [Python 2.6] [32 bit]
-* `pySFML-1.2.0.win32-py2.7.exe <http://python-sfml.org/1.2/downloads/pySFML-1.2.0.win32-py2.7.exe>`_ [Python 2.7] [32 bit]
-* `pySFML-1.2.0.win32-py3.2.exe <http://python-sfml.org/1.2/downloads/pySFML-1.2.0.win32-py3.2.exe>`_ [Python 3.2] [32 bit]
-* `pySFML-1.2.0.win64-py2.6.exe <http://python-sfml.org/1.2/downloads/pySFML-1.2.0.win64-py2.6.exe>`_ [Python 2.6] [64 bit]
-* `pySFML-1.2.0.win64-py2.7.exe <http://python-sfml.org/1.2/downloads/pySFML-1.2.0.win64-py2.7.exe>`_ [Python 2.7] [64 bit]
-* `pySFML-1.2.0.win64-py3.2.exe <http://python-sfml.org/1.2/downloads/pySFML-1.2.0.win64-py3.2.exe>`_ [Python 3.2] [64 bit]
+* `pySFML-1.3.0.win32-py2.7.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win32-py2.7.exe>`_ [Python 2.7] [32 bit]
+* `pySFML-1.3.0.win32-py3.2.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win32-py3.2.exe>`_ [Python 3.2] [32 bit]
+* `pySFML-1.3.0.win32-py3.3.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win32-py3.3.exe>`_ [Python 3.3] [32 bit]
+* `pySFML-1.3.0.win64-py2.7.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win64-py2.7.exe>`_ [Python 2.7] [64 bit]
+* `pySFML-1.3.0.win64-py3.2.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win64-py3.2.exe>`_ [Python 3.2] [64 bit]
+* `pySFML-1.3.0.win64-py3.3.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win64-py3.3.exe>`_ [Python 3.3] [64 bit]
 
 Mac OSX
 -------
@@ -48,7 +48,7 @@ Ubuntu
 		sudo add-apt-repository ppa:sonkun/sfml-stable
 		sudo apt-get update
 
-Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad::
+Packages are available (for Ubuntu 12.04LTS, 12.10 & 13.04LTS) via launchpad::
 
    sudo add-apt-repository ppa:sonkun/sfml-stable
    sudo apt-get update
@@ -56,9 +56,11 @@ Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad::
    # or
    sudo apt-get install python3-sfml
 
-.. NOTE::
-   The *sonkun/sfml-stable* ppa provides many packages. The library sfml2.0-rc
-   and the binding are included along with their examples. Packages are:
+Want the development version ? Use `ppa:sonkun/sfml-development` repository.
+
+.. note::
+   The *sonkun/sfml-stable* ppa provides many packages. The library SFML
+   and the bindings are included along with their examples. Packages are:
 
       * libsfml
       * libsfml-dev
@@ -83,12 +85,12 @@ Packages are available (for Ubuntu 12.04LTS and 12.10) via launchpad::
       pysfml-sound # will run the same example but it's actually a python script that uses the binding
       pysfml-pong
       pysfml-sockets
-      pysfml-spacial-music # not an official sfml example
-      pysfml-pyqt4         # not an official sfml example
+      pysfml-spacial-music
+      pysfml-pyqt4
 
 Fedora
 ------
-Packages are available `here <http://python-sfml.org/1.2/downloads>`_
+Packages are available `here <http://python-sfml.org/1.3/downloads>`_
 
 See Ubuntu section to know what you can do with the example package.
 
@@ -108,14 +110,13 @@ source code, either from git::
 
 Or as a pre-packaged tarball archive::
 
-    wget http://python-sfml.org/1.2/downloads/pysfml-1.2.tar.gz
+    wget http://python-sfml.org/downloads/pysfml-1.3.0.tar.gz
 
-You'll also need `sfml2-rc`_ and `cython`_ 0.17.3 installed on your computer.
+You'll also need `SFML2`_ and `Cython`_ 0.19 installed on your computer.
 
 Linux and Mac OSX
 ^^^^^^^^^^^^^^^^^
-In order to compile, you'll need the Python developement files, X11 and
-the setuptools module for Python.
+In order to compile, you'll need the Python developement files.
 
 To build the bindings for Python, type::
 
@@ -172,5 +173,5 @@ them in the Python Lib directory (*Python32/Lib/site-packages/sfml/sfml-*.dll*)
 	installers in order to to include dlls, so you don't need to compile
 	it when using installers.
 
-.. _sfml2-rc: http://python-sfml.org/downloads/sfml2-rc.tar.gz
+.. _SFML2: http://python-sfml.org/downloads/sfml-2.0.0.tar.gz
 .. _cython: http://cython.org

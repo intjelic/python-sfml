@@ -33,11 +33,4 @@ Milestones
    Additionally, `copy()` methods have been deprecated in favor of Python's
    `__copy__()` special methods.
 
-Next Version
-------------
-Version 1.3.0 will concentrate on fixing bugs that were unresolved in the
-|release| release and packaging the bindings for various platforms.
-In addition, it will be the first version to `officially support Mac OS X`_.
-
-.. _officially support Mac OS X: http://github.com/Sonkun/python-sfml/issues/44
 .. _issues page on github: http://github.com/Sonkun/python-sfml/issues
