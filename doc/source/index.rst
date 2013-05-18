@@ -1,10 +1,5 @@
 Python bindings for SFML
 ========================
-.. note ::
-
-        So far, these bindings have only been tested thoroughly on Linux,
-        though minimal testing has been done on Windows.
-
 This is version |version| of the Python bindings for `SFML`_, based on the
 `final release of SFML2` and is made available under the terms of
 the `LGPLv3`_ license.

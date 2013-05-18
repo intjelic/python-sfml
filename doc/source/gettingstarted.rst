@@ -1,13 +1,13 @@
 Getting started
 ===============
-This binding is easy to apprehend and learn if you come from the C++
+These bindings are easy to apprehend and learn if you come from the C++
 library; class, methods and functions names are the same. We'll see here
-step by step everything you need to know to get started with pysfml2!
+step by step everything you need to know to get started with pySFML!
 
-Of course, you need first to have pySFML2 downloaded and installed on
-your computer. To do that, read the :doc:`download </download>`  section, it provides all
-explanations you'll need to install on your favourite platform. At worst,
-you'll need to compile.
+Of course, you need first to have pySFML downloaded and installed on
+your computer. To do that, read the :doc:`download </download>`  section, it
+provides all explanations you'll need to install on your favourite platform.
+At worst, you'll need to compile.
 
 After reading this you can jump to the single :ref:`tutorials-reference` that
 summarizes all the large, potentially surprising, changes that you
@@ -94,26 +94,15 @@ sfml.graphics, sfml.audio and sfml.network).
 
    import sfml as sf
 
-You also could have written:
+   sf.sleep(sf.seconds(5))
+
+Function and classes can be plainly specified.
 
 .. code-block:: python
 
    import sfml
 
-But in that case, every function and class have to be plainly specified.
-
-.. code-block:: python
-
-   # make your app sleep 5 seconds
    sfml.system.sleep(sfml.system.seconds(5))
-
-Avoid that and prefer:
-
-.. code-block:: python
-
-   import sfml as sf
-   sf.sleep(sf.seconds(5))
-
 
 Window Creation
 ^^^^^^^^^^^^^^^
@@ -126,16 +115,16 @@ There's no difference here. if you want to give a style:
 Loading Resources
 ^^^^^^^^^^^^^^^^^
 Instead of checking everytime if the resource has effectivly been loaded,
-pysfml2 takes advantages of the Python mechanisms. Just enclose
+pySFML takes advantages of the Python mechanisms. Just enclose
 your resource loading processes in a try-except bloc and Python will tell
 you when something goes wrong.
 
-As you can see in the code, it will trigger an exception IOError in
+As you can see in the code, it will trigger an exception :exc:`IOError` in
 accordance with the Python's exception rules.
 
 To follow the same convention as the standard Python library and so,
-offer a better integration, open_from_file and load_from_file have been
-renamed into **from_file**.
+offer a better integration, `openFromFile` and `loadFromFile` have been
+renamed into `from_file`.
 
 Event Handling
 ^^^^^^^^^^^^^^

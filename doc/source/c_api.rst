@@ -1,3 +1,7 @@
+.. warning::
+
+   Page under construction...
+
 Cython/C API
 ============
 This section is new and will explain how to embed or extend Python
@@ -10,7 +14,7 @@ Introduction
 The C/Cython API has been introduced in version 1.3, the first release
 entirely based on the final release of SFML 2.0.
 
-When building large software/games, that's often good to mix some
+When building large software/games, that's often good to mix two or three
 languages to solve specific problems with what they've been designed
 for. A common case is the graphical user interface. Each game needs an
 interface but we all know C and C++ aren't very flexible when using
@@ -44,7 +48,7 @@ create method which itself call the create method from the C++ object. ::
 These instance are usually named **p_this**, remember it because you'll
 see it later in code.
 
-From that simple fact, we have now two possibilities:
+Now, we have now two possibilities:
 
     * Embed Python code into C++ application
     * Extend Python code with C++ code
@@ -84,9 +88,9 @@ the embedding section but in the other way round. So, instead I'll
 teach you how to use Cython to speed up the extension writing using the
 **Cython API** provided by pySFML.
 
-Before you start, things should be cleared in your head: Cython is a
+Before you start, things should be clear in your head: Cython is a
 language on its own. It accepts both syntax: C++ and Python syntax.
-Once the code compiled, it results a Python extension (which is a
+Once the code is compiled, it results a Python extension (which is a
 standard shared library - almost).
 
 I won't teach you Cython but instead I will give you a working example
@@ -96,7 +100,7 @@ comes with explainations.
 Let's say you're writing a Python application using SFML and for some
 reason, you need to use a library that only exists in C++: Thor library.
 The last statement isn't true since Thor library is ported to these
-bindings, see thor.python-sfml.org for details but let's assume it
+bindings, see `thor.python-sfml.org` for details but let's assume it
 isn't. Thor library provides many interesting tools.
 
 We're going to use the BigTexture and BigSprite classes. To do so,

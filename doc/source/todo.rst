@@ -11,14 +11,14 @@ a better C/Cython API as well as other minor
 things. See :doc:`C/Cython section</c_api>`.
 
 Also, only some part of the documentation hasn't yet been revised (though,
-95% should be correct) and most of the unit tests are still need to be
+95% should be correct) and most of the unit tests still need to be
 implemented.
 
 Justying the differences
 ^^^^^^^^^^^^^^^^^^^^^^^^
 I want to provide a comprehensive list of all the differences between the
 original API and these Python bindings API. As Python isn't C++, the design
-can't be exactly the same because of languages differences or philosophy. I'd
+can't be exactly the same because of languages differences and philosophy. I'd
 like to provide a document justifying all these differences.
 
 
@@ -49,9 +49,9 @@ Currently you can't find that in the documentation.
 
 String conversion handling
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-To have the same interface in both Python2 and Python3, I used a trick but now
+To have the same interface in both Python2 and Python3, I used a Cython trick but now
 there seems to have support for that in newer Cython version. I need to find
-out the best code for that.
+out the best code (and maybe the fastest) for this task.
 
 sf.Text constructor
 ^^^^^^^^^^^^^^^^^^^

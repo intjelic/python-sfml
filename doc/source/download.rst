@@ -30,24 +30,11 @@ Simply download the correct installer and follow the instructions.
 
 Mac OSX
 -------
-Packages for Mac OSX couldn't be made since the official sfml2-rc
-installer contains issues.
-
 While official support for Mac OSX is slated for the next release, those eager
 should feel free to download the source code and compile manually.
 
 Ubuntu
 ------
-.. warning::
-
-	For those who used this package repository, note it has been renamed
-	from `sfml` to `sfml-stable`. Please delete the old one and add the
-	new one::
-
-		sudo add-apt-repository --remove ppa:sonkun/sfml
-		sudo add-apt-repository ppa:sonkun/sfml-stable
-		sudo apt-get update
-
 Packages are available (for Ubuntu 12.04LTS, 12.10 & 13.04LTS) via launchpad::
 
    sudo add-apt-repository ppa:sonkun/sfml-stable
@@ -112,7 +99,7 @@ Or as a pre-packaged tarball archive::
 
     wget http://python-sfml.org/downloads/pysfml-1.3.0.tar.gz
 
-You'll also need `SFML2`_ and `Cython`_ 0.19 installed on your computer.
+You'll also need `SFML`_ and `Cython`_ 0.19 installed on your computer.
 
 Linux and Mac OSX
 ^^^^^^^^^^^^^^^^^
@@ -133,26 +120,23 @@ Compiling on Windows requires more steps.
 To have binaries fully compatible you should compile with the optimizing
 C/C++ compiler used to build Python for Windows. The SDK can be
 downloaded on the microsoft download center:
-`Windows SDK C/C++ compiler <http://www.microsoft.com/downloads/en/details.aspx?familyid=71DEB800-C591-4F97-A900-BEA146E4FAE1&displaylang=en>`_
 
-You need **GRMSDKX_EN_DVD.iso** if you target a **AMD64** Python version. It can build for x86 arch too.
+For Python 2.7 & 3.2: `Windows SDK 7.0 <http://www.microsoft.com/en-us/download/details.aspx?id=18950>`_
+
+For Python 3.3: `Windows SDK 7.1 <http://www.microsoft.com/en-us/download/details.aspx?id=8442>`_
+
+You need **GRMSDKX_EN_DVD.iso** if you target a **AMD64** Python version. It
+can build for x86 arch too.
 
 Observe that you don't need Microsoft Visual C++ Express.
 
-If SFML2 isn't compiled yet, procceed. You'll find **libs/** and **include/** in the
-Python directory. Copy the generated libraries in *libs/* folder and
-SFML headers files in *include/*.
+If SFML headers and libraries aren't installed in the respective compilers, do
+it now. It would look like: ::
 
-It should look like this::
-
-	C:\Python32\libs\sfml-system.lib
-	C:\Python32\libs\sfml-window.lib
-	...
-
-	C:\Python32\include\SFML\
-	C:\Python32\include\SFML\System.hpp
-	C:\Python32\include\SFML\Window.hpp
-	...
+   C:\Porgram Files (x86)\Microsoft Visual Studio 9\VC\include\SFML
+   C:\Porgram Files (x86)\Microsoft Visual Studio 9\VC\lib\sfml-system-2.lib
+   C:\Porgram Files (x86)\Microsoft Visual Studio 9\VC\lib\sfml-window-2.lib
+   ...
 
 Open the SDK command window and type::
 
@@ -163,15 +147,15 @@ Adjust according the targetted architecture (x86 or x84) and mode (release or de
 
 Then head to the source directory and type::
 
-    python setup.py build_ext -i
+    python setup.py install
 
-You'll still need sfml dlls in your source directories unless you copy
-them in the Python Lib directory (*Python32/Lib/site-packages/sfml/sfml-*.dll*)
+You'll still need sfml DLLs in your source directories unless you copy
+them in the Python Lib directory: `/PythonXY/Lib/site-packages/sfml/sfml-*.dll`
 
 .. note::
 	I use an internal version of setup.py to create the available Windows
-	installers in order to to include dlls, so you don't need to compile
+	installers in order to to include DLLs, so you don't need to compile
 	it when using installers.
 
-.. _SFML2: http://python-sfml.org/downloads/sfml-2.0.0.tar.gz
+.. _SFML: http://python-sfml.org/downloads/sfml-2.0.0.tar.gz
 .. _cython: http://cython.org
