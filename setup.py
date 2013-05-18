@@ -3,7 +3,7 @@
 #
 # pySFML - Python bindings for SFML
 # Copyright 2012-2013, Jonathan De Wachter <dewachter.jonathan@gmail.com>,
-#                 Edwin Marshall <emarshall85@gmail.com>
+#                      Edwin Marshall <emarshall85@gmail.com>
 #
 # This software is released under the LGPLv3 license.
 # You should have received a copy of the GNU Lesser General Public License
@@ -15,129 +15,75 @@ from glob import glob
 from subprocess import call
 from distutils.core import setup, Command, Extension
 
-# python 2.* compatability
-try: input = raw_input
-except NameError: pass
-
-# check if cython is installed somewhere
-try:
-	from Cython.Distutils import build_ext as _build_ext
-	CYTHON_AVAILABLE = True
-except ImportError:
-	# on unix platforms, check if cython isn't installed in another
-	# python version, then compile manually
-	if platform.system() == 'Linux':
-		call('cython --cplus src/sfml/system.pyx -Iinclude', shell=True)
-		call('mv src/sfml/system.h include/pysfml', shell=True)
-		call('mv src/sfml/system_api.h include/pysfml', shell=True)
-		call('cython --cplus src/sfml/window.pyx -Iinclude', shell=True)
-		call('mv src/sfml/window.h include/pysfml', shell=True)
-		call('cython --cplus src/sfml/graphics.pyx -Iinclude', shell=True)
-		call('mv src/sfml/graphics.h include/pysfml', shell=True)
-		call('mv src/sfml/graphics_api.h include/pysfml', shell=True)
-		call('cython --cplus src/sfml/audio.pyx -Iinclude', shell=True)
-		call('mv src/sfml/audio_api.h include/pysfml', shell=True)
-		call('cython --cplus src/sfml/network.pyx -Iinclude', shell=True)
-
-	from distutils.command import build_ext
-	CYTHON_AVAILABLE = False
-
-# a current Cython issue prevents generate API headers from being
-# generated if its cpp file exists
-# by deleting its cpp file, it forces cython to generate the headers
-system_h = "include/pysfml/system.h"
-system_api_h = "include/pysfml/system_api.h"
-if not os.path.isfile(system_h) or not os.path.isfile(system_api_h):
-	try:
-		os.remove("src/sfml/system.cpp")
-	except OSError:
-		pass
-
-window_h = "include/pysfml/window.h"
-if not os.path.isfile(window_h):
-	try:
-		os.remove("src/sfml/window.cpp")
-	except OSError:
-		pass
-
-graphics_h = "include/pysfml/graphics.h"
-graphics_api_h = "include/pysfml/graphics_api.h"
-if not os.path.isfile(graphics_h) or not os.path.isfile(graphics_api_h):
-	try:
-		os.remove("src/sfml/graphics_api.cpp")
-	except OSError:
-		pass
-
-audio_api_h = "include/pysfml/audio_api.h"
-if not os.path.isfile(audio_api_h):
-	try:
-		os.remove("src/sfml/audio.cpp")
-	except OSError:
-		pass
-
-
 class PyTest(Command):
 	user_options = []
 
 	def initialize_options(self): pass
 	def finalize_options(self): pass
 	def run(self):
-		errno = call([sys.executable, 'runtests.py'])
+		errno = call([sys.executable, 'tests/runtests.py'])
 		raise SystemExit(errno)
 
-sources = dict(
-	system = 'src/sfml/system.pyx',
-	window = 'src/sfml/window.pyx',
-	graphics = 'src/sfml/graphics.pyx',
-	audio = 'src/sfml/audio.pyx',
-	network = 'src/sfml/network.pyx')
-
-# check if cython is needed (if c++ files are generated or not)
-cpp_sources = dict(
-	system = 'src/sfml/system.cpp',
-	window = 'src/sfml/window.cpp',
-	graphics = 'src/sfml/graphics.cpp',
-	audio = 'src/sfml/audio.cpp',
-	network = 'src/sfml/network.cpp')
-NEED_CYTHON = not all(map(os.path.exists, cpp_sources.values()))
-
-if NEED_CYTHON and not CYTHON_AVAILABLE:
-	print("Please install cython and try again. Or use an official release with pre-generated source")
+try:
+	from Cython.Distutils import build_ext
+except ImportError:
+	print("Please install cython and try again.")
 	raise SystemExit
 
-if not CYTHON_AVAILABLE:
-	sources = {k: v.replace('pyx', 'cpp') for k, v in sources.items()}
+class CythonBuildExt(build_ext):
+	""" Updated version of cython build_ext command to move
+	the generated API headers to include/pysfml directory
+	"""
 
-if CYTHON_AVAILABLE:
-	class build_ext(_build_ext):
-		""" Updated version of cython build_ext command to move
-		the generated API headers to includ/pysfml directory
-		"""
+	def cython_sources(self, sources, extension):
+		ret = build_ext.cython_sources(self, sources, extension)
 
-		def cython_sources(self, sources, extension):
-			ret = _build_ext.cython_sources(self, sources, extension)
+		# should result the module name; e.g, graphics[.pyx]
+		module = os.path.basename(sources[0])[:-4]
 
-			# should result the module name; e.g, graphics[.pyx]
-			module = os.path.basename(sources[0])[:-4]
+		# move its headers (foo.h and foo_api.h) to include/pysfml
+		destination = os.path.join('include', 'pysfml')
 
-			# move its headers (foo.h and foo_api.h) to include/pysfml
-			destination = "include/pysfml"
+		source = os.path.join('src', 'sfml', module + '.h')
+		if os.path.isfile(source):
+			try:
+				shutil.move(source, destination)
+			except shutil.Error:
+				pass
 
-			source = "src/sfml/{0}.h".format(module)
-			if os.path.isfile(source):
-				try:
-					shutil.move(source, destination)
-				except shutil.Error:
-					pass
+		source = os.path.join('src', 'sfml', module + '_api.h')
+		if os.path.isfile(source):
+			try:
+				shutil.move(source, destination)
+			except shutil.Error:
+				pass
 
-			source = "src/sfml/{0}_api.h".format(module)
-			if os.path.isfile(source):
-				try:
-					shutil.move(source, destination)
-				except shutil.Error:
-					pass
+		return ret
 
-			return ret
+
+modules = ['system', 'window', 'graphics', 'audio', 'network']
+
+sources = {module: os.path.join('src', 'sfml', module + '.pyx') for module in modules}
+headers = {module: os.path.join('include', 'pysfml', module + '.h') for module in modules}
+api_headers = {module: os.path.join('include', 'pysfml', module + '._api.h') for module in modules}
+
+include_path = os.path.join('include', 'pysfml')
+source_path = os.path.join('src', 'sfml')
+
+
+## clean the directory (remove generated C++ files by Cython)
+def remove_if_exist(filename):
+	if os.path.isfile(filename):
+		try:
+			os.remove(filename)
+		except OSError:
+			pass
+
+for module in modules:
+	remove_if_exist(os.path.join(include_path, module + '.h'))
+	remove_if_exist(os.path.join(include_path, module + '._api.h'))
+	remove_if_exist(os.path.join(source_path, module + '.cpp'))
+
 
 extension = lambda name, files, libs: Extension(
 	'sfml.' + name,
@@ -171,34 +117,27 @@ network = extension(
 
 
 major, minor, _, _ , _ = sys.version_info
+
+# Distribute Cython API (install cython headers)
+# Path: {CYTHON_DIR}/Includes/libcpp/sfml.pxd
 import cython
-cython_path = os.path.dirname(cython.__file__) + '/Cython'
+cython_path = os.path.join(os.path.dirname(cython.__file__),'Cython')
 
-# Install Cython headers (if possible)
-if CYTHON_AVAILABLE:
-	# Path: {CYTHON_DIR}/Includes/libcpp/sfml.pxd
-	cython_headers = []
+cython_headers = []
 
-	if platform.system() in ['Linux', 'Darwin']:
-		pxd_files = glob('include/libcpp/*')
-		pxd_files.remove('include/libcpp/http')
-		pxd_files.remove('include/libcpp/ftp')
-	else:
-		pxd_files = glob('include\\libcpp\\*')
-		pxd_files.remove('include\\libcpp\\http')
-		pxd_files.remove('include\\libcpp\\ftp')
-		
-	cython_headers.append((cython_path + '/Includes/libcpp', pxd_files))
+pxd_files = glob(os.path.join('include', 'libcpp', '*'))
+pxd_files.remove(os.path.join('include', 'libcpp', 'http'))
+pxd_files.remove(os.path.join('include', 'libcpp', 'ftp'))
+cython_headers.append((os.path.join(cython_path, 'Includes', 'libcpp'), pxd_files))
 
-	pxd_files = glob('include/libcpp/http/*')
-	cython_headers.append((cython_path + '/Includes/libcpp/http', pxd_files))
+pxd_files = glob(os.path.join('include', 'libcpp', 'http', '*'))
+cython_headers.append((os.path.join(cython_path, 'Includes', 'libcpp', 'http'), pxd_files))
 
-	pxd_files = glob('include/libcpp/ftp/*')
-	cython_headers.append((cython_path + '/Includes/libcpp/ftp', pxd_files))
-else:
-	cython_headers = []
-	
-# Install the C API
+pxd_files = glob(os.path.join('include', 'libcpp', 'ftp', '*'))
+cython_headers.append((os.path.join(cython_path, 'Includes', 'libcpp', 'ftp'), pxd_files))
+
+# Distribute C API (install C headers)
+
 if platform.system() == 'Windows':
 	# On Windows: C:\Python27\include\pysfml\*_api.h
 	c_api = [(sys.prefix +'\\include\\pysfml', glob('include/pysfml/*.h'))]
@@ -227,7 +166,7 @@ kwargs = dict(
 			package_dir={'': 'src'},
 			packages=['sfml'],
 			data_files=files,
-			version='1.2.0',
+			version='1.3.0',
 			description='Python bindings for SFML',
 			long_description=long_description,
 			author='Jonathan de Wachter, Edwin O Marshall',
@@ -244,9 +183,6 @@ kwargs = dict(
 						'Topic :: Games/Entertainment',
 						'Topic :: Multimedia',
 						'Topic :: Software Development :: Libraries :: Python Modules'],
-			cmdclass={'test': PyTest})
-
-if CYTHON_AVAILABLE:
-	kwargs['cmdclass'].update({'build_ext': build_ext})
+			cmdclass={'test': PyTest, 'build_ext': CythonBuildExt})
 
 setup(**kwargs)
