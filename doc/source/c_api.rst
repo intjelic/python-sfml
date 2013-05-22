@@ -4,51 +4,51 @@
 
 Cython/C API
 ============
-This section is new and will explain how to embed or extend Python
-using the C/Cython API.
+This section explains how to embed or extend Python using the new C/Cython
+API.
 
 .. contents:: :local:
 
 Introduction
 ------------
-The C/Cython API has been introduced in version 1.3, the first release
-entirely based on the final release of SFML 2.0.
-
-When building large software/games, that's often good to mix two or three
-languages to solve specific problems with what they've been designed
-for. A common case is the graphical user interface. Each game needs an
-interface but we all know C and C++ aren't very flexible when using
-callbacks. Also, if later you want your interface to be customizable,
-it will be more pain in the ass. Why not letting Python take care of
-this, and still use the SFML. And in the other way round, why not using
-C++ to optimize some part of our Python code. This section is all about
-that, mixing Python and C++.
-
-The C/Cython API allows to manipulate pySFML objects and retrieve their
-C++ instance.
+The C/Cython API, introduced in version 1.3 was created to allow developers to
+seemlessly mix python code with C++ code and vice versa. While it is often more 
+convenient to write entire programs in a single program language, for one
+reason or another, we may have the need or desire to switch languages. For
+instance, python's beauty lends itself to writing code such as user interface code, 
+which would otherwise be tedious to do in C++. Likewise, we might be compelled to
+write certain parts of a Python program in C++ in order to yield performance
+gains.
 
 How it works
 ------------
-So, what's a C++ instance ? You have to keep in mind that pySFML isn't
-a Python re-implementation of SFML but instead wrap the actual
-implementation to provide a Python library. Therefore, every class
-you meet wraps a C++ object and manipulate it trought its methods.
+The C/Cython API works by allowing you to manipulate pySFML objects and
+retrieve their C++ instance.
+
+PySFML is not a pure python library. Rather, it is a set of extensions that
+provide a Pythonic API around a C++ library. As such, every PySFML object is
+really a wrapped C++ object which can be manipulated through Python methods.
+
 
 Let's take an example, :class:`.Texture` and its matching C++ class
 **sf::Texture**. When you create a :class:`.Texture`::
 
     texture = sf.Texture()
 
-you actually create two objects, the C++ object, and a Python object.
-When you call its method :meth:`create`, you call the Python object's
-create method which itself call the create method from the C++ object. ::
+you actually create two objects, the C++ object, and the Python object that
+wraps it. Furthermore, when you call the method :meth:`create`, you are in fact
+calling the Python object's create method, which itself is wrapped around the
+C++ object's create method::
 
     texture.create(50, 30)
 
-These instance are usually named **p_this**, remember it because you'll
-see it later in code.
+.. note::
 
-Now, we have now two possibilities:
+    When browsing pySFML's source code, keep in mind that these instances are
+    usually named :attr:`p_this`.
+
+Now that we know what an instance *is*, we can discuss what can discuss what
+can be *done* with them:
 
     * Embed Python code into C++ application
     * Extend Python code with C++ code
