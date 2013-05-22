@@ -22,6 +22,11 @@ gains.
 
 How it works
 ------------
+.. note::
+
+    When browsing pySFML's source code, keep in mind that these instances are
+    usually named :attr:`p_this`.
+
 The C/Cython API works by allowing you to manipulate pySFML objects and
 retrieve their C++ instance.
 
@@ -42,13 +47,7 @@ C++ object's create method::
 
     texture.create(50, 30)
 
-.. note::
-
-    When browsing pySFML's source code, keep in mind that these instances are
-    usually named :attr:`p_this`.
-
-Now that we know what an instance *is*, we can discuss what can discuss what
-can be *done* with them:
+Now that we know what an instance *is*, we can discuss what can be *done* with them:
 
     * Embed Python code into C++ application
     * Extend Python code with C++ code
@@ -59,9 +58,9 @@ Embedding is explained in the official Python documentation in the
 section *Extending and Embedding the Python Interpreter*, here:
 http://docs.python.org/2/extending/index.html.
 
-Nothing changes except the need to access to our C++ instance which
+Nothing changes except the need to access our C++ instance which
 simply requires a type cast. So, assume you just got a reference to
-a **PyObject\*** which actually is an object from one of the pySFML
+a **PyObject\** which actually is an object from one of the pySFML
 bindings. You'll need to cast it into the type you think it is and then
 retrieve the internal instance generally named *p_this* but you'll find
 that in the API described below (section **API**).
@@ -145,11 +144,13 @@ TODO: write the sub-section
 
 Cython API
 ----------
-You're meant to declare C/C++ functions in a .pxd file before using
-them but of course, to write these bindings, we had to write them too
-so... why not reusing them ?
+It is customary to declare C/C++ functions in a .pxd file before using them.
+In the interest of saving time, following examples use the .pxd files that we 
+wrote when developing these bindings. For the curious, these .pxd files can be
+found in the include/libcpp subdirectory of the source archive. 
 
-We provide them and can be imported in your code with the following: ::
+Once pySFML and Cython are successfully installed, these .pxd files may be
+imported as follows ::
 
     cimport libcpp.sfml
 
@@ -157,7 +158,7 @@ We provide them and can be imported in your code with the following: ::
     cimport libcpp.sfml as sf
 
 To use an existing pySFML class and access its Cython API, import what
-you need: ::
+you need ::
 
     from pysfml.system cimport Vector2
     from pysfml.graphics cimport Color, wrap_color
