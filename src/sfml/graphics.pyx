@@ -185,7 +185,7 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
 	def intersects(self, rectangle):
 		# make sure the rectangle is a rectangle (to get its right/bottom border)
 		l, t, w, h = rectangle
-		rectangle = Rectangle(l, t, w, h)
+		rectangle = Rectangle((l, t), (w, h))
 
 		# compute the intersection boundaries
 		left = max(self.left, rectangle.left)
