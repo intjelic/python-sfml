@@ -143,6 +143,10 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		void setValue(void*)
 		void* getValue() const
 
+	cdef cppclass InputStream
+	cdef cppclass Utf
+	cdef cppclass String
+
 cimport style, event, videomode, keyboard, joystick, mouse
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Event":
