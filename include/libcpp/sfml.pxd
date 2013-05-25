@@ -272,6 +272,8 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 		Context()
 		bint setActive(bint)
 
+	cdef cppclass GlResource:
+		GlResource()
 
 cimport blendmode, primitivetype, texture, shader, text, renderstates
 
