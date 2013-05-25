@@ -137,6 +137,12 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		void wait()
 		void terminate()
 
+	cdef cppclass ThreadLocal:
+		ThreadLocal()
+		ThreadLocal(void*)
+		void setValue(void*)
+		void* getValue() const
+
 cimport style, event, videomode, keyboard, joystick, mouse
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Event":
