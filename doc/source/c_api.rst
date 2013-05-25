@@ -1,21 +1,22 @@
-.. warning::
-
-   Page under construction...
-
 Cython/C API
 ============
 This section explains how to embed or extend Python using the new C/Cython
 API.
+
+.. warning::
+
+   This page is under construction but already provides enough information to
+   get you started.
 
 .. contents:: :local:
 
 Introduction
 ------------
 The C/Cython API, introduced in version 1.3 was created to allow developers to
-seemlessly mix python code with C++ code and vice versa. While it is often more 
+seemlessly mix python code with C++ code and vice versa. While it is often more
 convenient to write entire programs in a single program language, for one
 reason or another, we may have the need or desire to switch languages. For
-instance, python's beauty lends itself to writing code such as user interface code, 
+instance, python's beauty lends itself to writing code such as user interface code,
 which would otherwise be tedious to do in C++. Likewise, we might be compelled to
 write certain parts of a Python program in C++ in order to yield performance
 gains.
@@ -145,9 +146,9 @@ TODO: write the sub-section
 Cython API
 ----------
 It is customary to declare C/C++ functions in a .pxd file before using them.
-In the interest of saving time, following examples use the .pxd files that we 
+In the interest of saving time, following examples use the .pxd files that we
 wrote when developing these bindings. For the curious, these .pxd files can be
-found in the include/libcpp subdirectory of the source archive. 
+found in the include/libcpp subdirectory of the source archive.
 
 Once pySFML and Cython are successfully installed, these .pxd files may be
 imported as follows ::
@@ -164,8 +165,7 @@ you need ::
     from pysfml.graphics cimport Color, wrap_color
 
 
-The API:
-^^^^^^^^
+For each class, you'll find a similar API:
 
 .. py:module:: pysfml
 
@@ -176,22 +176,3 @@ The API:
 
 .. py:function:: wrap_classname(ClassName* p)
 
-+-----------------------------+-----+-----+-----+
-| Class                       | Cla | Del | Wra |
-+-----------------------------+-----+-----+-----+
-| sfml.system.Time            | Yes | No  | Yes |
-+-----------------------------+-----+-----+-----+
-| sfml.system.Vector2         | Yes | Yes | Yes |
-+-----------------------------+-----+-----+-----+
-| sfml.system.Vector3         | Yes | Yes | Yes |
-+-----------------------------+-----+-----+-----+
-| sfml.window.VideoMode       | Yes | Yes | Yes |
-+-----------------------------+-----+-----+-----+
-| sfml.window.ContextSettings | Yes | Yes | Yes |
-+-----------------------------+-----+-----+-----+
-| sfml.window.Pixels          | Yes | Yes | Yes |
-+-----------------------------+-----+-----+-----+
-| sfml.window.Event           | Yes | Yes | Yes |
-+-----------------------------+-----+-----+-----+
-| sfml.window.Window          | Yes | Yes | Yes |
-+-----------------------------+-----+-----+-----+
