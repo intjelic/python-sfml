@@ -311,6 +311,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void create(unsigned int, unsigned int, const Color)
 		bint loadFromFile(char*&)
 		bint loadFromMemory(const void*, size_t)
+		bint loadFromStream(InputStream&)
 		bint saveToFile(const char*&) const
 		Vector2u getSize() const
 		void createMaskFromColor(const Color&)
@@ -332,6 +333,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		bint loadFromFile(const char*&, const IntRect&)
 		bint loadFromMemory(const void*, size_t)
 		bint loadFromMemory(const void*, size_t, const IntRect&)
+		bint loadFromStream(InputStream&)
+		bint loadFromStream(InputStream&, const IntRect&)
 		bint loadFromImage(const Image&)
 		bint loadFromImage(const Image&, const IntRect&)
 		Vector2u getSize() const
@@ -358,6 +361,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		Font(const Font&)
 		bint loadFromFile(const char*&)
 		bint loadFromMemory(const void*, size_t)
+		bint loadFromStream(InputStream&)
 		Glyph& getGlyph(Uint32, unsigned int, bint) const
 		int getKerning(Uint32, Uint32, unsigned int) const
 		int getLineSpacing(unsigned int) const
@@ -369,6 +373,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		bint loadFromFile(const char*&, const char*&)
 		bint loadFromMemory(const char*&, shader.Type)
 		bint loadFromMemory(const char*&, const char*&)
+		bint loadFromStream(InputStream&, shader.Type)
+		bint loadFromStream(InputStream&, InputStream&)
 		void setParameter(const char*, float)
 		void setParameter(const char*, float, float)
 		void setParameter(const char*, float, float, float)
@@ -609,6 +615,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 		SoundBuffer()
 		bint loadFromFile(char*&)
 		bint loadFromMemory(void*, size_t)
+		bint loadFromStream(InputStream&)
 		bint loadFromSamples(Int16*, size_t, unsigned int, unsigned int)
 		bint saveToFile(char*&)
 		Int16* getSamples()
@@ -669,6 +676,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 		Music()
 		bint openFromFile(char*&)
 		bint openFromMemory(void*, size_t)
+		bint openFromStream(InputStream&)
 		Time getDuration()
 
 	cdef cppclass SoundRecorder:
