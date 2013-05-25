@@ -1912,6 +1912,13 @@ cdef class RenderTexture(RenderTarget):
 		def __set__(self, bint smooth):
 			self.p_this.setSmooth(smooth)
 
+	property repeated:
+		def __get__(self):
+			return self.p_this.isRepeated()
+
+		def __set__(self, bint repeated):
+			self.p_this.setRepeated(repeated)
+
 	property active:
 		def __set__(self, bint active):
 			self.p_this.setActive(active)

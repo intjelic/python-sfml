@@ -599,6 +599,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		bint create(unsigned int, unsigned int, bint depth)
 		void setSmooth(bint)
 		bint isSmooth() const
+		void setRepeated(bint)
+		bint isRepeated() const
 		bint setActive()
 		bint setActive(bint)
 		void display()
