@@ -434,6 +434,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 	cdef cppclass Text:
 		Text()
 		Text(const String&)
+		Text(const String&, const Font&)
+		Text(const String&, const Font&, unsigned int)
 		void setString(const String&)
 		void setFont(const Font&)
 		void setCharacterSize(unsigned int)
