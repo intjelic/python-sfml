@@ -496,6 +496,10 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
 	cdef cppclass Vertex:
 		Vertex()
+		Vertex(const Vector2f&)
+		Vertex(const Vector2f&, const Color&)
+		Vertex(const Vector2f&, const Vector2f&)
+		Vertex(const Vector2f&, const Color&, const Vector2f&)
 		Vector2f position
 		Color color
 		Vector2f texCoords
