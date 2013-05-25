@@ -70,57 +70,25 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		String(char*)
 		string toAnsiString()
 
-	cdef cppclass Vector2i:
-		Vector2i()
-		Vector2i(int, int)
-		int x
-		int y
-
-	cdef cppclass Vector2u:
-		Vector2u()
-		Vector2u(unsigned int, unsigned int)
-		unsigned int x
-		unsigned int y
-
-	cdef cppclass Vector2f:
-		Vector2f()
-		Vector2f(float, float)
-		float x
-		float y
-
-	cdef cppclass Vector3i:
-		Vector3i()
-		Vector3i(int, int, int)
-		int x
-		int y
-		int z
-
-	cdef cppclass Vector3u:
-		Vector3u()
-		Vector3u(unsigned int, unsigned int, unsigned int)
-		unsigned int x
-		unsigned int y
-		unsigned int z
-
-	cdef cppclass Vector3f:
-		Vector3f()
-		Vector3f(float, float, float)
-		float x
-		float y
-		float z
-
 	cdef cppclass Vector2[T]:
 		Vector2()
 		Vector2(T, T)
 		T x
 		T y
 
+	ctypedef Vector2[int] Vector2i
+	ctypedef Vector2[unsigned int] Vector2u
+	ctypedef Vector2[float] Vector2f
+
 	cdef cppclass Vector3[T]:
 		Vector3()
-		Vector3(T, T)
+		Vector3(T, T, T)
 		T x
 		T y
 		T z
+
+	ctypedef Vector3[int] Vector3i
+	ctypedef Vector3[float] Vector3f
 
 	cdef cppclass Mutex:
 		Mutex()
