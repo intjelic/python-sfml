@@ -252,31 +252,21 @@ cdef extern from *:
 
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf":
-	cdef cppclass IntRect:
-		IntRect()
-		IntRect(int, int, int, int)
-		IntRect(const Vector2i&, const Vector2i&)
-		bint contains(int, int) const
-		bint contains(const Vector2i&) const
-		bint intersects(const IntRect&) const
-		bint intersects(const IntRect&, IntRect&) const
-		int left
-		int top
-		int width
-		int height
+	cdef cppclass Rect[T]:
+		Rect()
+		Rect(T, T, T, T)
+		Rect(const Vector2[T]&, const Vector2[T]&)
+		bint contains(T, T) const
+		bint contains(const Vector2[T]&) const
+		bint intersects(const Rect[T]&) const
+		bint intersects(const Rect[T]&, Rect[T]&) const
+		T left
+		T top
+		T width
+		T height
 
-	cdef cppclass FloatRect:
-		FloatRect()
-		FloatRect(float, float, float, float)
-		FloatRect(const Vector2f&, const Vector2f&)
-		bint contains(float, float) const
-		bint contains(const Vector2f&) const
-		bint intersects(const FloatRect&) const
-		bint intersects(const FloatRect&, FloatRect&) const
-		float left
-		float top
-		float width
-		float height
+	ctypedef Rect[int] IntRect
+	ctypedef Rect[float] FloatRect
 
 	cdef cppclass Color:
 		Color()
