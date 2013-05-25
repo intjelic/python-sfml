@@ -34,9 +34,9 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 
 	cdef cppclass Time:
 		Time()
-		float asSeconds()
-		Int32 asMilliseconds()
-		Int64 asMicroseconds()
+		float asSeconds() const
+		Int32 asMilliseconds() const
+		Int64 asMicroseconds() const
 		bint operator==(Time&)
 		bint operator!=(Time&)
 		bint operator<(Time&)
@@ -59,7 +59,7 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 
 	cdef cppclass Clock:
 		Clock()
-		Time getElapsedTime()
+		Time getElapsedTime() const
 		Time restart()
 
 	cdef Time seconds(float)
