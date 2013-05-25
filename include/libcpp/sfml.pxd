@@ -155,7 +155,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
 		unsigned int height
 
 	cdef struct KeyEvent:
-		int code
+		keyboard.Key code
 		bint alt
 		bint control
 		bint shift
@@ -169,7 +169,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
 		int y
 
 	cdef struct MouseButtonEvent:
-		int button
+		mouse.Button button
 		int x
 		int y
 
@@ -183,7 +183,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
 
 	cdef struct JoystickMoveEvent:
 		unsigned int joystickId
-		int axis
+		joystick.Axis axis
 		float position
 
 	cdef struct JoystickButtonEvent:
