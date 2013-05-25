@@ -245,7 +245,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 	cdef cppclass GlResource:
 		GlResource()
 
-cimport blendmode, primitivetype, texture, shader, text, renderstates
+cimport blendmode, primitivetype, texture, shader, text, renderstates, transform
 
 cdef extern from *:
 	ctypedef unsigned char* const_Uint8_ptr "const unsigned char*"

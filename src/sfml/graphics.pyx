@@ -298,6 +298,8 @@ cdef class Transform:
 	cdef sf.Transform *p_this
 	cdef bint                 delete_this
 
+	IDENTITY = wrap_transform(<sf.Transform*>&sf.transform.Identity)
+
 	def __init__(self):
 		self.p_this = new sf.Transform()
 		self.delete_this = True
