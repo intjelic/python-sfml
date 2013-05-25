@@ -317,7 +317,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void createMaskFromColor(const Color&, Uint8)
 		void copy(const Image&, unsigned int, unsigned int)
 		void copy(const Image&, unsigned int, unsigned int, const IntRect&)
-		void copy(const Image&, unsigned int, unsigned int, IntRect&, bint)
+		void copy(const Image&, unsigned int, unsigned int, const IntRect&, bint)
 		void setPixel(unsigned int, unsigned int, const Color&)
 		Color getPixel(unsigned int, unsigned int) const
 		const Uint8* getPixelsPtr() const
