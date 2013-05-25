@@ -19,5 +19,5 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Texture":
 		Normalized
 		Pixels
 
-	cdef void bind(Texture*)
-	cdef void bind(Texture*, CoordinateType)
+	cdef void bind(const Texture*)
+	cdef void bind(const Texture*, CoordinateType)

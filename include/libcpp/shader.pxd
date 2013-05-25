@@ -22,4 +22,4 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
 		Fragment
 
 	cdef bint isAvailable()
-	cdef void bind(Shader*)
+	cdef void bind(const Shader*)

@@ -255,11 +255,11 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 	cdef cppclass IntRect:
 		IntRect()
 		IntRect(int, int, int, int)
-		IntRect(Vector2i&, Vector2i&)
-		bint contains(int, int)
-		bint contains(Vector2i&)
-		bint intersects(IntRect&)
-		bint intersects(IntRect&, IntRect&)
+		IntRect(const Vector2i&, const Vector2i&)
+		bint contains(int, int) const
+		bint contains(const Vector2i&) const
+		bint intersects(const IntRect&) const
+		bint intersects(const IntRect&, IntRect&) const
 		int left
 		int top
 		int width
@@ -268,11 +268,11 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 	cdef cppclass FloatRect:
 		FloatRect()
 		FloatRect(float, float, float, float)
-		FloatRect(Vector2f&, Vector2f&)
-		bint contains(float, float)
-		bint contains(Vector2f&)
-		bint intersects(FloatRect&)
-		bint intersects(FloatRect&, FloatRect&)
+		FloatRect(const Vector2f&, const Vector2f&)
+		bint contains(float, float) const
+		bint contains(const Vector2f&) const
+		bint intersects(const FloatRect&) const
+		bint intersects(const FloatRect&, FloatRect&) const
 		float left
 		float top
 		float width
@@ -286,76 +286,76 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		Uint8 g
 		Uint8 b
 		Uint8 a
-		bint operator==(Color&)
-		bint operator!=(Color&)
-		Color operator+(Color&)
-		Color operator*(Color&)
-		#Color operator+=(Color&)
-		#Color operator*=(Color&)
+		bint operator==(const Color&)
+		bint operator!=(const Color&)
+		Color operator+(const Color&)
+		Color operator*(const Color&)
+		#Color operator+=(const Color&)
+		#Color operator*=(const Color&)
 
 	cdef cppclass Transform:
 		Transform()
 		Transform(float, float, float, float, float, float, float, float, float)
-		float* getMatrix()
-		Transform getInverse()
-		Vector2f transformPoint(float, float)
-		Vector2f transformPoint(Vector2f)
-		FloatRect transformRect(FloatRect&)
-		Transform& combine(Transform&)
+		const float* getMatrix() const
+		Transform getInverse() const
+		Vector2f transformPoint(float, float) const
+		Vector2f transformPoint(const Vector2f) const
+		FloatRect transformRect(const FloatRect&) const
+		Transform& combine(const Transform&)
 		Transform& translate(float, float)
-		Transform& translate(Vector2f)
+		Transform& translate(const Vector2f)
 		Transform& rotate(float)
 		Transform& rotate(float, float, float)
-		Transform& rotate(float, Vector2f&)
+		Transform& rotate(float, const Vector2f&)
 		Transform& scale(float, float)
 		Transform& scale(float, float, float, float)
-		Transform& scale(Vector2f&)
-		Transform& scale(Vector2f&, Vector2f&)
-		Transform operator*(Transform&)
-		#Transform operator*=(Transform&)
+		Transform& scale(const Vector2f&)
+		Transform& scale(const Vector2f&, const Vector2f&)
+		Transform operator*(const Transform&)
+		#Transform operator*=(const Transform&)
 
 	cdef cppclass Image:
 		Image()
 		void create(unsigned int, unsigned int)
-		void create(unsigned int, unsigned int, const_Uint8_ptr)
-		void create(unsigned int, unsigned int, Color)
+		void create(unsigned int, unsigned int, const const_Uint8_ptr)
+		void create(unsigned int, unsigned int, const Color)
 		bint loadFromFile(char*&)
-		bint loadFromMemory(void*, size_t)
-		bint saveToFile(char*&)
-		Vector2u getSize()
-		void createMaskFromColor(Color&)
-		void createMaskFromColor(Color&, Uint8)
-		void copy(Image&, unsigned int, unsigned int)
-		void copy(Image&, unsigned int, unsigned int, IntRect&)
-		void copy(Image&, unsigned int, unsigned int, IntRect&, bint)
-		void setPixel(unsigned int, unsigned int, Color&)
-		Color getPixel(unsigned int, unsigned int)
-		Uint8* getPixelsPtr()
+		bint loadFromMemory(const void*, size_t)
+		bint saveToFile(const char*&) const
+		Vector2u getSize() const
+		void createMaskFromColor(const Color&)
+		void createMaskFromColor(const Color&, Uint8)
+		void copy(const Image&, unsigned int, unsigned int)
+		void copy(const Image&, unsigned int, unsigned int, const IntRect&)
+		void copy(const Image&, unsigned int, unsigned int, IntRect&, bint)
+		void setPixel(unsigned int, unsigned int, const Color&)
+		Color getPixel(unsigned int, unsigned int) const
+		const Uint8* getPixelsPtr() const
 		void flipHorizontally()
 		void flipVertically()
 
 	cdef cppclass Texture:
 		Texture()
-		Texture(Texture&)
+		Texture(const Texture&)
 		bint create(unsigned int, unsigned int)
-		bint loadFromFile(char*&)
-		bint loadFromFile(char*&, IntRect&)
-		bint loadFromMemory(void*, size_t)
-		bint loadFromMemory(void*, size_t, IntRect&)
-		bint loadFromImage(Image&)
-		bint loadFromImage(Image&, IntRect&)
-		Vector2u getSize()
-		Image copyToImage()
-		void update(Uint8*)
-		void update(Uint8*, unsigned int, unsigned int, unsigned int, unsigned int)
-		void update(Image&)
-		void update(Image&, unsigned int, unsigned int)
-		void update(Window&)
-		void update(Window&, unsigned int, unsigned int)
+		bint loadFromFile(const char*&)
+		bint loadFromFile(const char*&, const IntRect&)
+		bint loadFromMemory(const void*, size_t)
+		bint loadFromMemory(const void*, size_t, const IntRect&)
+		bint loadFromImage(const Image&)
+		bint loadFromImage(const Image&, const IntRect&)
+		Vector2u getSize() const
+		Image copyToImage() const
+		void update(const Uint8*)
+		void update(const Uint8*, unsigned int, unsigned int, unsigned int, unsigned int)
+		void update(const Image&)
+		void update(const Image&, unsigned int, unsigned int)
+		void update(const Window&)
+		void update(const Window&, unsigned int, unsigned int)
 		void setSmooth(bint)
-		bint isSmooth()
+		bint isSmooth() const
 		void setRepeated(bint)
-		bint isRepeated()
+		bint isRepeated() const
 
 	cdef cppclass Glyph:
 		Glyph()
@@ -365,42 +365,42 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
 	cdef cppclass Font:
 		Font()
-		Font(Font&)
-		bint loadFromFile(char*&)
-		bint loadFromMemory(void*, size_t)
-		Glyph& getGlyph(Uint32, unsigned int, bint)
-		int getKerning(Uint32, Uint32, unsigned int)
-		int getLineSpacing(unsigned int)
-		Texture& getTexture(unsigned int)
+		Font(const Font&)
+		bint loadFromFile(const char*&)
+		bint loadFromMemory(const void*, size_t)
+		Glyph& getGlyph(Uint32, unsigned int, bint) const
+		int getKerning(Uint32, Uint32, unsigned int) const
+		int getLineSpacing(unsigned int) const
+		const Texture& getTexture(unsigned int) const
 
 	cdef cppclass Shader:
 		Shader()
-		bint loadFromFile(char*&, shader.Type)
-		bint loadFromFile(char*&, char*&)
-		bint loadFromMemory(char*&, shader.Type)
-		bint loadFromMemory(char*&, char*&)
-		void setParameter(char*, float)
-		void setParameter(char*, float, float)
-		void setParameter(char*, float, float, float)
-		void setParameter(char*, float, float, float, float)
-		void setParameter(char*, Vector2f&)
-		void setParameter(char*, Vector3f&)
-		void setParameter(char*, Color&)
-		void setParameter(char*, Transform&)
-		void setParameter(char*, Texture&)
-		void setParameter(char*, shader.CurrentTextureType)
+		bint loadFromFile(const char*&, shader.Type)
+		bint loadFromFile(const char*&, const char*&)
+		bint loadFromMemory(const char*&, shader.Type)
+		bint loadFromMemory(const char*&, const char*&)
+		void setParameter(const char*, float)
+		void setParameter(const char*, float, float)
+		void setParameter(const char*, float, float, float)
+		void setParameter(const char*, float, float, float, float)
+		void setParameter(const char*, const Vector2f&)
+		void setParameter(const char*, const Vector3f&)
+		void setParameter(const char*, const Color&)
+		void setParameter(const char*, const Transform&)
+		void setParameter(const char*, const Texture&)
+		void setParameter(const char*, shader.CurrentTextureType)
 
 	cdef cppclass RenderStates:
 		RenderStates()
 		RenderStates(blendmode.BlendMode)
-		RenderStates(Transform&)
-		RenderStates(Texture*)
-		RenderStates(Shader*)
-		RenderStates(blendmode.BlendMode, Transform&, Texture*, Shader*)
+		RenderStates(const Transform&)
+		RenderStates(const Texture*)
+		RenderStates(const Shader*)
+		RenderStates(blendmode.BlendMode, const Transform&, const Texture*, const Shader*)
 		blendmode.BlendMode blendMode
-		Transform           transform
-		Texture*            texture
-		Shader*             shader
+		Transform transform
+		const Texture* texture
+		const Shader* shader
 
 	cdef cppclass Drawable:
 		Drawable()
@@ -408,99 +408,99 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 	cdef cppclass Transformable:
 		Transformable()
 		void setPosition(float, float)
-		void setPosition(Vector2f&)
+		void setPosition(const Vector2f&)
 		void setRotation(float)
 		void setScale(float, float)
-		void setScale(Vector2f&)
+		void setScale(const Vector2f&)
 		void setOrigin(float, float)
-		void setOrigin(Vector2f&)
-		Vector2f& getPosition()
-		float     getRotation()
-		Vector2f& getScale()
-		Vector2f& getOrigin()
+		void setOrigin(const Vector2f&)
+		const Vector2f& getPosition() const
+		float     getRotation() const
+		const Vector2f& getScale() const
+		const Vector2f& getOrigin() const
 		Color&    getColor()
 		void move(float, float)
-		void move(Vector2f&)
+		void move(const Vector2f&)
 		void rotate(float)
 		void scale(float, float)
-		void scale(Vector2f&)
-		Transform getTransform()
-		Transform getInverseTransform()
+		void scale(const Vector2f&)
+		const Transform getTransform() const
+		const Transform getInverseTransform() const
 
 	cdef cppclass Sprite:
 		Sprite()
-		Sprite(Texture&)
-		Sprite(Texture&, IntRect&)
-		void setTexture(Texture&)
-		void setTexture(Texture&, bint)
-		void setTextureRect(IntRect&)
-		void setColor(Color&)
-		Texture* getTexture()
-		IntRect& getTextureRect()
-		Color& getColor()
-		FloatRect getLocalBounds()
-		FloatRect getGlobalBounds()
+		Sprite(const Texture&)
+		Sprite(const Texture&, const IntRect&)
+		void setTexture(const Texture&)
+		void setTexture(const Texture&, bint)
+		void setTextureRect(const IntRect&)
+		void setColor(const Color&)
+		const Texture* getTexture() const
+		const IntRect& getTextureRect() const
+		const Color& getColor() const
+		FloatRect getLocalBounds() const
+		FloatRect getGlobalBounds() const
 
 	cdef cppclass Text:
 		Text()
-		Text(String&)
-		void setString(String&)
-		void setFont(Font&)
+		Text(const String&)
+		void setString(const String&)
+		void setFont(const Font&)
 		void setCharacterSize(unsigned int)
 		void setStyle(Uint32)
-		void setColor(Color&)
-		String& getString()
-		Font& getFont()
-		unsigned int getCharacterSize()
-		Uint32 getStyle()
-		Color& getColor()
-		Vector2f findCharacterPos(size_t)
-		FloatRect getLocalBounds()
-		FloatRect getGlobalBounds()
+		void setColor(const Color&)
+		const String& getString() const
+		const Font& getFont() const
+		unsigned int getCharacterSize() const
+		Uint32 getStyle() const
+		const Color& getColor() const
+		Vector2f findCharacterPos(size_t) const
+		FloatRect getLocalBounds() const
+		FloatRect getGlobalBounds() const
 
 	cdef cppclass Shape:
 		Shape()
-		void setTexture(Texture*)
-		void setTexture(Texture*, bint)
-		void setTextureRect(IntRect&)
-		void setFillColor(Color&)
-		void setOutlineColor(Color&)
+		void setTexture(const Texture*)
+		void setTexture(const Texture*, bint)
+		void setTextureRect(const IntRect&)
+		void setFillColor(const Color&)
+		void setOutlineColor(const Color&)
 		void setOutlineThickness(float)
-		Texture* getTexture()
-		IntRect& getTextureRect()
-		Color& getFillColor()
-		Color& getOutlineColor()
-		float getOutlineThickness()
-		FloatRect getLocalBounds()
-		FloatRect getGlobalBounds()
-		unsigned int getPointCount()
-		Vector2f getPoint(unsigned int)
+		const Texture* getTexture() const
+		const IntRect& getTextureRect() const
+		const Color& getFillColor() const
+		const Color& getOutlineColor() const
+		float getOutlineThickness() const
+		unsigned int getPointCount() const
+		Vector2f getPoint(unsigned int) const
+		FloatRect getLocalBounds() const
+		FloatRect getGlobalBounds() const
 
 	cdef cppclass CircleShape:
 		CircleShape()
 		CircleShape(float)
 		CircleShape(float, unsigned int)
 		void setRadius(float)
-		float getRadius()
+		float getRadius() const
 		void setPointCount(unsigned int)
-		unsigned int getPointCount()
-		Vector2f getPoint(unsigned int)
+		unsigned int getPointCount() const
+		Vector2f getPoint(unsigned int) const
 
 	cdef cppclass ConvexShape:
 		ConvexShape()
 		ConvexShape(unsigned int)
 		void setPointCount(unsigned int)
-		unsigned int getPointCount()
-		void setPoint(unsigned int, Vector2f)
-		Vector2f getPoint(unsigned int)
+		unsigned int getPointCount() const
+		void setPoint(unsigned int, const Vector2f&)
+		Vector2f getPoint(unsigned int) const
 
 	cdef cppclass RectangleShape:
 		RectangleShape()
-		RectangleShape(Vector2f&)
-		void setSize(Vector2f&)
-		Vector2f& getSize()
-		unsigned int getPointCount()
-		Vector2f getPoint(unsigned int)
+		RectangleShape(const Vector2f&)
+		void setSize(const Vector2f&)
+		const Vector2f& getSize() const
+		unsigned int getPointCount() const
+		Vector2f getPoint(unsigned int) const
 
 	cdef cppclass Vertex:
 		Vertex()
@@ -512,94 +512,95 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		VertexArray()
 		VertexArray(primitivetype.PrimitiveType)
 		VertexArray(primitivetype.PrimitiveType, unsigned int)
-		unsigned int getVertexCount()
+		unsigned int getVertexCount() const
 		Vertex& operator[] (unsigned int)
+		#const Vertex& operator[] (unsigned int) const
 		void clear()
 		void resize(unsigned int)
-		void append(Vertex)
+		void append(const Vertex)
 		void setPrimitiveType(primitivetype.PrimitiveType)
-		primitivetype.PrimitiveType getPrimitiveType()
-		FloatRect getBounds()
+		primitivetype.PrimitiveType getPrimitiveType() const
+		FloatRect getBounds() const
 
 	cdef cppclass View:
 		View()
-		View(FloatRect&)
-		View(Vector2f&, Vector2f&)
+		View(const FloatRect&)
+		View(const Vector2f&, const Vector2f&)
 		void setCenter(float, float)
-		void setCenter(Vector2f&)
+		void setCenter(const Vector2f&)
 		void setSize(float, float)
-		void setSize(Vector2f&)
+		void setSize(const Vector2f&)
 		void setRotation(float)
-		void setViewport(FloatRect&)
-		void reset(FloatRect&)
-		Vector2f& getCenter()
-		Vector2f& getSize()
-		float getRotation()
-		FloatRect& getViewport()
+		void setViewport(const FloatRect&)
+		void reset(const FloatRect&)
+		const Vector2f& getCenter() const
+		const Vector2f& getSize() const
+		float getRotation() const
+		const FloatRect& getViewport() const
 		void move(float, float)
-		void move(Vector2f&)
+		void move(const Vector2f&)
 		void rotate(float)
 		void zoom(float)
-		Transform& getTransform()
-		Transform& getInverseTransform()
+		const Transform& getTransform() const
+		const Transform& getInverseTransform() const
 
 	cdef cppclass RenderTarget:
 		void clear()
-		void clear(Color&)
-		void setView(View&)
-		View& getView()
-		View& getDefaultView()
-		IntRect getViewport(View&)
-		Vector2f mapPixelToCoords(Vector2i&)
-		Vector2f mapPixelToCoords(Vector2i&, View&)
-		Vector2i mapCoordsToPixel(Vector2f&)
-		Vector2i mapCoordsToPixel(Vector2f&, View&)
-		void draw(Drawable&)
-		void draw(Drawable&, RenderStates&)
-		void draw(Vertex*, unsigned int, primitivetype.PrimitiveType)
-		void draw(Vertex*, unsigned int, primitivetype.PrimitiveType, RenderStates&)
-		Vector2u getSize()
+		void clear(const Color&)
+		void setView(const View&)
+		const View& getView() const
+		const View& getDefaultView() const
+		IntRect getViewport(const View&) const
+		Vector2f mapPixelToCoords(const Vector2i&) const
+		Vector2f mapPixelToCoords(const Vector2i&, const View&) const
+		Vector2i mapCoordsToPixel(const Vector2f&) const
+		Vector2i mapCoordsToPixel(const Vector2f&, const View&) const
+		void draw(const Drawable&)
+		void draw(const Drawable&, const RenderStates&)
+		void draw(const Vertex*, unsigned int, primitivetype.PrimitiveType)
+		void draw(const Vertex*, unsigned int, primitivetype.PrimitiveType, const RenderStates&)
+		Vector2u getSize() const
 		void pushGLStates()
 		void popGLStates()
 		void resetGLStates()
 
 	cdef cppclass RenderWindow:
 		RenderWindow()
-		RenderWindow(VideoMode, char*&)
-		RenderWindow(VideoMode, char*&, Uint32)
-		RenderWindow(VideoMode, char*&, Uint32, ContextSettings&)
+		RenderWindow(VideoMode, const char*&)
+		RenderWindow(VideoMode, const char*&, Uint32)
+		RenderWindow(VideoMode, const char*&, Uint32, const ContextSettings&)
 		void create(WindowHandle)
-		void create(WindowHandle, ContextSettings&)
+		void create(WindowHandle, const ContextSettings&)
 		void clear()
-		void clear(Color&)
-		void setView(View&)
-		View& getView()
-		View& getDefaultView()
-		IntRect getViewport(View&)
-		Vector2f mapPixelToCoords(Vector2i&)
-		Vector2f mapPixelToCoords(Vector2i&, View&)
-		Vector2i mapCoordsToPixel(Vector2f&)
-		Vector2i mapCoordsToPixel(Vector2f&, View&)
-		void draw(Drawable&)
-		void draw(Drawable&, RenderStates&)
-		void draw(Vertex*, unsigned int, primitivetype.PrimitiveType)
-		void draw(Vertex*, unsigned int, primitivetype.PrimitiveType, RenderStates&)
-		Vector2u getSize()
+		void clear(const Color&)
+		void setView(const View&)
+		const View& getView() const
+		const View& getDefaultView() const
+		const IntRect getViewport(View&) const
+		Vector2f mapPixelToCoords(const Vector2i&) const
+		Vector2f mapPixelToCoords(const Vector2i&, const View&) const
+		Vector2i mapCoordsToPixel(const Vector2f&) const
+		Vector2i mapCoordsToPixel(const Vector2f&, const View&) const
+		void draw(const Drawable&)
+		void draw(const Drawable&, const RenderStates&)
+		void draw(const Vertex*, unsigned int, primitivetype.PrimitiveType)
+		void draw(const Vertex*, unsigned int, primitivetype.PrimitiveType, const RenderStates&)
+		Vector2u getSize() const
 		void pushGLStates()
 		void popGLStates()
 		void resetGLStates()
-		Image capture()
+		Image capture() const
 
 	cdef cppclass RenderTexture:
 		RenderTexture()
 		bint create(unsigned int, unsigned int)
 		bint create(unsigned int, unsigned int, bint depth)
 		void setSmooth(bint)
-		bint isSmooth()
+		bint isSmooth() const
 		bint setActive()
 		bint setActive(bint)
 		void display()
-		Texture& getTexture()
+		const Texture& getTexture() const
 
 
 from libcpp.string cimport string
