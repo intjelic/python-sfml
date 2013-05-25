@@ -23,6 +23,6 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Mouse":
 
 	bint isButtonPressed(Button)
 	Vector2i getPosition()
-	Vector2i getPosition(Window&)
-	void setPosition(Vector2i&)
-	void setPosition(Vector2i&, Window&)
+	Vector2i getPosition(const Window&)
+	void setPosition(const Vector2i&)
+	void setPosition(const Vector2i&, const Window&)

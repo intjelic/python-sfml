@@ -220,57 +220,59 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 		VideoMode()
 		VideoMode(unsigned int width, unsigned int height)
 		VideoMode(unsigned int width, unsigned int height, unsigned int bits_per_pixel)
-		bint isValid()
+		bint isValid() const
 		unsigned int width
 		unsigned int height
 		unsigned int bitsPerPixel
-		bint operator==(VideoMode&)
-		bint operator!=(VideoMode&)
-		bint operator<(VideoMode&)
-		bint operator>(VideoMode&)
-		bint operator<=(VideoMode&)
-		bint operator>=(VideoMode&)
+		bint operator==(const VideoMode&)
+		bint operator!=(const VideoMode&)
+		bint operator<(const VideoMode&)
+		bint operator>(const VideoMode&)
+		bint operator<=(const VideoMode&)
+		bint operator>=(const VideoMode&)
 
 	cdef cppclass WindowHandle
 
 	cdef cppclass Window:
 		Window()
-		Window(VideoMode, char*)
-		Window(VideoMode, char*, unsigned long)
-		Window(VideoMode, char*, unsigned long, ContextSettings&)
-		Window(WindowHandle window_handle)
-		Window(WindowHandle window_handle, ContextSettings&)
-		void create(VideoMode, char*)
-		void create(VideoMode, char*, unsigned long)
-		void create(VideoMode, char*, unsigned long, ContextSettings&)
-		void create(WindowHandle, ContextSettings&)
+		Window(VideoMode, const char*)
+		Window(VideoMode, const char*, unsigned long)
+		Window(VideoMode, const char*, unsigned long, const ContextSettings&)
+		Window(WindowHandle)
+		Window(WindowHandle, const ContextSettings&)
+		void create(VideoMode, const char*)
+		void create(VideoMode, const char*, unsigned long)
+		void create(VideoMode, const char*, unsigned long, const ContextSettings&)
+		void create(WindowHandle, const ContextSettings&)
 		void close()
-		bint isOpen()
-		ContextSettings& getSettings()
+		bint isOpen() const
+		const ContextSettings& getSettings() const
 		bint pollEvent(Event&)
 		bint waitEvent(Event&)
-		Vector2i getPosition()
-		void setPosition(Vector2i&)
-		Vector2u getSize()
-		void setSize(Vector2u)
-		void setTitle(char*)
-		void setIcon(unsigned int, unsigned int, Uint8*)
+		Vector2i getPosition() const
+		void setPosition(const Vector2i&)
+
+		Vector2u getSize() const
+		void setSize(const Vector2u)
+		void setTitle(const char*)
+		void setIcon(unsigned int, unsigned int, const Uint8*)
 		void setVisible(bint)
 		void setVerticalSyncEnabled(bint)
 		void setMouseCursorVisible(bint)
 		void setKeyRepeatEnabled(bint)
 		void setFramerateLimit(unsigned int)
 		void setJoystickThreshold(float)
-		bint setActive()
-		bint setActive(bint)
+		bint setActive() const
+		bint setActive(bint) const
 		void display()
-		WindowHandle getSystemHandle()
+		WindowHandle getSystemHandle() const
 		void onCreate()
 		void onResize()
 
 	cdef cppclass Context:
 		Context()
 		bint setActive(bint)
+		Context(const ContextSettings&, unsigned int, unsigned int height)
 
 	cdef cppclass GlResource:
 		GlResource()
