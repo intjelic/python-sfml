@@ -122,6 +122,20 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 		T y
 		T z
 
+	cdef cppclass Mutex:
+		Mutex()
+		void lock()
+		void unlock()
+
+	cdef cppclass Lock:
+		Lock(Mutex&)
+
+	cdef cppclass Thread[T, A]:
+		Thread(F)
+		Thread(F, A)
+		void launch()
+		void wait()
+		void terminate()
 
 cimport style, event, videomode, keyboard, joystick, mouse
 
