@@ -442,7 +442,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 		void setStyle(Uint32)
 		void setColor(const Color&)
 		const String& getString() const
-		const Font& getFont() const
+		const Font* getFont() const
 		unsigned int getCharacterSize() const
 		Uint32 getStyle() const
 		const Color& getColor() const
