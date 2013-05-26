@@ -14,17 +14,17 @@ from http cimport request, response
 
 cdef extern from "SFML/Network.hpp" namespace "sf::Http":
 	cdef cppclass Request:
-		Request(string&, request.Method, string&)
-		void setField(string&, string&)
+		Request(const string&, request.Method, const string&)
+		void setField(const string&, const string&)
 		void setMethod(request.Method)
-		void setUri(string&)
+		void setUri(const string&)
 		void setHttpVersion(unsigned int, unsigned int)
-		void setBody(string&)
+		void setBody(const string&)
 
 	cdef cppclass Response:
 		Response()
-		string& getField(string&)
-		response.Status getStatus()
-		unsigned int getMajorHttpVersion()
-		unsigned int getMinorHttpVersion()
-		string& getBody()
+		const string& getField(const string&) const
+		response.Status getStatus() const
+		unsigned int getMajorHttpVersion() const
+		unsigned int getMinorHttpVersion() const
+		const string& getBody() const

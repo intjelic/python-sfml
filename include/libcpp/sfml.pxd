@@ -693,11 +693,11 @@ cimport ipaddress, socket, udpsocket, ftp, http
 cdef extern from "SFML/Network.hpp" namespace "sf":
 	cdef cppclass IpAddress:
 		IpAddress()
-		IpAddress(string&)
+		IpAddress(const string&)
 		IpAddress(Uint8, Uint8, Uint8, Uint8)
 		IpAddress(Uint32)
-		string toString()
-		Uint32 toInteger()
+		string toString() const
+		Uint32 toInteger() const
 		bint operator==(IpAddress&)
 		bint operator!=(IpAddress&)
 		bint operator<(IpAddress&)
@@ -707,32 +707,32 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 
 	cdef cppclass Socket:
 		void setBlocking(bint)
-		bint isBlocking()
+		bint isBlocking() const
 
 	cdef cppclass TcpListener:
 		TcpListener()
-		unsigned short getLocalPort()
+		unsigned short getLocalPort() const
 		socket.Status listen(unsigned short)
 		void close()
 		socket.Status accept(TcpSocket&) nogil
 
 	cdef cppclass TcpSocket:
 		TcpSocket()
-		unsigned short getLocalPort()
-		IpAddress getRemoteAddress()
-		unsigned short getRemotePort()
-		socket.Status connect(IpAddress&, unsigned short) nogil
-		socket.Status connect(IpAddress&, unsigned short, Time) nogil
+		unsigned short getLocalPort() const
+		IpAddress getRemoteAddress() const
+		unsigned short getRemotePort() const
+		socket.Status connect(const IpAddress&, unsigned short) nogil
+		socket.Status connect(const IpAddress&, unsigned short, Time) nogil
 		void disconnect()
-		socket.Status send(void*, size_t) nogil
-		socket.Status receive(void*, size_t, size_t&) nogil
+		socket.Status send(const void*, size_t) nogil
+		socket.Status receive(const void*, size_t, size_t&) nogil
 
 	cdef cppclass UdpSocket:
 		UdpSocket()
-		unsigned short getLocalPort()
+		unsigned short getLocalPort() const
 		socket.Status bind(unsigned short)
 		void unbind()
-		socket.Status send(void*, size_t, IpAddress&, unsigned short)
+		socket.Status send(const void*, size_t, const IpAddress&, unsigned short)
 		socket.Status receive(void*, size_t, size_t&, IpAddress&, unsigned short&)
 
 	cdef cppclass SocketSelector:
@@ -742,38 +742,36 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		void clear()
 		bint wait() nogil
 		bint wait(Time) nogil
-		bint isReady(Socket&)
+		bint isReady(Socket&) const
 
 	cdef cppclass Ftp:
 		Ftp()
-		ftp.Response connect(IpAddress&) nogil
-		ftp.Response connect(IpAddress&, unsigned short) nogil
-		ftp.Response connect(IpAddress&, unsigned short, Time) nogil
+		ftp.Response connect(const IpAddress&) nogil
+		ftp.Response connect(const IpAddress&, unsigned short) nogil
+		ftp.Response connect(const IpAddress&, unsigned short, Time) nogil
 		ftp.Response disconnect()
 		ftp.Response login() nogil
-		ftp.Response login(char*&, char*&) nogil
+		ftp.Response login(const char*&, const char*&) nogil
 		ftp.Response keepAlive() nogil
 		ftp.DirectoryResponse getWorkingDirectory() nogil
 		ftp.ListingResponse getDirectoryListing() nogil
-		ftp.ListingResponse getDirectoryListing(char*&) nogil
-		ftp.Response changeDirectory(char*&) nogil
+		ftp.ListingResponse getDirectoryListing(const char*&) nogil
+		ftp.Response changeDirectory(const char*&) nogil
 		ftp.Response parentDirectory() nogil
-		ftp.Response createDirectory(char*&) nogil
-		ftp.Response deleteDirectory(char*&) nogil
-		ftp.Response renameFile(char*&, char*&) nogil
-		ftp.Response deleteFile(char*&) nogil
-		ftp.Response download(char*&, char*&) nogil
-		ftp.Response download(char*&, char*&, ftp.TransferMode) nogil
-		ftp.Response upload(char*&, char*&) nogil
-		ftp.Response upload(char*&, char*&, ftp.TransferMode) nogil
+		ftp.Response createDirectory(const char*&) nogil
+		ftp.Response deleteDirectory(const char*&) nogil
+		ftp.Response renameFile(const char*&, const char*&) nogil
+		ftp.Response deleteFile(const char*&) nogil
+		ftp.Response download(const char*&, const char*&) nogil
+		ftp.Response download(const char*&, const char*&, ftp.TransferMode) nogil
+		ftp.Response upload(const char*&, const char*&) nogil
+		ftp.Response upload(const char*&, const char*&, ftp.TransferMode) nogil
 
 	cdef cppclass Http:
 		Http()
-		Http(string&)
-		Http(string&, unsigned short)
-		void setHost(string&)
-		void setHost(string&, unsigned short)
-		http.Response sendRequest(http.Request&) nogil
-		http.Response sendRequest(http.Request&, Time) nogil
-
-#cimport x11
+		Http(const string&)
+		Http(const string&, unsigned short)
+		void setHost(const string&)
+		void setHost(const string&, unsigned short)
+		http.Response sendRequest(const http.Request&) nogil
+		http.Response sendRequest(const http.Request&, Time) nogil

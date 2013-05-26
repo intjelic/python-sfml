@@ -22,19 +22,19 @@ cdef extern from "SFML/Network.hpp" namespace "sf::Ftp":
 	cdef cppclass Response:
 		Response()
 		Response(response.Status)
-		Response(response.Status, string&)
-		bint isOk()
-		response.Status getStatus()
-		string& getMessage()
+		Response(response.Status, const string&)
+		bint isOk() const
+		response.Status getStatus() const
+		const string& getMessage() const
 
 	cdef cppclass DirectoryResponse:
-		DirectoryResponse()
-		DirectoryResponse(Response&)
-		string& getDirectory()
-		bint isOk()
+		#DirectoryResponse()
+		DirectoryResponse(const Response&)
+		const string& getDirectory() const
+		#bint isOk() const
 
 	cdef cppclass ListingResponse:
-		ListingResponse()
-		ListingResponse(Response&, vector[char]&)
-		vector[string]&	getListing()
-		bint isOk()
+		#ListingResponse()
+		ListingResponse(const Response&, const vector[char]&)
+		const vector[string]& getListing() const
+		#bint isOk() const
