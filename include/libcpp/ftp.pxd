@@ -28,13 +28,9 @@ cdef extern from "SFML/Network.hpp" namespace "sf::Ftp":
 		const string& getMessage() const
 
 	cdef cppclass DirectoryResponse:
-		#DirectoryResponse()
 		DirectoryResponse(const Response&)
 		const string& getDirectory() const
-		#bint isOk() const
 
 	cdef cppclass ListingResponse:
-		#ListingResponse()
 		ListingResponse(const Response&, const vector[char]&)
 		const vector[string]& getListing() const
-		#bint isOk() const
