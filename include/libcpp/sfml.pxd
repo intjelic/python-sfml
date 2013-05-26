@@ -681,6 +681,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 		Time getDuration() const
 
 	cdef cppclass SoundRecorder:
+		void start()
 		void start(unsigned int)
 		void stop() nogil
 		unsigned int getSampleRate() const
