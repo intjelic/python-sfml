@@ -8,18 +8,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from libcpp.sfml cimport Int16
 
-from libcpp.sfml cimport Shader
+cdef extern from "SFML/Audio.hpp" namespace "sf::SoundRecorder":
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
-	cdef struct CurrentTextureType:
-		pass
-
-	cdef CurrentTextureType CurrentTexture
-
-	cdef enum Type:
-		Vertex
-		Fragment
-
-	cdef bint isAvailable()
-	cdef void bind(const Shader*)
+	cdef struct Chunk:
+		const Int16* samples
+		size_t sampleCount

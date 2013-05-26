@@ -33,6 +33,12 @@ Mac OSX
 While official support for Mac OSX is slated for the next release, those eager
 should feel free to download the source code and compile manually.
 
+For example, through pip (don't forget to have cython 0.19 and SFML 2.0
+installed and as mentioned below): ::
+
+   pip install git+git://github.com/Sonkun/python-sfml.git
+
+
 Ubuntu
 ------
 Packages are available (for Ubuntu 12.04LTS, 12.10 & 13.04LTS) via launchpad::
@@ -95,10 +101,6 @@ source code, either from git::
 
     git clone git://github.com/Sonkun/python-sfml.git
 
-Or as a pre-packaged tarball archive::
-
-    wget http://python-sfml.org/downloads/pysfml-1.3.0.tar.gz
-
 You'll also need `SFML`_ and `Cython`_ 0.19 installed on your computer.
 
 Linux and Mac OSX
@@ -107,11 +109,8 @@ In order to compile, you'll need the Python developement files.
 
 To build the bindings for Python, type::
 
-   python2 setup.py build_ext -i
-
-For Python 3::
-
-   python3 setup.py build_ext -i
+   python2 setup.py install
+   python3 setup.py install
 
 Windows
 ^^^^^^^

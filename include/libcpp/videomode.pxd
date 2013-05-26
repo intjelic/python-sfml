@@ -14,4 +14,4 @@ from libcpp.sfml cimport VideoMode
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::VideoMode":
     cdef VideoMode& getDesktopMode()
-    cdef vector[VideoMode]& getFullscreenModes()
+    cdef const vector[VideoMode]& getFullscreenModes()

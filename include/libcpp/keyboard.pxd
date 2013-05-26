@@ -11,6 +11,7 @@
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Keyboard":
 	cdef enum Key:
+		Unknown
 		A
 		B
 		C

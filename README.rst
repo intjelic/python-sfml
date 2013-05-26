@@ -1,17 +1,12 @@
 About
 =====
-This is version 1.2.0 of the unofficial Python bindings for `SFML2 <http://www.sfml-dev.org/>`_
+This is version 1.3.0 of Python bindings for `SFML2 <http://www.sfml-dev.org/>`_
 released under the `LGPLv3 <http://www.gnu.org/copyleft/lgpl.html>`_ license.
 
 Python bindings really are the perfect way to sketch software using SFML.
 
 By combining the strength of SFML with the ease of the Python language,
 we can provide an amazing tool to quickly build multimedia software.
-
-.. note ::
-
-        So far, these bindings have only been tested thoroughly on Linux,
-        though minimal testing has been done on Windows.
 
 Getting the Code
 ================
@@ -37,7 +32,7 @@ Resources
 =========
 * Website: http://python-sfml.org
 * Project Page: https://github.com/Sonkun/python-sfml
-* Documentation: http://python-sfml.org/1.2
+* Documentation: http://python-sfml.org/1.3
 * Bug Tracker: http://github.com/Sonkun/python-sfml/issues
 
 Contact Information

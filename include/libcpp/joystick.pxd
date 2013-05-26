@@ -10,10 +10,13 @@
 
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Joystick":
-	cdef enum Axis:
+
+	cdef enum:
 		Count
 		ButtonCount
 		AxisCount
+
+	cdef enum Axis:
 		X
 		Y
 		Z

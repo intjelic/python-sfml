@@ -185,7 +185,7 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
 	def intersects(self, rectangle):
 		# make sure the rectangle is a rectangle (to get its right/bottom border)
 		l, t, w, h = rectangle
-		rectangle = Rectangle(l, t, w, h)
+		rectangle = Rectangle((l, t), (w, h))
 
 		# compute the intersection boundaries
 		left = max(self.left, rectangle.left)
@@ -297,6 +297,8 @@ cdef api object wrap_color(sf.Color *p):
 cdef class Transform:
 	cdef sf.Transform *p_this
 	cdef bint                 delete_this
+
+	IDENTITY = wrap_transform(<sf.Transform*>&sf.transform.Identity)
 
 	def __init__(self):
 		self.p_this = new sf.Transform()
@@ -1909,6 +1911,13 @@ cdef class RenderTexture(RenderTarget):
 
 		def __set__(self, bint smooth):
 			self.p_this.setSmooth(smooth)
+
+	property repeated:
+		def __get__(self):
+			return self.p_this.isRepeated()
+
+		def __set__(self, bint repeated):
+			self.p_this.setRepeated(repeated)
 
 	property active:
 		def __set__(self, bint active):
