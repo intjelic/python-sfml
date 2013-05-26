@@ -608,7 +608,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
 
 from libcpp.string cimport string
-cimport listener, soundsource, soundrecorder
+cimport listener, soundsource, soundrecorder, soundstream
 
 cdef extern from "SFML/Audio.hpp" namespace "sf":
 
@@ -626,12 +626,6 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 		unsigned int getChannelCount() const
 		Time getDuration() const
 
-cdef extern from "SFML/Audio.hpp" namespace "sf::SoundStream":
-	cdef struct Chunk:
-		const Int16* samples
-		size_t sampleCount
-
-cdef extern from "SFML/Audio.hpp" namespace "sf":
 	cdef cppclass SoundSource:
 		SoundSource(const SoundSource&)
 		void setPitch(float)
