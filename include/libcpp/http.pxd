@@ -14,6 +14,8 @@ from http cimport request, response
 
 cdef extern from "SFML/Network.hpp" namespace "sf::Http":
 	cdef cppclass Request:
+		Request(const string&)
+		Request(const string&, request.Method)
 		Request(const string&, request.Method, const string&)
 		void setField(const string&, const string&)
 		void setMethod(request.Method)

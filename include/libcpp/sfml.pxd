@@ -737,6 +737,7 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 
 	cdef cppclass SocketSelector:
 		SocketSelector()
+		SocketSelector(const SocketSelector&)
 		void add(Socket&)
 		void remove(Socket&)
 		void clear()
