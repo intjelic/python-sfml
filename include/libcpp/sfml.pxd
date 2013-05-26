@@ -705,6 +705,14 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		bint operator<=(IpAddress&)
 		bint operator>=(IpAddress&)
 
+	cdef cppclass Packet:
+		Packet()
+		void append(const void*, size_t)
+		void clear()
+		const void* getData() const
+		size_t getDataSize() const
+		bint endOfPacket() const
+
 	cdef cppclass Socket:
 		void setBlocking(bint)
 		bint isBlocking() const
@@ -725,7 +733,9 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		socket.Status connect(const IpAddress&, unsigned short, Time) nogil
 		void disconnect()
 		socket.Status send(const void*, size_t) nogil
+		socket.Status send(Packet&) nogil
 		socket.Status receive(const void*, size_t, size_t&) nogil
+		socket.Status receive(Packet&) nogil
 
 	cdef cppclass UdpSocket:
 		UdpSocket()
@@ -733,7 +743,9 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
 		socket.Status bind(unsigned short)
 		void unbind()
 		socket.Status send(const void*, size_t, const IpAddress&, unsigned short)
+		socket.Status send(Packet&, const IpAddress&, unsigned short)
 		socket.Status receive(void*, size_t, size_t&, IpAddress&, unsigned short&)
+		socket.Status receive(Packet&, size_t&, IpAddress&, unsigned short&)
 
 	cdef cppclass SocketSelector:
 		SocketSelector()
