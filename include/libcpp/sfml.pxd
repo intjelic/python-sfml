@@ -611,24 +611,23 @@ from libcpp.string cimport string
 cimport listener, soundsource, soundrecorder
 
 cdef extern from "SFML/Audio.hpp" namespace "sf":
-	ctypedef Int16* const_Int16 "const sf::Int16*"
 
 	cdef cppclass SoundBuffer:
 		SoundBuffer()
-		bint loadFromFile(char*&)
-		bint loadFromMemory(void*, size_t)
+		bint loadFromFile(const char*&)
+		bint loadFromMemory(const void*, size_t)
 		bint loadFromStream(InputStream&)
-		bint loadFromSamples(Int16*, size_t, unsigned int, unsigned int)
-		bint saveToFile(char*&)
-		Int16* getSamples()
-		size_t getSampleCount()
-		unsigned int getSampleRate()
-		unsigned int getChannelCount()
-		Time getDuration()
+		bint loadFromSamples(const Int16*, size_t, unsigned int, unsigned int)
+		bint saveToFile(const char*&) const
+		const Int16* getSamples() const
+		size_t getSampleCount() const
+		unsigned int getSampleRate() const
+		unsigned int getChannelCount() const
+		Time getDuration() const
 
 cdef extern from "SFML/Audio.hpp" namespace "sf::SoundStream":
 	cdef struct Chunk:
-		const_Int16 samples
+		const Int16* samples
 		size_t sampleCount
 
 cdef extern from "SFML/Audio.hpp" namespace "sf":
@@ -636,59 +635,59 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 		void setPitch(float)
 		void setVolume(float)
 		void setPosition(float, float, float)
-		void setPosition(Vector3f&)
+		void setPosition(const Vector3f&)
 		void setRelativeToListener(bint)
 		void setMinDistance(float)
 		void setAttenuation(float)
-		float getPitch()
-		float getVolume()
-		Vector3f getPosition()
-		bint isRelativeToListener()
-		float getMinDistance()
-		float getAttenuation()
+		float getPitch() const
+		float getVolume() const
+		Vector3f getPosition() const
+		bint isRelativeToListener() const
+		float getMinDistance() const
+		float getAttenuation() const
 
 	cdef cppclass Sound:
 		Sound()
-		Sound(SoundBuffer&)
+		Sound(const SoundBuffer&)
 		void play()
 		void pause()
 		void stop()
-		void setBuffer(SoundBuffer&)
+		void setBuffer(const SoundBuffer&)
 		void setLoop(bint)
 		void setPlayingOffset(Time)
-		SoundBuffer* getBuffer()
-		bint getLoop()
-		Time getPlayingOffset()
-		soundsource.Status getStatus()
+		const SoundBuffer* getBuffer() const
+		bint getLoop() const
+		Time getPlayingOffset() const
+		soundsource.Status getStatus() const
 		void resetBuffer()
 
 	cdef cppclass SoundStream:
 		void play()
 		void pause()
 		void stop()
-		unsigned int getChannelCount()
-		unsigned int getSampleRate()
-		soundsource.Status getStatus()
+		unsigned int getChannelCount() const
+		unsigned int getSampleRate() const
+		soundsource.Status getStatus() const
 		void setPlayingOffset(Time)
-		Time getPlayingOffset()
+		Time getPlayingOffset() const
 		void setLoop(bint)
-		bint getLoop()
+		bint getLoop() const
 
 	cdef cppclass Music:
 		Music()
-		bint openFromFile(char*&)
-		bint openFromMemory(void*, size_t)
+		bint openFromFile(const char*&)
+		bint openFromMemory(const void*, size_t)
 		bint openFromStream(InputStream&)
-		Time getDuration()
+		Time getDuration() const
 
 	cdef cppclass SoundRecorder:
 		void start(unsigned int)
 		void stop() nogil
-		unsigned int getSampleRate()
+		unsigned int getSampleRate() const
 
 	cdef cppclass SoundBufferRecorder:
 		SoundBufferRecorder()
-		SoundBuffer& getBuffer()
+		const SoundBuffer& getBuffer() const
 
 
 cimport ipaddress, socket, udpsocket, ftp, http
