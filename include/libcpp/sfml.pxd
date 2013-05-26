@@ -614,6 +614,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 
 	cdef cppclass SoundBuffer:
 		SoundBuffer()
+		SoundBuffer(const SoundBuffer&)
 		bint loadFromFile(const char*&)
 		bint loadFromMemory(const void*, size_t)
 		bint loadFromStream(InputStream&)
@@ -632,6 +633,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf::SoundStream":
 
 cdef extern from "SFML/Audio.hpp" namespace "sf":
 	cdef cppclass SoundSource:
+		SoundSource(const SoundSource&)
 		void setPitch(float)
 		void setVolume(float)
 		void setPosition(float, float, float)
@@ -649,6 +651,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 	cdef cppclass Sound:
 		Sound()
 		Sound(const SoundBuffer&)
+		Sound(const Sound&)
 		void play()
 		void pause()
 		void stop()
