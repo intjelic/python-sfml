@@ -1,19 +1,20 @@
-import unittest
+import pytest
 import sfml.network as sf
 
-def pytest_funcarg_http(request):
-    return request.cached_setup(
-        setup=lambda: sf.Http('https://api.github.com'),
-        scope='function')
+@pytest.fixture
+def http():
+    return sf.Http('https://api.github.com', port=443)
 
-def test_request():
+@pytest.fixture
+def http_request():
     request = sf.HttpRequest('/gists/public')
     request.method = sf.HttpRequest.GET
 
-    # don't do this!
     return request
 
-def test_response(http):
-    response = http.send_request(test_request)
+def test_response(http, http_request):
+    response = http.send_request(http_request)
 
-    print response.body
+    # TODO: figure out why I get a 400 message (http message sent to https port
+    assert response
+

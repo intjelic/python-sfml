@@ -12,7 +12,7 @@
 import pytest
 import sfml.system as sf
 
-@pytest.fixture(scope='function')
+@pytest.fixture()
 def time():
     return dict(
         micro=sf.microseconds(5000000),
