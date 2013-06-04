@@ -21,12 +21,37 @@ from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 cdef extern from "DerivableWindow.hpp":
 	cdef cppclass DerivableWindow:
 		DerivableWindow()
-		DerivableWindow(sf.VideoMode, char*)
-		DerivableWindow(sf.VideoMode, char*, unsigned long)
-		DerivableWindow(sf.VideoMode, char*, unsigned long, sf.ContextSettings&)
+		DerivableWindow(sf.VideoMode, const sf.String&)
+		DerivableWindow(sf.VideoMode, const sf.String&, unsigned long)
+		DerivableWindow(sf.VideoMode, const sf.String&, unsigned long, sf.ContextSettings&)
 		DerivableWindow(sf.WindowHandle window_handle)
 		DerivableWindow(sf.WindowHandle window_handle, sf.ContextSettings&)
 		void set_pyobj(void*)
+
+cdef extern from *:
+	ctypedef int wchar_t
+	ctypedef void* PyUnicodeObject
+	Py_ssize_t PyUnicode_AsWideChar(PyUnicodeObject* o, wchar_t *w, Py_ssize_t size)
+
+from libc.stdlib cimport malloc, free
+
+cdef sf.String toEncodedString(object title):
+	cdef unicode  utitle = None
+
+	if type(title) not in [unicode, str]:
+		raise NotImplementedError("Expected string or unicode")
+
+	if type(title) is unicode:
+		utitle = title
+
+	if type(title) is str:
+		utitle = title.decode("utf-8")
+
+	cdef wchar_t* ctitle = <wchar_t *>malloc(len(utitle) * sizeof(wchar_t))
+	PyUnicode_AsWideChar(<PyUnicodeObject*>(<void*>(utitle)), ctitle, len(utitle))
+
+	return sf.String(ctitle)
+
 
 __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
 			'CloseEvent', 'ResizeEvent', 'FocusEvent', 'TextEvent',
@@ -647,19 +672,14 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 	cdef sf.Window *p_window
 
 	def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
-		cdef char* encoded_title
-
 		if self.__class__.__name__ != 'RenderWindow':
-			encoded_title_temporary = title.encode(u"ISO-8859-1")
-			encoded_title = encoded_title_temporary
-
 			if self.__class__ is Window:
-				if not settings: self.p_window = new sf.Window(mode.p_this[0], encoded_title, style)
-				else: self.p_window = new sf.Window(mode.p_this[0], encoded_title, style, settings.p_this[0])
+				if not settings: self.p_window = new sf.Window(mode.p_this[0], toEncodedString(title), style)
+				else: self.p_window = new sf.Window(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
 
 			else:
-				if not settings: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], encoded_title, style)
-				else: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
+				if not settings: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], toEncodedString(title), style)
+				else: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
 				(<DerivableWindow*>self.p_window).set_pyobj(<void*>self)
 
 	def __dealloc__(self):
@@ -667,13 +687,8 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 			del self.p_window
 
 	def recreate(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
-		cdef char* encoded_title
-
-		encoded_title_temporary = title.encode(u"ISO-8859-1")
-		encoded_title = encoded_title_temporary
-
-		if not settings: self.p_window.create(mode.p_this[0], encoded_title, style)
-		else: self.p_window.create(mode.p_this[0], encoded_title, style, settings.p_this[0])
+		if not settings: self.p_window.create(mode.p_this[0], toEncodedString(title), style)
+		else: self.p_window.create(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
 
 	def close(self):
 		self.p_window.close()
@@ -732,8 +747,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
 	property title:
 		def __set__(self, title):
-			encoded_title = title.encode(u"ISO-8859-1")
-			self.p_window.setTitle(encoded_title)
+			self.p_window.setTitle(toEncodedString(title))
 
 	property icon:
 		def __set__(self, Pixels icon):

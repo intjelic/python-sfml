@@ -40,13 +40,37 @@ cdef extern from "DerivableDrawable.hpp":
 cdef extern from "DerivableRenderWindow.hpp":
 	cdef cppclass DerivableRenderWindow:
 		DerivableRenderWindow()
-		DerivableRenderWindow(sf.VideoMode, char*)
-		DerivableRenderWindow(sf.VideoMode, char*, unsigned long)
-		DerivableRenderWindow(sf.VideoMode, char*, unsigned long, sf.ContextSettings&)
+		DerivableRenderWindow(sf.VideoMode, const sf.String&)
+		DerivableRenderWindow(sf.VideoMode, const sf.String&, unsigned long)
+		DerivableRenderWindow(sf.VideoMode, const sf.String&, unsigned long, sf.ContextSettings&)
 		DerivableRenderWindow(sf.WindowHandle window_handle)
 		DerivableRenderWindow(sf.WindowHandle window_handle, sf.ContextSettings&)
 		void set_pyobj(void*)
 
+cdef extern from *:
+	ctypedef int wchar_t
+	ctypedef void* PyUnicodeObject
+	Py_ssize_t PyUnicode_AsWideChar(PyUnicodeObject* o, wchar_t *w, Py_ssize_t size)
+	object PyUnicode_FromWideChar(const wchar_t *w, Py_ssize_t size)
+
+from libc.stdlib cimport malloc, free
+
+cdef sf.String toEncodedString(object title):
+	cdef unicode  utitle = None
+
+	if type(title) not in [unicode, str]:
+		raise NotImplementedError("Expected string or unicode")
+
+	if type(title) is unicode:
+		utitle = title
+
+	if type(title) is str:
+		utitle = title.decode("utf-8")
+
+	cdef wchar_t* ctitle = <wchar_t *>malloc(len(utitle) * sizeof(wchar_t))
+	PyUnicode_AsWideChar(<PyUnicodeObject*>(<void*>(utitle)), ctitle, len(utitle))
+
+	return sf.String(ctitle)
 
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
 			'Image', 'Texture', 'Glyph', 'Font', 'Shader',
@@ -1317,18 +1341,10 @@ cdef class Text(TransformableDrawable):
 
 	property string:
 		def __get__(self):
-			cdef char* decoded_string
-			decoded_string = <char*>self.p_this.getString().toAnsiString().c_str()
-
-			return decoded_string.decode('utf-8')
+			return PyUnicode_FromWideChar(self.p_this.getString().toWideString().c_str(), self.p_this.getString().getSize())
 
 		def __set__(self, string):
-			cdef char* encoded_string
-
-			encoded_string_temporary = string.encode('utf-8')
-			encoded_string = encoded_string_temporary
-
-			self.p_this.setString(sf.String(encoded_string))
+			self.p_this.setString(toEncodedString(string))
 
 	property font:
 		def __get__(self):
@@ -1801,17 +1817,12 @@ cdef class RenderWindow(Window):
 	cdef sf.RenderWindow *p_this
 
 	def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
-		cdef char* encoded_title
-
-		encoded_title_temporary = title.encode(u"ISO-8859-1")
-		encoded_title = encoded_title_temporary
-
 		if self.__class__ is not RenderWindow:
-			if not settings: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], encoded_title, style)
-			else: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
+			if not settings: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], toEncodedString(title), style)
+			else: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
 		else:
-			if not settings: self.p_this = new sf.RenderWindow(mode.p_this[0], encoded_title, style)
-			else: self.p_this = new sf.RenderWindow(mode.p_this[0], encoded_title, style, settings.p_this[0])
+			if not settings: self.p_this = new sf.RenderWindow(mode.p_this[0], toEncodedString(title), style)
+			else: self.p_this = new sf.RenderWindow(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
 
 		self.p_window = <sf.Window*>self.p_this
 
