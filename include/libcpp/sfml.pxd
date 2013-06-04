@@ -9,9 +9,15 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
+cdef extern from *:
+	ctypedef int wchar_t
+
 cdef extern from "<string>" namespace "std":
 	cdef cppclass string:
 		char* c_str()
+
+	cdef cppclass wstring:
+		wchar_t* c_str()
 
 cimport time
 
@@ -67,8 +73,13 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 	cdef Time microseconds(Int64)
 
 	cdef cppclass String:
-		String(char*)
+		String()
+		String(const wchar_t*)
 		string toAnsiString()
+		wstring toWideString()
+		void clear()
+		int getSize() const
+		bint isEmpty() const
 
 	cdef cppclass Vector2[T]:
 		Vector2()
@@ -203,14 +214,14 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 
 	cdef cppclass Window:
 		Window()
-		Window(VideoMode, const char*)
-		Window(VideoMode, const char*, unsigned long)
-		Window(VideoMode, const char*, unsigned long, const ContextSettings&)
+		Window(VideoMode, const String&)
+		Window(VideoMode, const String&, unsigned long)
+		Window(VideoMode, const String&, unsigned long, const ContextSettings&)
 		Window(WindowHandle)
 		Window(WindowHandle, const ContextSettings&)
-		void create(VideoMode, const char*)
-		void create(VideoMode, const char*, unsigned long)
-		void create(VideoMode, const char*, unsigned long, const ContextSettings&)
+		void create(VideoMode, const String&)
+		void create(VideoMode, const String&, unsigned long)
+		void create(VideoMode, const String&, unsigned long, const ContextSettings&)
 		void create(WindowHandle, const ContextSettings&)
 		void close()
 		bint isOpen() const
@@ -222,7 +233,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 
 		Vector2u getSize() const
 		void setSize(const Vector2u)
-		void setTitle(const char*)
+		void setTitle(const String&)
 		void setIcon(unsigned int, unsigned int, const Uint8*)
 		void setVisible(bint)
 		void setVerticalSyncEnabled(bint)
@@ -568,9 +579,9 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
 	cdef cppclass RenderWindow:
 		RenderWindow()
-		RenderWindow(VideoMode, const char*&)
-		RenderWindow(VideoMode, const char*&, Uint32)
-		RenderWindow(VideoMode, const char*&, Uint32, const ContextSettings&)
+		RenderWindow(VideoMode, const String&)
+		RenderWindow(VideoMode, const String&, Uint32)
+		RenderWindow(VideoMode, const String&, Uint32, const ContextSettings&)
 		void create(WindowHandle)
 		void create(WindowHandle, const ContextSettings&)
 		void clear()
