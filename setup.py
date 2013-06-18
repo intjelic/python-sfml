@@ -89,7 +89,8 @@ extension = lambda name, files, libs: Extension(
 	'sfml.' + name,
 	files,
 	['include'], language='c++',
-	libraries=libs)
+	libraries=libs,
+    extra_compile_args=['-fpermissive'])
 
 system = extension(
 	'system',

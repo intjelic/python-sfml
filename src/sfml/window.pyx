@@ -31,26 +31,33 @@ cdef extern from "DerivableWindow.hpp":
 cdef extern from *:
 	ctypedef int wchar_t
 	ctypedef void* PyUnicodeObject
-	Py_ssize_t PyUnicode_AsWideChar(PyUnicodeObject* o, wchar_t *w, Py_ssize_t size)
+
+cdef extern from "hacks.h":
+	Py_ssize_t PyUnicode_AsWideChar(void* o, wchar_t *w, Py_ssize_t size)
 
 from libc.stdlib cimport malloc, free
 
 cdef sf.String toEncodedString(object title):
+	cdef str stitle = None
 	cdef unicode  utitle = None
+	cdef wchar_t* ctitle = NULL
 
-	if type(title) not in [unicode, str]:
-		raise NotImplementedError("Expected string or unicode")
+	if sys.version_info < (3, 0):
+		if type(title) is unicode:
+			utitle = title
+		else:
+			utitle = title.decode("utf-8")
 
-	if type(title) is unicode:
-		utitle = title
+		ctitle = <wchar_t *>malloc(len(utitle) * sizeof(wchar_t))
+		PyUnicode_AsWideChar(<void*>(utitle), ctitle, len(utitle))
+		return sf.String(ctitle)
 
-	if type(title) is str:
-		utitle = title.decode("utf-8")
+	else:
+		stitle = title
 
-	cdef wchar_t* ctitle = <wchar_t *>malloc(len(utitle) * sizeof(wchar_t))
-	PyUnicode_AsWideChar(<PyUnicodeObject*>(<void*>(utitle)), ctitle, len(utitle))
-
-	return sf.String(ctitle)
+		ctitle = <wchar_t *>malloc(len(stitle) * sizeof(wchar_t))
+		PyUnicode_AsWideChar(<void*>(stitle), ctitle, len(stitle))
+		return sf.String(ctitle)
 
 
 __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
@@ -60,6 +67,8 @@ __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
 			'JoystickMoveEvent', 'JoystickConnectEvent', 'Pixels',
 			'Window', 'Keyboard', 'Joystick', 'Mouse', 'Context']
 
+
+import sys
 
 from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2u
