@@ -42,6 +42,8 @@ cdef sf.String toEncodedString(object title):
 	cdef unicode  utitle = None
 	cdef wchar_t* ctitle = NULL
 
+	title = title + "\0"
+
 	if sys.version_info < (3, 0):
 		if type(title) is unicode:
 			utitle = title
