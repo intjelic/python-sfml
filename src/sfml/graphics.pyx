@@ -330,7 +330,7 @@ cdef api object wrap_color(sf.Color *p):
 
 cdef class Transform:
 	cdef sf.Transform *p_this
-	cdef bint                 delete_this
+	cdef bint          delete_this
 
 	IDENTITY = wrap_transform(<sf.Transform*>&sf.transform.Identity)
 
@@ -804,17 +804,15 @@ cdef class Glyph:
 		def __set__(self, texture_rectangle):
 			self.p_this.textureRect = to_intrect(texture_rectangle)
 
-
 cdef Glyph wrap_glyph(sf.Glyph *p):
 	cdef Glyph r = Glyph.__new__(Glyph)
 	r.p_this = p
 	return r
 
-
 cdef class Font:
 	cdef sf.Font *p_this
-	cdef bint            delete_this
-	cdef Texture         m_texture
+	cdef bint     delete_this
+	cdef Texture  m_texture
 
 	def __init__(self):
 		raise UserWarning("Use a specific constructor")
@@ -870,7 +868,6 @@ cdef Font wrap_font(sf.Font *p, bint d=True):
 	r.p_this = p
 	r.delete_this = d
 	return r
-
 
 cdef class Shader:
 	cdef sf.Shader *p_this
@@ -1692,9 +1689,9 @@ cdef class VertexArray(Drawable):
 
 
 cdef class View:
-	cdef sf.View  *p_this
-	cdef RenderWindow     m_renderwindow
-	cdef RenderTarget     m_rendertarget
+	cdef sf.View      *p_this
+	cdef RenderWindow  m_renderwindow
+	cdef RenderTarget  m_rendertarget
 
 	def __init__(self, rectangle=None):
 		if not rectangle: self.p_this = new sf.View()
@@ -1961,7 +1958,7 @@ cdef class RenderWindow(Window):
 
 cdef class RenderTexture(RenderTarget):
 	cdef sf.RenderTexture *p_this
-	cdef Texture                  m_texture
+	cdef Texture           m_texture
 
 	def __init__(self, unsigned int width, unsigned int height, bint depthBuffer=False):
 		self.p_this = new sf.RenderTexture()
