@@ -679,7 +679,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 	cdef sf.Window *p_window
 
 	def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
-		if self.__class__.__name__ != 'RenderWindow':
+		if self.p_window is NULL:
 			if self.__class__ is Window:
 				if not settings: self.p_window = new sf.Window(mode.p_this[0], toEncodedString(title), style)
 				else: self.p_window = new sf.Window(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
@@ -690,7 +690,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 				(<DerivableWindow*>self.p_window).set_pyobj(<void*>self)
 
 	def __dealloc__(self):
-		if self.__class__.__name__ == 'Window':
+		if self.p_window is not NULL:
 			del self.p_window
 
 	def __repr__(self):

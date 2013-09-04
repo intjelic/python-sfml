@@ -143,13 +143,14 @@ cdef api object wrap_chunk(Int16* samples, unsigned int sample_count, bint delet
 
 cdef class SoundBuffer:
 	cdef sf.SoundBuffer *p_this
-	cdef bint                delete_this
+	cdef bint            delete_this
 
 	def __init__(self):
 		raise UserWarning("Use specific methods")
 
 	def __dealloc__(self):
-		if self.delete_this: del self.p_this
+		if self.delete_this:
+			del self.p_this
 		
 	def __repr__(self):
 		return "SoundBuffer(samples={0}, sample_rate={1}, channel_count={2}, duration={3})".format(self.samples[:10], self.sample_rate, self.channel_count, self.duration)
@@ -278,17 +279,22 @@ cdef class SoundSource:
 
 
 cdef class Sound(SoundSource):
-	cdef sf.Sound *p_this
-	cdef SoundBuffer   m_buffer
+	cdef sf.Sound    *p_this
+	cdef SoundBuffer  m_buffer
 
 	def __init__(self, SoundBuffer buffer=None):
-		self.p_this = new sf.Sound()
-		self.p_soundsource = <sf.SoundSource*>self.p_this
+		if self.p_this is NULL:
+			self.p_this = new sf.Sound()
+			self.p_soundsource = <sf.SoundSource*>self.p_this
 
-		if buffer: self.buffer = buffer
+			if buffer:
+				self.buffer = buffer
 
 	def __dealloc__(self):
-		del self.p_this
+		self.p_soundsource = NULL
+		
+		if self.p_this is not NULL:
+			del self.p_this
 
 	def __repr__(self):
 		return "Sound(buffer={0}, status={1}, playing_offset={2})".format(id(self.buffer), self.status, self.playing_offset)
@@ -338,10 +344,16 @@ cdef class SoundStream(SoundSource):
 		if self.__class__ == SoundStream:
 			raise NotImplementedError("SoundStream is abstract")
 
-		elif self.__class__ not in [Music]:
+		if self.p_soundstream is NULL:
 			self.p_soundstream = <sf.SoundStream*> new DerivableSoundStream(<void*>self)
 			self.p_soundsource = <sf.SoundSource*>self.p_soundstream
-
+			
+	def __dealloc__(self):
+		self.p_soundsource = NULL
+		
+		if self.p_soundstream is not NULL:
+			del self.p_soundstream
+		
 	def play(self):
 		self.p_soundstream.play()
 
@@ -389,11 +401,14 @@ cdef class SoundStream(SoundSource):
 cdef class Music(SoundStream):
 	cdef sf.Music *p_this
 
-	def __init__(self):
+	def __init__(self, *args, **kwargs):
 		raise UserWarning("Use specific constructor")
 
 	def __dealloc__(self):
-		del self.p_this
+		self.p_soundstream = NULL
+		
+		if self.p_this is not NULL:
+			del self.p_this
 
 	def __repr__(self):
 		return "Music(buffer={0}, status={1}, playing_offset={2})".format(id(self.buffer), self.status, self.playing_offset)
@@ -406,7 +421,8 @@ cdef class Music(SoundStream):
 		encoded_filename_temporary = filename.encode('UTF-8')
 		encoded_filename = encoded_filename_temporary
 
-		if p.openFromFile(encoded_filename): return wrap_music(p)
+		if p.openFromFile(encoded_filename):
+			return wrap_music(p)
 
 		del p
 		raise IOError(popLastErrorMessage())
@@ -415,7 +431,8 @@ cdef class Music(SoundStream):
 	def from_memory(cls, bytes data):
 		cdef sf.Music *p = new sf.Music()
 
-		if p.openFromMemory(<char*>data, len(data)): return wrap_music(p)
+		if p.openFromMemory(<char*>data, len(data)): 
+			return wrap_music(p)
 
 		del p
 		raise IOError(popLastErrorMessage())
@@ -438,17 +455,17 @@ cdef Music wrap_music(sf.Music *p):
 cdef class SoundRecorder:
 	cdef sf.SoundRecorder *p_soundrecorder
 
-	def __init__(self):
+	def __init__(self, *args, **kwargs):
 		if self.__class__ == SoundRecorder:
 			raise NotImplementedError("SoundRecorder is abstract")
 
-		elif self.__class__ is not SoundBufferRecorder:
+		if self.p_soundrecorder is NULL:
 			self.p_soundrecorder = <sf.SoundRecorder*>new DerivableSoundRecorder(<void*>self)
 
 	def __dealloc__(self):
-		if self.__class__ is SoundRecorder:
+		if self.p_soundrecorder is not NULL:
 			del self.p_soundrecorder
-			
+
 	def __repr__(self):
 		return "SoundRecorder(sample_rate={0})".format(self.sample_rate)
 
@@ -477,17 +494,21 @@ cdef class SoundRecorder:
 
 cdef class SoundBufferRecorder(SoundRecorder):
 	cdef sf.SoundBufferRecorder *p_this
-	cdef SoundBuffer                 m_buffer
+	cdef SoundBuffer             m_buffer
 
 	def __init__(self):
-		self.p_this = new sf.SoundBufferRecorder()
-		self.p_soundrecorder = <sf.SoundRecorder*>self.p_this
+		if self.p_this is NULL:
+			self.p_this = new sf.SoundBufferRecorder()
+			self.p_soundrecorder = <sf.SoundRecorder*>self.p_this
 
-		self.m_buffer = wrap_soundbuffer(<sf.SoundBuffer*>&self.p_this.getBuffer(), False)
+			self.m_buffer = wrap_soundbuffer(<sf.SoundBuffer*>&self.p_this.getBuffer(), False)
 
 	def __dealloc__(self):
-		del self.p_this
-		
+		self.p_soundrecorder = NULL
+
+		if self.p_this is not NULL:
+			del self.p_this
+
 	def __repr__(self):
 		return "SoundBufferRecorder(buffer={0}, sample_rate={1})".format(id(self.buffer), self.sample_rate)
 

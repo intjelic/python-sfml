@@ -566,7 +566,8 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 		raise UserWarning("Use a specific constructor")
 
 	def __dealloc__(self):
-		if self.delete_this: del self.p_this
+		if self.delete_this:
+			del self.p_this
 
 	def __repr__(self):
 		return "Texture(size={0}, smooth={1}, repeated={2})".format(self.size, self.smooth, self.repeated)
@@ -1157,13 +1158,19 @@ cdef api object api_wrap_renderstates(sf.RenderStates *p):
 cdef public class Drawable[type PyDrawableType, object PyDrawableObject]:
 	cdef sf.Drawable *p_drawable
 
-	def __cinit__(self, *args, **kwargs):
+	def __init__(self, *args, **kwargs):
 		if self.__class__ == Drawable:
 			raise NotImplementedError('Drawable is abstact')
 
-		self.p_drawable = <sf.Drawable*>new DerivableDrawable(<void*>self)
+		if self.p_drawable is NULL:
+			self.p_drawable = <sf.Drawable*>new DerivableDrawable(<void*>self)
 
-	def draw(self, RenderTarget target, RenderStates states): pass
+	def __dealloc__(self):
+		if self.p_drawable is not NULL:
+			del self.p_drawable
+			
+	def draw(self, RenderTarget target, RenderStates states):
+		pass
 
 cdef class Transformable:
 	cdef sf.Transformable *p_this
@@ -1229,13 +1236,10 @@ cdef class Transformable:
 cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableType, object PyTransformableDrawableObject]:
 	cdef sf.Transformable *p_transformable
 
-	def __cinit__(self, *args, **kwargs):
+	def __init__(self, *args, **kwargs):
 		if self.__class__ == TransformableDrawable:
-			raise NotImplementedError('TransformableDrawable is abstact')
-
-		if self.__class__ not in [Sprite, Shape, Text]:
-			self.p_transformable = new sf.Transformable()
-
+			raise NotImplementedError('TransformableDrawable is not meant to be used')
+			
 	def __repr__(self):
 		return "TransformableDrawable(position={0}, rotation={1}, ratio={2}, origin={3})".format(self.position, self.rotation, self.ratio, self.origin)
 
@@ -1295,21 +1299,27 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
 
 cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpriteObject]:
 	cdef sf.Sprite *p_this
-	cdef Texture           m_texture
+	cdef Texture    m_texture
 
-	def __cinit__(self, Texture texture, rectangle=None):
-		if not rectangle: self.p_this = new sf.Sprite(texture.p_this[0])
-		else:
-			l, t, w, h = rectangle
-			self.p_this = new sf.Sprite(texture.p_this[0], sf.IntRect(l, t, w, h))
+	def __init__(self, Texture texture, rectangle=None):
+		if self.p_this is NULL:
+			if not rectangle:
+				self.p_this = new sf.Sprite(texture.p_this[0])
+			else:
+				l, t, w, h = rectangle
+				self.p_this = new sf.Sprite(texture.p_this[0], sf.IntRect(l, t, w, h))
 
-		self.p_drawable = <sf.Drawable*>self.p_this
-		self.p_transformable = <sf.Transformable*>self.p_this
+			self.p_drawable = <sf.Drawable*>self.p_this
+			self.p_transformable = <sf.Transformable*>self.p_this
 
-		self.m_texture = texture
+			self.m_texture = texture
 
 	def __dealloc__(self):
-		del self.p_this
+		self.p_drawable = NULL
+		self.p_transformable = NULL
+		
+		if self.p_this is not NULL:
+			del self.p_this
 		
 	def __repr__(self):
 		return "Sprite(texture={0}, texture_rectangle={1}, color={2})".format(id(self.texture), self.texture_rectangle, self.color)
@@ -1359,19 +1369,27 @@ cdef class Text(TransformableDrawable):
 	UNDERLINED = sf.text.Underlined
 
 	cdef sf.Text *p_this
-	cdef Font            m_font
+	cdef Font     m_font
 
 	def __init__(self, string=None, Font font=None, unsigned int character_size=30):
-		self.p_this = new sf.Text()
-		self.p_drawable = <sf.Drawable*>self.p_this
-		self.p_transformable = <sf.Transformable*>self.p_this
-
-		if string: self.string = string
-		if font: self.font = font
-		self.character_size = character_size
+		if self.p_this is NULL:
+			self.p_this = new sf.Text()
+			self.p_drawable = <sf.Drawable*>self.p_this
+			self.p_transformable = <sf.Transformable*>self.p_this
+			
+			if string: 
+				self.string = string
+			if font:
+				self.font = font
+				
+			self.character_size = character_size
 
 	def __dealloc__(self):
-		del self.p_this
+		self.p_drawable = NULL
+		self.p_transformable = NULL
+		
+		if self.p_this is not NULL:
+			del self.p_this
 		
 	def __repr__(self):
 		return "Text(string={0}, font={1}, character_size={2}, style={3}, color={4})".format(self.string[:10], id(self.font), self.character_size, self.style, self.color)
@@ -1431,15 +1449,19 @@ cdef class Text(TransformableDrawable):
 
 cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeObject]:
 	cdef sf.Shape *p_shape
-	cdef Texture          m_texture
+	cdef Texture   m_texture
 
-	def __cinit__(self, *args, **kwargs):
+	def __init__(self, *args, **kwargs):
 		if self.__class__ == Shape:
 			raise NotImplementedError('Shape is abstact')
-
-	def draw(self, RenderTarget target, RenderStates):
+			
+	def __dealloc__(self):
+		self.p_drawable = NULL
+		self.p_transformable = NULL
+		
+	def draw(self, RenderTarget target, RenderStates states):
 		target.p_rendertarget.draw((<sf.Drawable*>self.p_shape)[0])
-
+		
 	property texture:
 		def __get__(self):
 			return self.m_texture
@@ -1505,16 +1527,20 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 cdef class CircleShape(Shape):
 	cdef sf.CircleShape *p_this
 
-	def __cinit__(self, float radius=0, unsigned int point_count=30):
-		self.p_this = new sf.CircleShape(radius, point_count)
+	def __init__(self, float radius=0, unsigned int point_count=30):
+		if self.p_this is NULL:
+			self.p_this = new sf.CircleShape(radius, point_count)
 
-		self.p_drawable = <sf.Drawable*>self.p_this
-		self.p_transformable = <sf.Transformable*>self.p_this
-		self.p_shape = <sf.Shape*>self.p_this
+			self.p_drawable = <sf.Drawable*>self.p_this
+			self.p_transformable = <sf.Transformable*>self.p_this
+			self.p_shape = <sf.Shape*>self.p_this
 
 	def __dealloc__(self):
-		del self.p_this
-
+		self.p_shape = NULL
+		
+		if self.p_this is not NULL:
+			del self.p_this
+		
 	def __repr__(self):
 		return "CircleShape(texture={0}, texture_rectangle={1}, fill_color={2}, outline_color={3}, outline_thickness={4}, radius={5}, point_count={6})".format(id(self.texture), self.texture_rectangle, self.fill_color, self.outline_color, self.outline_thickness, self.radius, self.point_count)
 		
@@ -1535,17 +1561,22 @@ cdef class CircleShape(Shape):
 cdef public class ConvexShape(Shape)[type PyConvexShapeType, object PyConvexShapeObject]:
 	cdef sf.ConvexShape *p_this
 
-	def __cinit__(self, unsigned int point_count=0):
-		self.p_this = new sf.ConvexShape(point_count)
-		self.p_drawable = <sf.Drawable*>self.p_this
-		self.p_transformable = <sf.Transformable*>self.p_this
-		self.p_shape = <sf.Shape*>self.p_this
+	def __init__(self, unsigned int point_count=0):
+		if self.p_this is NULL:
+			self.p_this = new sf.ConvexShape(point_count)
+			
+			self.p_drawable = <sf.Drawable*>self.p_this
+			self.p_transformable = <sf.Transformable*>self.p_this
+			self.p_shape = <sf.Shape*>self.p_this
 
 	def __dealloc__(self):
-		del self.p_this
+		self.p_shape = NULL
+		
+		if self.p_this is not NULL:
+			del self.p_this
 		
 	def __repr__(self):
-		return "CircleShape(texture={0}, texture_rectangle={1}, fill_color={2}, outline_color={3}, outline_thickness={4}, point_count={5})".format(id(self.texture), self.texture_rectangle, self.fill_color, self.outline_color, self.outline_thickness, self.point_count)
+		return "ConvexShape(texture={0}, texture_rectangle={1}, fill_color={2}, outline_color={3}, outline_thickness={4}, point_count={5})".format(id(self.texture), self.texture_rectangle, self.fill_color, self.outline_color, self.outline_thickness, self.point_count)
 		
 	property point_count:
 		def __get__(self):
@@ -1570,17 +1601,22 @@ cdef api object wrap_convexshape(sf.ConvexShape *p):
 cdef class RectangleShape(Shape):
 	cdef sf.RectangleShape *p_this
 
-	def __cinit__(self, size=(0, 0)):
-		self.p_this = new sf.RectangleShape(to_vector2f(size))
-		self.p_drawable = <sf.Drawable*>self.p_this
-		self.p_transformable = <sf.Transformable*>self.p_this
-		self.p_shape = <sf.Shape*>self.p_this
+	def __init__(self, size=(0, 0)):
+		if self.p_this is NULL:
+			self.p_this = new sf.RectangleShape(to_vector2f(size))
+			
+			self.p_drawable = <sf.Drawable*>self.p_this
+			self.p_transformable = <sf.Transformable*>self.p_this
+			self.p_shape = <sf.Shape*>self.p_this
 
 	def __dealloc__(self):
-		del self.p_this
+		self.p_shape = NULL
+		
+		if self.p_this is not NULL:
+			del self.p_this
 		
 	def __repr__(self):
-		return "CircleShape(texture={0}, texture_rectangle={1}, fill_color={2}, outline_color={3}, outline_thickness={4}, size={5}, point_count={6})".format(id(self.texture), self.texture_rectangle, self.fill_color, self.outline_color, self.outline_thickness, self.size, self.point_count)
+		return "RectangleShape(texture={0}, texture_rectangle={1}, fill_color={2}, outline_color={3}, outline_thickness={4}, size={5}, point_count={6})".format(id(self.texture), self.texture_rectangle, self.fill_color, self.outline_color, self.outline_thickness, self.size, self.point_count)
 		
 	property size:
 		def __get__(self):
@@ -1645,11 +1681,15 @@ cdef class VertexArray(Drawable):
 	cdef sf.VertexArray *p_this
 
 	def __init__(self, sf.primitivetype.PrimitiveType type = sf.primitivetype.Points, unsigned int vertex_count=0):
-		self.p_this = new sf.VertexArray(type, vertex_count)
-		self.p_drawable = <sf.Drawable*>self.p_this
+		if self.p_this is NULL:
+			self.p_this = new sf.VertexArray(type, vertex_count)
+			self.p_drawable = <sf.Drawable*>self.p_this
 
 	def __dealloc__(self):
-		del self.p_this
+		self.p_drawable = NULL
+		
+		if self.p_this is not NULL:
+			del self.p_this
 
 	def __repr__(self):
 		return "VertexArray(length={0}, primitive_type={1}, bounds={2})".format(len(self), self.primitive_type, self.bounds)
@@ -1666,7 +1706,7 @@ cdef class VertexArray(Drawable):
 	def __setitem__(self, unsigned int index, Vertex key):
 		self.p_this[0][index] = key.p_this[0]
 
-	def draw(self, RenderTarget target, states):
+	def draw(self, RenderTarget target, RenderStates states):
 		target.p_rendertarget.draw((<sf.Drawable*>self.p_this)[0])
 
 	def clear(self):
@@ -1875,17 +1915,24 @@ cdef class RenderWindow(Window):
 	cdef sf.RenderWindow *p_this
 
 	def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
-		if self.__class__ is not RenderWindow:
-			if not settings: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], toEncodedString(title), style)
-			else: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
-		else:
-			if not settings: self.p_this = new sf.RenderWindow(mode.p_this[0], toEncodedString(title), style)
-			else: self.p_this = new sf.RenderWindow(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
+		if self.p_this == NULL:
+			if self.__class__ is not RenderWindow:
+				if not settings: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], toEncodedString(title), style)
+				else: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
+			else:
+				if not settings: self.p_this = new sf.RenderWindow(mode.p_this[0], toEncodedString(title), style)
+				else: self.p_this = new sf.RenderWindow(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
 
-		self.p_window = <sf.Window*>self.p_this
+			self.p_window = <sf.Window*>self.p_this
 
 	def __dealloc__(self):
-		del self.p_this
+		self.p_window = NULL
+
+		if self.p_this is not NULL:
+			del self.p_this
+
+	def __repr__(self):
+		return "RenderWindow(position={0}, size={1}, is_open={2})".format(self.position, self.size, self.is_open)
 
 	def clear(self, Color color=None):
 		if not color: self.p_this.clear()
@@ -1964,15 +2011,19 @@ cdef class RenderTexture(RenderTarget):
 	cdef Texture           m_texture
 
 	def __init__(self, unsigned int width, unsigned int height, bint depthBuffer=False):
-		self.p_this = new sf.RenderTexture()
-		self.p_rendertarget = <sf.RenderTarget*>self.p_this
+		if self.p_this is NULL:
+			self.p_this = new sf.RenderTexture()
+			self.p_rendertarget = <sf.RenderTarget*>self.p_this
 
-		self.p_this.create(width, height, depthBuffer)
+			self.p_this.create(width, height, depthBuffer)
 
-		self.m_texture = wrap_texture(<sf.Texture*>&self.p_this.getTexture(), False)
+			self.m_texture = wrap_texture(<sf.Texture*>&self.p_this.getTexture(), False)
 
 	def __dealloc__(self):
-		del self.p_this
+		self.p_rendertarget = NULL
+		
+		if self.p_this is not NULL:
+			del self.p_this
 
 	def __repr__(self):
 		return "RenderTexture(size={0}, smooth={1}, repeated={2})".format(self.size, self.smooth, self.repeated)
@@ -2007,12 +2058,16 @@ cdef class HandledWindow(RenderTarget):
 	cdef sf.Window       *p_window
 
 	def __init__(self):
-		self.p_this = new sf.RenderWindow()
-		self.p_rendertarget = <sf.RenderTarget*>self.p_this
-		self.p_window = <sf.Window*>self.p_this
+		if self.p_this is NULL:
+			self.p_this = new sf.RenderWindow()
+			self.p_rendertarget = <sf.RenderTarget*>self.p_this
+			self.p_window = <sf.Window*>self.p_this
 
 	def __dealloc__(self):
-		del self.p_this
+		self.p_rendertarget = NULL
+		
+		if self.p_this is not NULL:
+			del self.p_this
 
 	def create(self, unsigned long window_handle, ContextSettings settings=None):
 		if not settings: self.p_this.create(<sf.WindowHandle>window_handle)
