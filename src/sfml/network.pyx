@@ -35,7 +35,7 @@ cdef class IpAddress:
 		del self.p_this
 
 	def __repr__(self):
-		return "sf.IpAddress({0})".format(self)
+		return "IpAddress(integer={0})".format(self.integer)
 
 	def __str__(self):
 		return self.string.decode('utf-8')
@@ -132,10 +132,7 @@ cdef class TcpListener(Socket):
 		del self.p_this
 
 	def __repr__(self):
-		return "sf.TcpListener({0})".format(self)
-
-	def __str__(self):
-		return str()
+		return "TcpListener(blocking={0}, local_port={1})".format(self.blocking, self.local_port)
 
 	property local_port:
 		def __get__(self):
@@ -184,10 +181,7 @@ cdef class TcpSocket(Socket):
 		del self.p_this
 
 	def __repr__(self):
-		return "TcpSocket({0})".format(self)
-
-	def __str__(self):
-		return str()
+		return "TcpSocket(blocking={0}, local_port={1}, remote_address={2}, remote_port={3})".format(self.blocking, self.local_port, self.remote_address, self.remote_port)
 
 	property local_port:
 		def __get__(self):
@@ -271,6 +265,9 @@ cdef class UdpSocket(Socket):
 	def __dealloc__(self):
 		del self.p_this
 
+	def __repr__(self):
+		return "UdpSocket(blocking={0}, local_port={1})".format(self.blocking, self.local_port)
+
 	property local_port:
 		def __get__(self):
 			return self.p_this.getLocalPort()
@@ -326,6 +323,9 @@ cdef class SocketSelector:
 
 	def __dealloc__(self):
 		del self.p_this
+
+	def __repr__(self):
+		return "SocketSelector()"
 
 	def add(self, Socket socket):
 		self.p_this.add(socket.p_socket[0])
@@ -400,10 +400,7 @@ cdef class FtpResponse:
 	cdef sf.ftp.Response *p_response
 
 	def __repr__(self):
-		return "sf.FtpResponse({0})".format(self)
-
-	def __str__(self):
-		return "Status: {0} - {1}".format(self.status, self.message)
+		return "FtpResponse(ok={0}, status={1}, message={2})".format(self.ok, self.status, self.message)
 
 	property ok:
 		def __get__(self):
@@ -426,6 +423,9 @@ cdef class FtpDirectoryResponse(FtpResponse):
 	def __dealloc__(self):
 		del self.p_this
 
+	def __repr__(self):
+		return "FtpDirectoryResponse(ok={0}, status={1}, message={2})".format(self.ok, self.status, self.message)
+
 	def get_directory(self):
 		return self.p_this.getDirectory().c_str()
 
@@ -438,6 +438,9 @@ cdef class FtpListingResponse(FtpResponse):
 
 	def __dealloc__(self):
 		del self.p_this
+
+	def __repr__(self):
+		return "FtpListingResponse(ok={0}, status={1}, message={2})".format(self.ok, self.status, self.message)
 
 	property filenames:
 		def __get__(self):
@@ -483,6 +486,9 @@ cdef class Ftp:
 
 	def __dealloc__(self):
 		del self.p_this
+		
+	def __repr__(self):
+		return "Ftp()"
 
 	def connect(self, IpAddress server, unsigned short port=21, Time timeout=None):
 		cdef sf.ftp.Response* response = new sf.ftp.Response()
@@ -659,7 +665,10 @@ cdef class HttpRequest:
 
 	def __dealloc__(self):
 		del self.p_this
-
+	
+	def __repr__(self):
+		return "HttpRequest()"
+		
 	property field:
 		def __set__(self, tuple v):
 			cdef bytes field = v[0]
@@ -717,7 +726,10 @@ cdef class HttpResponse:
 
 	def __dealloc__(self):
 		del self.p_this
-
+		
+	def __repr__(self):
+		return "HttpResponse()"
+		
 	def get_field(self, bytes field):
 		return self.p_this.getField(string(field)).c_str()
 
@@ -751,6 +763,9 @@ cdef class Http:
 	def __dealloc__(self):
 		del self.p_this
 
+	def __repr__(self):
+		return "Http()"
+		
 	def send_request(self, HttpRequest request, Time timeout=None):
 		cdef sf.http.Response* p = new sf.http.Response()
 

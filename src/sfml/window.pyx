@@ -103,9 +103,6 @@ cdef public class Event[type PyEventType, object PyEventObject]:
 	def __dealloc__(self):
 		del self.p_this
 
-	def __repr__(self):
-		return ("sf.Event({0})".format(self))
-
 	def __richcmp__(self, other, int op):
 		if op == 2:
 			return isinstance(self, other)
@@ -166,12 +163,14 @@ cdef Event wrap_event(sf.Event *p):
 	return event
 
 cdef class CloseEvent(Event):
-	def __str__(self):
-		return "The window requested to be closed"
+
+	def __repr__(self):
+		return "CloseEvent()"
 
 cdef class ResizeEvent(Event):
-	def __str__(self):
-		return "The window was resized"
+
+	def __repr__(self):
+		return "ResizeEvent(size={0})".format(self.size)
 
 	property size:
 		def __get__(self):
@@ -197,9 +196,8 @@ cdef class ResizeEvent(Event):
 cdef class FocusEvent(Event):
 	cdef bint state
 
-	def __str__(self):
-		if self.gained: return "The window gained the focus"
-		if self.lost: return "The window lost the focus"
+	def __repr__(self):
+		return "FocusEvent(states={0})".format(self.state)
 
 	property gained:
 		def __get__(self):
@@ -223,8 +221,9 @@ cdef FocusEvent wrap_focusevent(sf.Event *p, bint state):
 
 
 cdef class TextEvent(Event):
-	def __str__(self):
-		return "A character was entered"
+
+	def __repr__(self):
+		return "TextEvent(unicode={0})".format(self.unicode)
 
 	property unicode:
 		def __get__(self):
@@ -237,9 +236,8 @@ cdef class TextEvent(Event):
 cdef class KeyEvent(Event):
 	cdef bint state
 
-	def __str__(self):
-		if self.pressed: return "A key was pressed"
-		if self.released: return "A key was released"
+	def __repr__(self):
+		return "KeyEvent(states={0}, code={1}, alt={2}, control={3}, shift={4}, system={5})".format(self.state, self.code, self.alt, self.control, self.shift, self.system)
 
 	property pressed:
 		def __get__(self):
@@ -298,8 +296,9 @@ cdef KeyEvent wrap_keyevent(sf.Event *p, bint state):
 
 
 cdef class MouseWheelEvent(Event):
-	def __str__(self):
-		return "The mouse wheel was scrolled"
+
+	def __repr__(self):
+		return "MouseWheelEvent(delta={0}, position={1})".format(self.delta, self.position)
 
 	property delta:
 		def __get__(self):
@@ -318,9 +317,8 @@ cdef class MouseWheelEvent(Event):
 cdef class MouseButtonEvent(Event):
 	cdef bint state
 
-	def __str__(self):
-		if self.pressed: return "A mouse button was pressed"
-		if self.released: return "A mouse button was released"
+	def __repr__(self):
+		return "MouseButtonEvent(states={0}, position={1}, button={2})".format(self.state, self.position, self.button)
 
 	property pressed:
 		def __get__(self):
@@ -358,8 +356,8 @@ cdef MouseButtonEvent wrap_mousebuttonevent(sf.Event *p, bint state):
 
 
 cdef class MouseMoveEvent(Event):
-	def __str__(self):
-		return "The mouse cursor moved"
+	def __repr__(self):
+		return "MouseMoveEvent(position={0})".format(self.position)
 
 	property position:
 		def __get__(self):
@@ -372,9 +370,8 @@ cdef class MouseMoveEvent(Event):
 cdef class MouseEvent(Event):
 	cdef bint state
 
-	def __str__(self):
-		if self.entered: return "The mouse cursor entered the area of the window"
-		if self.left: return "The mouse cursor left the area of the window"
+	def __repr__(self):
+		return "MouseEvent(state={0})".format(self.state)
 
 	property entered:
 		def __get__(self):
@@ -400,9 +397,8 @@ cdef MouseEvent wrap_mouseevent(sf.Event *p, bint state):
 cdef class JoystickButtonEvent(Event):
 	cdef bint state
 
-	def __str__(self):
-		if self.pressed: return "A joystick button was pressed"
-		if self.released: return "A joystick button was released"
+	def __repr__(self):
+		return "JoystickButtonEvent(state={0}, joystick_id={1}, button={2})".format(self.state, self.joystick_id, self.button)
 
 	property pressed:
 		def __get__(self):
@@ -440,8 +436,9 @@ cdef JoystickButtonEvent wrap_joystickbuttonevent(sf.Event *p, bint state):
 
 
 cdef class JoystickMoveEvent(Event):
-	def __str__(self):
-		return "The joystick moved along an axis"
+	
+	def __repr__(self):
+		return "JoystickMoveEvent(joystick_id={0}, axis={1}, position={2})".format(self.joystick_id, self.axis, self.position)
 
 	property joystick_id:
 		def __get__(self):
@@ -468,9 +465,8 @@ cdef class JoystickMoveEvent(Event):
 cdef class JoystickConnectEvent(Event):
 	cdef bint state
 
-	def __str__(self):
-		if self.connected: return "A joystick was connected"
-		if self.disconnected: return "A joystick was disconnected"
+	def __repr__(self):
+		return "JoystickConnectEvent(state={0}, joystick_id={1})".format(self.state, self.joystick_id)
 
 	property connected:
 		def __get__(self):
@@ -512,7 +508,7 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
 		if self.delete_this: del self.p_this
 
 	def __repr__(self):
-		return ("VideoMode({0})".format(self))
+		return "VideoMode(size={0}, bpp={1}".format(self.size, self.bpp)
 
 	def __str__(self):
 		return "{0}x{1}x{2}".format(self.width, self.height, self.bpp)
@@ -601,10 +597,7 @@ cdef public class ContextSettings[type PyContextSettingsType, object PyContextSe
 		del self.p_this
 
 	def __repr__(self):
-		return ("ContextSettings({0})".format(self))
-
-	def __str__(self):
-		return "{0}db, {1}sb, {2}al, version {3}.{4}".format(self.depth_bits, self.stencil_bits, self.antialiasing_level, self.major_version, self.minor_version)
+		return "ContextSettings(depth_bits={0}, stencil_bits={1}, antialiasing_level={2}, major_version={3}, minor_version={4})".format(self.depth_bits, self.stencil_bits, self.antialiasing_level, self.major_version, self.minor_version)
 
 	def __iter__(self):
 		return iter((self.depth_bits, self.stencil_bits, self.antialiasing_level, self.major_version, self.minor_version))
@@ -658,6 +651,9 @@ cdef public class Pixels[type PyPixelsType, object PyPixelsObject]:
 	def __init__(self):
 		raise UserWarning("This class is not meant to be used directly")
 
+	def __repr__(self):
+		return "Pixels(width={0}, height={1})".format(self.width, self.height)
+
 	def __getitem__(self, unsigned int index):
 		return self.p_this[index]
 
@@ -696,6 +692,9 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 	def __dealloc__(self):
 		if self.__class__.__name__ == 'Window':
 			del self.p_window
+
+	def __repr__(self):
+		return "Window(position={0}, size={1}, is_open={2})".format(self.position, self.size, self.is_open)
 
 	def recreate(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
 		if not settings: self.p_window.create(mode.p_this[0], toEncodedString(title), style)
@@ -1004,6 +1003,9 @@ cdef class Context:
 
 	def __dealloc__(self):
 		del self.p_this
+		
+	def __repr__(self):
+		return "Context()"
 
 	property active:
 		def __set__(self, bint active):

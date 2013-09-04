@@ -89,6 +89,9 @@ cdef class Chunk:
 	def __dealloc__(self):
 		if self.delete_this:
 			free(self.m_samples)
+			
+	def __repr__(self):
+		return "Chunk(size={0}, data={1})".format(len(self), self.data[:10])
 
 	def __len__(self):
 		return self.m_sampleCount
@@ -147,9 +150,9 @@ cdef class SoundBuffer:
 
 	def __dealloc__(self):
 		if self.delete_this: del self.p_this
-
-	def __repr__(self): pass
-	def __str__(self): pass
+		
+	def __repr__(self):
+		return "SoundBuffer(samples={0}, sample_rate={1}, channel_count={2}, duration={3})".format(self.samples[:10], self.sample_rate, self.channel_count, self.duration)
 
 	@classmethod
 	def from_file(cls, filename):
@@ -288,7 +291,7 @@ cdef class Sound(SoundSource):
 		del self.p_this
 
 	def __repr__(self):
-		return "sf.Sound()"
+		return "Sound(buffer={0}, status={1}, playing_offset={2})".format(id(self.buffer), self.status, self.playing_offset)
 
 	def play(self):
 		self.p_this.play()
@@ -392,6 +395,9 @@ cdef class Music(SoundStream):
 	def __dealloc__(self):
 		del self.p_this
 
+	def __repr__(self):
+		return "Music(buffer={0}, status={1}, playing_offset={2})".format(id(self.buffer), self.status, self.playing_offset)
+
 	@classmethod
 	def from_file(cls, filename):
 		cdef sf.Music *p = new sf.Music()
@@ -442,6 +448,9 @@ cdef class SoundRecorder:
 	def __dealloc__(self):
 		if self.__class__ is SoundRecorder:
 			del self.p_soundrecorder
+			
+	def __repr__(self):
+		return "SoundRecorder(sample_rate={0})".format(self.sample_rate)
 
 	def start(self, unsigned int sample_rate=44100):
 		self.p_soundrecorder.start(sample_rate)
@@ -478,6 +487,9 @@ cdef class SoundBufferRecorder(SoundRecorder):
 
 	def __dealloc__(self):
 		del self.p_this
+		
+	def __repr__(self):
+		return "SoundBufferRecorder(buffer={0}, sample_rate={1})".format(id(self.buffer), self.sample_rate)
 
 	property buffer:
 		def __get__(self):

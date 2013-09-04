@@ -135,10 +135,10 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
 		self.size = Vector2(width, height)
 
 	def __repr__(self):
-		return "sf.Rectangle({0})".format(self)
+		return "Rectangle(left={0}, top={1}, width={2}, height={3})".format(self.left, self.top, self.width, self.height)
 
 	def __str__(self):
-		return "{0}x, {1}y, {2}w, {3}h".format(self.left, self.top, self.width, self.height)
+		return "({0}, {1}, {2}, {3})".format(self.left, self.top, self.width, self.height)
 
 	def __richcmp__(Rectangle x, y, op):
 		try: left, top, width, height = y
@@ -253,10 +253,10 @@ cdef public class Color [type PyColorType, object PyColorObject]:
 		del self.p_this
 
 	def __repr__(self):
-		return 'sf.Color({0})'.format(self)
+		return "Color(red={0}, green={1}, blue={2}, alpha={3})".format(self.r, self.g, self.b, self.a)
 
 	def __str__(self):
-		return "{0}r, {1}g, {2}b, {3}a".format(self.r, self.g, self.b, self.a)
+		return "(R={0}, G={1}, B={2}, A={3})".format(self.r, self.g, self.b, self.a)
 
 	def __iter__(self):
 		return iter((self.r, self.g, self.b, self.a))
@@ -344,7 +344,7 @@ cdef class Transform:
 
 	def __repr__(self):
 		cdef float *p = <float*>self.p_this.getMatrix()
-		return "sf.Transform({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8})".format(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8])
+		return "Transform({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8})".format(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8])
 
 	def __str__(self):
 		cdef float *p = <float*>self.p_this.getMatrix()
@@ -428,6 +428,9 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 
 	def __dealloc__(self):
 		del self.p_this
+
+	def __repr__(self):
+		return "Image(size={0})".format(self.size)
 
 	def __getitem__(self, tuple v):
 		cdef sf.Color *p = new sf.Color()
@@ -564,6 +567,9 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
 
 	def __dealloc__(self):
 		if self.delete_this: del self.p_this
+
+	def __repr__(self):
+		return "Texture(size={0}, smooth={1}, repeated={2})".format(self.size, self.smooth, self.repeated)
 
 	def __copy__(self):
 		cdef sf.Texture *p = new sf.Texture()
@@ -774,6 +780,9 @@ cdef class Glyph:
 	def __dealloc__(self):
 		del self.p_this
 
+	def __repr__(self):
+		return "Glyph(advance={0}, bounds={1}, texture_rectangle={2})".format(self.advance, self.bounds, self.texture_rectangle)
+		
 	property advance:
 		def __get__(self):
 			return self.p_this.advance
@@ -812,7 +821,10 @@ cdef class Font:
 
 	def __dealloc__(self):
 		if self.delete_this: del self.p_this
-
+		
+	def __repr__(self):
+		return "Font()"
+		
 	@classmethod
 	def from_file(cls, filename):
 		cdef sf.Font *p = new sf.Font()
@@ -869,7 +881,10 @@ cdef class Shader:
 
 	def __dealloc__(self):
 		if self.delete_this: del self.p_this
-
+		
+	def __repr__(self):
+		return "Shader()"
+		
 	@classmethod
 	def from_file(cls, vertex=None, fragment=None):
 		cdef sf.Shader *p = new sf.Shader()
@@ -1085,7 +1100,10 @@ cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObj
 
 	def __dealloc__(self):
 		if self.delete_this: del self.p_this
-
+		
+	def __repr__(self):
+		return "RenderStates(blend_mode={0}, transform={1}, texture={2}, shader={3})".format(self.blend_mode, id(self.transform), id(self.texture), id(self.shader))
+		
 	property blend_mode:
 		def __get__(self):
 			return self.p_this.blendMode
@@ -1158,7 +1176,10 @@ cdef class Transformable:
 
 	def __dealloc__(self):
 		del self.p_this
-
+		
+	def __repr__(self):
+		return "Transformable(position={0}, rotation={1}, ratio={2}, origin={3})".format(self.position, self.rotation, self.ratio, self.origin)
+		
 	property position:
 		def __get__(self):
 			return Vector2(self.p_this.getPosition().x, self.p_this.getPosition().y)
@@ -1217,6 +1238,9 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
 
 		if self.__class__ not in [Sprite, Shape, Text]:
 			self.p_transformable = new sf.Transformable()
+
+	def __repr__(self):
+		return "TransformableDrawable(position={0}, rotation={1}, ratio={2}, origin={3})".format(self.position, self.rotation, self.ratio, self.origin)
 
 	property position:
 		def __get__(self):
@@ -1289,6 +1313,9 @@ cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpri
 
 	def __dealloc__(self):
 		del self.p_this
+		
+	def __repr__(self):
+		return "Sprite(texture={0}, texture_rectangle={1}, color={2})".format(id(self.texture), self.texture_rectangle, self.color)
 
 	def draw(self, RenderTarget target, RenderStates states):
 		target.p_rendertarget.draw((<sf.Drawable*>self.p_this)[0])
@@ -1348,6 +1375,9 @@ cdef class Text(TransformableDrawable):
 
 	def __dealloc__(self):
 		del self.p_this
+		
+	def __repr__(self):
+		return "Text(string={0}, font={1}, character_size={2}, style={3}, color={4})".format(self.string[:10], id(self.font), self.character_size, self.style, self.color)
 
 	property string:
 		def __get__(self):
@@ -1488,6 +1518,9 @@ cdef class CircleShape(Shape):
 	def __dealloc__(self):
 		del self.p_this
 
+	def __repr__(self):
+		return "CircleShape(texture={0}, texture_rectangle={1}, fill_color={2}, outline_color={3}, outline_thickness={4}, radius={5}, point_count={6})".format(id(self.texture), self.texture_rectangle, self.fill_color, self.outline_color, self.outline_thickness, self.radius, self.point_count)
+		
 	property radius:
 		def __get__(self):
 			return self.p_this.getRadius()
@@ -1513,7 +1546,10 @@ cdef public class ConvexShape(Shape)[type PyConvexShapeType, object PyConvexShap
 
 	def __dealloc__(self):
 		del self.p_this
-
+		
+	def __repr__(self):
+		return "CircleShape(texture={0}, texture_rectangle={1}, fill_color={2}, outline_color={3}, outline_thickness={4}, point_count={5})".format(id(self.texture), self.texture_rectangle, self.fill_color, self.outline_color, self.outline_thickness, self.point_count)
+		
 	property point_count:
 		def __get__(self):
 			return self.p_this.getPointCount()
@@ -1545,7 +1581,10 @@ cdef class RectangleShape(Shape):
 
 	def __dealloc__(self):
 		del self.p_this
-
+		
+	def __repr__(self):
+		return "CircleShape(texture={0}, texture_rectangle={1}, fill_color={2}, outline_color={3}, outline_thickness={4}, size={5}, point_count={6})".format(id(self.texture), self.texture_rectangle, self.fill_color, self.outline_color, self.outline_thickness, self.size, self.point_count)
+		
 	property size:
 		def __get__(self):
 			return Vector2(self.p_this.getSize().x, self.p_this.getSize().y)
@@ -1569,6 +1608,9 @@ cdef class Vertex:
 	def __dealloc__(self):
 		if self.delete_this: del self.p_this
 
+	def __repr__(self):
+		return "Vertex(position={0}, color={1}, tex_coords={2})".format(self.position, self.color, self.tex_coords)
+		
 	property position:
 		def __get__(self):
 			return Vector2(self.p_this.position.x, self.p_this.position.y)
@@ -1609,6 +1651,9 @@ cdef class VertexArray(Drawable):
 	def __dealloc__(self):
 		del self.p_this
 
+	def __repr__(self):
+		return "VertexArray(length={0}, primitive_type={1}, bounds={2})".format(len(self), self.primitive_type, self.bounds)
+		
 	def __len__(self):
 		return self.p_this.getVertexCount()
 
@@ -1657,6 +1702,9 @@ cdef class View:
 
 	def __dealloc__(self):
 		del self.p_this
+
+	def __repr__(self):
+		return "View(center={0}, size={1}, rotation={2}, viewport={3})".format(self.center, self.size, self.rotation, self.viewport)
 
 	property center:
 		def __get__(self):
@@ -1925,6 +1973,9 @@ cdef class RenderTexture(RenderTarget):
 
 	def __dealloc__(self):
 		del self.p_this
+
+	def __repr__(self):
+		return "RenderTexture(size={0}, smooth={1}, repeated={2})".format(self.size, self.smooth, self.repeated)
 
 	property smooth:
 		def __get__(self):

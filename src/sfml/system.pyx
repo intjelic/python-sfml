@@ -60,10 +60,10 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 		self.y = y
 
 	def __repr__(self):
-		return "sf.Vector2({0})".format(self)
+		return "Vector2(x={0}, y={1})".format(self.x, self.y)
 
 	def __str__(self):
-		return "{0}x, {1}y".format(self.x, self.y)
+		return "({0}, {1})".format(self.x, self.y)
 
 	def __richcmp__(Vector2 x, y, op):
 		x1, y1 = x
@@ -230,10 +230,10 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
 		self.z = z
 
 	def __repr__(self):
-		return "sf.Vector3({0})".format(self)
+		return "Vector3(x={0}, y={1}, z={2})".format(self.x, self.y, self.z)
 
 	def __str__(self):
-		return "{0}x, {1}y, {2}z".format(self.x, self.y, self.z)
+		return "({0}, {1}, {2})".format(self.x, self.y, self.z)
 
 	def __richcmp__(Vector3 x, y, op):
 		x1, y1, z1 = x
@@ -432,7 +432,7 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 		del self.p_this
 
 	def __repr__(self):
-		return "sf.Time({0}s, {1}ms, {2}µs)".format(self.seconds, self.milliseconds, self.microseconds)
+		return "Time(milliseconds={0})".format(self.milliseconds)
 
 	def __str__(self):
 		return "{0} milliseconds".format(self.milliseconds)
@@ -513,7 +513,7 @@ cdef class Clock:
 		del self.p_this
 
 	def __repr__(self):
-		return "sf.Clock({0})".format(self.elapsed_time)
+		return "Clock(elapsed_time={0})".format(self.elapsed_time)
 
 	def __str__(self):
 		return "{0}".format(self.elapsed_time)
@@ -547,15 +547,21 @@ def microseconds(Int64 amount):
 
 cdef class Mutex:
 	cdef object _lock
+	cdef bint   _locked
 
 	def __cinit__(self):
 		self._lock = threading.RLock()
 
+	def __repr__(self):
+		return "Mutex(locked={0})".format(self._locked)
+
 	def lock(self):
 		self._lock.acquire()
+		self._locked = True
 
 	def unlock(self):
 		self._lock.release()
+		self._locked = False
 
 cdef class Lock:
 	cdef Mutex _mutex
@@ -567,12 +573,22 @@ cdef class Lock:
 	def __dealloc__(self):
 		self._mutex.unlock()
 
+	def __repr__(self):
+		return "Lock()"
 
 cdef class Thread:
 	cdef object _thread
 
 	def __init__(self, functor, *args, **kwargs):
 		self._thread = threading.Thread(target=functor, args=args, kwargs=kwargs)
+
+	def __repr__(self):
+		try:
+			# Python 2.x
+			return "Thread(functor={0}, args={1}, kwargs={2})".format(self._Thread__target, self._Thread__args, self._Thread__kwargs)
+		except AttributeError:
+			# Python 3.x
+			return "Thread(functor={0}, args={1}, kwargs={2})".format(self._target, self._args, self._kwargs)
 
 	def launch(self):
 		self._thread.start()
@@ -582,6 +598,8 @@ cdef class Thread:
 
 	def terminate(self):
 		try:
+			# Python 2.x
 			self._thread._Thread__stop()
 		except AttributeError:
+			# Python 3.x
 			self._thread._stop()
