@@ -1459,9 +1459,6 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 		self.p_drawable = NULL
 		self.p_transformable = NULL
 		
-	def draw(self, RenderTarget target, RenderStates states):
-		target.p_rendertarget.draw((<sf.Drawable*>self.p_shape)[0])
-		
 	property texture:
 		def __get__(self):
 			return self.m_texture
