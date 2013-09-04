@@ -1589,6 +1589,9 @@ cdef class RectangleShape(Shape):
 		def __set__(self, size):
 			self.p_this.setSize(to_vector2f(size))
 
+	property point_count:
+		def __get__(self):
+			return self.p_this.getPointCount()
 
 cdef class Vertex:
 	cdef sf.Vertex *p_this
