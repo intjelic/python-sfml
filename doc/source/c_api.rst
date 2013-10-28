@@ -13,7 +13,7 @@ API.
 Introduction
 ------------
 The C/Cython API, introduced in version 1.3 was created to allow developers to
-seemlessly mix python code with C++ code and vice versa. While it is often more
+seamlessly mix python code with C++ code and vice versa. While it is often more
 convenient to write entire programs in a single program language, for one
 reason or another, we may have the need or desire to switch languages. For
 instance, python's beauty lends itself to writing code such as user interface code,
@@ -83,7 +83,7 @@ Again, extending Python is explained in the official Python
 documentation in the section *Extending and Embedding the Python
 Interpreter*, here: http://docs.python.org/2/extending/index.html.
 
-There's nothing else to explain as the explainations are the same as in
+There's nothing else to explain as the explanations are the same as in
 the embedding section but in the other way round. So, instead I'll
 teach you how to use Cython to speed up the extension writing using the
 **Cython API** provided by pySFML.
@@ -95,7 +95,7 @@ standard shared library - almost).
 
 I won't teach you Cython but instead I will give you a working example
 which might be the starting point to your Cython learning process as it
-comes with explainations.
+comes with explanations.
 
 Let's say you're writing a Python application using SFML and for some
 reason, you need to use a library that only exists in C++: Thor library.
@@ -104,7 +104,7 @@ bindings, see `thor.python-sfml.org` for details but let's assume it
 isn't. Thor library provides many interesting tools.
 
 We're going to use the BigTexture and BigSprite classes. To do so,
-you'll need to write the Thor funciton you need in a .pxd file. ::
+you'll need to write the Thor function you need in a .pxd file. ::
 
     cdef extern from "Thor/Graphics.hpp" namespace "thor":
 

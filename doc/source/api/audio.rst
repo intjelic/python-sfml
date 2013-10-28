@@ -23,7 +23,7 @@ Listener
    and to adjust the global volume.
 
    Because the listener is unique in the scene, :class:`Listener`
-   only contains class methods and doesn't have to be instanciated.
+   only contains class methods and doesn't have to be instantiated.
 
    Usage example::
 
@@ -436,7 +436,7 @@ Sound
 
       It is important to note that the sound buffer is not copied, thus
       the :class:`SoundBuffer` instance must remain alive as long as it is
-      attached to the sound (don't explicitly delete it with the opartor
+      attached to the sound (don't explicitly delete it with the operator
       **del**).
 
       :rtype: :class:`sfml.audio.SoundBuffer`
@@ -465,7 +465,7 @@ Sound
 
       Get the current status of the sound (stopped, paused, playing)
 
-      :rtype: an :class:`sfml.audio.SoundSource`'s contant
+      :rtype: a constant from :class:`sfml.audio.SoundSource`
 
 SoundStream
 ^^^^^^^^^^^
@@ -601,7 +601,7 @@ SoundStream
 
       Get the current status of the stream (stopped, paused, playing)
 
-      :rtype: an :class:`sfml.audio.SoundSource`'s contant
+      :rtype: a constant from :class:`sfml.audio.SoundSource`
 
    .. method:: initialize(channel_count, sample_rate)
 
@@ -621,7 +621,7 @@ SoundStream
 
       Request a new chunk of audio samples from the stream source.
 
-      This function must be overriden by derived classes to provide the
+      This function must be overridden by derived classes to provide the
       audio samples to play. It is called continuously by the streaming
       loop, in a separate thread. The source can choose to stop the
       streaming loop at any time, by returning false to the caller.
@@ -633,7 +633,7 @@ SoundStream
 
       Change the current playing position in the stream source.
 
-      This function must be overriden by derived classes to allow
+      This function must be overridden by derived classes to allow
       random seeking into the stream source.
 
       :param sfml.system.Time time_offset: New playing position, relative to the beginning of the stream
@@ -740,7 +740,7 @@ SoundRecorder
 
       - :func:`on_process_samples` provides the new chunks of audio samples while the capture happens
 
-   Moreover, two additionnal method can be overriden as well if necessary:
+   Moreover, two additional method can be overridden as well if necessary:
 
        - :func:`on_start` is called before the capture happens, to perform custom initializations
        - :func:`on_stop` is called after the capture ends, to perform custom cleanup
@@ -830,7 +830,7 @@ SoundRecorder
 
       Start capturing audio data.
 
-      This method may be overriden by a derived class if something has
+      This method may be overridden by a derived class if something has
       to be done every time a new capture starts. If not, this method
       can be ignored; the default implementation does nothing.
 
@@ -851,7 +851,7 @@ SoundRecorder
 
       Stop capturing audio data.
 
-      This method may be overriden by a derived class if something has
+      This method may be overridden by a derived class if something has
       to be done every time the capture ends. If not, this method can
       be ignored; the default implementation does nothing.
 

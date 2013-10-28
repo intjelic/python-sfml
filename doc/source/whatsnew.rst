@@ -21,7 +21,7 @@ Milestones
 
       Github: https://github.com/Sonkun/python-thor
 
-1 Decembre 2012 : Version 1.2 Released
+1 December 2012 : Version 1.2 Released
 
    This version includes a C/Cython API allowing you to embed Python using
    pySFML to C++ code or write your own Python extensions using pySFML.

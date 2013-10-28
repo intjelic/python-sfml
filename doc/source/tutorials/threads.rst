@@ -25,7 +25,7 @@ pySFML threads or the *threading* module
 The standard Python library contains everything you need for threading and
 should be used instead. However, pySFML still provide some classes to match its
 C++ version API and for those who wants to translate C++ code, piece by piece,
-without carring about the interface differences.
+without caring about the interface differences.
 
 Creating a thread with pySFML
 -----------------------------
@@ -100,7 +100,7 @@ a thread to finish from another thread, you can call its wait function. ::
    # block execution until the thread is finished
    thread.wait()
 
-The wait function is also implicitely called by the destructor of
+The wait function is also implicitly called by the destructor of
 :class:`.Thread`, so that a thread cannot remain alive (and out of control)
 after its owner :class:`Thread` instance is destroyed. Keep this in mind when
 you manage your threads (see the last section of this tutorial).
@@ -245,7 +245,7 @@ The following code is often seen on the forums: ::
 
 	start_thread()
 
-Programers who write this kind of code expect the *start_thread* function to
+Programmers who write this kind of code expect the *start_thread* function to
 start a thread that will live on its own and be destroyed when the threaded
 function ends. But it is not what happens: the threaded function appears to
 block the main thread, as if the thread wasn't working.

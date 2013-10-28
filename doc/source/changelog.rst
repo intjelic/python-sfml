@@ -36,7 +36,7 @@ v1.0 -> v1.1 (based on SFML2-RC)
 * :class:`sfml.graphics.Color` are unpackable
 * :mod:`sfml.network` module uses :class:`sfml.system.Time`
 * :mod:`sfml.audio` module uses :class:`sfml.system.Time`
-* :meth:`sfml.graphics.Image.show()` is implemented and platform-independant
+* :meth:`sfml.graphics.Image.show()` is implemented and platform-independent
 * :class:`sfml.audio.SoundStream` and :class:`sfml.audio.SoundRecorder` can be subclassed
 
 v1.1 -> v1.2 (based on SFML2-RC)
@@ -44,7 +44,7 @@ v1.1 -> v1.2 (based on SFML2-RC)
 * The license has changed: GPLv3 -> LGPLv3
 * Unit tests partially implemented
 * Load/open/create methods are depreciated (use `from_foo` instead) [#]_
-* Save/convertion methods are depreciated (use `to_bar` instead) [#]_
+* Save/conversion methods are depreciated (use `to_bar` instead) [#]_
 * Copy methods are depreciated (use the copy module instead)
 * :class:`sfml.Window.events` returns now a generator
 * Voip example implemented
@@ -64,7 +64,7 @@ v1.1 -> v1.2 (based on SFML2-RC)
 * Fixe various threading issues in the network module (GIL not released)
 * Fixe bug in views returned by sf.RenderTarget (view wasn't linked)
 * Fixe sf.TransformableDrawable (its properties work)
-* Documentation enterely revised
+* Documentation entirely revised
 * Website redesigned
 * Install C/Cython API to code your own extensions using the bindings (1/3)
 * Window.opened is deprecated, use Window.is_open property instead
@@ -83,7 +83,7 @@ v1.2 -> v1.3 (based on SFML2)
 * Thor library available as add-on
 * Implemented :class:`.Thread`, :class:`.Mutex` and :class:`.Lock`
 * Some official tutorials have been translated
-* Imlemented OpenGL example
+* Implemented OpenGL example
 * Spacial music example takes the Z axis into account #25
 * Replaced X11 dependency with ctype usage
 * Added two new examples: extending and embedding.

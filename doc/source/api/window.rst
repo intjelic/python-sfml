@@ -41,7 +41,7 @@ Event
    event that just happened.
 
    Events are retrieved using the :meth:`Window.poll_event` and
-   :meth:`Window.wait_event` functions. You can also retreive
+   :meth:`Window.wait_event` functions. You can also retrieve
    a generator that iterates over the pending events the property
    :attr:`Window.events`.
 
@@ -180,7 +180,7 @@ MouseButtonEvent
 
    .. attribute:: button
 
-      Code of the button that has been presssed of released. You'll
+      Code of the button that has been pressed or released. You'll
       find the list in :class:`Mouse`.
 
    .. attribute:: position
@@ -257,7 +257,7 @@ VideoMode
 	A custom video mode can also be checked directly for fullscreen
 	compatibility with its :func:`is_valid()` function.
 
-	Additionnally, :class:`VideoMode` provides a class method to get the
+	Additionally, :class:`VideoMode` provides a class method to get the
 	mode currently used by the desktop: :func:`get_desktop_mode()`. This
 	allows to build windows with the same size or pixel depth as the
 	current resolution.
@@ -560,7 +560,7 @@ Window
       should always call this function in a loop to make sure that you
       process every pending event.
 
-      :return: Returns an event if any otherwhise None
+      :return: Returns an event if any otherwise None
       :rtype: :class:`sfml.window.Event` or None
 
    .. method:: wait_event()
@@ -569,12 +569,12 @@ Window
 
       This function is blocking: if there's no pending event then it
       will wait until an event is received. After this function returns
-      (and no error occured), the event object is always valid. This
+      (and no error occurred), the event object is always valid. This
       function is typically used when you have a thread that is
       dedicated to events handling: you want to make this thread sleep
       as long as no new event is received.
 
-      :return: Returns an event or None if an error occured.
+      :return: Returns an event or None if an error occurred.
       :rtype: :class:`sfml.window.Event`
 
    .. attribute:: position
@@ -665,7 +665,7 @@ Window
       long enough to match the framerate limit. pySFML will try to
       match the given limit as much as it can, but since it internally
       uses :func:`.sleep`, whose precision depends on the underlying
-      OS, the results may be a little unprecise as well (for example,
+      OS, the results may be a little imprecise as well (for example,
       you can get 65 FPS when requesting 60).
 
       :type: integer
@@ -760,7 +760,7 @@ Keyboard
    keyboard.
 
    It only contains class methods (a single keyboard is assumed), so
-   it's not meant to be instanciated.
+   it's not meant to be instantiated.
 
    This class allows users to query the keyboard state at any time and
    directly, without having to deal with a window and its events.
@@ -1006,7 +1006,7 @@ Joystick
    :class:`Joystick` provides an interface to the state of the
    joysticks.
 
-   It only contains class methods, so it's not meant to be instanciated.
+   It only contains class methods, so it's not meant to be instantiated.
    Instead, each joystick is identified by an index that is passed to
    the functions of this class.
 
@@ -1033,7 +1033,7 @@ Joystick
    handling, this is done automatically, you don't need to call
    anything. But if you have no window, or if you want to check
    joysticks state before creating one, you must call
-   :func:`Joystick.update` explicitely.
+   :func:`Joystick.update` explicitly.
 
    Usage example::
 
@@ -1135,7 +1135,7 @@ Joystick
       Update the states of all joysticks.
 
       This function is used internally by SFML, so you normally don't
-      have to call it explicitely. However, you may need to call it if
+      have to call it explicitly. However, you may need to call it if
       you have no window yet (or no window at all): in this case the
       joysticks states are not updated automatically.
 
@@ -1150,7 +1150,7 @@ Mouse
    :class:`Mouse` provides an interface to the state of the mouse.
 
    It only contains class methods (a single mouse is assumed), so it's
-   not meant to be instanciated.
+   not meant to be instantiated.
 
    This class allows users to query the mouse state at any time and
    directly, without having to deal with a window and its events.
@@ -1205,17 +1205,17 @@ Mouse
       :rtype: bool
 
 
-   .. classmethod:: get_position([relativ_to])
+   .. classmethod:: get_position([relative_to])
 
       Get the current position of the mouse in window coordinates.
 
       This function returns the current position of the mouse cursor,
       relative to the given window.
 
-      :param sfml.window.Window relativ_to: Reference window
+      :param sfml.window.Window relative_to: Reference window
       :rtype: bool
 
-   .. classmethod:: set_position(position[, relativ_to])
+   .. classmethod:: set_position(position[, relative_to])
 
       Set the current position of the mouse in window coordinates.
 
@@ -1223,7 +1223,7 @@ Mouse
       relative to the given window.
 
       :param sfml.system.Vector2 position: New position of the mouse
-      :param sfml.window.Window relativ_to: Reference window
+      :param sfml.window.Window relative_to: Reference window
 
 
 Context

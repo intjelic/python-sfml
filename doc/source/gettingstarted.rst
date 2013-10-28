@@ -114,7 +114,7 @@ There's no difference here. if you want to give a style:
 
 Loading Resources
 ^^^^^^^^^^^^^^^^^
-Instead of checking everytime if the resource has effectivly been loaded,
+Instead of checking every time if the resource has effectively been loaded,
 pySFML takes advantages of the Python mechanisms. Just enclose
 your resource loading processes in a try-except bloc and Python will tell
 you when something goes wrong.

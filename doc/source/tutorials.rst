@@ -207,9 +207,9 @@ To create your own drawable just inherit your class from
            target.draw(body)
            target.draw(clothes)
 
-To have a **transformable drawable** you have two implemenation choices. As
-Like SFML in C++, you can either use a transformable internaly and combine
-your transformable at drawing time **or** ineriths your drawable from
+To have a **transformable drawable** you have two implementation choices. As
+Like SFML in C++, you can either use a transformable internally and combine
+your transformable at drawing time **or** inherit your drawable from
 both :class:`.Drawable` and :class:`.Transformable`.
 
 1) **sf.Transformable in an internal attribute**
@@ -240,7 +240,7 @@ both :class:`.Drawable` and :class:`.Transformable`.
    can also implement **rotation**, **scale**, **origin**.
 
 
-2) **Inerithing from sf.Drawable and sf.Transformable**
+2) **Inheriting from sf.Drawable and sf.Transformable**
 
    There's a current issue concerning this way to do. As Python doesn't
    allow you to subclass from two built-in types at the same time, you

@@ -36,7 +36,7 @@ PrimitiveType
    primitives that an :class:`VertexArray` can render.
 
    :const:`POINTS` and :class:`LINES` have no area, therefore their
-   thickness will always be 1 pixel, regarldess the current transform
+   thickness will always be 1 pixel, regardless of the current transform
    and view.
 
    .. py:data:: POINTS
@@ -150,7 +150,7 @@ Rectangle
 
       The center of the rectangle.
 
-   .. attribute:: rigth
+   .. attribute:: right
 
       The right coordinate of the rectangle.
 
@@ -182,7 +182,7 @@ Color
 
 .. py:class:: Color
 
-      Utility class for manpulating RGBA colors.
+      Utility class for manipulating RGBA colors.
 
       :class:`Color` is a simple color class composed of 4
       components:
@@ -304,7 +304,7 @@ Transform
    the local and global coordinate systems of an entity (like
    collision detection).
 
-   Usage exampe::
+   Usage example::
 
       # define a translation transform
       translation = sf.Transform()
@@ -458,7 +458,7 @@ Pixels
 
    .. py:attribute:: width
 
-   .. py:attribute:: heigth
+   .. py:attribute:: height
 
    .. py:attribute:: data
 
@@ -880,7 +880,7 @@ Texture
       Refer to :meth:`update_from_pixels`, :meth:`update_from_image`
       or :meth:`update_from_window`.
 
-      This method is provided for convinience, its sisters will be
+      This method is provided for convenience, its sisters will be
       faster as they don't have to check the argument's type.
 
    .. py:method:: update_from_pixels(pixels[, position])
@@ -1021,7 +1021,7 @@ Glyph
 
    .. py:attribute:: advance
 
-      Offset to move horizontically to the next character.
+      Offset to move horizontally to the next character.
 
       :rtype: integer
 
@@ -1293,9 +1293,9 @@ Shader
       +--------------------+------------------------------------------+
       | 4 float            | :meth:`set_4float_parameter`             |
       +--------------------+------------------------------------------+
-      | :class:`.Vector2`  | :meth:`set_vector2_paramater`            |
+      | :class:`.Vector2`  | :meth:`set_vector2_parameter`            |
       +--------------------+------------------------------------------+
-      | :class:`.Vector3`  | :meth:`set_vector3_paramater`            |
+      | :class:`.Vector3`  | :meth:`set_vector3_parameter`            |
       +--------------------+------------------------------------------+
       | :class:`.Color`    | :meth:`set_color_parameter`              |
       +--------------------+------------------------------------------+
@@ -1393,7 +1393,7 @@ Shader
       :param z float: Third component of the value to assign
       :param w float: Fourth component of the value to assign
 
-   .. py:method:: set_vector2_paramater(name, vector)
+   .. py:method:: set_vector2_parameter(name, vector)
 
 
       Change a 2-components vector parameter of the shader.
@@ -1415,7 +1415,7 @@ Shader
       :param string name: Name of the parameter in the shader
       :param sfml.system.Vector2 vector: Vector to assign
 
-   .. py:method:: set_vector3_paramater(name, vector)
+   .. py:method:: set_vector3_parameter(name, vector)
 
       Change a 3-components vector parameter of the shader.
 
@@ -1574,7 +1574,7 @@ RenderStates
    transform on top of each object's transform.
 
    Most objects, especially high-level drawables, can be drawn directly
-   without defining render states explicitely -- the default set of
+   without defining render states explicitly -- the default set of
    states is ok in most cases. ::
 
       window.draw(sprite)
@@ -1702,9 +1702,9 @@ Transformable
    :class:`Transformable` provides an "origin" component, which
    represents the local origin of the three other components. Let's
    take an example with a 10x10 pixels sprite. By default, the sprite
-   is positionned/rotated/scaled relatively to its top-left corner,
+   is positioned/rotated/scaled relatively to its top-left corner,
    because it is the local point (0, 0). But if we change the origin to
-   be (5, 5), the sprite will be positionned/rotated/scaled around its
+   be (5, 5), the sprite will be positioned/rotated/scaled around its
    center instead. And if we set the origin to (10, 10), it will be
    transformed around its bottom-right corner.
 
@@ -1988,7 +1988,7 @@ Text
          window.draw(text)
 
       Note that you don't need to load a font to draw text, pySFML
-      comes with a built-in font that is implicitely used by default.
+      comes with a built-in font that is implicitly used by default.
 
    .. py:method:: Text([string[, font[, character_size=30]]])
 
@@ -2301,7 +2301,7 @@ ConvexShape
       polygon.set_point(1, (0, 10))
       polygon.set_point(2, (25, 5))
       polygon.outline_color = sf.Color.RED
-      polygon.outlinne_thickness = 5
+      polygon.outline_thickness = 5
       polygon.position = (10, 20)
       # ...
       window.draw(polygon)

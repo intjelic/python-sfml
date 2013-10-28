@@ -6,7 +6,7 @@ Opening and managing a SFML window
 Introduction
 ------------
 This tutorial only describes how to open and manage a window. Drawing stuff is
-out of the scope of the window module: it is handled by the graophics module.
+out of the scope of the window module: it is handled by the graphics module.
 However, the window management remains exactly the same so reading this
 tutorial is important in any case.
 
@@ -95,7 +95,7 @@ Whenever we get an event, we must check its type (window closed? key pressed?
 mouse moved? joystick connected? ...), and react accordingly if we are
 interested in it. In this case, we only care about the :class:`.CloseEvent`
 event, which is triggered when the user wants to close the window. At this
-point, the window is still open and we have to close it explicitely with the
+point, the window is still open and we have to close it explicitly with the
 close function. This allows to do something before the window is closed, such
 as saving the current state of the application, or displaying a message.
 
@@ -223,7 +223,7 @@ case, don't forget to have an event loop for each window.
 
 Multiple monitors are not correctly supported yet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-SFML doesn't explicitely manage multiple monitors. As a consequence, you won't
+SFML doesn't explicitly manage multiple monitors. As a consequence, you won't
 be able to choose which monitor a window appears on, and you won't be able to
 create more than one fullscreen window. This should be improved in a future
 version.
@@ -235,7 +235,7 @@ the :meth:`.poll_event`, :meth:`.wait_event` function or :attr:`.events`) must
 be called in the same thread that created the window. This means that if you
 want to create a dedicated thread for event handling, you'll have to make sure
 that the window is created in this thread too. If you really want to split
-things between threads, it is more convient to keep event handling in the main
+things between threads, it is more convenient to keep event handling in the main
 thread and move the rest (rendering, physics, logic, ...) to a separate thread
 instead. This configuration will also be compatible with the other limitation
 described below.

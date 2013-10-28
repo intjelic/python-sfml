@@ -349,7 +349,7 @@ Mutex
 
    Usage example::
 
-      database = Database() # this is a critical resoruce that needs some protection
+      database = Database() # this is a critical resource that needs some protection
 
       mutex = sf.Mutex()
 
@@ -425,7 +425,7 @@ Lock
 
          # mutex is unlocked
 
-   Because the mutex is not explicitely unlocked in the code, it may remain
+   Because the mutex is not explicitly unlocked in the code, it may remain
    locked longer than needed. If the region of the code that needs to be
    protected by the mutex is not the entire function, just delete the lock via
    *del*. ::
