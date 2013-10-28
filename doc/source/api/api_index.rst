@@ -4,7 +4,7 @@ API Reference
 
    In order to keep the documentation concise and to the point, deprecated
    features have been omitted, though they still exist for backward
-   compatability.
+   compatibility.
 
 .. only:: pdf
 
@@ -65,5 +65,5 @@ API:
        Though such functionality can be found in Python's socket module, we
        believe that its inclusion not only aids developers as they
        port their software from C++ to Python or vice-versa, but we also find
-       SFML's API more convient in some cases (e.g. when obtaining a public IP
+       SFML's API more convenient in some cases (e.g. when obtaining a public IP
        address).

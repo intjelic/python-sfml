@@ -244,7 +244,7 @@ TcpSocket
       The high-level interface is not implemented yet.
 
       The socket is automatically disconnected when it is destroyed,
-      but if you want to explicitely close the connection while the
+      but if you want to explicitly close the connection while the
       socket instance is still alive, you can call disconnect.
 
       Usage example::
@@ -345,7 +345,7 @@ TcpSocket
 
       .. note::
 
-         The recieved data's length may be different from the asked length.
+         The received data's length may be different from the asked length.
 
       :raise: :exc:`SocketDisconnected`, :exc:`SocketNotReady` or :exc:`SocketError`
       :param integer size: Maximum number of bytes that can be received
@@ -366,7 +366,7 @@ UdpSocket
    can send to and receive from any host at any time.
 
    It is a datagram protocol: bounded blocks of data (datagrams) are
-   transfered over the network rather than a continuous stream of data
+   transferred over the network rather than a continuous stream of data
    (TCP). Therefore, one call to send will always match one call to
    receive (if the datagram is not lost), with the same data that was
    sent.
@@ -389,7 +389,7 @@ UdpSocket
 
    If the socket is bound to a port, it is automatically unbound from
    it when the socket is destroyed. However, you can unbind the socket
-   explicitely with the :func:`unbind` function if necessary, to stop
+   explicitly with the :func:`unbind` function if necessary, to stop
    receiving messages or make the port available for other sockets.
 
    Usage example::
@@ -520,11 +520,11 @@ TcpListener
             client = listener.accept()
 
          except sf.SocketException as error:
-            print("An error occured! Error: {0}".format(error))
+            print("An error occurred! Error: {0}".format(error))
             exit(1)
 
          # a new client just connected!
-         print("New connectionreceived from {0}".format(client.remote_address))
+         print("New connection received from {0}".format(client.remote_address))
          do_something_with(client)
 
    .. py:attribute:: local_port

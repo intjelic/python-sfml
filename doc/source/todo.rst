@@ -13,17 +13,17 @@ incomplete, and we'd like to expand unit test coverage.
 
 Please read further to see which action items are highest on our agenda.
 
-Justying the differences
-^^^^^^^^^^^^^^^^^^^^^^^^
+Justifying the differences
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 We want to provide a comprehensive list of all the differences between the
 original API and these Python bindings API. As Python isn't C++, language
 differences make it impossible to duplicate the C++ API in some  cases, and
-imporactical in others We'd like to provide a document justifying all these differences.
+impractical in others We'd like to provide a document justifying all these differences.
 
 
 Some unit tests still need to be implemented
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Only unit tests for the system moduel are so far implemented.
+Only unit tests for the system module are so far implemented.
 
 Object representation
 ^^^^^^^^^^^^^^^^^^^^^

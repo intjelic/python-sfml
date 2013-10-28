@@ -72,7 +72,7 @@ clock started, and :meth:`.restart`, to restart the clock. ::
 
 Note that restart also returns the elapsed time, so that you can avoid the
 slight gap that would exist if you had to call :attr:`.elapsed_time`
-explicitely before restart.
+explicitly before restart.
 Here is an example that uses the time elapsed at each iteration of the game
 loop to update the game logic::
 

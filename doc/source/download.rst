@@ -1,7 +1,7 @@
 Download
 ========
-Here you'll find all the necessary explainations for installing the binding
-on your favorite platform. Unfortunately the procedures for **Mac OSX**
+Here you'll find all the necessary explanations for installing the binding
+on your favourite platform. Unfortunately the procedures for **Mac OSX**
 and **Windows 8** are not yet available.
 
 .. contents:: :local:
@@ -105,7 +105,7 @@ You'll also need `SFML`_ and `Cython`_ 0.19 installed on your computer.
 
 Linux and Mac OSX
 ^^^^^^^^^^^^^^^^^
-In order to compile, you'll need the Python developement files.
+In order to compile, you'll need the Python development files.
 
 To build the bindings for Python, type::
 
@@ -118,7 +118,7 @@ Compiling on Windows requires more steps.
 
 To have binaries fully compatible you should compile with the optimizing
 C/C++ compiler used to build Python for Windows. The SDK can be
-downloaded on the microsoft download center:
+downloaded on the Microsoft download center:
 
 For Python 2.7 & 3.2: `Windows SDK 7.0 <http://www.microsoft.com/en-us/download/details.aspx?id=18950>`_
 
@@ -132,9 +132,9 @@ Observe that you don't need Microsoft Visual C++ Express.
 If SFML headers and libraries aren't installed in the respective compilers, do
 it now. It would look like: ::
 
-   C:\Porgram Files (x86)\Microsoft Visual Studio 9\VC\include\SFML
-   C:\Porgram Files (x86)\Microsoft Visual Studio 9\VC\lib\sfml-system-2.lib
-   C:\Porgram Files (x86)\Microsoft Visual Studio 9\VC\lib\sfml-window-2.lib
+   C:\Program Files (x86)\Microsoft Visual Studio 9\VC\include\SFML
+   C:\Program Files (x86)\Microsoft Visual Studio 9\VC\lib\sfml-system-2.lib
+   C:\Program Files (x86)\Microsoft Visual Studio 9\VC\lib\sfml-window-2.lib
    ...
 
 Open the SDK command window and type::
@@ -142,7 +142,7 @@ Open the SDK command window and type::
 	C:\Program Files\Microsoft SDKs\Windows\v7.0>set DISTUTILS_USE_SDK=1
 	C:\Program Files\Microsoft SDKs\Windows\v7.0>setenv /x64 /release
 
-Adjust according the targetted architecture (x86 or x84) and mode (release or debug).
+Adjust according the targeted architecture (x86 or x84) and mode (release or debug).
 
 Then head to the source directory and type::
 
