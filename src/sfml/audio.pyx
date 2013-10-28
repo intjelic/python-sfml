@@ -46,7 +46,7 @@ cdef Time wrap_time(sf.Time* p):
 
 cdef class Listener:
 	def __init__(self):
-		NotImplementedError("This class is not meant to be instanciated!")
+		NotImplementedError("This class is not meant to be instantiated!")
 
 	@classmethod
 	def get_global_volume(cls):
@@ -110,7 +110,7 @@ cdef class Chunk:
 			cdef char* data = <bytes>bdata
 
 			if len(bdata) % 2:
-				raise ValueError("Chunk data lenght must be even as it represents a 16bit array")
+				raise ValueError("Chunk data length must be even as it represents a 16bit array")
 
 			if self.delete_this:
 				free(self.m_samples)
