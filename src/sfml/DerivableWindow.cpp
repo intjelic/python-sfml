@@ -28,19 +28,26 @@ sf::Window (handle, settings)
 {
 }
 
+
 void DerivableWindow::onCreate()
 {
-	static char method[] = "on_create";
-    PyObject_CallMethod(m_pyobj, method, NULL);
+    static char method[] = "on_create";
+    PyObject* success = PyObject_CallMethod(m_pyobj, method, NULL);
+
+    if(!success)
+        PyErr_Print();
 }
 
 void DerivableWindow::onResize()
 {
-	static char method[] = "on_resize";
-    PyObject_CallMethod(m_pyobj, method, NULL);
+    static char method[] = "on_resize";
+    PyObject* success = PyObject_CallMethod(m_pyobj, method, NULL);
+    
+    if(!success)
+        PyErr_Print();
 }
 
 void DerivableWindow::set_pyobj(void* pyobj)
 {
-	m_pyobj = static_cast<PyObject*>(pyobj);
+    m_pyobj = static_cast<PyObject*>(pyobj);
 }

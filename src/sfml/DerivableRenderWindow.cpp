@@ -30,17 +30,23 @@ sf::RenderWindow (handle, settings)
 
 void DerivableRenderWindow::onCreate()
 {
-	static char method[] = "on_create";
-    PyObject_CallMethod(m_pyobj, method, NULL);
+    static char method[] = "on_create";
+    PyObject* success = PyObject_CallMethod(m_pyobj, method, NULL);
+    
+    if(!success)
+        PyErr_Print();
 }
 
 void DerivableRenderWindow::onResize()
 {
-	static char method[] = "on_resize";
-    PyObject_CallMethod(m_pyobj, method, NULL);
+    static char method[] = "on_resize";
+    PyObject* success = PyObject_CallMethod(m_pyobj, method, NULL);
+    
+    if(!success)
+        PyErr_Print();
 }
 
 void DerivableRenderWindow::set_pyobj(void* pyobj)
 {
-	m_pyobj = static_cast<PyObject*>(pyobj);
+    m_pyobj = static_cast<PyObject*>(pyobj);
 }
