@@ -508,7 +508,7 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
 		if self.delete_this: del self.p_this
 
 	def __repr__(self):
-		return "VideoMode(size={0}, bpp={1}".format(self.size, self.bpp)
+		return "VideoMode(size={0}, bpp={1})".format(self.size, self.bpp)
 
 	def __str__(self):
 		return "{0}x{1}x{2}".format(self.width, self.height, self.bpp)
