@@ -15,15 +15,6 @@ from glob import glob
 from subprocess import call
 from distutils.core import setup, Command, Extension
 
-class PyTest(Command):
-	user_options = []
-
-	def initialize_options(self): pass
-	def finalize_options(self): pass
-	def run(self):
-		errno = call([sys.executable, 'tests/runtests.py'])
-		raise SystemExit(errno)
-
 try:
 	from Cython.Distutils import build_ext
 except ImportError:
@@ -184,6 +175,6 @@ kwargs = dict(
 						'Topic :: Games/Entertainment',
 						'Topic :: Multimedia',
 						'Topic :: Software Development :: Libraries :: Python Modules'],
-			cmdclass={'test': PyTest, 'build_ext': CythonBuildExt})
+			cmdclass={'build_ext': CythonBuildExt})
 
 setup(**kwargs)
