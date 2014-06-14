@@ -52,34 +52,19 @@ cdef extern from *:
 	ctypedef void* PyUnicodeObject
 	object PyUnicode_FromWideChar(const wchar_t *w, Py_ssize_t size)
 
-cdef extern from "hacks.h":
-	Py_ssize_t PyUnicode_AsWideChar(void* o, wchar_t *w, Py_ssize_t size)
-
 from libc.stdlib cimport malloc, free
 
+cdef extern from "hacks.h": pass
+from cpython.string cimport PyString_AsString
+
 cdef sf.String toEncodedString(object title):
-	cdef str stitle = None
-	cdef unicode  utitle = None
-	cdef wchar_t* ctitle = NULL
-
+	cdef char* ctitle = NULL
+	
 	title = title + "\0"
-
-	if sys.version_info < (3, 0):
-		if type(title) is unicode:
-			utitle = title
-		else:
-			utitle = title.decode("utf-8")
-
-		ctitle = <wchar_t *>malloc(len(utitle) * sizeof(wchar_t))
-		PyUnicode_AsWideChar(<void*>(utitle), ctitle, len(utitle))
-		return sf.String(ctitle)
-
-	else:
-		stitle = title
-
-		ctitle = <wchar_t *>malloc(len(stitle) * sizeof(wchar_t))
-		PyUnicode_AsWideChar(<void*>(stitle), ctitle, len(stitle))
-		return sf.String(ctitle)
+	title = title.encode("utf-32")
+	
+	ctitle = PyString_AsString(title)
+	return sf.String(<Uint32*>ctitle)
 
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
 			'Image', 'Texture', 'Glyph', 'Font', 'Shader',

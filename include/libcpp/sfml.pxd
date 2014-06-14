@@ -75,6 +75,7 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 	cdef cppclass String:
 		String()
 		String(const wchar_t*)
+		String(const Uint32*)
 		string toAnsiString()
 		wstring toWideString()
 		void clear()

@@ -12,11 +12,6 @@
 
 #include <Python.h>
 
-extern "C" {
-
-    #if PY_VERSION_HEX >= 0x03000000
-        Py_ssize_t PyUnicode_AsWideChar(PyObject* o, wchar_t *w, Py_ssize_t size);
-    #else
-        Py_ssize_t PyUnicode_AsWideChar(PyUnicodeObject* o, wchar_t *w, Py_ssize_t size);
-    #endif
-}
+#if PY_VERSION_HEX >= 0x03000000
+	#define PyString_AsString PyBytes_AsString
+#endif
