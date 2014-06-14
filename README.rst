@@ -25,7 +25,7 @@ obtained by issuing the following additional commands::
 Alternatively, you may clone the main project and its submodules all at once
 with the following command::
 
-    git clone --recursive git://github.com:Sonkun/python-sfml.git
+    git clone --recursive git://github.com/Sonkun/python-sfml.git
     cd python-sfml
 
 Resources
