@@ -891,20 +891,21 @@ cdef class Shader:
 	def from_memory(cls, char* vertex=NULL, char* fragment=NULL):
 		cdef sf.Shader *p = new sf.Shader()
 
-		if vertex is None and fragment is None:
+		if vertex is NULL and fragment is NULL:
 			raise TypeError("This method takes at least 1 argument (0 given)")
 
 		if vertex and fragment:
 			if p.loadFromMemory(vertex, fragment):
 				return wrap_shader(p)
-
-			del p
-			raise IOError(popLastErrorMessage())
-
-		if vertex:
-			return Shader.vertex_from_memory(vertex)
+		elif vertex:
+			if p.loadFromMemory(vertex, sf.shader.Vertex):
+				return wrap_shader(p)
 		elif fragment:
-			return Shader.fragment_from_memory(fragment)
+			if p.loadFromMemory(fragment, sf.shader.Fragment):
+				return wrap_shader(p)
+
+		del p
+		raise IOError(popLastErrorMessage())
 
 	def set_parameter(self, *args, **kwargs):
 		if len(args) == 0:
