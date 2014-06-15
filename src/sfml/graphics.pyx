@@ -31,8 +31,7 @@ cdef extern from "pysfml/system_api.h":
 	object popLastErrorMessage()
 	int import_sfml__system()
 import_sfml__system()
-
-
+	
 cdef extern from "DerivableDrawable.hpp":
 	cdef cppclass DerivableDrawable:
 		DerivableDrawable(void*)
@@ -48,23 +47,9 @@ cdef extern from "DerivableRenderWindow.hpp":
 		void set_pyobj(void*)
 
 cdef extern from *:
-	ctypedef int wchar_t
 	ctypedef void* PyUnicodeObject
-	object PyUnicode_FromWideChar(const wchar_t *w, Py_ssize_t size)
 
 from libc.stdlib cimport malloc, free
-
-cdef extern from "hacks.h": pass
-from cpython.string cimport PyString_AsString
-
-cdef sf.String toEncodedString(object title):
-	cdef char* ctitle = NULL
-	
-	title = title + "\0"
-	title = title.encode("utf-32")
-	
-	ctitle = PyString_AsString(title)
-	return sf.String(<Uint32*>ctitle)
 
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
 			'Image', 'Texture', 'Glyph', 'Font', 'Shader',
@@ -82,6 +67,7 @@ from copy import copy, deepcopy
 
 from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2f
+from pysfml.system cimport to_string, wrap_string
 from pysfml.window cimport VideoMode, ContextSettings, Pixels, Window
 from pysfml.graphics cimport to_intrect, to_floatrect
 from pysfml.graphics cimport intrect_to_rectangle, floatrect_to_rectangle
@@ -1381,10 +1367,10 @@ cdef class Text(TransformableDrawable):
 
 	property string:
 		def __get__(self):
-			return PyUnicode_FromWideChar(self.p_this.getString().toWideString().c_str(), self.p_this.getString().getSize())
+			return wrap_string(&self.p_this.getString())
 
 		def __set__(self, string):
-			self.p_this.setString(toEncodedString(string))
+			self.p_this.setString(to_string(string))
 
 	property font:
 		def __get__(self):
@@ -1899,11 +1885,11 @@ cdef class RenderWindow(Window):
 	def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
 		if self.p_this == NULL:
 			if self.__class__ is not RenderWindow:
-				if not settings: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], toEncodedString(title), style)
-				else: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
+				if not settings: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], to_string(title), style)
+				else: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], to_string(title), style, settings.p_this[0])
 			else:
-				if not settings: self.p_this = new sf.RenderWindow(mode.p_this[0], toEncodedString(title), style)
-				else: self.p_this = new sf.RenderWindow(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
+				if not settings: self.p_this = new sf.RenderWindow(mode.p_this[0], to_string(title), style)
+				else: self.p_this = new sf.RenderWindow(mode.p_this[0], to_string(title), style, settings.p_this[0])
 
 			self.p_window = <sf.Window*>self.p_this
 

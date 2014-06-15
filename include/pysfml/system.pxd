@@ -49,3 +49,6 @@ cdef inline sf.Vector3f to_vector3f(vector):
 cdef inline Vector3 to_vector3(sf.Vector3f* vector):
 	return Vector3(vector.x, vector.y, vector.z)
 
+cdef extern from "pysfml/system_api.h":
+	object wrap_string(sf.String* p)
+	sf.String to_string(object string)

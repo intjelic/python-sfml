@@ -17,7 +17,7 @@ from libcpp.vector cimport vector
 cimport libcpp.sfml as sf
 from libcpp.sfml cimport Int8, Int16, Int32, Int64
 from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
-
+	
 cdef extern from "DerivableWindow.hpp":
 	cdef cppclass DerivableWindow:
 		DerivableWindow()
@@ -34,19 +34,6 @@ cdef extern from *:
 
 from libc.stdlib cimport malloc, free
 
-cdef extern from "hacks.h": pass
-from cpython.string cimport PyString_AsString
-
-cdef sf.String toEncodedString(object title):
-	cdef char* ctitle = NULL
-	
-	title = title + "\0"
-	title = title.encode("utf-32")
-	
-	ctitle = PyString_AsString(title)
-	return sf.String(<Uint32*>ctitle)
-
-
 __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
 			'CloseEvent', 'ResizeEvent', 'FocusEvent', 'TextEvent',
 			'KeyEvent', 'MouseWheelEvent', 'MouseButtonEvent',
@@ -59,6 +46,7 @@ import sys
 
 from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2u
+from pysfml.system cimport to_string, wrap_string
 
 
 cdef class Style:
@@ -666,12 +654,12 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 	def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
 		if self.p_window is NULL:
 			if self.__class__ is Window:
-				if not settings: self.p_window = new sf.Window(mode.p_this[0], toEncodedString(title), style)
-				else: self.p_window = new sf.Window(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
+				if not settings: self.p_window = new sf.Window(mode.p_this[0], to_string(title), style)
+				else: self.p_window = new sf.Window(mode.p_this[0], to_string(title), style, settings.p_this[0])
 
 			else:
-				if not settings: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], toEncodedString(title), style)
-				else: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
+				if not settings: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], to_string(title), style)
+				else: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], to_string(title), style, settings.p_this[0])
 				(<DerivableWindow*>self.p_window).set_pyobj(<void*>self)
 
 	def __dealloc__(self):
@@ -682,8 +670,8 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 		return "Window(position={0}, size={1}, is_open={2})".format(self.position, self.size, self.is_open)
 
 	def recreate(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
-		if not settings: self.p_window.create(mode.p_this[0], toEncodedString(title), style)
-		else: self.p_window.create(mode.p_this[0], toEncodedString(title), style, settings.p_this[0])
+		if not settings: self.p_window.create(mode.p_this[0], to_string(title), style)
+		else: self.p_window.create(mode.p_this[0], to_string(title), style, settings.p_this[0])
 
 	def close(self):
 		self.p_window.close()
@@ -742,7 +730,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
 	property title:
 		def __set__(self, title):
-			self.p_window.setTitle(toEncodedString(title))
+			self.p_window.setTitle(to_string(title))
 
 	property icon:
 		def __set__(self, Pixels icon):

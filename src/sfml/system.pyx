@@ -27,6 +27,11 @@ from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
 	#cdef cppclass string:
 		#char* c_str()
 
+cdef extern from *:
+	ctypedef int wchar_t
+	ctypedef void* PyUnicodeObject
+	object PyUnicode_FromWideChar(const wchar_t *w, Py_ssize_t size)
+	
 cdef extern from "error.hpp":
 	void restorePythonErrorBuffer()
 	object getLastErrorMessage()
@@ -51,6 +56,22 @@ cdef api object popLastErrorMessage():
 # redirect SFML errors to our stream buffer
 restoreErrorHandler()
 
+
+cdef extern from "hacks.h": pass
+from cpython.string cimport PyString_AsString
+
+cdef api sf.String to_string(object string):
+	cdef char* cstring = NULL
+	
+	string = string + "\0"
+	string = string.encode("utf-32")
+	
+	cstring = PyString_AsString(string)
+	return sf.String(<Uint32*>cstring)
+
+cdef api object wrap_string(sf.String* p):
+	return PyUnicode_FromWideChar(p.toWideString().c_str(), p.getSize())
+	
 cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
 	cdef public object x
 	cdef public object y
