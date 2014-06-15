@@ -11,6 +11,7 @@
 
 cimport cython
 from cython.operator cimport dereference as deref, preincrement as inc
+from cpython.version cimport PY_VERSION_HEX
 
 from libcpp.vector cimport vector
 
@@ -43,6 +44,9 @@ __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
 
 
 import sys
+
+if PY_VERSION_HEX >= 0x03000000:
+	unichr = chr
 
 from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2u
@@ -200,7 +204,7 @@ cdef class TextEvent(Event):
 
 	property unicode:
 		def __get__(self):
-			return self.p_this.text.unicode
+			return unichr(self.p_this.text.unicode)
 
 		def __set__(self, Uint32 unicode):
 			self.p_this.text.unicode = unicode
