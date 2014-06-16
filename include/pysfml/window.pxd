@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # pySFML - Python bindings for pySFML
-# Copyright 2012-2013, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# Copyright 2012-2014, Jonathan De Wachter <dewachter.jonathan@gmail.com>
 #
 # This software is released under the LGPLv3 license.
 # You should have received a copy of the GNU Lesser General Public License
