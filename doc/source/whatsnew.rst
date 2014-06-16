@@ -8,6 +8,12 @@ accomplished, please visit the `issues page on github` and the
 Milestones
 ----------
 
+16 June 2013 : Changing license from LGPL to zlib/libpng license
+
+   To be consistent across SFML bindings licenses, we chose to use the same
+   license as SFML itself, which is more permissive. See http://opensource.org/licenses/Zlib
+   for more information about it.
+
 8 June 2013 : New version numbering scheme
 
    To avoid confusion, the version numbering scheme of pySFML will now

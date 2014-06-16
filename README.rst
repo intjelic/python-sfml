@@ -2,7 +2,7 @@ About
 =====
 This is version 2.1 of the Python bindings for `SFML <http://www.sfml-dev.org/>`_,
 based on SFML 2.1, and is made available under the terms of the
-`LGPLv3 <http://www.gnu.org/copyleft/lgpl.html>`_ license.
+`zlib/libpng <http://opensource.org/licenses/Zlib>`_ license.
 
 Python bindings really are the perfect way to sketch software using SFML.
 
