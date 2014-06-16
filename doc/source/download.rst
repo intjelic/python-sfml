@@ -31,7 +31,7 @@ Mac OSX
 While official support for Mac OSX is slated for the next release, those eager
 should feel free to download the source code and compile manually.
 
-For example, through pip (don't forget to have cython 0.19 and SFML 2.1
+For example, through pip (don't forget to have cython 0.20 and SFML 2.1
 installed and as mentioned below): ::
 
    pip install git+git://github.com/Sonkun/python-sfml.git
@@ -100,7 +100,7 @@ source code, either from git::
 
     git clone git://github.com/Sonkun/python-sfml.git
 
-You'll also need `SFML`_ 2.1 and `Cython`_ 0.19 installed on your computer.
+You'll also need `SFML`_ 2.1 and `Cython`_ 0.20 installed on your computer.
 
 Linux and Mac OSX
 ^^^^^^^^^^^^^^^^^
