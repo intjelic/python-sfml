@@ -1,12 +1,7 @@
 Python bindings for SFML
 ========================
-This is version |version| of the Python bindings for `SFML`_, based on the
-`final release of SFML2` and is made available under the terms of
-the `LGPLv3`_ license.
-
-Consider this version as a **stable** release candidate to version 1.4 since
-they are still remaining minor task regarding the documentation, the unit tests
-and the packaging. You may want to check out the todo lists: :doc:`here </todo>`.
+This is version |version| of the Python bindings for `SFML`_, based on
+SFML |version|, and is made available under the terms of the `LGPLv3`_ license.
 
 By combining the strength of SFML with the ease of the Python language,
 we can provide an amazing tool to quickly build multimedia software.
@@ -87,7 +82,6 @@ Table of Contents
          write your own Python extension using the C/Cython API.
 
 .. _SFML: http://www.sfml-dev.org/
-.. _the first release candidate: http://www.sfml-dev.org/download.php#2.0-rc
 .. _LGPLv3: http://www.gnu.org/copyleft/lgpl.html
 .. _official Python bindings: https://github.com/bastienleonard/pysfml2-cython
 

@@ -8,6 +8,12 @@ accomplished, please visit the `issues page on github` and the
 Milestones
 ----------
 
+8 June 2013 : New version numbering scheme
+
+   To avoid confusion, the version numbering scheme of pySFML will now
+   always follow the SFML's one. The upcoming version of these bindings
+   will therefore be 2.1 instead of 1.4.
+
 1 February 2013 : Thor
 
    Most of the `Thor <http://www.bromeon.ch/libraries/thor/>`_ library modules

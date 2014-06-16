@@ -1,6 +1,6 @@
 Download
 ========
-Here you'll find all the necessary explanations for installing the binding
+Here you'll find all the necessary explanations for installing these bindings
 on your favourite platform. Unfortunately the procedures for **Mac OSX**
 and **Windows 8** are not yet available.
 
@@ -21,19 +21,17 @@ Simply download the correct installer and follow the instructions.
         3. Check "Run this program in compatibility mode for"
         4. Select "Windows XP (Service Pack 3)
 
-* `pySFML-1.3.0.win32-py2.7.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win32-py2.7.exe>`_ [Python 2.7] [32 bit]
-* `pySFML-1.3.0.win32-py3.2.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win32-py3.2.exe>`_ [Python 3.2] [32 bit]
-* `pySFML-1.3.0.win32-py3.3.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win32-py3.3.exe>`_ [Python 3.3] [32 bit]
-* `pySFML-1.3.0.win64-py2.7.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win64-py2.7.exe>`_ [Python 2.7] [64 bit]
-* `pySFML-1.3.0.win64-py3.2.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win64-py3.2.exe>`_ [Python 3.2] [64 bit]
-* `pySFML-1.3.0.win64-py3.3.exe <http://python-sfml.org/1.3/downloads/pySFML-1.3.0.win64-py3.3.exe>`_ [Python 3.3] [64 bit]
+* `pySFML-2.1.0.win32-py2.7.exe <http://python-sfml.org/2.1/downloads/pySFML-2.1.0.win32-py2.7.exe>`_ [Python 2.7] [32 bit]
+* `pySFML-2.1.0.win32-py3.4.exe <http://python-sfml.org/2.1/downloads/pySFML-2.1.0.win32-py3.4.exe>`_ [Python 3.4] [32 bit]
+* `pySFML-2.1.0.win64-py2.7.exe <http://python-sfml.org/2.1/downloads/pySFML-2.1.0.win64-py2.7.exe>`_ [Python 2.7] [64 bit]
+* `pySFML-2.1.0.win64-py3.4.exe <http://python-sfml.org/2.1/downloads/pySFML-2.1.0.win64-py3.4.exe>`_ [Python 3.4] [64 bit]
 
 Mac OSX
 -------
 While official support for Mac OSX is slated for the next release, those eager
 should feel free to download the source code and compile manually.
 
-For example, through pip (don't forget to have cython 0.19 and SFML 2.0
+For example, through pip (don't forget to have cython 0.19 and SFML 2.1
 installed and as mentioned below): ::
 
    pip install git+git://github.com/Sonkun/python-sfml.git
@@ -83,7 +81,7 @@ Want the development version ? Use `ppa:sonkun/sfml-development` repository.
 
 Fedora
 ------
-Packages are available `here <http://python-sfml.org/1.3/downloads>`_
+Packages are available `here <http://python-sfml.org/2.1/downloads>`_
 
 See Ubuntu section to know what you can do with the example package.
 
@@ -101,7 +99,7 @@ source code, either from git::
 
     git clone git://github.com/Sonkun/python-sfml.git
 
-You'll also need `SFML`_ and `Cython`_ 0.19 installed on your computer.
+You'll also need `SFML`_ 2.1 and `Cython`_ 0.19 installed on your computer.
 
 Linux and Mac OSX
 ^^^^^^^^^^^^^^^^^
@@ -120,9 +118,9 @@ To have binaries fully compatible you should compile with the optimizing
 C/C++ compiler used to build Python for Windows. The SDK can be
 downloaded on the Microsoft download center:
 
-For Python 2.7 & 3.2: `Windows SDK 7.0 <http://www.microsoft.com/en-us/download/details.aspx?id=18950>`_
+For Python 2.7 until 3.2: `Windows SDK 7.0 <http://www.microsoft.com/en-us/download/details.aspx?id=18950>`_
 
-For Python 3.3: `Windows SDK 7.1 <http://www.microsoft.com/en-us/download/details.aspx?id=8442>`_
+For Python 3.3 and later: `Windows SDK 7.1 <http://www.microsoft.com/en-us/download/details.aspx?id=8442>`_
 
 .. note::
 
@@ -151,5 +149,5 @@ It you want to create an installer, simply type::
 
 	python setup.py bdist_msi
 
-.. _SFML: http://python-sfml.org/downloads/sfml-2.0.0.tar.gz
+.. _SFML: http://python-sfml.org/downloads/sfml-2.1.0.tar.gz
 .. _cython: http://cython.org
