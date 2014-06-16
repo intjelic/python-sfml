@@ -71,7 +71,7 @@ include_path = os.path.join('include', 'pysfml')
 source_path = os.path.join('src', 'sfml')
 
 
-## clean the directory (remove generated C++ files by Cython)
+# clean the directory (remove generated C++ files by Cython)
 def remove_if_exist(filename):
 	if os.path.isfile(filename):
 		try:
@@ -83,7 +83,6 @@ for module in modules:
 	remove_if_exist(os.path.join(include_path, module + '.h'))
 	remove_if_exist(os.path.join(include_path, module + '._api.h'))
 	remove_if_exist(os.path.join(source_path, module + '.cpp'))
-
 
 extension = lambda name, files, libs: Extension(
 	name='sfml.' + name,
@@ -97,7 +96,7 @@ extension = lambda name, files, libs: Extension(
 system = extension(
 	'system',
 	[sources['system'], 'src/sfml/error.cpp'],
-	['sfml-system', 'sfml-graphics'])
+	['sfml-system'])
 
 window = extension(
 	'window', [sources['window'], 'src/sfml/DerivableWindow.cpp'],
