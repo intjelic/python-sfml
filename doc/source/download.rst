@@ -39,18 +39,19 @@ installed and as mentioned below): ::
 
 Ubuntu
 ------
-Packages are available (for Ubuntu 12.04LTS, 12.10 & 13.04LTS) via launchpad::
+Packages are available for Ubuntu starting from 14.04 or greater via launchpad::
 
-   sudo add-apt-repository ppa:sonkun/sfml-stable
+   sudo add-apt-repository ppa:sfml/stable
    sudo apt-get update
    sudo apt-get install python-sfml
    # or
    sudo apt-get install python3-sfml
 
-Want the development version ? Use `ppa:sonkun/sfml-development` repository.
+Want the development version to benefit the latest bug fixes or features ? 
+Use `ppa:sfml/development` repository, daily builds are available.
 
 .. note::
-   The *sonkun/sfml-stable* ppa provides many packages. The library SFML
+   These repositories provide many packages. The library SFML
    and the bindings are included along with their examples. Packages are:
 
       * libsfml

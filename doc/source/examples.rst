@@ -5,9 +5,9 @@ Examples
 
 .. contents:: :local:
 
-If you downloaded a source archive or cloned pySFML2 from github, these examples
+If you downloaded a source archive or cloned pySFML from github, these examples
 will be located in the examples subdirectory of the project's root. A package
-named 'pysfml2-examples' is also available for Debian-based Linux
+named 'pysfml-examples' is also available for Debian-based Linux
 distributions, which allows you to run arbitrary examples by invoking a command
 of the following form from a terminal::
 
