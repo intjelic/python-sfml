@@ -10,14 +10,10 @@ except ImportError:
     print("Please install cython and try again.")
     raise SystemExit
 
-if platform.system() == 'Windows':
-    if platform.architecture()[0] == "32bit":
-        arch = "x86"
-    elif platform.architecture()[0] == "64bit":
-        arch = "x64"
-    else:
-        print("Please set up your environment and try again.")
-        raise SystemExit
+if platform.architecture()[0] == "32bit":
+	arch = "x86"
+elif platform.architecture()[0] == "64bit":
+	arch = "x64"
 
 class CythonBuildExt(build_ext):
     """ Updated version of cython build_ext command to move
