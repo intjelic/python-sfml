@@ -69,7 +69,7 @@ cdef api sf.String to_string(object string):
 	cstring = PyString_AsString(string)
 	return sf.String(<Uint32*>cstring)
 
-cdef api object wrap_string(sf.String* p):
+cdef api object wrap_string(const sf.String* p):
 	return PyUnicode_FromWideChar(p.toWideString().c_str(), p.getSize())
 	
 cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
