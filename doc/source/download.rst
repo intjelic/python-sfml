@@ -124,18 +124,17 @@ For Python 2.7 & 3.2: `Windows SDK 7.0 <http://www.microsoft.com/en-us/download/
 
 For Python 3.3: `Windows SDK 7.1 <http://www.microsoft.com/en-us/download/details.aspx?id=8442>`_
 
+.. note::
+
+   If you planned to compile for both version (and thus install both SDKs (7.0 and 7.1),
+   dont't install redistributable packages otherwise you'll run accross an installation 
+   failure when installing the second SDK. To do that, uncheck "Microsoft Visual C++ 2010" 
+   case.
+	
 You need **GRMSDKX_EN_DVD.iso** if you target a **AMD64** Python version. It
 can build for x86 arch too.
 
 Observe that you don't need Microsoft Visual C++ Express.
-
-If SFML headers and libraries aren't installed in the respective compilers, do
-it now. It would look like: ::
-
-   C:\Program Files (x86)\Microsoft Visual Studio 9\VC\include\SFML
-   C:\Program Files (x86)\Microsoft Visual Studio 9\VC\lib\sfml-system-2.lib
-   C:\Program Files (x86)\Microsoft Visual Studio 9\VC\lib\sfml-window-2.lib
-   ...
 
 Open the SDK command window and type::
 
@@ -148,13 +147,9 @@ Then head to the source directory and type::
 
     python setup.py install
 
-You'll still need sfml DLLs in your source directories unless you copy
-them in the Python Lib directory: `/PythonXY/Lib/site-packages/sfml/sfml-*.dll`
+It you want to create an installer, simply type::
 
-.. note::
-	I use an internal version of setup.py to create the available Windows
-	installers in order to to include DLLs, so you don't need to compile
-	it when using installers.
+	python setup.py bdist_msi
 
 .. _SFML: http://python-sfml.org/downloads/sfml-2.0.0.tar.gz
 .. _cython: http://cython.org

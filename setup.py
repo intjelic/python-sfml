@@ -21,6 +21,15 @@ except ImportError:
 	print("Please install cython and try again.")
 	raise SystemExit
 
+if platform.system() == 'Windows':
+	if platform.architecture()[0] == "32bit":
+		arch = "x86"
+	elif platform.architecture()[0] == "64bit":
+		arch = "x64"
+	else:
+		print("Please set up your environment and try again.")
+		raise SystemExit
+		
 class CythonBuildExt(build_ext):
 	""" Updated version of cython build_ext command to move
 	the generated API headers to include/pysfml directory
@@ -77,9 +86,11 @@ for module in modules:
 
 
 extension = lambda name, files, libs: Extension(
-	'sfml.' + name,
-	files,
-	['include'], language='c++',
+	name='sfml.' + name,
+	sources=files,
+	include_dirs=['include', os.path.normpath('extlibs/sfml/include')],
+	library_dirs=[os.path.normpath('extlibs/sfml/lib/' + arch)],
+	language='c++',
 	libraries=libs,
     extra_compile_args=['-fpermissive'])
 
@@ -147,6 +158,10 @@ else:
 
 files = cython_headers + c_api + cython_api
 
+if platform.system() == 'Windows':
+	dlls = [("Lib\\site-packages\\sfml", glob('extlibs/sfml/bin/' + arch + '/*.dll'))]
+	files += dlls
+	
 with open('README.rst', 'r') as f:
 	long_description = f.read()
 
