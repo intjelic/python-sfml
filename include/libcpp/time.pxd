@@ -11,4 +11,4 @@
 from libcpp.sfml cimport Time
 
 cdef extern from "SFML/System.hpp" namespace "sf::Time":
-	cdef Time Zero
+    cdef Time Zero

@@ -14,23 +14,23 @@ from libcpp.vector cimport vector
 from ftp cimport response
 
 cdef extern from "SFML/Network.hpp" namespace "sf::Ftp":
-	cdef enum TransferMode:
-		Binary
-		Ascii
-		Ebcdic
+    cdef enum TransferMode:
+        Binary
+        Ascii
+        Ebcdic
 
-	cdef cppclass Response:
-		Response()
-		Response(response.Status)
-		Response(response.Status, const string&)
-		bint isOk() const
-		response.Status getStatus() const
-		const string& getMessage() const
+    cdef cppclass Response:
+        Response()
+        Response(response.Status)
+        Response(response.Status, const string&)
+        bint isOk() const
+        response.Status getStatus() const
+        const string& getMessage() const
 
-	cdef cppclass DirectoryResponse:
-		DirectoryResponse(const Response&)
-		const string& getDirectory() const
+    cdef cppclass DirectoryResponse:
+        DirectoryResponse(const Response&)
+        const string& getDirectory() const
 
-	cdef cppclass ListingResponse:
-		ListingResponse(const Response&, const vector[char]&)
-		const vector[string]& getListing() const
+    cdef cppclass ListingResponse:
+        ListingResponse(const Response&, const vector[char]&)
+        const vector[string]& getListing() const

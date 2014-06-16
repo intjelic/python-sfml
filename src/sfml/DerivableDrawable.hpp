@@ -21,12 +21,12 @@
 class DerivableDrawable : public sf::Drawable
 {
 public :
-	DerivableDrawable(void* pyThis);
+    DerivableDrawable(void* pyThis);
 
 protected:
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	PyObject* m_pyobj;
+    PyObject* m_pyobj;
 };
 
 

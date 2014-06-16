@@ -11,24 +11,24 @@
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Joystick":
 
-	cdef enum:
-		Count
-		ButtonCount
-		AxisCount
+    cdef enum:
+        Count
+        ButtonCount
+        AxisCount
 
-	cdef enum Axis:
-		X
-		Y
-		Z
-		R
-		U
-		V
-		PovX
-		PovY
+    cdef enum Axis:
+        X
+        Y
+        Z
+        R
+        U
+        V
+        PovX
+        PovY
 
-	bint isConnected(unsigned int)
-	unsigned int getButtonCount(unsigned int)
-	bint hasAxis(unsigned int, Axis)
-	bint isButtonPressed(unsigned int, unsigned int)
-	float getAxisPosition(unsigned int, Axis)
-	void update()
+    bint isConnected(unsigned int)
+    unsigned int getButtonCount(unsigned int)
+    bint hasAxis(unsigned int, Axis)
+    bint isButtonPressed(unsigned int, unsigned int)
+    float getAxisPosition(unsigned int, Axis)
+    void update()

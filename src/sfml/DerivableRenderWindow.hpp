@@ -21,18 +21,18 @@
 class DerivableRenderWindow : public sf::RenderWindow
 {
 public :
-	DerivableRenderWindow();
-	DerivableRenderWindow(sf::VideoMode mode, const std::string& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
-	explicit DerivableRenderWindow(sf::WindowHandle handle, const sf::ContextSettings& settings = sf::ContextSettings());
+    DerivableRenderWindow();
+    DerivableRenderWindow(sf::VideoMode mode, const std::string& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
+    explicit DerivableRenderWindow(sf::WindowHandle handle, const sf::ContextSettings& settings = sf::ContextSettings());
 
-	void set_pyobj(void* pyobj);
+    void set_pyobj(void* pyobj);
 
 protected:
-	virtual void onCreate();
-	virtual void onResize();
+    virtual void onCreate();
+    virtual void onResize();
 
 private:
-	PyObject* m_pyobj; // the python object pointer
+    PyObject* m_pyobj; // the python object pointer
 };
 
 

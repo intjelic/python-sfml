@@ -9,8 +9,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Text":
-	cdef enum Style:
-		Regular
-		Bold
-		Italic
-		Underlined
+    cdef enum Style:
+        Regular
+        Bold
+        Italic
+        Underlined

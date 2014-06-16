@@ -11,4 +11,4 @@
 from libcpp.sfml cimport Transform
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Transform":
-	cdef Transform Identity
+    cdef Transform Identity

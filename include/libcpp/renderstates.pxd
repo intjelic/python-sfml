@@ -11,4 +11,4 @@
 from libcpp.sfml cimport RenderStates
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::RenderStates":
-	cdef const RenderStates Default
+    cdef const RenderStates Default

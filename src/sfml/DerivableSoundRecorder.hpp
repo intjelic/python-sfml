@@ -21,14 +21,14 @@
 class DerivableSoundRecorder : public sf::SoundRecorder
 {
 public :
-	DerivableSoundRecorder(void* pyThis);
+    DerivableSoundRecorder(void* pyThis);
 
 protected:
-	virtual bool onStart();
-	virtual bool onProcessSamples(const sf::Int16* samples, std::size_t sampleCount);
-	virtual void onStop();
+    virtual bool onStart();
+    virtual bool onProcessSamples(const sf::Int16* samples, std::size_t sampleCount);
+    virtual void onStop();
 
-	PyObject* m_pyobj;
+    PyObject* m_pyobj;
 };
 
 

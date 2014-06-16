@@ -13,11 +13,11 @@ from libcpp.sfml cimport Texture
 
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Texture":
-	cdef unsigned int getMaximumSize()
+    cdef unsigned int getMaximumSize()
 
-	cdef enum CoordinateType:
-		Normalized
-		Pixels
+    cdef enum CoordinateType:
+        Normalized
+        Pixels
 
-	cdef void bind(const Texture*)
-	cdef void bind(const Texture*, CoordinateType)
+    cdef void bind(const Texture*)
+    cdef void bind(const Texture*, CoordinateType)

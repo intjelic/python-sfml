@@ -12,6 +12,6 @@ from libcpp.sfml cimport Int16
 
 cdef extern from "SFML/Audio.hpp" namespace "sf::SoundRecorder":
 
-	cdef struct Chunk:
-		const Int16* samples
-		size_t sampleCount
+    cdef struct Chunk:
+        const Int16* samples
+        size_t sampleCount

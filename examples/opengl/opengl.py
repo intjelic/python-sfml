@@ -58,116 +58,116 @@ clock = sf.Clock()
 # start game loop
 while window.is_open:
 
-	# process events
-	for event in window.events:
+    # process events
+    for event in window.events:
 
-		# close window : exit
-		if event == sf.CloseEvent:
-			window.close()
+        # close window : exit
+        if event == sf.CloseEvent:
+            window.close()
 
-		# escape key : exit
-		if event == sf.KeyEvent and event.code == sf.Keyboard.ESCAPE:
-			window.close()
+        # escape key : exit
+        if event == sf.KeyEvent and event.code == sf.Keyboard.ESCAPE:
+            window.close()
 
-		# adjust the viewport when the window is resized
-		if event == sf.ResizeEvent:
-			glViewport(0, 0, event.width, event.height)
+        # adjust the viewport when the window is resized
+        if event == sf.ResizeEvent:
+            glViewport(0, 0, event.width, event.height)
 
-	# draw the background
-	window.push_GL_states()
-	window.draw(background)
-	window.pop_GL_states()
+    # draw the background
+    window.push_GL_states()
+    window.draw(background)
+    window.pop_GL_states()
 
-	# activate the window before using OpenGL commands.
-	# this is useless here because we have only one window which is
-	# always the active one, but don't forget it if you use multiple windows
-	window.active = True
+    # activate the window before using OpenGL commands.
+    # this is useless here because we have only one window which is
+    # always the active one, but don't forget it if you use multiple windows
+    window.active = True
 
-	# clear the depth buffer
-	glClear(GL_DEPTH_BUFFER_BIT);
+    # clear the depth buffer
+    glClear(GL_DEPTH_BUFFER_BIT);
 
-	# we get the position of the mouse cursor, so that we can move the box accordingly
-	x = sf.Mouse.get_position(window).x * 200. / window.size.x - 100.
-	y = -sf.Mouse.get_position(window).y * 200. / window.size.y + 100.
+    # we get the position of the mouse cursor, so that we can move the box accordingly
+    x = sf.Mouse.get_position(window).x * 200. / window.size.x - 100.
+    y = -sf.Mouse.get_position(window).y * 200. / window.size.y + 100.
 
-	# apply some transformations
-	glMatrixMode(GL_MODELVIEW)
-	glLoadIdentity()
-	glTranslatef(x, y, -100.)
-	glRotatef(clock.elapsed_time.seconds * 50., 1., 0., 0.)
-	glRotatef(clock.elapsed_time.seconds * 30., 0., 1., 0.)
-	glRotatef(clock.elapsed_time.seconds * 90., 0., 0., 1.)
+    # apply some transformations
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+    glTranslatef(x, y, -100.)
+    glRotatef(clock.elapsed_time.seconds * 50., 1., 0., 0.)
+    glRotatef(clock.elapsed_time.seconds * 30., 0., 1., 0.)
+    glRotatef(clock.elapsed_time.seconds * 90., 0., 0., 1.)
 
-	# draw a cube
-	size = 20.
-	glBegin(GL_QUADS)
+    # draw a cube
+    size = 20.
+    glBegin(GL_QUADS)
 
-	glTexCoord2f(0, 0)
-	glVertex3f(-size, -size, -size)
-	glTexCoord2f(0, 1)
-	glVertex3f(-size,  size, -size)
-	glTexCoord2f(1, 1)
-	glVertex3f( size,  size, -size)
-	glTexCoord2f(1, 0)
-	glVertex3f( size, -size, -size)
+    glTexCoord2f(0, 0)
+    glVertex3f(-size, -size, -size)
+    glTexCoord2f(0, 1)
+    glVertex3f(-size,  size, -size)
+    glTexCoord2f(1, 1)
+    glVertex3f( size,  size, -size)
+    glTexCoord2f(1, 0)
+    glVertex3f( size, -size, -size)
 
-	glTexCoord2f(0, 0)
-	glVertex3f(-size, -size, size)
-	glTexCoord2f(0, 1)
-	glVertex3f(-size,  size, size)
-	glTexCoord2f(1, 1)
-	glVertex3f( size,  size, size)
-	glTexCoord2f(1, 0)
-	glVertex3f( size, -size, size)
+    glTexCoord2f(0, 0)
+    glVertex3f(-size, -size, size)
+    glTexCoord2f(0, 1)
+    glVertex3f(-size,  size, size)
+    glTexCoord2f(1, 1)
+    glVertex3f( size,  size, size)
+    glTexCoord2f(1, 0)
+    glVertex3f( size, -size, size)
 
-	glTexCoord2f(0, 0)
-	glVertex3f(-size, -size, -size)
-	glTexCoord2f(0, 1)
-	glVertex3f(-size,  size, -size)
-	glTexCoord2f(1, 1)
-	glVertex3f(-size,  size,  size)
-	glTexCoord2f(1, 0)
-	glVertex3f(-size, -size,  size)
+    glTexCoord2f(0, 0)
+    glVertex3f(-size, -size, -size)
+    glTexCoord2f(0, 1)
+    glVertex3f(-size,  size, -size)
+    glTexCoord2f(1, 1)
+    glVertex3f(-size,  size,  size)
+    glTexCoord2f(1, 0)
+    glVertex3f(-size, -size,  size)
 
-	glTexCoord2f(0, 0)
-	glVertex3f(size, -size, -size)
-	glTexCoord2f(0, 1)
-	glVertex3f(size,  size, -size)
-	glTexCoord2f(1, 1)
-	glVertex3f(size,  size,  size)
-	glTexCoord2f(1, 0)
-	glVertex3f(size, -size,  size)
+    glTexCoord2f(0, 0)
+    glVertex3f(size, -size, -size)
+    glTexCoord2f(0, 1)
+    glVertex3f(size,  size, -size)
+    glTexCoord2f(1, 1)
+    glVertex3f(size,  size,  size)
+    glTexCoord2f(1, 0)
+    glVertex3f(size, -size,  size)
 
-	glTexCoord2f(0, 1)
-	glVertex3f(-size, -size,  size)
-	glTexCoord2f(0, 0)
-	glVertex3f(-size, -size, -size)
-	glTexCoord2f(1, 0)
-	glVertex3f( size, -size, -size)
-	glTexCoord2f(1, 1)
-	glVertex3f( size, -size,  size)
+    glTexCoord2f(0, 1)
+    glVertex3f(-size, -size,  size)
+    glTexCoord2f(0, 0)
+    glVertex3f(-size, -size, -size)
+    glTexCoord2f(1, 0)
+    glVertex3f( size, -size, -size)
+    glTexCoord2f(1, 1)
+    glVertex3f( size, -size,  size)
 
-	glTexCoord2f(0, 1)
-	glVertex3f(-size, size,  size)
-	glTexCoord2f(0, 0)
-	glVertex3f(-size, size, -size)
-	glTexCoord2f(1, 0)
-	glVertex3f( size, size, -size)
-	glTexCoord2f(1, 1)
-	glVertex3f( size, size,  size)
+    glTexCoord2f(0, 1)
+    glVertex3f(-size, size,  size)
+    glTexCoord2f(0, 0)
+    glVertex3f(-size, size, -size)
+    glTexCoord2f(1, 0)
+    glVertex3f( size, size, -size)
+    glTexCoord2f(1, 1)
+    glVertex3f( size, size,  size)
 
-	glEnd()
+    glEnd()
 
-	# draw some text on top of our OpenGL object
-	window.push_GL_states()
-	text = sf.Text("pySFML / OpenGL demo", font)
-	text.color = sf.Color(255, 255, 255, 170)
-	text.position = (230, 450)
-	window.draw(text)
-	window.pop_GL_states()
+    # draw some text on top of our OpenGL object
+    window.push_GL_states()
+    text = sf.Text("pySFML / OpenGL demo", font)
+    text.color = sf.Color(255, 255, 255, 170)
+    text.position = (230, 450)
+    window.draw(text)
+    window.pop_GL_states()
 
-	# finally, display the rendered frame on screen
-	window.display()
+    # finally, display the rendered frame on screen
+    window.display()
 
 # don't forget to destroy our texture
 glDeleteTextures(1, texture)

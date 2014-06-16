@@ -9,7 +9,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 cdef extern from "SFML/Audio.hpp" namespace "sf::SoundSource":
-	cdef enum Status:
-		Stopped
-		Paused
-		Playing
+    cdef enum Status:
+        Stopped
+        Paused
+        Playing

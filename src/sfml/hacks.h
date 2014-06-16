@@ -13,5 +13,5 @@
 #include <Python.h>
 
 #if PY_VERSION_HEX >= 0x03000000
-	#define PyString_AsString PyBytes_AsString
+    #define PyString_AsString PyBytes_AsString
 #endif

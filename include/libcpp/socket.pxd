@@ -9,11 +9,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 cdef extern from "SFML/Network.hpp" namespace "sf::Socket":
-	cdef enum Status:
-		Done
-		NotReady
-		Disconnected
-		Error
+    cdef enum Status:
+        Done
+        NotReady
+        Disconnected
+        Error
 
-	cdef enum:
-		AnyPort
+    cdef enum:
+        AnyPort

@@ -23,20 +23,20 @@ static std::stringbuf buffer;
 // would interface Python with C++ code and so reredirect the error output.
 void restorePythonErrorBuffer()
 {
-	sf::err().rdbuf(&buffer);
+    sf::err().rdbuf(&buffer);
 }
 
 // Return the last error (if any) then clear the buffer to welcome the next one.
 PyObject* getLastErrorMessage()
 {
-	// Get the error message then clean the buffer
+    // Get the error message then clean the buffer
 #if PY_MAJOR_VERSION >= 3
-	PyObject* error = PyBytes_FromString(buffer.str().c_str());
+    PyObject* error = PyBytes_FromString(buffer.str().c_str());
 #else
-	PyObject* error = PyString_FromString(buffer.str().c_str());
+    PyObject* error = PyString_FromString(buffer.str().c_str());
 #endif
 
-	buffer.str("");
+    buffer.str("");
 
-	return error;
+    return error;
 }

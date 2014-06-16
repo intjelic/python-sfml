@@ -10,10 +10,10 @@
 
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Style":
-	cdef enum Style:
-		None
-		Titlebar
-		Resize
-		Close
-		Fullscreen
-		Default
+    cdef enum Style:
+        None
+        Titlebar
+        Resize
+        Close
+        Fullscreen
+        Default

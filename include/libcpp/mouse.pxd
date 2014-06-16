@@ -13,16 +13,16 @@ from libcpp.sfml cimport Vector2i
 from libcpp.sfml cimport Window
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Mouse":
-	cdef enum Button:
-		Left
-		Right
-		Middle
-		XButton1
-		XButton2
-		ButtonCount
+    cdef enum Button:
+        Left
+        Right
+        Middle
+        XButton1
+        XButton2
+        ButtonCount
 
-	bint isButtonPressed(Button)
-	Vector2i getPosition()
-	Vector2i getPosition(const Window&)
-	void setPosition(const Vector2i&)
-	void setPosition(const Vector2i&, const Window&)
+    bint isButtonPressed(Button)
+    Vector2i getPosition()
+    Vector2i getPosition(const Window&)
+    void setPosition(const Vector2i&)
+    void setPosition(const Vector2i&, const Window&)

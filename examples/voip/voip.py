@@ -23,8 +23,8 @@ print("Do you want to be a server (s) or a client (c) ?")
 who = input()
 
 if who == 's':
-	server.do_server(PORT)
+    server.do_server(PORT)
 else:
-	client.do_client(PORT)
+    client.do_client(PORT)
 
 input("Press any key to exit...")

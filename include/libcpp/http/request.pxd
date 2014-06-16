@@ -9,7 +9,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Http::Request":
-	cdef enum Method:
-		Get
-		Post
-		Head
+    cdef enum Method:
+        Get
+        Post
+        Head

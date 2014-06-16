@@ -8,7 +8,7 @@ optimizations we can do to the implementation itself. Furthermore, the newly
 introduced C/Cython API can be improved to make life easier for extension
 authors.
 
-Furthermore, some supplemental documentation such as tutorials and how-to guides are 
+Furthermore, some supplemental documentation such as tutorials and how-to guides are
 incomplete, and we'd like to expand unit test coverage.
 
 Please read further to see which action items are highest on our agenda.
@@ -39,7 +39,7 @@ integer constants, we are unable to determine from which C++ enumeration they
 came from; the type information has been lost.
 
 Any solution to this will only affect the implementation and not the interface,
-so users need not worry. 
+so users need not worry.
 
 Add information about copyable classes to the documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -42,7 +42,7 @@ void DerivableWindow::onResize()
 {
     static char method[] = "on_resize";
     PyObject* success = PyObject_CallMethod(m_pyobj, method, NULL);
-    
+
     if(!success)
         PyErr_Print();
 }

@@ -9,8 +9,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf":
-	cdef enum BlendMode:
-		BlendAlpha
-		BlendAdd
-		BlendMultiply
-		BlendNone
+    cdef enum BlendMode:
+        BlendAlpha
+        BlendAdd
+        BlendMultiply
+        BlendNone

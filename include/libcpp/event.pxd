@@ -10,23 +10,23 @@
 
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Event":
-	cdef enum EventType:
-		Closed
-		Resized
-		LostFocus
-		GainedFocus
-		TextEntered
-		KeyPressed
-		KeyReleased
-		MouseWheelMoved
-		MouseButtonPressed
-		MouseButtonReleased
-		MouseMoved
-		MouseEntered
-		MouseLeft
-		JoystickButtonPressed
-		JoystickButtonReleased
-		JoystickMoved
-		JoystickConnected
-		JoystickDisconnected
-		Count
+    cdef enum EventType:
+        Closed
+        Resized
+        LostFocus
+        GainedFocus
+        TextEntered
+        KeyPressed
+        KeyReleased
+        MouseWheelMoved
+        MouseButtonPressed
+        MouseButtonReleased
+        MouseMoved
+        MouseEntered
+        MouseLeft
+        JoystickButtonPressed
+        JoystickButtonReleased
+        JoystickMoved
+        JoystickConnected
+        JoystickDisconnected
+        Count

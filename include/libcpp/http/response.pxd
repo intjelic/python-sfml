@@ -9,27 +9,27 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Http::Response":
-	cdef enum Status:
-		Ok
-		Created
-		Accepted
-		NoContent
-		ResetContent
-		PartialContent
-		MultipleChoices
-		MovedPermanently
-		MovedTemporarily
-		NotModified
-		BadRequest
-		Unauthorized
-		Forbidden
-		NotFound
-		RangeNotSatisfiable
-		InternalServerError
-		NotImplemented
-		BadGateway
-		ServiceNotAvailable
-		GatewayTimeout
-		VersionNotSupported
-		InvalidResponse
-		ConnectionFailed
+    cdef enum Status:
+        Ok
+        Created
+        Accepted
+        NoContent
+        ResetContent
+        PartialContent
+        MultipleChoices
+        MovedPermanently
+        MovedTemporarily
+        NotModified
+        BadRequest
+        Unauthorized
+        Forbidden
+        NotFound
+        RangeNotSatisfiable
+        InternalServerError
+        NotImplemented
+        BadGateway
+        ServiceNotAvailable
+        GatewayTimeout
+        VersionNotSupported
+        InvalidResponse
+        ConnectionFailed

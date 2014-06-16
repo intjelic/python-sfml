@@ -32,7 +32,7 @@ void DerivableDrawable::draw(sf::RenderTarget& target, sf::RenderStates states) 
 
     if(!success)
         PyErr_Print();
-    
+
     Py_DECREF(pyTarget);
     Py_DECREF(pyStates);
 }

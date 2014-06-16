@@ -9,11 +9,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf":
-	cdef enum PrimitiveType:
-		Points
-		Lines
-		LinesStrip
-		Triangles
-		TrianglesStrip
-		TrianglesFan
-		Quads
+    cdef enum PrimitiveType:
+        Points
+        Lines
+        LinesStrip
+        Triangles
+        TrianglesStrip
+        TrianglesFan
+        Quads

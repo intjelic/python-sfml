@@ -21,15 +21,15 @@
 class DerivableSoundStream : public sf::SoundStream
 {
 public :
-	DerivableSoundStream(void* pyThis);
+    DerivableSoundStream(void* pyThis);
 
-	void initialize(unsigned int channelCount, unsigned int sampleRate);
+    void initialize(unsigned int channelCount, unsigned int sampleRate);
 
 protected:
-	virtual bool onGetData(sf::SoundStream::Chunk &data);
-	virtual void onSeek(sf::Time timeOffset);
+    virtual bool onGetData(sf::SoundStream::Chunk &data);
+    virtual void onSeek(sf::Time timeOffset);
 
-	PyObject* m_pyobj;
+    PyObject* m_pyobj;
 };
 
 

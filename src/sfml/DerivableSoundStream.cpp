@@ -37,10 +37,10 @@ bool DerivableSoundStream::onGetData(sf::SoundStream::Chunk &data)
 
     PyObject* pyChunk = (PyObject*)(create_chunk());
     PyObject* r = PyObject_CallMethod(m_pyobj, method, format, pyChunk);
-    
+
     if(!r)
         PyErr_Print();
-        
+
     data.samples = static_cast<const sf::Int16*>(terminate_chunk(pyChunk));
     data.sampleCount = PyObject_Length(pyChunk);
 
@@ -64,7 +64,7 @@ void DerivableSoundStream::onSeek(sf::Time timeOffset)
 
     PyObject* pyTime = (PyObject*)(wrap_time(copyTimeOffset));
     PyObject* success = PyObject_CallMethod(m_pyobj, method, format, pyTime);
-    
+
     if(!success)
         PyErr_Print();
 

@@ -47,7 +47,7 @@ Packages are available for Ubuntu starting from 14.04 or greater via launchpad::
    # or
    sudo apt-get install python3-sfml
 
-Want the development version to benefit the latest bug fixes or features ? 
+Want the development version to benefit the latest bug fixes or features ?
 Use `ppa:sfml/development` repository, daily builds are available.
 
 .. note::
@@ -126,10 +126,10 @@ For Python 3.3 and later: `Windows SDK 7.1 <http://www.microsoft.com/en-us/downl
 .. note::
 
    If you planned to compile for both version (and thus install both SDKs (7.0 and 7.1),
-   dont't install redistributable packages otherwise you'll run accross an installation 
-   failure when installing the second SDK. To do that, uncheck "Microsoft Visual C++ 2010" 
+   dont't install redistributable packages otherwise you'll run accross an installation
+   failure when installing the second SDK. To do that, uncheck "Microsoft Visual C++ 2010"
    case.
-	
+
 You need **GRMSDKX_EN_DVD.iso** if you target a **AMD64** Python version. It
 can build for x86 arch too.
 
