@@ -491,12 +491,21 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
         p[0] = x.p_this[0] - y.p_this[0]
         return wrap_time(p)
 
+    def __mod__(Time x, Time y):
+        cdef sf.Time* p = new sf.Time()
+        p[0] = x.p_this[0] % y.p_this[0]
+        return wrap_time(p)
+
     def __iadd__(self, Time x):
         self.p_this[0] = self.p_this[0] + x.p_this[0]
         return self
 
     def __isub__(self, Time x):
         self.p_this[0] = self.p_this[0] - x.p_this[0]
+        return self
+
+    def __imod__(self, Time x):
+        self.p_this[0] %= x.p_this[0]
         return self
 
     property seconds:
