@@ -64,15 +64,11 @@ cdef extern from "SFML/System.hpp" namespace "sf":
         bint operator>=(Time&)
         Time operator+(Time&)
         Time operator-(Time&)
-        Time operator*(Time&)
-        Time operator/(Time&)
-        #Time operator-=(Time&, Time)
-        #Time operator+=(Time&, Time)
-        #Time operator*(float)
-        #Time operator*(float)
-        #Time operator*(Int64)
-        #Time operator/(float)
-        #Time operator/(Int64)
+        Time operator*(float)
+        Time operator*(Int64)
+        Time operator/(float)
+        Time operator/(Int64)
+        Time operator%(Time&)
 
     cdef void sleep(Time) nogil
 

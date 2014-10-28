@@ -551,6 +551,8 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
     cdef sf.Texture *p_this
     cdef bint               delete_this
 
+    cdef object __weakref__
+    
     def __init__(self):
         raise UserWarning("Use a specific constructor")
 
