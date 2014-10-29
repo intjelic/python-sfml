@@ -563,8 +563,7 @@ cdef class Ftp:
         # what we had allocated to cheat on when the ListingResponse
         # is destroyed.
         cdef sf.ftp.Response* response = new sf.ftp.Response()
-        cdef vector[char] falseList
-        cdef sf.ftp.ListingResponse* listing_response = new sf.ftp.ListingResponse(response[0], falseList)
+        cdef sf.ftp.ListingResponse* listing_response = new sf.ftp.ListingResponse(response[0], "")
         del response
 
         encoded_directory_temporary = directory.encode('UTF-8')

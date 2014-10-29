@@ -46,5 +46,5 @@ cdef extern from "SFML/Network.hpp" namespace "sf::Ftp":
         const string& getDirectory() const
 
     cdef cppclass ListingResponse:
-        ListingResponse(const Response&, const vector[char]&)
+        ListingResponse(const Response&, const string&)
         const vector[string]& getListing() const
