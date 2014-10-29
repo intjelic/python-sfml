@@ -948,6 +948,12 @@ cdef class Joystick:
         return sf.joystick.getAxisPosition(joystick, <sf.joystick.Axis> axis)
 
     @classmethod
+    def get_identification(cls, unsigned int joystick):
+        cdef sf.joystick.Identification identification
+        identification = sf.joystick.getIdentification(joystick)
+        return (identification.name.toAnsiString(), identification.vendorId, identification.productId)
+
+    @classmethod
     def update(cls):
         sf.joystick.update()
 
