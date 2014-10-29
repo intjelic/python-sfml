@@ -497,11 +497,11 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
         return wrap_time(p)
 
     def __iadd__(self, Time x):
-        self.p_this[0] = self.p_this[0] + x.p_this[0]
+        self.p_this[0] += x.p_this[0]
         return self
 
     def __isub__(self, Time x):
-        self.p_this[0] = self.p_this[0] - x.p_this[0]
+        self.p_this[0] -= x.p_this[0]
         return self
 
     def __imod__(self, Time x):
