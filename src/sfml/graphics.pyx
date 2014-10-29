@@ -784,10 +784,10 @@ cdef class Glyph:
 
     property bounds:
         def __get__(self):
-            return intrect_to_rectangle(&self.p_this.bounds)
+            return floatrect_to_rectangle(&self.p_this.bounds)
 
         def __set__(self, bounds):
-            self.p_this.bounds = to_intrect(bounds)
+            self.p_this.bounds = to_floatrect(bounds)
 
     property texture_rectangle:
         def __get__(self):

@@ -374,7 +374,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
     cdef cppclass Glyph:
         Glyph()
         int advance
-        IntRect bounds
+        FloatRect bounds
         IntRect textureRect
 
     cdef cppclass Font:
