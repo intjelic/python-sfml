@@ -73,6 +73,8 @@ __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
             'RenderTarget', 'RenderTexture', 'RenderWindow',
             'HandledWindow', 'Rectangle', 'TransformableDrawable']
 
+__all__ += ['BLEND_ALPHA', 'BLEND_ADD', 'BLEND_MULTIPLY', 'BLEND_NONE']
+
 string_type = [bytes, unicode, str]
 numeric_type = [int, long, float, long]
 
@@ -90,13 +92,6 @@ cdef Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
     cdef Pixels r = Pixels.__new__(Pixels)
     r.p_array, r.m_width, r.m_height = p, w, h
     return r
-
-
-class BlendMode:
-    BLEND_ALPHA = sf.blendmode.BlendAlpha
-    BLEND_ADD = sf.blendmode.BlendAdd
-    BLEND_MULTIPLY = sf.blendmode.BlendMultiply
-    BLEND_NONE = sf.blendmode.BlendNone
 
 
 class PrimitiveType:
@@ -396,7 +391,6 @@ cdef class Transform:
 
         return self
 
-
 cdef Transform wrap_transform(sf.Transform *p, bint d=True):
     cdef Transform r = Transform.__new__(Transform)
     r.p_this = p
@@ -407,6 +401,101 @@ cdef Transformable wrap_transformable(sf.Transformable *p):
     cdef Transformable r = Transformable.__new__(Transformable)
     r.p_this = p
     return r
+
+
+cdef public class BlendMode[type PyBlendModeType, object PyBlendModeObject]:
+    cdef sf.BlendMode *p_this
+
+    ZERO = sf.blendmode.Zero
+    ONE = sf.blendmode.One
+    SRC_COLOR = sf.blendmode.SrcColor
+    ONE_MINUS_SRC_COLOR = sf.blendmode.OneMinusSrcColor
+    DST_COLOR = sf.blendmode.DstColor
+    ONE_MINUS_DST_COLOR = sf.blendmode.OneMinusDstColor
+    SRC_ALPHA = sf.blendmode.SrcAlpha
+    ONE_MINUS_SRC_ALPHA = sf.blendmode.OneMinusSrcAlpha
+    DST_ALPHA = sf.blendmode.DstAlpha
+    ONE_MINUS_DST_ALPHA = sf.blendmode.OneMinusDstAlpha
+
+    ADD = sf.blendmode.Add
+    SUBTRACT = sf.blendmode.Subtract
+
+    def __cinit__(self,
+        sf.blendmode.Factor color_source_factor = sf.blendmode.SrcAlpha,
+        sf.blendmode.Factor color_destination_factor = sf.blendmode.OneMinusSrcAlpha,
+        sf.blendmode.Equation color_blend_equation = sf.blendmode.Add,
+        sf.blendmode.Factor alpha_source_factor = sf.blendmode.One,
+        sf.blendmode.Factor alpha_destination_factor = sf.blendmode.OneMinusSrcAlpha,
+        sf.blendmode.Equation alpha_blend_equation = sf.blendmode.Add):
+        self.p_this = new sf.BlendMode(color_source_factor, color_destination_factor, color_blend_equation,
+            alpha_source_factor, alpha_destination_factor, alpha_blend_equation)
+
+    def __dealloc__(self):
+        del self.p_this
+
+    def __repr__(self):
+        return "BlendMode({0}, {1}, {2}, {3}, {4}, {5})".format(self.color_src_factor, self.color_dst_factor, self.color_equation,
+            self.alpha_src_factor, self.alpha_dst_factor, self.alpha_equation)
+
+    def __richcmp__(BlendMode x, BlendMode y, int op):
+        if op == 2:
+            return x.p_this[0] == y.p_this[0]
+        elif op == 3:
+            return x.p_this[0] != y.p_this[0]
+
+        raise NotImplementedError
+
+    property color_src_factor:
+        def __get__(self):
+            return self.p_this[0].colorSrcFactor
+
+        def __set__(self, sf.blendmode.Factor color_src_factor):
+            self.p_this[0].colorSrcFactor = color_src_factor
+
+    property color_dst_factor:
+        def __get__(self):
+            return self.p_this[0].colorDstFactor
+
+        def __set__(self, sf.blendmode.Factor color_dst_factor):
+            self.p_this[0].colorDstFactor = color_dst_factor
+
+    property color_equation:
+        def __get__(self):
+            return self.p_this[0].colorEquation
+
+        def __set__(self, sf.blendmode.Equation color_equation):
+            self.p_this[0].colorEquation = color_equation
+
+    property alpha_src_factor:
+        def __get__(self):
+            return self.p_this[0].alphaSrcFactor
+
+        def __set__(self, sf.blendmode.Factor alpha_src_factor):
+            self.p_this[0].alphaSrcFactor = alpha_src_factor
+
+    property alpha_dst_factor:
+        def __get__(self):
+            return self.p_this[0].alphaDstFactor
+
+        def __set__(self, sf.blendmode.Factor alpha_dst_factor):
+            self.p_this[0].alphaDstFactor = alpha_dst_factor
+
+    property alpha_equation:
+        def __get__(self):
+            return self.p_this[0].alphaEquation
+
+        def __set__(self, sf.blendmode.Equation alpha_equation):
+            self.p_this[0].alphaEquation = alpha_equation
+
+cdef BlendMode wrap_blendmode(sf.BlendMode *p):
+    cdef BlendMode blendmode = BlendMode()
+    blendmode.p_this[0] = p[0]
+    return blendmode
+
+BLEND_ALPHA = wrap_blendmode(<sf.BlendMode*>&sf.BlendAlpha)
+BLEND_ADD = wrap_blendmode(<sf.BlendMode*>&sf.BlendAdd)
+BLEND_MULTIPLY = wrap_blendmode(<sf.BlendMode*>&sf.BlendMultiply)
+BLEND_NONE = wrap_blendmode(<sf.BlendMode*>&sf.BlendNone)
 
 
 cdef public class Image[type PyImageType, object PyImageObject]:
@@ -552,7 +641,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
     cdef bint               delete_this
 
     cdef object __weakref__
-    
+
     def __init__(self):
         raise UserWarning("Use a specific constructor")
 
@@ -1083,14 +1172,14 @@ cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObj
     cdef Texture                 m_texture
     cdef Shader                  m_shader
 
-    def __init__(self, sf.blendmode.BlendMode blend_mode=sf.blendmode.BlendAlpha, Transform transform=None, Texture texture=None, Shader shader=None):
+    def __init__(self, BlendMode blendmode=BLEND_ALPHA, Transform transform=None, Texture texture=None, Shader shader=None):
         self.p_this = new sf.RenderStates()
 
         self.m_transform = wrap_transform(&self.p_this.transform, False)
         self.m_texture = None
         self.m_shader = None
 
-        if blend_mode: self.blend_mode = blend_mode
+        self.blendmode = blendmode
         if transform: self.transform = transform
         if texture: self.texture = texture
         if shader: self.shader = shader
@@ -1099,14 +1188,14 @@ cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObj
         if self.delete_this: del self.p_this
 
     def __repr__(self):
-        return "RenderStates(blend_mode={0}, transform={1}, texture={2}, shader={3})".format(self.blend_mode, id(self.transform), id(self.texture), id(self.shader))
+        return "RenderStates(blendmode={0}, transform={1}, texture={2}, shader={3})".format(id(self.blendmode), id(self.transform), id(self.texture), id(self.shader))
 
-    property blend_mode:
+    property blendmode:
         def __get__(self):
-            return self.p_this.blendMode
+            return wrap_blendmode(&self.p_this.blendMode)
 
-        def __set__(self, sf.blendmode.BlendMode blend_mode):
-            self.p_this.blendMode = blend_mode
+        def __set__(self, BlendMode blendmode):
+            self.p_this.blendMode = blendmode.p_this[0]
 
     property transform:
         def __get__(self):

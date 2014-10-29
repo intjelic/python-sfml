@@ -266,7 +266,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
     cdef cppclass GlResource:
         GlResource()
 
-cimport blendmode, primitivetype, texture, shader, text, renderstates, transform
+cimport blendmode, primitivetype, texture, shader, font, text, renderstates, transform
 
 cdef extern from *:
     ctypedef unsigned char* const_Uint8_ptr "const unsigned char*"
@@ -324,6 +324,25 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         Transform& scale(const Vector2f&, const Vector2f&)
         Transform operator*(const Transform&)
         #Transform operator*=(const Transform&)
+
+    cdef cppclass BlendMode:
+        BlendMode()
+        BlendMode(blendmode.Factor, blendmode.Factor)
+        BlendMode(blendmode.Factor, blendmode.Factor, blendmode.Equation)
+        BlendMode(blendmode.Factor, blendmode.Factor, blendmode.Equation, blendmode.Factor, blendmode.Factor, blendmode.Equation)
+        bint operator==(BlendMode&)
+        bint operator!=(BlendMode&)
+        blendmode.Factor colorSrcFactor
+        blendmode.Factor colorDstFactor
+        blendmode.Equation colorEquation
+        blendmode.Factor alphaSrcFactor
+        blendmode.Factor alphaDstFactor
+        blendmode.Equation alphaEquation
+
+    cdef BlendMode BlendAlpha
+    cdef BlendMode BlendAdd
+    cdef BlendMode BlendMultiply
+    cdef BlendMode BlendNone
 
     cdef cppclass Image:
         Image()
@@ -410,12 +429,12 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass RenderStates:
         RenderStates()
-        RenderStates(blendmode.BlendMode)
+        RenderStates(BlendMode)
         RenderStates(const Transform&)
         RenderStates(const Texture*)
         RenderStates(const Shader*)
-        RenderStates(blendmode.BlendMode, const Transform&, const Texture*, const Shader*)
-        blendmode.BlendMode blendMode
+        RenderStates(BlendMode, const Transform&, const Texture*, const Shader*)
+        BlendMode blendMode
         Transform transform
         const Texture* texture
         const Shader* shader

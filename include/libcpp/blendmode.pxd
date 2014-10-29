@@ -22,9 +22,21 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf":
-    cdef enum BlendMode:
-        BlendAlpha
-        BlendAdd
-        BlendMultiply
-        BlendNone
+from libcpp.sfml cimport BlendMode
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf::BlendMode":
+    cdef enum Factor:
+        Zero
+        One
+        SrcColor
+        OneMinusSrcColor
+        DstColor
+        OneMinusDstColor
+        SrcAlpha
+        OneMinusSrcAlpha
+        DstAlpha
+        OneMinusDstAlpha
+
+    cdef enum Equation:
+        Add
+        Subtract
