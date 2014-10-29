@@ -855,6 +855,13 @@ cdef class Font:
         p = <sf.Texture*>&self.p_this.getTexture(character_size)
         return wrap_texture(p, False)
 
+    property info:
+        def __get__(self):
+            cdef sf.font.Info info
+            info = self.p_this[0].getInfo()
+            return info.family
+
+
 cdef Font wrap_font(sf.Font *p, bint d=True):
     cdef Font r = Font.__new__(Font)
     r.p_this = p

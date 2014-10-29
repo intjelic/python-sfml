@@ -387,6 +387,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         int getKerning(Uint32, Uint32, unsigned int) const
         int getLineSpacing(unsigned int) const
         const Texture& getTexture(unsigned int) const
+        font.Info& getInfo() const
 
     cdef cppclass Shader:
         Shader()
