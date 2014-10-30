@@ -129,3 +129,4 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Keyboard":
         KeyCount
 
     bint isKeyPressed(Key)
+    void setVirtualKeyboardVisible(bint)

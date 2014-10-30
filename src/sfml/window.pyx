@@ -910,6 +910,9 @@ cdef class Keyboard:
     def is_key_pressed(cls, int key):
         return sf.keyboard.isKeyPressed(<sf.keyboard.Key>key)
 
+    @classmethod
+    def set_virtual_keyboard_visible(cls, bint visible):
+        sf.keyboard.setVirtualKeyboardVisible(visible)
 
 cdef class Joystick:
     COUNT = sf.joystick.Count
