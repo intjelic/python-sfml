@@ -53,7 +53,8 @@ __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
             'KeyEvent', 'MouseWheelEvent', 'MouseButtonEvent',
             'MouseMoveEvent', 'MouseEvent', 'JoystickButtonEvent',
             'JoystickMoveEvent', 'JoystickConnectEvent', 'Pixels',
-            'Window', 'Keyboard', 'Joystick', 'Mouse', 'Context']
+            'Window', 'Keyboard', 'Joystick', 'Mouse', 'Touch',
+            'Context']
 
 
 import sys
@@ -989,6 +990,24 @@ cdef class Mouse:
 
         if window is None: sf.mouse.setPosition(p)
         else: sf.mouse.setPosition(p, window.p_window[0])
+
+
+cdef class Touch:
+    def __init__(self):
+        raise NotImplementedError("This class is not meant to be instantiated!")
+
+    @classmethod
+    def is_down(cls, int finger):
+        return sf.touch.isDown(finger)
+
+    @classmethod
+    def get_position(cls, int finger, Window window=None):
+        cdef sf.Vector2i p
+
+        if window is None: p = sf.touch.getPosition(finger)
+        else: p = sf.touch.getPosition(finger, window.p_window[0])
+
+        return Vector2(p.x, p.y)
 
 
 cdef class Context:

@@ -136,7 +136,7 @@ cdef extern from "SFML/System.hpp" namespace "sf":
     cdef cppclass Utf
     cdef cppclass String
 
-cimport style, event, videomode, keyboard, joystick, mouse
+cimport style, event, videomode, keyboard, joystick, mouse, touch
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Event":
     cdef struct SizeEvent:
