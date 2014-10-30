@@ -28,3 +28,4 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Text":
         Bold
         Italic
         Underlined
+        StrikeThrough

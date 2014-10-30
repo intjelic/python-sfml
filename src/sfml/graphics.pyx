@@ -1455,6 +1455,7 @@ cdef class Text(TransformableDrawable):
     BOLD       = sf.text.Bold
     ITALIC     = sf.text.Italic
     UNDERLINED = sf.text.Underlined
+    STRIKE_THROUGH = sf.text.StrikeThrough
 
     cdef sf.Text *p_this
     cdef Font     m_font
