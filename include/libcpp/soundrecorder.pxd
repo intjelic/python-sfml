@@ -22,5 +22,10 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
+from libcpp.string cimport string
+from libcpp.vector cimport vector
+
 cdef extern from "SFML/Audio.hpp" namespace "sf::SoundRecorder":
     cdef bint isAvailable()
+    cdef vector[string] getAvailableDevices()
+    cdef string getDefaultDevice()

@@ -28,6 +28,8 @@
 cimport cython
 from libc.stdlib cimport malloc, free
 from libc.string cimport memcpy
+from libcpp.string cimport string
+from libcpp.vector cimport vector
 
 cimport libcpp.sfml as sf
 from libcpp.sfml cimport Int8, Int16, Int32, Int64
@@ -489,6 +491,12 @@ cdef class SoundRecorder:
     def stop(self):
         with nogil: self.p_soundrecorder.stop()
 
+    def set_device(self, name):
+        return self.p_soundrecorder.setDevice(name)
+
+    def get_device(self):
+        return self.p_soundrecorder.getDevice()
+
     property sample_rate:
         def __get__(self):
             return self.p_soundrecorder.getSampleRate()
@@ -496,6 +504,14 @@ cdef class SoundRecorder:
     @classmethod
     def is_available(cls):
         return sf.soundrecorder.isAvailable()
+
+    @classmethod
+    def get_available_devices(cls):
+        return sf.soundrecorder.getAvailableDevices()
+
+    @classmethod
+    def get_default_device(cls):
+        return sf.soundrecorder.getDefaultDevice()
 
     def on_start(self):
         return True
