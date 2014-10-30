@@ -54,7 +54,7 @@ __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
             'MouseMoveEvent', 'MouseEvent', 'JoystickButtonEvent',
             'JoystickMoveEvent', 'JoystickConnectEvent', 'Pixels',
             'Window', 'Keyboard', 'Joystick', 'Mouse', 'Touch',
-            'Context']
+            'Sensor', 'Context']
 
 
 import sys
@@ -1008,6 +1008,33 @@ cdef class Touch:
         else: p = sf.touch.getPosition(finger, window.p_window[0])
 
         return Vector2(p.x, p.y)
+
+
+cdef class Sensor:
+    ACCELEROMETER = sf.sensor.Accelerometer
+    GYROSCOPE = sf.sensor.Gyroscope
+    MAGNETOMETER = sf.sensor.Magnetometer
+    GRAVITY = sf.sensor.Gravity
+    USER_ACCELERATION = sf.sensor.UserAcceleration
+    ORIENTATION = sf.sensor.Orientation
+    COUNT = sf.sensor.Count
+
+    def __init__(self):
+        raise NotImplementedError("This class is not meant to be instantiated!")
+
+    @classmethod
+    def is_available(cls, int sensor):
+        return sf.sensor.isAvailable(<sf.sensor.Type>(sensor))
+
+    @classmethod
+    def set_enabled(cls, int sensor, bint enabled):
+        sf.sensor.setEnabled(<sf.sensor.Type>(sensor), enabled)
+
+    @classmethod
+    def get_value(cls, int sensor):
+        cdef sf.Vector3f value
+        value = sf.sensor.getValue(<sf.sensor.Type>(sensor))
+        return Vector3(value.x, value.y, value.z)
 
 
 cdef class Context:
