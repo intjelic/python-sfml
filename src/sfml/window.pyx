@@ -149,6 +149,14 @@ cdef Event wrap_event(sf.Event *p):
         event = wrap_joystickconnectevent(p, Event.CONNECTED)
     elif p.type == sf.event.JoystickDisconnected:
         event = wrap_joystickconnectevent(p, Event.DISCONNECTED)
+    elif p.type == sf.event.TouchBegan:
+        event = wrap_touchevent(p, Event.PRESSED)
+    elif p.type == sf.event.TouchEnded:
+        event = wrap_touchevent(p, Event.RELEASED)
+    elif p.type == sf.event.TouchMoved:
+        event = TouchMoveEvent.__new__(TouchMoveEvent)
+    elif p.type == sf.event.SensorChanged:
+        event = SensorEvent.__new__(SensorEvent)
 
     event.p_this = p
     return event
@@ -486,6 +494,77 @@ cdef JoystickConnectEvent wrap_joystickconnectevent(sf.Event *p, bint state):
     r.state = state
     return r
 
+
+cdef class TouchEvent(Event):
+    cdef bint state
+
+    def __repr__(self):
+        return "TouchEvent(states={0}, position={1}, finger={2})".format(self.state, self.position, self.finger)
+
+    property pressed:
+        def __get__(self):
+            return self.state
+
+        def __set__(self, bint pressed):
+            self.state = pressed
+
+    property released:
+        def __get__(self):
+            return not self.state
+
+        def __set__(self, bint released):
+            self.state = not released
+
+    property position:
+        def __get__(self):
+            return Vector2(self.p_this.touch.x, self.p_this.touch.y)
+
+        def __set__(self, position):
+            self.p_this.touch.x, self.p_this.touch.y = position
+
+    property finger:
+        def __get__(self):
+            return self.p_this.touch.finger
+
+        def __set__(self, int finger):
+            self.p_this.touch.finger = finger
+
+cdef TouchEvent wrap_touchevent(sf.Event *p, bint state):
+    cdef TouchEvent r = TouchEvent.__new__(TouchEvent)
+    r.p_this = p
+    r.state = state
+    return r
+
+cdef class TouchMoveEvent(Event):
+    def __repr__(self):
+        return "TouchMoveEvent(position={0})".format(self.position)
+
+    property position:
+        def __get__(self):
+            return Vector2(self.p_this.touch.x, self.p_this.touch.y)
+
+        def __set__(self, position):
+            self.p_this.touch.x, self.p_this.touch.y = position
+
+cdef class SensorEvent(Event):
+    cdef bint state
+
+    def __repr__(self):
+        return "SensorEvent(type={0}, data={1})".format(self.type, self.data)
+
+    property type:
+        def __get__(self):
+            return self.p_this.type
+
+        def __set__(self, int type):
+            self.p_this.sensor.type = <sf.sensor.Type>(type)
+
+    property data:
+        def __get__(self):
+            return Vector3(self.p_this.sensor.x, self.p_this.sensor.y, self.p_this.sensor.z)
+
+        def __set__(self, data):
+            self.p_this.sensor.x, self.p_this.sensor.y, self.p_this.sensor.z = data
 
 cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
     cdef sf.VideoMode *p_this

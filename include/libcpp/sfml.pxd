@@ -179,6 +179,17 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
         unsigned int joystickId
         unsigned int button
 
+    cdef struct TouchEvent:
+        unsigned int finger
+        int x
+        int y
+
+    cdef struct SensorEvent:
+        sensor.Type type
+        float x
+        float y
+        float z
+
 cdef extern from "SFML/Window.hpp" namespace "sf":
     cdef cppclass Event:
         event.EventType type
@@ -191,6 +202,8 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
         JoystickMoveEvent joystickMove
         JoystickButtonEvent joystickButton
         JoystickConnectEvent joystickConnect
+        TouchEvent touch
+        SensorEvent sensor
 
     cdef cppclass ContextSettings:
         ContextSettings()

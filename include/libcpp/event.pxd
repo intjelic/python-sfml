@@ -42,4 +42,8 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
         JoystickMoved
         JoystickConnected
         JoystickDisconnected
+        TouchBegan
+        TouchMoved
+        TouchEnded
+        SensorChanged
         Count
