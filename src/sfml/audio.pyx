@@ -486,7 +486,7 @@ cdef class SoundRecorder:
         return "SoundRecorder(sample_rate={0})".format(self.sample_rate)
 
     def start(self, unsigned int sample_rate=44100):
-        self.p_soundrecorder.start(sample_rate)
+        return self.p_soundrecorder.start(sample_rate)
 
     def stop(self):
         with nogil: self.p_soundrecorder.stop()
