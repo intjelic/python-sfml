@@ -69,13 +69,26 @@ for module in modules:
     remove_if_exist(os.path.join(include_path, module + '._api.h'))
     remove_if_exist(os.path.join(source_path, module + '.cpp'))
 
-extension = lambda name, files, libs: Extension(
-    name='sfml.' + name,
-    sources=files,
-    include_dirs=['include', os.path.normpath('extlibs/sfml/include')],
-    library_dirs=[os.path.normpath('extlibs/sfml/lib/' + arch)],
-    language='c++',
-    libraries=libs)
+# use extlibs on Windows only
+if platform.system() == 'Windows':
+    extension = lambda name, files, libs: Extension(
+        name='sfml.' + name,
+        sources=files,
+        include_dirs=['include', os.path.normpath('extlibs/sfml/include')],
+        library_dirs=[os.path.normpath('extlibs/sfml/lib/' + arch)],
+        language='c++',
+        libraries=libs,
+        extra_compile_args=['-fpermissive']
+        )
+else:
+    extension = lambda name, files, libs: Extension(
+        name='sfml.' + name,
+        sources=files,
+        include_dirs=['include'],
+        language='c++',
+        libraries=libs,
+        extra_compile_args=['-fpermissive']
+        )
 
 system = extension(
     'system',
