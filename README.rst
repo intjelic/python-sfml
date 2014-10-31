@@ -1,10 +1,7 @@
 About
 =====
-This is version 2.1 of the Python bindings for `SFML <http://www.sfml-dev.org/>`_,
-based on SFML 2.1, and is made available under the terms of the
-`zlib/libpng <http://opensource.org/licenses/Zlib>`_ license.
-
-Python bindings really are the perfect way to sketch software using SFML.
+These are Python bindings for `SFML <http://www.sfml-dev.org/>`_, made available
+under the terms of the `zlib/libpng <http://opensource.org/licenses/Zlib>`_ license.
 
 By combining the strength of SFML with the ease of the Python language,
 we can provide an amazing tool to quickly build multimedia software.
@@ -32,9 +29,10 @@ with the following command::
 Resources
 =========
 * Website: http://python-sfml.org
-* Documentation: http://python-sfml.org/2.1
+* Documentation: http://python-sfml.org/api/api_index.html
 * Github: https://github.com/Sonkun/python-sfml
 * Bug Tracker: http://github.com/Sonkun/python-sfml/issues
+* Wiki: https://github.com/Sonkun/python-sfml/wiki
 
 Contact Information
 ===================
