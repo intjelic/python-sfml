@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2013 Laurent Gomila (laurent.gom@gmail.com)
+// Copyright (C) 2007-2014 Laurent Gomila (laurent.gom@gmail.com)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -46,7 +46,7 @@ class IpAddress;
 ////////////////////////////////////////////////////////////
 class SFML_NETWORK_API Ftp : NonCopyable
 {
-public :
+public:
 
     ////////////////////////////////////////////////////////////
     /// \brief Enumeration of transfer modes
@@ -65,7 +65,7 @@ public :
     ////////////////////////////////////////////////////////////
     class SFML_NETWORK_API Response
     {
-    public :
+    public:
 
         ////////////////////////////////////////////////////////////
         /// \brief Status codes possibly returned by a FTP response
@@ -172,7 +172,7 @@ public :
         ////////////////////////////////////////////////////////////
         const std::string& getMessage() const;
 
-    private :
+    private:
 
         ////////////////////////////////////////////////////////////
         // Member data
@@ -187,7 +187,7 @@ public :
     ////////////////////////////////////////////////////////////
     class SFML_NETWORK_API DirectoryResponse : public Response
     {
-    public :
+    public:
 
         ////////////////////////////////////////////////////////////
         /// \brief Default constructor
@@ -205,7 +205,7 @@ public :
         ////////////////////////////////////////////////////////////
         const std::string& getDirectory() const;
 
-    private :
+    private:
 
         ////////////////////////////////////////////////////////////
         // Member data
@@ -220,7 +220,7 @@ public :
     ////////////////////////////////////////////////////////////
     class SFML_NETWORK_API ListingResponse : public Response
     {
-    public :
+    public:
 
         ////////////////////////////////////////////////////////////
         /// \brief Default constructor
@@ -229,7 +229,7 @@ public :
         /// \param data      Data containing the raw listing
         ///
         ////////////////////////////////////////////////////////////
-        ListingResponse(const Response& response, const std::vector<char>& data);
+        ListingResponse(const Response& response, const std::string& data);
 
         ////////////////////////////////////////////////////////////
         /// \brief Return the array of directory/file names
@@ -239,7 +239,7 @@ public :
         ////////////////////////////////////////////////////////////
         const std::vector<std::string>& getListing() const;
 
-    private :
+    private:
 
         ////////////////////////////////////////////////////////////
         // Member data
@@ -452,9 +452,12 @@ public :
     /// current working directory of the server, and the local
     /// destination path is relative to the current directory
     /// of your application.
+    /// If a file with the same filename as the distant file
+    /// already exists in the local destination path, it will
+    /// be overwritten.
     ///
     /// \param remoteFile Filename of the distant file to download
-    /// \param localPath  Where to put to file on the local computer
+    /// \param localPath  The directory in which to put the file on the local computer
     /// \param mode       Transfer mode
     ///
     /// \return Server response to the request
@@ -473,7 +476,7 @@ public :
     /// FTP server.
     ///
     /// \param localFile  Path of the local file to upload
-    /// \param remotePath Where to put to file on the server
+    /// \param remotePath The directory in which to put the file on the server
     /// \param mode       Transfer mode
     ///
     /// \return Server response to the request
@@ -483,10 +486,15 @@ public :
     ////////////////////////////////////////////////////////////
     Response upload(const std::string& localFile, const std::string& remotePath, TransferMode mode = Binary);
 
-private :
-
     ////////////////////////////////////////////////////////////
     /// \brief Send a command to the FTP server
+    ///
+    /// While the most often used commands are provided as member
+    /// functions in the sf::Ftp class, this method can be used
+    /// to send any FTP command to the server. If the command
+    /// requires one or more parameters, they can be specified
+    /// in \a parameter. If the server returns information, you
+    /// can extract it from the response using Response::getMessage().
     ///
     /// \param command   Command to send
     /// \param parameter Command parameter
@@ -496,11 +504,13 @@ private :
     ////////////////////////////////////////////////////////////
     Response sendCommand(const std::string& command, const std::string& parameter = "");
 
+private:
+
     ////////////////////////////////////////////////////////////
     /// \brief Receive a response from the server
     ///
     /// This function must be called after each call to
-    /// SendCommand that expects a response.
+    /// sendCommand that expects a response.
     ///
     /// \return Server response to the request
     ///
@@ -541,13 +551,15 @@ private :
 /// \li Connecting to the FTP server
 /// \li Logging in (either as a registered user or anonymously)
 /// \li Sending commands to the server
-/// \li Disconnecting (this part can be done implicitely by the destructor)
+/// \li Disconnecting (this part can be done implicitly by the destructor)
 ///
 /// Every command returns a FTP response, which contains the
 /// status code as well as a message from the server. Some
-/// commands such as getWorkingDirectory and getDirectoryListing
+/// commands such as getWorkingDirectory() and getDirectoryListing()
 /// return additional data, and use a class derived from
-/// sf::Ftp::Response to provide this data.
+/// sf::Ftp::Response to provide this data. The most often used
+/// commands are directly provided as member functions, but it is
+/// also possible to use specific commands with the sendCommand() method.
 ///
 /// All commands, especially upload and download, may take some
 /// time to complete. This is important to know if you don't want
@@ -583,6 +595,11 @@ private :
 /// response = ftp.upload("local-path/file.txt", "files", sf::Ftp::Ascii);
 /// if (response.isOk())
 ///     std::cout << "File uploaded" << std::endl;
+///
+/// // Send specific commands (here: FEAT to list supported FTP features)
+/// response = ftp.sendCommand("FEAT");
+/// if (response.isOk())
+///     std::cout << "Feature list:\n" << response.getMessage() << std::endl;
 ///
 /// // Disconnect from the server (optional)
 /// ftp.disconnect();

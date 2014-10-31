@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2013 Laurent Gomila (laurent.gom@gmail.com)
+// Copyright (C) 2007-2014 Laurent Gomila (laurent.gom@gmail.com)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -39,7 +39,7 @@ namespace sf
 ////////////////////////////////////////////////////////////
 class InputStream
 {
-public :
+public:
 
     ////////////////////////////////////////////////////////////
     /// \brief Virtual destructor
@@ -114,7 +114,7 @@ public :
 /// // custom stream class that reads from inside a zip file
 /// class ZipStream : public sf::InputStream
 /// {
-/// public :
+/// public:
 /// 
 ///     ZipStream(std::string archive);
 ///
@@ -128,7 +128,7 @@ public :
 /// 
 ///     Int64 getSize();
 ///
-/// private :
+/// private:
 ///
 ///     ...
 /// };

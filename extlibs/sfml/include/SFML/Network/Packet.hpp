@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2013 Laurent Gomila (laurent.gom@gmail.com)
+// Copyright (C) 2007-2014 Laurent Gomila (laurent.gom@gmail.com)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -49,7 +49,7 @@ class SFML_NETWORK_API Packet
     // A bool-like type that cannot be converted to integer or pointer types
     typedef bool (Packet::*BoolType)(std::size_t);
 
-public :
+public:
 
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
@@ -181,6 +181,8 @@ public:
     Packet& operator >>(Uint16&       data);
     Packet& operator >>(Int32&        data);
     Packet& operator >>(Uint32&       data);
+    Packet& operator >>(Int64&        data);
+    Packet& operator >>(Uint64&       data);
     Packet& operator >>(float&        data);
     Packet& operator >>(double&       data);
     Packet& operator >>(char*         data);
@@ -200,6 +202,8 @@ public:
     Packet& operator <<(Uint16              data);
     Packet& operator <<(Int32               data);
     Packet& operator <<(Uint32              data);
+    Packet& operator <<(Int64               data);
+    Packet& operator <<(Uint64              data);
     Packet& operator <<(float               data);
     Packet& operator <<(double              data);
     Packet& operator <<(const char*         data);
@@ -252,7 +256,7 @@ protected:
     ////////////////////////////////////////////////////////////
     virtual void onReceive(const void* data, std::size_t size);
 
-private :
+private:
 
     ////////////////////////////////////////////////////////////
     /// Disallow comparisons between packets

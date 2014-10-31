@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2013 Laurent Gomila (laurent.gom@gmail.com)
+// Copyright (C) 2007-2014 Laurent Gomila (laurent.gom@gmail.com)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -39,7 +39,7 @@ namespace sf
 ////////////////////////////////////////////////////////////
 class SFML_GRAPHICS_API Color
 {
-public :
+public:
 
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
@@ -128,6 +128,21 @@ SFML_GRAPHICS_API Color operator +(const Color& left, const Color& right);
 
 ////////////////////////////////////////////////////////////
 /// \relates Color
+/// \brief Overload of the binary - operator
+///
+/// This operator returns the component-wise subtraction of two colors.
+/// Components below 0 are clamped to 0.
+///
+/// \param left  Left operand
+/// \param right Right operand
+///
+/// \return Result of \a left - \a right
+///
+////////////////////////////////////////////////////////////
+SFML_GRAPHICS_API Color operator -(const Color& left, const Color& right);
+
+////////////////////////////////////////////////////////////
+/// \relates Color
 /// \brief Overload of the binary * operator
 ///
 /// This operator returns the component-wise multiplication
@@ -158,6 +173,22 @@ SFML_GRAPHICS_API Color operator *(const Color& left, const Color& right);
 ///
 ////////////////////////////////////////////////////////////
 SFML_GRAPHICS_API Color& operator +=(Color& left, const Color& right);
+
+////////////////////////////////////////////////////////////
+/// \relates Color
+/// \brief Overload of the binary -= operator
+///
+/// This operator computes the component-wise subtraction of two colors,
+/// and assigns the result to the left operand.
+/// Components below 0 are clamped to 0.
+///
+/// \param left  Left operand
+/// \param right Right operand
+///
+/// \return Reference to \a left
+///
+////////////////////////////////////////////////////////////
+SFML_GRAPHICS_API Color& operator -=(Color& left, const Color& right);
 
 ////////////////////////////////////////////////////////////
 /// \relates Color

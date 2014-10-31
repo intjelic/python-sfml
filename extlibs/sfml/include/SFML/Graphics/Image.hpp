@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2013 Laurent Gomila (laurent.gom@gmail.com)
+// Copyright (C) 2007-2014 Laurent Gomila (laurent.gom@gmail.com)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -45,7 +45,7 @@ class InputStream;
 ////////////////////////////////////////////////////////////
 class SFML_GRAPHICS_API Image
 {
-public :
+public:
 
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
@@ -54,6 +54,12 @@ public :
     ///
     ////////////////////////////////////////////////////////////
     Image();
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Destructor
+    ///
+    ////////////////////////////////////////////////////////////
+    ~Image();
 
     ////////////////////////////////////////////////////////////
     /// \brief Create the image and fill it with a unique color
@@ -252,13 +258,16 @@ public :
     ////////////////////////////////////////////////////////////
     void flipVertically();
 
-private :
+private:
 
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
     Vector2u           m_size;   ///< Image size
     std::vector<Uint8> m_pixels; ///< Pixels of the image
+    #ifdef SFML_SYSTEM_ANDROID
+    void*              m_stream; ///< Asset file streamer (if loaded from file)
+    #endif
 };
 
 } // namespace sf
@@ -282,7 +291,7 @@ private :
 /// channels -- just like a sf::Color.
 /// All the functions that return an array of pixels follow
 /// this rule, and all parameters that you pass to sf::Image
-/// functions (such as loadFromPixels) must use this
+/// functions (such as loadFromMemory) must use this
 /// representation as well.
 ///
 /// A sf::Image can be copied, but it is a heavy resource and

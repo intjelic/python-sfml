@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2013 Laurent Gomila (laurent.gom@gmail.com)
+// Copyright (C) 2007-2014 Laurent Gomila (laurent.gom@gmail.com)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -44,7 +44,7 @@ class SoundBuffer;
 ////////////////////////////////////////////////////////////
 class SFML_AUDIO_API Sound : public SoundSource
 {
-public :
+public:
 
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
@@ -144,7 +144,9 @@ public :
     /// \brief Change the current playing position of the sound
     ///
     /// The playing position can be changed when the sound is
-    /// either paused or playing.
+    /// either paused or playing. Changing the playing position
+    /// when the sound is stopped has no effect, since playing
+    /// the sound would reset its position.
     ///
     /// \param timeOffset New playing position, from the beginning of the sound
     ///
@@ -210,7 +212,7 @@ public :
     ////////////////////////////////////////////////////////////
     void resetBuffer();
 
-private :
+private:
 
     ////////////////////////////////////////////////////////////
     // Member data

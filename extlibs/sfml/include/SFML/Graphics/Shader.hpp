@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2013 Laurent Gomila (laurent.gom@gmail.com)
+// Copyright (C) 2007-2014 Laurent Gomila (laurent.gom@gmail.com)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -50,7 +50,7 @@ class Texture;
 ////////////////////////////////////////////////////////////
 class SFML_GRAPHICS_API Shader : GlResource, NonCopyable
 {
-public :
+public:
 
     ////////////////////////////////////////////////////////////
     /// \brief Types of shaders
@@ -63,14 +63,23 @@ public :
     };
 
     ////////////////////////////////////////////////////////////
-    /// \brief Special type/value that can be passed to setParameter,
+    /// \brief Special type that can be passed to setParameter,
     ///        and that represents the texture of the object being drawn
+    ///
+    /// \see setParameter(const std::string&, CurrentTextureType)
     ///
     ////////////////////////////////////////////////////////////
     struct CurrentTextureType {};
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Represents the texture of the object being drawn
+    ///
+    /// \see setParameter(const std::string&, CurrentTextureType)
+    ///
+    ////////////////////////////////////////////////////////////
     static CurrentTextureType CurrentTexture;
 
-public :
+public:
 
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
@@ -477,12 +486,15 @@ public :
     /// the shader features. If it returns false, then
     /// any attempt to use sf::Shader will fail.
     ///
+    /// Note: The first call to this function, whether by your
+    /// code or SFML will result in a context switch.
+    ///
     /// \return True if shaders are supported, false otherwise
     ///
     ////////////////////////////////////////////////////////////
     static bool isAvailable();
 
-private :
+private:
 
     ////////////////////////////////////////////////////////////
     /// \brief Compile the shader(s) and create the program
