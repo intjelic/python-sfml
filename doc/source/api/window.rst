@@ -233,6 +233,33 @@ JoystickConnectEvent
 	.. attribute:: disconnected
 	.. attribute:: joystick_id
 
+TouchEvent
+----------
+.. class:: TouchEvent
+
+   A touch event either began or ended.
+
+	.. attribute:: state
+	.. attribute:: finger
+	.. attribute:: position
+
+TouchMoveEvent
+--------------
+.. class:: TouchMoveEvent
+
+   A finger moved while touching the screen.
+
+	.. attribute:: finger
+	.. attribute:: position
+
+SensorEvent
+-----------
+.. class:: SensorEvent
+
+   A sensor value changed
+
+	.. attribute:: type
+	.. attribute:: data
 
 VideoMode
 ^^^^^^^^^
@@ -690,7 +717,28 @@ Window
       make it active on another thread you have to deactivate it on the
       previous thread first if it was active. Only one window can be
       active on a thread at a time, thus the window previously active
-      (if any) automatically gets deactivated.
+      (if any) automatically gets deactivated. This is not to be confused with
+      :meth:`request_focus`.
+
+   .. method:: request_focus()
+
+      Request the current window to be made the active foreground window.
+
+      At any given time, only one window may have the input focus to receive
+      input events such as keystrokes or mouse events. If a window requests
+      focus, it only hints to the operating system, that it would like to be
+      focused. The operating system is free to deny the request. This is not to
+      be confused with :attr:`active`.
+
+   .. method:: has_focus()
+
+      Check whether the window has the input focus.
+
+      At any given time, only one window may have the input focus to receive
+      input events such as keystrokes or most mouse events.
+
+      :return: True if window has focus, false otherwise
+      :rtype: bool
 
    .. method:: display()
 
@@ -699,16 +747,15 @@ Window
       This function is typically called after all OpenGL rendering has
       been done for the current frame, in order to show it on screen.
 
-   ..
-      .. attribute:: system_handle
+   .. attribute:: system_handle
 
-         Get the OS-specific handle of the window.
+      Get the OS-specific handle of the window.
 
-         The type of the returned handle is :class`sfml.graphics.WindowHandle`, which
-         is a typedef to the handle type defined by the OS. You shouldn't
-         need to use this function, unless you have very specific stuff to
-         implement that SFML doesn't support, or implement a temporary
-         workaround until a bug is fixed.
+      The type of the returned handle is :class`sfml.graphics.WindowHandle`, which
+      is a typedef to the handle type defined by the OS. You shouldn't need to
+      use this function, unless you have very specific stuff to implement that
+      SFML doesn't support, or implement a temporary workaround until a bug is
+      fixed.
 
    .. method:: on_create
 
@@ -995,6 +1042,17 @@ Keyboard
       :param key: Key to check
       :type key: :class:`sfml.window.Keyboard`'s constant
 
+   .. classmethod:: set_virtual_keyboard_visible(visible)
+
+      Warning: the virtual keyboard is not supported on all systems. It will
+      typically be implemented on mobile OSes (Android, iOS) but not on desktop
+      OSes (Windows, Linux, ...).
+
+      If the virtual keyboard is not available, this function does nothing.
+
+      :param visible: True to show, false to hide
+      :type visible: boolean
+
 
 Joystick
 ^^^^^^^^
@@ -1130,6 +1188,14 @@ Joystick
       :param integer axis: Axis to check
       :rtype: boolean
 
+   .. classmethod:: get_identification(joystick)
+
+      Get the joystick information
+
+      :param integer joystick: Index of the joystick
+      :return: A tuple containing the name of the joystick, the manufacturer and product identifier
+      :rtype: tuple
+
    .. classmethod:: update()
 
       Update the states of all joysticks.
@@ -1225,6 +1291,154 @@ Mouse
       :param sfml.system.Vector2 position: New position of the mouse
       :param sfml.window.Window relative_to: Reference window
 
+
+Touch
+^^^^^
+
+.. class:: Touch
+
+   :class:`Touch` provides an interface to the state of the touches. It only
+   contains static functions, so it's not meant to be instantiated.
+
+   This class allows users to query the touches state at any time and directly,
+   without having to deal with a window and its events. Compared to the
+   :class:`TouchEvent` and :class:`TouchMoveEvent`, :class:`Touch` can retrieve
+   the state of the touches at any time (you don't need to store and update a
+   boolean on your side in order to know if a touch is down), and you always
+   get the real state of the touches, even if they happen when your window is
+   out of focus and no event is triggered.
+
+   The :meth:`get_position` function can be used to retrieve the current
+   position of a touch. There are two versions: one that operates in global
+   coordinates (relative to the desktop) and one that operates in window
+   coordinates (relative to a specific window).
+
+   Touches are identified by an index (the "finger"), so that in multi-touch
+   events, individual touches can be tracked correctly. As long as a finger
+   touches the screen, it will keep the same index even if other fingers start
+   or stop touching the screen in the meantime. As a consequence, active touch
+   indices may not always be sequential (i.e. touch number 0 may be released
+   while touch number 1 is still down).
+
+   Usage example::
+
+      if sf.Touch.is_down(0):
+         # touch 0 is down
+
+      # get global position of touch 1
+      global_pos = sf.Touch.get_position(1)
+
+      # get position of touch 1 relative to a window
+      relative_pos = sf.Touch.get_position(1, window)
+
+   .. classmethod:: is_down(finger)
+
+      Check if a touch event is currently down.
+
+      :param int finger: Finger index
+      :return: True if finger is currently touching the screen, false otherwise
+      :rtype: boolean
+
+   .. classmethod:: get_position(finger[, window])
+
+      Get the current position of a touch in desktop coordinates.
+
+      This function returns the current touch position in global (desktop)
+      coordinates.
+
+      :param int finger: Finger index
+      :param sfml.window.Window window: Reference window
+      :return: Current position of finger, or undefined if it's not down
+      :rtype: :class:`Vector2`
+
+Sensor
+^^^^^^
+
+.. class:: Sensor
+
+   :class:`Sensor` provides an interface to the state of the various sensors
+   that a device provides. It only contains static functions, so it's not meant
+   to be instantiated.
+
+   This class allows users to query the sensors values at any time and directly,
+   without having to deal with a window and its events. Compared to the
+   :class:`SensorEvent`, :class:`Sensor` can retrieve the state of a sensor at
+   any time (you don't need to store and update its current value on your side).
+
+   Depending on the OS and hardware of the device (phone, tablet, ...), some
+   sensor types may not be available. You should always check the availability
+   of a sensor before trying to read it, with the :meth:`is_available` function.
+
+   You may wonder why some sensor types look so similar, for example
+   :attr:`ACCELEROMETER` and :attr:`GRAVITY` / :attr:`USER_ACCELERATION`. The
+   first one is the raw measurement of the acceleration, and takes in account
+   both the earth gravity and the user movement. The others are more precise:
+   they provide these components separately, which is usually more useful. In
+   fact they are not direct sensors, they are computed internally based on the
+   raw acceleration and other sensors. This is exactly the same for
+   :attr:`GYROSCOPE` vs :attr:`ORIENTATION`.
+
+   Because sensors consume a non-negligible amount of current, they are all
+   disabled by default. You must call :meth:`set_enabled` for each sensor in
+   which you are interested.
+
+   Usage example::
+
+      if sf.Sensor.is_available(sf.Sensor.GRAVITY):
+         # gravity sensor is available
+
+      # enable the gravity sensor
+      sf.Sensor.set_enabled(sf.Sensor.GRAVITY)
+
+      # get the current value of gravity
+      gravity = sf.Sensor.get_value(sf.Sensor.GRAVITY)
+
+   +-------------------+------------------------------------------------------------------------------------------------+
+   | Sensor            | Description                                                                                    |
+   +===================+================================================================================================+
+   | ACCELEROMETER     | Measures the raw acceleration (m/s²)                                                           |
+   +-------------------+------------------------------------------------------------------------------------------------+
+   | GYROSCOPE         | Measures the raw rotation rates (degrees/s)                                                    |
+   +-------------------+------------------------------------------------------------------------------------------------+
+   | MAGNETOMETER      | Measures the ambient magnetic field (micro-teslas)                                             |
+   +-------------------+------------------------------------------------------------------------------------------------+
+   | GRAVITY           | Measures the direction and intensity of gravity, independent of device acceleration (m/s²)     |
+   +-------------------+------------------------------------------------------------------------------------------------+
+   | USER_ACCELERATION | Measures the direction and intensity of device acceleration, independent of the gravity (m/s²) |
+   +-------------------+------------------------------------------------------------------------------------------------+
+   | ORIENTATION       | Measures the absolute 3D orientation (degrees)                                                 |
+   +-------------------+------------------------------------------------------------------------------------------------+
+   | SENSOR_COUNT      | The total number of sensor                                                                     |
+   +-------------------+------------------------------------------------------------------------------------------------+
+
+   .. classmethod:: is_available(sensor)
+
+      Check if a sensor is available on the underlying platform
+
+      :param bool sensor: Sensor to check
+      :return: True if the sensor is available, false otherwise
+      :rtype: boolean
+
+   .. classmethod:: set_enabled(sensor, enabled)
+
+      Enable or disable a sensor.
+
+      All sensors are disabled by default, to avoid consuming too much battery
+      power. Once a sensor is enabled, it starts sending events of the
+      corresponding type.
+
+      This function does nothing if the sensor is unavailable.
+
+      :param int sensor: Sensor to enable
+      :param bool enabled: True to enable, false to disable
+
+   .. classmethod:: get_value(sensor)
+
+      Get the current sensor value.
+
+      :param int sensor: Sensor to read
+      :return: The current sensor value
+      :rtype: :class:`sfml.system.Vector3`
 
 Context
 ^^^^^^^

@@ -79,14 +79,36 @@ Listener
 
    .. classmethod:: set_direction(direction)
 
-      Set the orientation of the listener in the scene.
+      Set the forward vector of the listener in the scene.
 
-      The orientation defines the 3D axes of the listener (left, up,
-      front) in the scene. The orientation vector doesn't have to be
-      normalized. The default listener's orientation is (0, 0, -1).
+      The direction (also called "at vector") is the vector pointing forward
+      from the listener's perspective. Together with the up vector, it defines
+      the 3D orientation of the listener in the scene. The direction vector
+      doesn't have to be normalized. The default listener's direction is
+      (0, 0, -1).
 
-      :param direction: New listener's orientation
+      :param direction: New listener's forward vector (not normalized)
       :type direction: :class:`sfml.system.Vector3` or tuple
+
+   .. classmethod:: get_up_vector()
+
+      Get the current upward vector of the listener in the scene.
+
+      :return: Listener's upward vector (not normalized)
+      :rtype: :class:`sfml.system.Vector3`
+
+   .. classmethod:: set_up_vector(up_vector)
+
+      Set the upward vector of the listener in the scene.
+
+      The up vector is the vector that points upward from the listener's
+      perspective. Together with the direction, it defines the 3D orientation
+      of the listener in the scene. The up vector doesn't have to be normalized.
+      The default listener's up vector is (0, 1, 0). It is usually not necessary
+      to change it, especially in 2D scenarios.
+
+      :param up_vector: New listener's up vector
+      :type up_vector: :class:`sfml.system.Vector3` or tuple
 
 Chunk
 ^^^^^
@@ -750,10 +772,16 @@ SoundRecorder
    :func:`is_available` function. If it returns false, then any attempt
    to use an audio recorder will fail.
 
+   If you have multiple sound input devices connected to your computer (for
+   example: microphone, external soundcard, webcam mic, ...), you can get a
+   list of all available devices throught then :meth:`get_available_devices`
+   function. You can then select a device by calling :meth:`set_device` with
+   the appropiate device. Otherwise the default capturing device will be used.
+
    It is important to note that the audio capture happens in a separate
    thread, so that it doesn't block the rest of the program. In
-   particular, the :func:`on_process_samples` and :func:`on_stop` methods
-   (but not :func:`on_start`) will be called from this separate thread.
+   particular, the :func:`on_process_samples` method (but not :func:`on_start`
+   and not :func:`on_stop`) will be called from this separate thread.
    It is important to keep this in mind, because you may have to take
    care of synchronization issues if you share data between threads.
 
@@ -799,9 +827,20 @@ SoundRecorder
       example, 44100 samples/sec is CD quality). This function uses its
       own thread so that it doesn't block the rest of the program while
       the capture runs. Please note that only one capture can happen at
-      the same time.
+      the same time. You can select which capture device will be used, by
+      passing the name to the :meth:`set_device` method. If none was selected
+      before, the default capture device will be used. You can get a list of
+      the names of all available capture devices by calling
+      :meth:`get_available_devices`.
+
+      You can select which capture device will be used, by passing the name
+      to the :meth:`set_device` method. If none was selected before, the default
+      capture device will be used. You can get a list of the names of all
+      available capture devices by calling :meth:`get_available_devices`.
 
       :param integer sample_rate: Desired capture rate, in number of samples per second
+      :return: True, if start of capture was successful
+      :rtype: boolean
 
    .. method:: stop()
 
@@ -814,6 +853,47 @@ SoundRecorder
       The sample rate defines the number of audio samples captured per
       second. The higher, the better the quality (for example, 44100
       samples/sec is CD quality).
+
+   .. classmethod:: get_available_devices()
+
+      Get a list of the names of all availabe audio capture devices.
+
+      This function returns a tuple of strings, containing the names of all
+      availabe audio capture devices.
+
+      :return: A tuple of strings containing the names
+      :rtype: tuple
+
+   .. classmethod:: get_default_device()
+
+      Get the name of the default audio capture device.
+
+      This function returns the name of the default audio capture device. If
+      none is available, None is returned.
+
+      :return: The name of the default audio capture device
+      :rtype: string (or None)
+
+   .. method:: set_device(name)
+
+      Set the audio capture device.
+
+      This function sets the audio capture device to the device with the given
+      name. It can be called on the fly (i.e: while recording).
+
+      If you do so while recording and opening the device fails, it stops the
+      recording.
+
+      :param string name: The name of the audio capture device
+      :return: True, if it was able to set the requested device
+      :rtype: boolean
+
+   .. method:: get_device()
+
+      Get the name of the current audio capture device.
+
+      :return: The name of the current audio capture device
+      :rtype: string
 
    .. classmethod:: is_available()
 

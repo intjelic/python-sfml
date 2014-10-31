@@ -3,29 +3,6 @@ Graphics
 .. module:: sfml.graphics
 .. contents:: :local:
 
-BlendMode
-^^^^^^^^^
-
-.. py:class:: BlendMode
-
-   Empty class that defines some constants. These are the available
-   blending modes for drawing.
-
-   .. py:data:: BLEND_ALPHA
-
-      Pixel = Source * Source.a + Dest * (1 - Source.a)
-
-   .. py:data:: BLEND_ADD
-
-      Pixel = Source + Dest.
-
-   .. py:data:: BLEND_MULTIPLY
-
-      Pixel = Source * Dest.
-
-   .. py:data:: BLEND_NONE
-
-      Pixel = Source.
 
 PrimitiveType
 ^^^^^^^^^^^^^
@@ -450,6 +427,141 @@ Transform
       :type center: :class:`sfml.system.Vector2` or tuple
       :return: Return itself
       :rtype: :class:`sfml.graphics.Transform`
+
+BlendMode
+^^^^^^^^^
+
+.. py:class:: BlendMode
+
+   :class:`BlendMode` is a class that represents a blend mode. A blend mode
+   determines how the colors of an object you draw are mixed with the colors
+   that are already in the buffer.
+
+   The class is composed of 6 components, each of which has its own public
+   member variable:
+
+      * Color Source Factor (:attr:`color_src_factor`)
+      * Color Destination Factor (:attr:`color_dst_factor`)
+      * Color Blend Equation (:attr:`color_equation`)
+      * Alpha Source Factor (:attr:`alpha_src_factor`)
+      * Alpha Destination Factor (:attr:`alpha_dst_factor`)
+      * Alpha Blend Equation (:attr:`alpha_equation`)
+
+   The source factor specifies how the pixel you are drawing contributes to the
+   final color. The destination factor specifies how the pixel already drawn in
+   the buffer contributes to the final color.
+
+   The color channels RGB (red, green, blue; simply referred to as color) and A
+   (alpha; the transparency) can be treated separately. This separation can be
+   useful for specific blend modes, but most often you won't need it and will
+   simply treat the color as a single unit.
+
+   The blend factors and equations correspond to their OpenGL equivalents. In
+   general, the color of the resulting pixel is calculated according to the
+   following formula `src` is the color of the source pixel, `dst` the color of
+   the destination pixel, the other variables correspond to the public members,
+   with the equations being + or - operators)::
+
+      dst.rgb = colorSrcFactor * src.rgb (colorEquation) colorDstFactor * dst.rgb
+      dst.a   = alphaSrcFactor * src.a   (alphaEquation) alphaDstFactor * dst.a
+
+   All factors and colors are represented as floating point numbers between 0
+   and 1. Where necessary, the result is clamped to fit in that range.
+
+   The most common blending modes are defined as constants in the sf namespace::
+
+      sf.BLEND_ALPHA
+      sf.BLEND_ADD
+      sf.BLEND_MULTIPLY
+      sf.BLEND_NONE
+
+
+   In SFML, a blend mode can be specified every time you draw a :class:`Drawable`
+   object to a render target. It is part of the :class:`RenderStates` compound
+   that is passed to the member function :meth:`draw`.
+
+   +---------------------+---------------------------------------------+
+   | Factor              | Description                                 |
+   +=====================+=============================================+
+   | ZERO                | (0, 0, 0, 0)                                |
+   +---------------------+---------------------------------------------+
+   | ONE                 | (1, 1, 1, 1)                                |
+   +---------------------+---------------------------------------------+
+   | SRC_COLOR           | (src.r, src.g, src.b, src.a)                |
+   +---------------------+---------------------------------------------+
+   | ONE_MINUS_SRC_COLOR | (1, 1, 1, 1) - (src.r, src.g, src.b, src.a) |
+   +---------------------+---------------------------------------------+
+   | DST_COLOR           | (dst.r, dst.g, dst.b, dst.a)                |
+   +---------------------+---------------------------------------------+
+   | ONE_MINUS_DST_COLOR | (1, 1, 1, 1) - (dst.r, dst.g, dst.b, dst.a) |
+   +---------------------+---------------------------------------------+
+   | SRC_ALPHA           | (src.a, src.a, src.a, src.a)                |
+   +---------------------+---------------------------------------------+
+   | ONE_MINUS_SRC_ALPHA | (1, 1, 1, 1) - (src.a, src.a, src.a, src.a) |
+   +---------------------+---------------------------------------------+
+   | DST_ALPHA           | (dst.a, dst.a, dst.a, dst.a)                |
+   +---------------------+---------------------------------------------+
+   | ONE_MINUS_DST_ALPHA | (1, 1, 1, 1) - (dst.a, dst.a, dst.a, dst.a) |
+   +---------------------+---------------------------------------------+
+
+   +----------+-------------------------------------------+
+   | Equation | Description                               |
+   +==========+===========================================+
+   | ADD      | Pixel = Src * SrcFactor + Dst * DstFactor |
+   +----------+-------------------------------------------+
+   | SUBTRACT | Pixel = Src * SrcFactor - Dst * DstFactor |
+   +----------+-------------------------------------------+
+
+   .. py:method:: BlendMode(*args, **kwargs):
+
+      Construct the blend mode given the factors and equation.
+
+      :param integer color_source_factor: Specifies how to compute the source factor for the color channels.
+      :param integer color_destination_factor: Specifies how to compute the destination factor for the color channels.
+      :param integer color_blend_equation: Specifies how to combine the source and destination colors.
+      :param integer alpha_source_factor: Specifies how to compute the source factor.
+      :param integer alpha_destination_factor: Specifies how to compute the destination factor.
+      :param integer alpha_blend_equation: Specifies how to combine the source and destination alphas.
+
+   .. py:attribute:: color_src_factor
+
+      Source blending factor for the color channels
+
+   .. py:attribute:: color_dst_factor
+
+      Destination blending factor for the color channels
+
+   .. py:attribute:: color_equation
+
+      Blending equation for the color channels
+
+   .. py:attribute:: alpha_src_factor
+
+      Source blending factor for the alpha channel
+
+   .. py:attribute:: alpha_dst_factor
+
+      Destination blending factor for the alpha channel
+
+   .. py:attribute:: alpha_equation
+
+      Blending equation for the alpha channel
+
+.. py:data:: BLEND_ALPHA
+
+   Blend source and dest according to dest alpha
+
+.. py:data:: BLEND_ADD
+
+   Add source to dest
+
+.. py:data:: BLEND_MULTIPLY
+
+   Multiply source and dest
+
+.. py:data:: BLEND_NONE
+
+   Overwrite dest with source
 
 Pixels
 ^^^^^^
@@ -1191,17 +1303,13 @@ Font
       :return: Texture containing the glyphs of the requested size
       :rtype: :class:`sfml.graphics.Texture`
 
-   .. py:classmethod:: get_default_font()
+   .. py:attribute:: info
 
-      Return the default built-in font.
+      Various information about a font.
 
-      This font is provided for convenience, it is used by
-      :class:`Text` instances by default. It is provided so that
-      users don't have to provide and load a font file in order to
-      display text on screen. The font used is Arial.
+      :return: A string containing the font family
+      :rtype: string
 
-      :return: Reference to the built-in default font
-      :rtype: :class:`sfml.graphics.Font`
 
 Shader
 ^^^^^^
@@ -1590,12 +1698,12 @@ RenderStates
    object will combine the current transform with its own transform. A
    sprite will set its texture. Etc.
 
-   .. py:method:: RenderStates(blend_mode=BLEND_ALPHA[, transform, [texture[, shader]]])
+   .. py:method:: RenderStates(blendmode=BLEND_ALPHA[, transform, [texture[, shader]]])
 
       Construct a default render states with custom values.
 
-      :param blend_mode: Blend mode to use
-      :type blend_mode: :class:`sfml.graphics.BlendMode`'s constant
+      :param blendmode: Blend mode to use
+      :type blendmode: :class:`sfml.graphics.BlendMode`'s constant
       :param sfml.graphics.Transform transform: Transform to use
       :param sfml.graphics.Texture texture: Texture to use
       :param sfml.graphics.Shader shader: Shader to use
@@ -1605,7 +1713,7 @@ RenderStates
 
       Special instance holding the default render states.
 
-   .. py:attribute:: blend_mode
+   .. py:attribute:: blendmode
 
       Blending mode.
 
@@ -1949,10 +2057,10 @@ Text
       It inherits all the functions from :class:`Transformable`:
       position, ratio, scale, origin. It also adds text-specific
       properties such as the font to use, the character size, the font
-      style (bold, italic, underlined), the global color and the text
-      to display of course. It also provides convenience functions to
-      calculate the graphical size of the text, or to get the global
-      position of a given character.
+      style (bold, italic, underlined, strike through), the global color
+      and the text to display of course.
+      It also provides convenience functions to calculate the graphical size
+      of the text, or to get the global position of a given character.
 
       :class:`Text` works in combination with the :class:`Font`
       class, which loads and provides the glyphs (visual characters) of
@@ -1987,8 +2095,19 @@ Text
          # draw it
          window.draw(text)
 
-      Note that you don't need to load a font to draw text, pySFML
-      comes with a built-in font that is implicitly used by default.
+      +----------------+------------------------------+
+      | Style          | Description                  |
+      +================+==============================+
+      | REGULAR        | Regular characters, no style |
+      +----------------+------------------------------+
+      | BOLD           | Bold characters              |
+      +----------------+------------------------------+
+      | ITALIC         | Italic characters            |
+      +----------------+------------------------------+
+      | UNDERLINED     | Underlined characters        |
+      +----------------+------------------------------+
+      | STRIKE_THROUGH | Strike through characters    |
+      +----------------+------------------------------+
 
    .. py:method:: Text([string[, font[, character_size=30]]])
 
@@ -2015,6 +2134,10 @@ Text
 
       Underlined characters.
 
+   .. py:data:: STRIKE_THROUGH
+
+      Strike through characters.
+
    .. py:attribute:: string
 
       Set/get the text's string.
@@ -2029,8 +2152,7 @@ Text
       text uses it. Indeed, the text doesn't store its own copy of the
       font, but rather keeps a reference to the one that you set to
       this attribute. If the font is destroyed and the text tries to
-      use it, the behaviour is undefined. Texts have a valid font by
-      default, which the built-in :meth:`Font.get_default_font`.
+      use it, the behaviour is undefined.
 
       :rtype: :class:`sfml.graphics.Font`
 
