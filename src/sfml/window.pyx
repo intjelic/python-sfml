@@ -1105,7 +1105,7 @@ cdef class Sensor:
     GRAVITY = sf.sensor.Gravity
     USER_ACCELERATION = sf.sensor.UserAcceleration
     ORIENTATION = sf.sensor.Orientation
-    COUNT = sf.sensor.Count
+    SENSOR_COUNT = sf.sensor.Count
 
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
