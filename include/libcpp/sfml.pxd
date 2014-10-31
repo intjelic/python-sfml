@@ -253,7 +253,6 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
         bint waitEvent(Event&)
         Vector2i getPosition() const
         void setPosition(const Vector2i&)
-
         Vector2u getSize() const
         void setSize(const Vector2u)
         void setTitle(const String&)
@@ -266,6 +265,8 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
         void setJoystickThreshold(float)
         bint setActive() const
         bint setActive(bint) const
+        void requestFocus()
+        bint hasFocus() const
         void display()
         WindowHandle getSystemHandle() const
         void onCreate()

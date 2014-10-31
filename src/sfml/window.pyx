@@ -867,6 +867,12 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
         def __set__(self, bint active):
             self.p_window.setActive(active)
 
+    def request_focus(self):
+        self.p_window.requestFocus()
+
+    def has_focus(self):
+        return self.p_window.hasFocus()
+
     def display(self):
         self.p_window.display()
 
