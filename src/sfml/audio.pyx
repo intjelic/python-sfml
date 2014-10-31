@@ -92,6 +92,16 @@ cdef class Listener:
         x, y, z = direction
         sf.listener.setDirection(x, y, z)
 
+    @classmethod
+    def get_up_vector(cls):
+        cdef Vector3f v = sf.listener.getUpVector()
+        return to_vector3(&v)
+
+    @classmethod
+    def set_up_vector(cls, up_vector):
+        x, y, z = up_vector
+        sf.listener.setUpVector(x, y, z)
+
 cdef class Chunk:
     cdef Int16* m_samples
     cdef size_t m_sampleCount

@@ -33,3 +33,6 @@ cdef extern from "SFML/Audio.hpp" namespace "sf::Listener":
     cdef void setDirection(float, float, float)
     cdef void setDirection(const Vector3f&)
     cdef Vector3f getDirection()
+    cdef void setUpVector(float, float, float)
+    cdef void setUpVector(const Vector3f&)
+    cdef Vector3f getUpVector()
