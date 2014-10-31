@@ -103,7 +103,7 @@ want to start to use mutiple submodules from the sfml package. For this reason,
 we provide a convenience module named sf, which imports all of the other
 submodules::
 
-   import sf
+   from sfml import sf
 
    sf.sleep(sf.seconds(5)
 
