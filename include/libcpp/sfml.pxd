@@ -134,7 +134,6 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 
     cdef cppclass InputStream
     cdef cppclass Utf
-    cdef cppclass String
 
 cimport style, event, videomode, keyboard, joystick, mouse, touch, sensor
 
