@@ -519,7 +519,7 @@ Window
       etc.
 
       :param sfml.window.VideoMode mode: Video mode to use (defines the width, height and depth of the rendering area of the window)
-      :param string title: Title of the window
+      :param str title: Title of the window
       :param sfml.window.Style style: Window style
       :param sfml.window.ContextSettings settings: Additional settings for the underlying OpenGL context
 
@@ -528,7 +528,7 @@ Window
       Recreate the window.
 
       :param sfml.window.VideoMode mode: Video mode to use (defines the width, height and depth of the rendering area of the window)
-      :param string title: Title of the window
+      :param str title: Title of the window
       :param sfml.window.Style style: Window style
       :param sfml.window.ContextSettings settings: Additional settings for the underlying OpenGL context
 
