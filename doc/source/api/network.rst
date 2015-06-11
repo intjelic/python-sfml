@@ -54,7 +54,7 @@ IpAddress
       Here address can be either a decimal address (ex: "192.168.1.56")
       or a network name (ex: "localhost").
 
-      :param string string: IP address or network name
+      :param str string: IP address or network name
       :rtype: :class:`sfml.network.IpAddress`
 
    .. classmethod:: from_integer(integer)

@@ -884,7 +884,7 @@ SoundRecorder
       If you do so while recording and opening the device fails, it stops the
       recording.
 
-      :param string name: The name of the audio capture device
+      :param str name: The name of the audio capture device
       :return: True, if it was able to set the requested device
       :rtype: boolean
 
@@ -893,7 +893,7 @@ SoundRecorder
       Get the name of the current audio capture device.
 
       :return: The name of the current audio capture device
-      :rtype: string
+      :rtype: str
 
    .. classmethod:: is_available()
 

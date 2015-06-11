@@ -653,7 +653,7 @@ Image
       jpeg. If this function fails, it raises an exception.
 
       :raise: :exc:`IOError` - The image failed to load
-      :param string filename: Path of the image file to load
+      :param str filename: Path of the image file to load
       :rtype: :class:`sfml.graphics.Image`
 
    .. py:classmethod:: from_memory(data)
@@ -677,7 +677,7 @@ Image
       The destination file is overwritten if it already exists.
 
       :raise: :exc:`IOError` - If the image is empty
-      :param string filename: Path of the file to save
+      :param str filename: Path of the file to save
 
    .. py:method:: show()
 
@@ -906,7 +906,7 @@ Texture
       If this function fails, it raises an exception.
 
       :raise: :class:`IOError` - The texture failed to load
-      :param string filename: Path of the image file to load
+      :param str filename: Path of the image file to load
       :param area: Area of the image to load
       :type area: :class:`sfml.graphics.Rectangle`
       :rtype: :class:`sfml.graphics.Texture`
@@ -1235,7 +1235,7 @@ Font
       This function raises an exception if it fails.
 
       :raise: :exc:`IOError` - The font failed to load
-      :param string filename: Path of the font file to load
+      :param str filename: Path of the font file to load
       :rtype: :class:`sfml.graphics.Font`
 
    .. py:classmethod:: from_memory(data)
@@ -1308,7 +1308,7 @@ Font
       Various information about a font.
 
       :return: A string containing the font family
-      :rtype: string
+      :rtype: str
 
 
 Shader
@@ -1362,8 +1362,8 @@ Shader
       writing your own shaders.
 
       :raise: :exc:`IOError` - If one of the two shaders failed to load
-      :param string vertex_filename: Path of the vertex or fragment shader file to load
-      :param string fragment_filename: Path of the fragment shader file to load
+      :param str vertex_filename: Path of the vertex or fragment shader file to load
+      :param str fragment_filename: Path of the fragment shader file to load
       :rtype: :class:`sfml.graphics.Shader`
 
 
@@ -1380,8 +1380,8 @@ Shader
       shaders.
 
       :raise: :exc:`IOError` - If one of the two shaders failed to load
-      :param string vertex_shader: String containing the source code of the vertex shader
-      :param string fragment_shader: String containing the source code of the fragment shader
+      :param str vertex_shader: String containing the source code of the vertex shader
+      :param str fragment_shader: String containing the source code of the fragment shader
       :rtype: :class:`sfml.graphics.Shader`
 
    .. py:method:: set_parameter(*args, **kwargs)
@@ -1432,8 +1432,8 @@ Shader
          shader.set_1float_parameter("myparam", 5.2) # using the specific method (faster)
          shader.set_parameter("myparam", 5.2)        # using the general method
 
-      :param string name: Name of the parameter in the shader
-      :param x float: Value to assign
+      :param str name: Name of the parameter in the shader
+      :param float x: Value to assign
 
    .. py:method:: set_2float_parameter(name, x, y)
 
@@ -1452,9 +1452,9 @@ Shader
          shader.set_2float_parameter("myparam", 5.2, 6) # using the specific method (faster)
          shader.set_parameter("myparam", 5.2, 6)        # using the general method
 
-      :param string name: Name of the parameter in the shader
-      :param x float: First component of the value to assign
-      :param y float: Second component of the value to assign
+      :param str name: Name of the parameter in the shader
+      :param float x: First component of the value to assign
+      :param float y: Second component of the value to assign
 
    .. py:method:: set_3float_parameter(name, x, y, z)
 
@@ -1473,10 +1473,10 @@ Shader
          shader.set_3float_parameter("myparam", 5.2, 6, -8.1) # using the specific method (faster)
          shader.set_parameter("myparam", 5.2, 6, -8.1)        # using the general method
 
-      :param string name: Name of the parameter in the shader
-      :param x float: First component of the value to assign
-      :param y float: Second component of the value to assign
-      :param z float: Third component of the value to assign
+      :param str name: Name of the parameter in the shader
+      :param float x: First component of the value to assign
+      :param float y: Second component of the value to assign
+      :param float z: Third component of the value to assign
 
    .. py:method:: set_4float_parameter(name, x, y, z, w)
 
@@ -1495,11 +1495,11 @@ Shader
          shader.set_4float_parameter("myparam", 5.2, 6, -8.1, 0.4) # using the specific method (faster)
          shader.set_parameter("myparam", 5.2, 6, -8.1, 0.4)        # using the general method
 
-      :param string name: Name of the parameter in the shader
-      :param x float: First component of the value to assign
-      :param y float: Second component of the value to assign
-      :param z float: Third component of the value to assign
-      :param w float: Fourth component of the value to assign
+      :param str name: Name of the parameter in the shader
+      :param float x: First component of the value to assign
+      :param float y: Second component of the value to assign
+      :param float z: Third component of the value to assign
+      :param float w: Fourth component of the value to assign
 
    .. py:method:: set_vector2_parameter(name, vector)
 
@@ -1520,7 +1520,7 @@ Shader
          shader.set_parameter("myparam", sf.Vector2(5.2, 6))         # using the general method
          shader.set_parameter("myparam", (5.2, 6))                   # using tuple works too
 
-      :param string name: Name of the parameter in the shader
+      :param str name: Name of the parameter in the shader
       :param sfml.system.Vector2 vector: Vector to assign
 
    .. py:method:: set_vector3_parameter(name, vector)
@@ -1541,7 +1541,7 @@ Shader
          shader.set_parameter("myparam", sf.Vector3(5.2, 6, -8.1))         # using the general method
          shader.set_parameter("myparam", (5.2, 6, -8.1))                   # using tuple works too
 
-      :param string name: Name of the parameter in the shader
+      :param str name: Name of the parameter in the shader
       :param sfml.system.Vector3 vector: Vector to assign
 
    .. py:method:: set_color_parameter(name, color)
@@ -1567,7 +1567,7 @@ Shader
          shader.set_color_parameter("myparam", sf.Color(255, 128, 0, 255)) # using the specific method (faster)
          shader.set_parameter("myparam", sf.Color(255, 128, 0, 255))       # using the general method
 
-      :param string name: Name of the parameter in the shader
+      :param str name: Name of the parameter in the shader
       :param sfml.graphics.Color color: Color to assign
 
    .. py:method:: set_transform_parameter(name, transform)
@@ -1590,7 +1590,7 @@ Shader
          shader.set_transform_parameter("matrix", transform) # using the specific method (faster)
          shader.set_parameter("matrix", transform)           # using the general method
 
-      :param string name: Name of the parameter in the shader
+      :param str name: Name of the parameter in the shader
       :param sfml.graphics.Transform transform: Transform to assign
 
    .. py:method:: set_texture_parameter(name, texture)
@@ -1619,7 +1619,7 @@ Shader
       To use the texture of the object being draw, which cannot be
       known in advance, use :meth:`set_currenttexturetype_parameter`.
 
-      :param string name: Name of the parameter in the shader
+      :param str name: Name of the parameter in the shader
       :param sfml.graphics.Texture texture: Texture to assign
 
    .. py:method:: set_currenttexturetype_parameter(name)
@@ -2113,7 +2113,7 @@ Text
 
       Construct the string, and optionally from a string, font and size.
 
-      :param string: Text assigned to the string
+      :param str: Text assigned to the string
       :type string: bytes or string
       :param sfml.graphics.Font font: Font used to draw the string
       :param integer character_size: Base size of characters, in pixels
@@ -3030,7 +3030,7 @@ RenderWindow
       usage of the graphics module.
 
       :param sfml.window.VideoMode mode: Video mode to use (defines the width, height and depth of the rendering area of the window)
-      :param string title: Title of the window
+      :param str title: Title of the window
       :param style:	Window style
       :type style: :class:`sfml.window.Style`'s constant
       :param sfml.window.ContextSettings settings: Additional settings for the underlying OpenGL context
