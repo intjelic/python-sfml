@@ -616,16 +616,6 @@ cdef public class Image[type PyImageType, object PyImageObject]:
     def flip_vertically(self):
         self.p_this.flipVertically()
 
-    def show(self):
-        cdef sf.Time p = sf.seconds(0.05)
-
-        thread.start_new_thread(show, (self,))
-
-        with nogil: sf.sleep(p)
-        with nogil: sf.sleep(p)
-        with nogil: sf.sleep(p)
-        with nogil: sf.sleep(p)
-
 
 cdef Image wrap_image(sf.Image *p):
     cdef Image r = Image.__new__(Image)
@@ -2161,48 +2151,3 @@ cdef class HandledWindow(RenderTarget):
 
     def display(self):
         self.p_window.display()
-
-def show(image):
-    mutex = Mutex()
-    mutex.lock()
-
-    from copy import copy
-    from sfml import sf
-
-    image = copy(image)
-    desktop_mode = sf.VideoMode.get_desktop_mode()
-
-    bpp = desktop_mode.bpp
-
-    if sf.VideoMode(image.width, image.height, bpp) > desktop_mode:
-        video_size = (640, 480)
-    else:
-        video_size = image.size
-
-    w, h = video_size
-
-    window = sf.RenderWindow(sf.VideoMode(w, h, bpp), 'pySFML - Image preview')
-    window.framerate_limit = 60
-
-    texture = sf.Texture.from_image(image)
-    sprite = sf.Sprite(texture)
-
-    mutex.unlock()
-
-    while window.is_open:
-
-        mutex.lock()
-        for event in window.events:
-            if type(event) is sf.CloseEvent:
-                window.close()
-                break
-
-        window.active = True
-        window.clear(sf.Color.WHITE)
-        window.draw(sprite)
-        window.display()
-        mutex.unlock()
-
-        sf.sleep(sf.milliseconds(100))
-
-    window.close()

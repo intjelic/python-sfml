@@ -679,12 +679,6 @@ Image
       :raise: :exc:`IOError` - If the image is empty
       :param str filename: Path of the file to save
 
-   .. py:method:: show()
-
-      This function starts an external thread that displays the current
-      content of the image in a window. It's a very handy feature for
-      debugging purpose only.
-
    .. py:attribute:: size
 
       Return the size of the image.
