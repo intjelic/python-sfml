@@ -159,27 +159,6 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
         def __set__(self, height):
             self.size.y = height
 
-    property center:
-        def __get__(self):
-            return self.position + self.size / 2
-
-        def __set__(self, center):
-            raise NotImplementedError
-
-    property right:
-        def __get__(self):
-            return self.left + self.width
-
-        def __set__(self, right):
-            raise NotImplementedError
-
-    property bottom:
-        def __get__(self):
-            return self.top + self.height
-
-        def __set__(self, bottom):
-            raise NotImplemented
-
     def contains(self, point):
         x, y = point
         return x >= self.left and x < self.right and y >= self.top and y < self.bottom
