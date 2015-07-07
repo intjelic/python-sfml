@@ -22,18 +22,6 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-try:
-    import thread
-except ImportError:
-    # temporary code to support Python3's threading interface
-    import threading
-
-    class thread:
-        start_new_thread = threading._start_new_thread
-        allocate_lock = threading._allocate_lock
-
-from sfml.system import Mutex
-
 from libcpp.vector cimport vector
 
 cimport libcpp.sfml as sf

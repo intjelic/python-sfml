@@ -25,7 +25,6 @@
 from __future__ import division
 from numbers import Number, Integral
 from copy import deepcopy
-import threading
 
 cimport cython
 
@@ -50,7 +49,7 @@ cdef extern from "error.hpp":
     object getLastErrorMessage()
 
 __all__ = ['Time', 'sleep', 'Clock', 'seconds', 'milliseconds', 'microseconds',
-            'Vector2', 'Vector3', 'Thread', 'Lock', 'Mutex']
+            'Vector2', 'Vector3']
 
 # expose a function to restore the error handler
 cdef api void restoreErrorHandler():
@@ -588,63 +587,3 @@ def microseconds(Int64 amount):
     cdef sf.Time* p = new sf.Time()
     p[0] = sf.microseconds(amount)
     return wrap_time(p)
-
-
-cdef class Mutex:
-    cdef object _lock
-    cdef bint   _locked
-
-    def __cinit__(self):
-        self._lock = threading.RLock()
-
-    def __repr__(self):
-        return "Mutex(locked={0})".format(self._locked)
-
-    def lock(self):
-        self._lock.acquire()
-        self._locked = True
-
-    def unlock(self):
-        self._lock.release()
-        self._locked = False
-
-cdef class Lock:
-    cdef Mutex _mutex
-
-    def __init__(self, Mutex mutex):
-        self._mutex = mutex
-        mutex.lock()
-
-    def __dealloc__(self):
-        self._mutex.unlock()
-
-    def __repr__(self):
-        return "Lock()"
-
-cdef class Thread:
-    cdef object _thread
-
-    def __init__(self, functor, *args, **kwargs):
-        self._thread = threading.Thread(target=functor, args=args, kwargs=kwargs)
-
-    def __repr__(self):
-        try:
-            # Python 2.x
-            return "Thread(functor={0}, args={1}, kwargs={2})".format(self._Thread__target, self._Thread__args, self._Thread__kwargs)
-        except AttributeError:
-            # Python 3.x
-            return "Thread(functor={0}, args={1}, kwargs={2})".format(self._target, self._args, self._kwargs)
-
-    def launch(self):
-        self._thread.start()
-
-    def wait(self):
-        self._thread.join()
-
-    def terminate(self):
-        try:
-            # Python 2.x
-            self._thread._Thread__stop()
-        except AttributeError:
-            # Python 3.x
-            self._thread._stop()
