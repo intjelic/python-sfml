@@ -114,45 +114,17 @@ network = extension(
     [sources['network']],
     ['sfml-system', 'sfml-network'])
 
-
 major, minor, _, _ , _ = sys.version_info
 
-# Distribute Cython API (install cython headers)
-# Path: {CYTHON_DIR}/Includes/libcpp/sfml.pxd
-import cython
-cython_path = os.path.join(os.path.dirname(cython.__file__),'Cython')
-
-cython_headers = []
-
-pxd_files = glob(os.path.join('include', 'libcpp', '*'))
-pxd_files.remove(os.path.join('include', 'libcpp', 'http'))
-pxd_files.remove(os.path.join('include', 'libcpp', 'ftp'))
-cython_headers.append((os.path.join(cython_path, 'Includes', 'libcpp'), pxd_files))
-
-pxd_files = glob(os.path.join('include', 'libcpp', 'http', '*'))
-cython_headers.append((os.path.join(cython_path, 'Includes', 'libcpp', 'http'), pxd_files))
-
-pxd_files = glob(os.path.join('include', 'libcpp', 'ftp', '*'))
-cython_headers.append((os.path.join(cython_path, 'Includes', 'libcpp', 'ftp'), pxd_files))
-
-# Distribute C API (install C headers)
-
+# Install C headers
 if platform.system() == 'Windows':
     # On Windows: C:\Python27\include\pysfml\*_api.h
-    c_api = [(sys.prefix +'\\include\\pysfml', glob('include/pysfml/*.h'))]
+    c_headers = [(sys.prefix +'\\include\\pysfml', glob('include/pysfml/*.h'))]
 else:
     # On Unix: /usr/include/pysfml/*_api.h
-    c_api = [(sys.prefix + '/include/pysfml', glob('include/pysfml/*.h'))]
+    c_headers = [(sys.prefix + '/include/pysfml', glob('include/pysfml/*.h'))]
 
-# Install the Cython API
-if platform.system() == 'Windows':
-    # On Windows: C:\Python27\Lib\pysfml\*.pxd
-    cython_api = [(sys.prefix + '\\Lib\\pysfml', glob('include/pysfml/*.pxd'))]
-else:
-    # On Unix: /usr/lib/pythonX.Y/pysfml/*.pxd
-    cython_api = [(sys.prefix + '/lib/python{0}.{1}/pysfml'.format(major, minor), glob('include/pysfml/*.pxd'))]
-
-files = cython_headers + c_api + cython_api
+files = c_headers
 
 if platform.system() == 'Windows':
     dlls = [("Lib\\site-packages\\sfml", glob('extlibs/sfml/bin/' + arch + '/*.dll'))]
