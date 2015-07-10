@@ -22,17 +22,9 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport Shader
+from libcpp.vector cimport vector
+from sfml cimport VideoMode
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
-    cdef struct CurrentTextureType:
-        pass
-
-    cdef CurrentTextureType CurrentTexture
-
-    cdef enum Type:
-        Vertex
-        Fragment
-
-    cdef bint isAvailable()
-    cdef void bind(const Shader*)
+cdef extern from "SFML/Graphics.hpp" namespace "sf::VideoMode":
+    cdef VideoMode& getDesktopMode()
+    cdef const vector[VideoMode]& getFullscreenModes()

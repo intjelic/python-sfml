@@ -22,20 +22,7 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport Vector2i
-from libcpp.sfml cimport Window
+from sfml cimport Time
 
-cdef extern from "SFML/Window.hpp" namespace "sf::Mouse":
-    cdef enum Button:
-        Left
-        Right
-        Middle
-        XButton1
-        XButton2
-        ButtonCount
-
-    bint isButtonPressed(Button)
-    Vector2i getPosition()
-    Vector2i getPosition(const Window&)
-    void setPosition(const Vector2i&)
-    void setPosition(const Vector2i&, const Window&)
+cdef extern from "SFML/System.hpp" namespace "sf::Time":
+    cdef Time Zero

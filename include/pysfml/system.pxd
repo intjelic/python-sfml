@@ -22,7 +22,7 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-cimport libcpp.sfml as sf
+cimport sfml as sf
 
 cdef extern from "pysfml/system.h":
     cdef class sfml.system.Time [object PyTimeObject]:

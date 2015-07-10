@@ -22,35 +22,20 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport String
+from sfml cimport Vector2i
+from sfml cimport Window
 
-cdef extern from "SFML/Window.hpp" namespace "sf::Joystick":
-
-    cdef enum:
-        Count
+cdef extern from "SFML/Window.hpp" namespace "sf::Mouse":
+    cdef enum Button:
+        Left
+        Right
+        Middle
+        XButton1
+        XButton2
         ButtonCount
-        AxisCount
 
-    cdef enum Axis:
-        X
-        Y
-        Z
-        R
-        U
-        V
-        PovX
-        PovY
-
-    cdef struct Identification:
-        Identification()
-        String name
-        unsigned int vendorId
-        unsigned int productId
-
-    bint isConnected(unsigned int)
-    unsigned int getButtonCount(unsigned int)
-    bint hasAxis(unsigned int, Axis)
-    bint isButtonPressed(unsigned int, unsigned int)
-    float getAxisPosition(unsigned int, Axis)
-    Identification getIdentification(unsigned int)
-    void update()
+    bint isButtonPressed(Button)
+    Vector2i getPosition()
+    Vector2i getPosition(const Window&)
+    void setPosition(const Vector2i&)
+    void setPosition(const Vector2i&, const Window&)

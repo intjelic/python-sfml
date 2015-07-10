@@ -22,8 +22,8 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-cimport libcpp.sfml as sf
-from libcpp.sfml cimport Uint8
+cimport sfml as sf
+from sfml cimport Uint8
 
 
 cdef extern from "pysfml/window.h":

@@ -22,14 +22,17 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport Time
-from libcpp.sfml cimport IpAddress
+from sfml cimport Shader
 
-cdef extern from "SFML/Network.hpp" namespace "sf::IpAddress":
-    cdef IpAddress getLocalAddress()
-    cdef IpAddress getPublicAddress()
-    cdef IpAddress getPublicAddress(Time)
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
+    cdef struct CurrentTextureType:
+        pass
 
-    IpAddress None
-    IpAddress LocalHost
-    IpAddress Broadcast
+    cdef CurrentTextureType CurrentTexture
+
+    cdef enum Type:
+        Vertex
+        Fragment
+
+    cdef bint isAvailable()
+    cdef void bind(const Shader*)

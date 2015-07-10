@@ -28,9 +28,9 @@ from cpython.version cimport PY_VERSION_HEX
 
 from libcpp.vector cimport vector
 
-cimport libcpp.sfml as sf
-from libcpp.sfml cimport Int8, Int16, Int32, Int64
-from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
+cimport sfml as sf
+from sfml cimport Int8, Int16, Int32, Int64
+from sfml cimport Uint8, Uint16, Uint32, Uint64
 
 cdef extern from "DerivableWindow.hpp":
     cdef cppclass DerivableWindow:

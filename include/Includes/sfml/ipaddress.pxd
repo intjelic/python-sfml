@@ -22,7 +22,14 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport Transform
+from sfml cimport Time
+from sfml cimport IpAddress
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Transform":
-    cdef Transform Identity
+cdef extern from "SFML/Network.hpp" namespace "sf::IpAddress":
+    cdef IpAddress getLocalAddress()
+    cdef IpAddress getPublicAddress()
+    cdef IpAddress getPublicAddress(Time)
+
+    IpAddress None
+    IpAddress LocalHost
+    IpAddress Broadcast

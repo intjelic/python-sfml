@@ -31,9 +31,9 @@ cimport cython
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
-cimport libcpp.sfml as sf
-from libcpp.sfml cimport Int8, Int16, Int32, Int64
-from libcpp.sfml cimport Uint8, Uint16, Uint32, Uint64
+cimport sfml as sf
+from sfml cimport Int8, Int16, Int32, Int64
+from sfml cimport Uint8, Uint16, Uint32, Uint64
 
 #cdef extern from "<string>" namespace "std":
     #cdef cppclass string:
@@ -68,8 +68,6 @@ cdef api object popLastErrorMessage():
 # redirect SFML errors to our stream buffer
 restoreErrorHandler()
 
-
-cdef extern from "hacks.h": pass
 from cpython.string cimport PyString_AsString
 
 cdef api sf.String to_string(object string):

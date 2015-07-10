@@ -22,21 +22,10 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport BlendMode
+from sfml cimport Int16
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::BlendMode":
-    cdef enum Factor:
-        Zero
-        One
-        SrcColor
-        OneMinusSrcColor
-        DstColor
-        OneMinusDstColor
-        SrcAlpha
-        OneMinusSrcAlpha
-        DstAlpha
-        OneMinusDstAlpha
+cdef extern from "SFML/Audio.hpp" namespace "sf::SoundRecorder":
 
-    cdef enum Equation:
-        Add
-        Subtract
+    cdef struct Chunk:
+        const Int16* samples
+        size_t sampleCount

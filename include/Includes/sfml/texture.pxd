@@ -22,10 +22,15 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport Vector2i
-from libcpp.sfml cimport Window
+from sfml cimport Texture
 
-cdef extern from "SFML/Window.hpp" namespace "sf::Touch":
-    bint isDown(unsigned int)
-    Vector2i getPosition(unsigned int)
-    Vector2i getPosition(unsigned int, const Window&)
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf::Texture":
+    cdef unsigned int getMaximumSize()
+
+    cdef enum CoordinateType:
+        Normalized
+        Pixels
+
+    cdef void bind(const Texture*)
+    cdef void bind(const Texture*, CoordinateType)

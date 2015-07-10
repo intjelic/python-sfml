@@ -22,7 +22,19 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport RenderStates
+from sfml cimport Vector3f
+from sfml cimport Window
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::RenderStates":
-    cdef const RenderStates Default
+cdef extern from "SFML/Window.hpp" namespace "sf::Sensor":
+    cdef enum Type:
+        Accelerometer
+        Gyroscope
+        Magnetometer
+        Gravity
+        UserAcceleration
+        Orientation
+        Count
+
+    bint isAvailable(Type)
+    void setEnabled(Type, bint)
+    Vector3f getValue(Type)

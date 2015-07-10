@@ -1,0 +1,1 @@
+from sfml.sfml cimport *

@@ -22,19 +22,10 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport Vector3f
-from libcpp.sfml cimport Window
+from sfml cimport Vector2i
+from sfml cimport Window
 
-cdef extern from "SFML/Window.hpp" namespace "sf::Sensor":
-    cdef enum Type:
-        Accelerometer
-        Gyroscope
-        Magnetometer
-        Gravity
-        UserAcceleration
-        Orientation
-        Count
-
-    bint isAvailable(Type)
-    void setEnabled(Type, bint)
-    Vector3f getValue(Type)
+cdef extern from "SFML/Window.hpp" namespace "sf::Touch":
+    bint isDown(unsigned int)
+    Vector2i getPosition(unsigned int)
+    Vector2i getPosition(unsigned int, const Window&)

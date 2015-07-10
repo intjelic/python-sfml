@@ -22,15 +22,17 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport Texture
+from sfml cimport Vector3f
 
-
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Texture":
-    cdef unsigned int getMaximumSize()
-
-    cdef enum CoordinateType:
-        Normalized
-        Pixels
-
-    cdef void bind(const Texture*)
-    cdef void bind(const Texture*, CoordinateType)
+cdef extern from "SFML/Audio.hpp" namespace "sf::Listener":
+    cdef void setGlobalVolume(float)
+    cdef float getGlobalVolume()
+    cdef void setPosition(float, float, float)
+    cdef void setPosition(const Vector3f&)
+    cdef Vector3f getPosition()
+    cdef void setDirection(float, float, float)
+    cdef void setDirection(const Vector3f&)
+    cdef Vector3f getDirection()
+    cdef void setUpVector(float, float, float)
+    cdef void setUpVector(const Vector3f&)
+    cdef Vector3f getUpVector()

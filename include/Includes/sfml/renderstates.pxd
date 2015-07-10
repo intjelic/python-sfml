@@ -22,9 +22,7 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.vector cimport vector
-from libcpp.sfml cimport VideoMode
+from sfml cimport RenderStates
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::VideoMode":
-    cdef VideoMode& getDesktopMode()
-    cdef const vector[VideoMode]& getFullscreenModes()
+cdef extern from "SFML/Graphics.hpp" namespace "sf::RenderStates":
+    cdef const RenderStates Default

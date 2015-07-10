@@ -22,7 +22,35 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-from libcpp.sfml cimport Time
+from sfml cimport String
 
-cdef extern from "SFML/System.hpp" namespace "sf::Time":
-    cdef Time Zero
+cdef extern from "SFML/Window.hpp" namespace "sf::Joystick":
+
+    cdef enum:
+        Count
+        ButtonCount
+        AxisCount
+
+    cdef enum Axis:
+        X
+        Y
+        Z
+        R
+        U
+        V
+        PovX
+        PovY
+
+    cdef struct Identification:
+        Identification()
+        String name
+        unsigned int vendorId
+        unsigned int productId
+
+    bint isConnected(unsigned int)
+    unsigned int getButtonCount(unsigned int)
+    bint hasAxis(unsigned int, Axis)
+    bint isButtonPressed(unsigned int, unsigned int)
+    float getAxisPosition(unsigned int, Axis)
+    Identification getIdentification(unsigned int)
+    void update()

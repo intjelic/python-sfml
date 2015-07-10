@@ -84,7 +84,7 @@ else:
     extension = lambda name, files, libs: Extension(
         name='sfml.' + name,
         sources=files,
-        include_dirs=['include'],
+        include_dirs=['include', 'include/Includes'],
         language='c++',
         libraries=libs,
         extra_compile_args=['-fpermissive']
