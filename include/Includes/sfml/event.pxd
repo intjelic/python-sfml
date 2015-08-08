@@ -32,6 +32,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
         KeyPressed
         KeyReleased
         MouseWheelMoved
+        MouseWheelScrolled
         MouseButtonPressed
         MouseButtonReleased
         MouseMoved

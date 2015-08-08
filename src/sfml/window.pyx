@@ -129,6 +129,8 @@ cdef Event wrap_event(sf.Event *p):
         event = wrap_keyevent(p, Event.RELEASED)
     elif p.type == sf.event.MouseWheelMoved:
         event = MouseWheelEvent.__new__(MouseWheelEvent)
+    elif p.type == sf.event.MouseWheelScrolled:
+        event = MouseWheelEvent.__new__(MouseWheelEvent)
     elif p.type == sf.event.MouseButtonPressed:
         event = wrap_mousebuttonevent(p, Event.PRESSED)
     elif p.type == sf.event.MouseButtonReleased:
@@ -791,13 +793,14 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
             return Window.events_generator(self)
 
     def events_generator(window):
-        cdef sf.Event *p = new sf.Event()
+        cdef sf.Event  event
+        cdef sf.Event* p
 
-        while window.p_window.pollEvent(p[0]):
-            yield wrap_event(p)
+        while window.p_window.pollEvent(event):
             p = new sf.Event()
+            p[0] = event
+            yield wrap_event(p)
 
-        del p
 
     def poll_event(self):
         cdef sf.Event *p = new sf.Event()
