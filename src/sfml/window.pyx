@@ -757,9 +757,8 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
     def __repr__(self):
         return "Window(position={0}, size={1}, is_open={2})".format(self.position, self.size, self.is_open)
 
-    def recreate(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
-        if not settings: self.p_window.create(mode.p_this[0], to_string(title), style)
-        else: self.p_window.create(mode.p_this[0], to_string(title), style, settings.p_this[0])
+    def create(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=ContextSettings()):
+        self.p_window.create(mode.p_this[0], to_string(title), style, settings.p_this[0])
 
     def close(self):
         self.p_window.close()

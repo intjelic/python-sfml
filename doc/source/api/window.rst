@@ -523,7 +523,7 @@ Window
       :param sfml.window.Style style: Window style
       :param sfml.window.ContextSettings settings: Additional settings for the underlying OpenGL context
 
-   .. method:: recreate(mode, title[, style[, settings]])
+   .. method:: create(mode, title[, style[, settings]])
 
       Recreate the window.
 
