@@ -39,13 +39,7 @@ import_sfml__system()
 
 cdef extern from "DerivableWindow.hpp":
     cdef cppclass DerivableWindow:
-        DerivableWindow()
-        DerivableWindow(sf.VideoMode, const sf.String&)
-        DerivableWindow(sf.VideoMode, const sf.String&, unsigned long)
-        DerivableWindow(sf.VideoMode, const sf.String&, unsigned long, sf.ContextSettings&)
-        DerivableWindow(sf.WindowHandle window_handle)
-        DerivableWindow(sf.WindowHandle window_handle, sf.ContextSettings&)
-        void set_pyobj(void*)
+        DerivableWindow(object)
 
 from libc.stdlib cimport malloc, free
 
@@ -751,19 +745,13 @@ cdef public Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
 cdef public class Window[type PyWindowType, object PyWindowObject]:
     cdef sf.Window *p_window
 
-    def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
-        if self.p_window is NULL:
-            if self.__class__ is Window:
-                if not settings: self.p_window = new sf.Window(mode.p_this[0], to_string(title), style)
-                else: self.p_window = new sf.Window(mode.p_this[0], to_string(title), style, settings.p_this[0])
-
-            else:
-                if not settings: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], to_string(title), style)
-                else: self.p_window = <sf.Window*>new DerivableWindow(mode.p_this[0], to_string(title), style, settings.p_this[0])
-                (<DerivableWindow*>self.p_window).set_pyobj(<void*>self)
+    def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=ContextSettings()):
+        if self.p_window == NULL:
+            self.p_window = <sf.Window*>new DerivableWindow(self)
+            self.p_window.create(mode.p_this[0], to_string(title), style, settings.p_this[0])
 
     def __dealloc__(self):
-        if self.p_window is not NULL:
+        if self.p_window != NULL:
             del self.p_window
 
     def __repr__(self):

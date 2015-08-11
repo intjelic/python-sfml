@@ -40,13 +40,7 @@ cdef extern from "DerivableDrawable.hpp":
 
 cdef extern from "DerivableRenderWindow.hpp":
     cdef cppclass DerivableRenderWindow:
-        DerivableRenderWindow()
-        DerivableRenderWindow(sf.VideoMode, const sf.String&)
-        DerivableRenderWindow(sf.VideoMode, const sf.String&, unsigned long)
-        DerivableRenderWindow(sf.VideoMode, const sf.String&, unsigned long, sf.ContextSettings&)
-        DerivableRenderWindow(sf.WindowHandle window_handle)
-        DerivableRenderWindow(sf.WindowHandle window_handle, sf.ContextSettings&)
-        void set_pyobj(void*)
+        DerivableRenderWindow(object)
 
 cdef extern from *:
     ctypedef void* PyUnicodeObject
@@ -1957,21 +1951,15 @@ cdef api object wrap_rendertarget(sf.RenderTarget* p):
 cdef class RenderWindow(Window):
     cdef sf.RenderWindow *p_this
 
-    def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=None):
+    def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=ContextSettings()):
         if self.p_this == NULL:
-            if self.__class__ is not RenderWindow:
-                if not settings: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], to_string(title), style)
-                else: self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(mode.p_this[0], to_string(title), style, settings.p_this[0])
-            else:
-                if not settings: self.p_this = new sf.RenderWindow(mode.p_this[0], to_string(title), style)
-                else: self.p_this = new sf.RenderWindow(mode.p_this[0], to_string(title), style, settings.p_this[0])
-
+            self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(self)
+            self.p_this.create(mode.p_this[0], to_string(title), style, settings.p_this[0])
             self.p_window = <sf.Window*>self.p_this
 
     def __dealloc__(self):
         self.p_window = NULL
-
-        if self.p_this is not NULL:
+        if self.p_this != NULL:
             del self.p_this
 
     def __repr__(self):

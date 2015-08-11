@@ -22,30 +22,23 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //------------------------------------------------------------------------------
 
-#ifndef DERIVABLE_RENDERWINDOW_HPP
-#define DERIVABLE_RENDERWINDOW_HPP
+#ifndef PYSFML_DERIVABLERENDERWINDOW_HPP
+#define PYSFML_DERIVABLERENDERWINDOW_HPP
 
 #include "Python.h"
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-
+#include <SFML/Graphics/RenderWindow.hpp>
 
 class DerivableRenderWindow : public sf::RenderWindow
 {
-public :
-    DerivableRenderWindow();
-    DerivableRenderWindow(sf::VideoMode mode, const std::string& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
-    explicit DerivableRenderWindow(sf::WindowHandle handle, const sf::ContextSettings& settings = sf::ContextSettings());
-
-    void set_pyobj(void* pyobj);
+public:
+    DerivableRenderWindow(PyObject* object);
 
 protected:
     virtual void onCreate();
     virtual void onResize();
 
 private:
-    PyObject* m_pyobj; // the python object pointer
+    PyObject* m_object;
 };
 
-
-#endif // DERIVABLE_RENDERWINDOW_HPP
+#endif // PYSFML_DERIVABLERENDERWINDOW_HPP

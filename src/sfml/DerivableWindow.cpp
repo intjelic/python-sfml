@@ -24,27 +24,15 @@
 
 #include "DerivableWindow.hpp"
 
-
-DerivableWindow::DerivableWindow():
-sf::Window ()
+DerivableWindow::DerivableWindow(PyObject* object) :
+m_object(object)
 {
 }
-
-DerivableWindow::DerivableWindow(sf::VideoMode mode, const std::string& title, sf::Uint32 style, const sf::ContextSettings& settings):
-sf::Window (mode, title, style, settings)
-{
-}
-
-DerivableWindow::DerivableWindow(sf::WindowHandle handle, const sf::ContextSettings& settings):
-sf::Window (handle, settings)
-{
-}
-
 
 void DerivableWindow::onCreate()
 {
     static char method[] = "on_create";
-    PyObject* success = PyObject_CallMethod(m_pyobj, method, NULL);
+    PyObject* success = PyObject_CallMethod(m_object, method, NULL);
 
     if(!success)
         PyErr_Print();
@@ -53,13 +41,8 @@ void DerivableWindow::onCreate()
 void DerivableWindow::onResize()
 {
     static char method[] = "on_resize";
-    PyObject* success = PyObject_CallMethod(m_pyobj, method, NULL);
+    PyObject* success = PyObject_CallMethod(m_object, method, NULL);
 
     if(!success)
         PyErr_Print();
-}
-
-void DerivableWindow::set_pyobj(void* pyobj)
-{
-    m_pyobj = static_cast<PyObject*>(pyobj);
 }
