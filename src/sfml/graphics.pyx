@@ -2010,14 +2010,6 @@ cdef class RenderWindow(Window):
         if not states: self.p_this.draw(drawable.p_drawable[0])
         else: self.p_this.draw(drawable.p_drawable[0], states.p_this[0])
 
-    property width:
-        def __get__(self):
-            return self.size.x
-
-    property height:
-        def __get__(self):
-            return self.size.y
-
     def push_GL_states(self):
         self.p_this.pushGLStates()
 
