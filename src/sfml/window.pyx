@@ -32,6 +32,11 @@ cimport sfml as sf
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
 
+cdef extern from "pysfml/system_api.h":
+    object popLastErrorMessage()
+    int import_sfml__system()
+import_sfml__system()
+
 cdef extern from "DerivableWindow.hpp":
     cdef cppclass DerivableWindow:
         DerivableWindow()
@@ -41,10 +46,6 @@ cdef extern from "DerivableWindow.hpp":
         DerivableWindow(sf.WindowHandle window_handle)
         DerivableWindow(sf.WindowHandle window_handle, sf.ContextSettings&)
         void set_pyobj(void*)
-
-cdef extern from *:
-    ctypedef int wchar_t
-    ctypedef void* PyUnicodeObject
 
 from libc.stdlib cimport malloc, free
 
@@ -883,8 +884,11 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
         def __get__(self):
             return <unsigned long>self.p_window.getSystemHandle()
 
-    def on_create(self): pass
-    def on_resize(self): pass
+    def on_create(self):
+        pass
+
+    def on_resize(self):
+        pass
 
 
 cdef class Keyboard:
