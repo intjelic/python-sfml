@@ -92,7 +92,7 @@ else:
 
 system = extension(
     'system',
-    [sources['system'], 'src/sfml/error.cpp'],
+    [sources['system'], 'src/sfml/error.cpp', 'src/sfml/NumericObject.cpp'],
     ['sfml-system'])
 
 window = extension(
