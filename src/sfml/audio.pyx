@@ -96,7 +96,7 @@ cdef class Listener:
     def set_up_vector(cls, up_vector):
         sf.listener.setUpVector(to_vector3f(up_vector))
 
-cdef class Chunk[type PyChunkType, object PyChunkObject]:
+cdef public class Chunk[type PyChunkType, object PyChunkObject]:
     cdef Int16* m_samples
     cdef size_t m_sampleCount
     cdef bint   delete_this
