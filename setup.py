@@ -116,15 +116,24 @@ network = extension(
 
 major, minor, _, _ , _ = sys.version_info
 
+files = []
+
 # Install C headers
+c_api_headers = []
+c_api_headers.append(os.path.join(include_path, 'system.h'))
+c_api_headers.append(os.path.join(include_path, 'system_api.h'))
+c_api_headers.append(os.path.join(include_path, 'NumericObject.hpp'))
+c_api_headers.append(os.path.join(include_path, 'window.h'))
+c_api_headers.append(os.path.join(include_path, 'graphics.h'))
+c_api_headers.append(os.path.join(include_path, 'graphics_api.h'))
+c_api_headers.append(os.path.join(include_path, 'audio_api.h'))
+
 if platform.system() == 'Windows':
     # On Windows: C:\Python27\include\pysfml\*_api.h
-    c_headers = [(sys.prefix +'\\include\\pysfml', glob('include/pysfml/*.h'))]
+    files = [(sys.exec_prefix +'\\include\\pysfml', c_api_headers)]
 else:
-    # On Unix: /usr/include/pysfml/*_api.h
-    c_headers = [(sys.prefix + '/include/pysfml', glob('include/pysfml/*.h'))]
-
-files = c_headers
+    # On Unix: /usr/local/include/pysfml/*_api.h
+    files = [(sys.exec_prefix + '/include/pysfml', c_api_headers)]
 
 if platform.system() == 'Windows':
     dlls = [("Lib\\site-packages\\sfml", glob('extlibs/sfml/bin/' + arch + '/*.dll'))]
