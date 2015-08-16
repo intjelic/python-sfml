@@ -56,6 +56,7 @@ cdef extern from "SFML/System.hpp" namespace "sf":
         float asSeconds() const
         Int32 asMilliseconds() const
         Int64 asMicroseconds() const
+        Time operator-()
         bint operator==(Time&)
         bint operator!=(Time&)
         bint operator<(Time&)

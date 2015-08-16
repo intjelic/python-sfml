@@ -410,7 +410,7 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 
     cdef sf.Time *p_this
 
-    def __init__(self):
+    def __cinit__(self):
         self.p_this = new sf.Time()
 
     def __dealloc__(self):
@@ -456,6 +456,11 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
     def __imod__(self, Time x):
         self.p_this[0] %= x.p_this[0]
         return self
+
+    def __neg__(self):
+        cdef sf.Time* p = new sf.Time()
+        p[0] = -self.p_this[0]
+        return wrap_time(p)
 
     property seconds:
         def __get__(self):
