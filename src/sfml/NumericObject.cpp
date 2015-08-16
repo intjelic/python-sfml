@@ -88,7 +88,7 @@ NumericObject NumericObject::operator*(const NumericObject& object) const
 
 NumericObject NumericObject::operator/(const NumericObject& object) const
 {
-    return PyNumber_Divide(m_object, object.m_object);
+    return PyNumber_TrueDivide(m_object, object.m_object);
 }
 
 NumericObject NumericObject::operator~() const
@@ -131,7 +131,7 @@ NumericObject& NumericObject::operator*=(const NumericObject& b)
 
 NumericObject& NumericObject::operator/=(const NumericObject& b)
 {
-    m_object = PyNumber_InPlaceDivide(m_object, b.m_object);
+    m_object = PyNumber_InPlaceTrueDivide(m_object, b.m_object);
     return *this;
 }
 
