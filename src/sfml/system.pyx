@@ -109,11 +109,6 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
     def __iter__(self):
         return iter((self.x, self.y))
 
-    def __getitem__(self, key):
-        return (self.x, self.y)[key]
-
-    def __setitem__(self, key, value):
-        setattr(self, {0: 'x', 1: 'y'}[key], value)
 
     def __add__(self, other):
         if isinstance(other, Number):
@@ -280,11 +275,6 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
     def __iter__(self):
         return iter((self.x, self.y, self.z))
 
-    def __getitem__(self, key):
-        return (self.x, self.y, self.z)[key]
-
-    def __setitem__(self, key, value):
-        setattr(self, {0: 'x', 1: 'y', 2: 'z'}[key], value)
 
     def __add__(self, other):
         if isinstance(other, Number):
