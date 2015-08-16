@@ -25,9 +25,7 @@
 cimport sfml as sf
 from sfml cimport Uint8
 
-
 cdef extern from "pysfml/window.h":
-
     cdef class sfml.window.VideoMode [object PyVideoModeObject]:
         cdef sf.VideoMode *p_this
 
@@ -47,3 +45,7 @@ cdef extern from "pysfml/window.h":
         cdef bint            m_visible
         cdef bint            m_vertical_synchronization
 
+cdef extern from "pysfml/window_api.h":
+    cdef VideoMode wrap_videomode(sf.VideoMode *p, bint d)
+    cdef ContextSettings wrap_contextsettings(sf.ContextSettings *v)
+    cdef Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h)

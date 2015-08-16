@@ -24,44 +24,38 @@
 
 cimport sfml as sf
 
-cdef extern from "pysfml/system.h":
-    cdef class sfml.system.Time [object PyTimeObject]:
-        cdef sf.Time *p_this
-
-cdef inline object wrap_time(sf.Time* p):
-    cdef Time r = Time.__new__(Time)
-    r.p_this = p
-    return r
+cdef extern from "pysfml/NumericObject.hpp":
+    cdef cppclass NumericObject:
+        NumericObject()
 
 cdef extern from "pysfml/system.h":
     cdef class sfml.system.Vector2 [object PyVector2Object]:
-        cdef public object x
-        cdef public object y
+        cdef sf.Vector2[NumericObject] *p_this
 
     cdef class sfml.system.Vector3 [object PyVector3Object]:
-        cdef public object x
-        cdef public object y
-        cdef public object z
+        cdef sf.Vector3[NumericObject] *p_this
 
-cdef inline sf.Vector2i to_vector2i(vector):
-    x, y = vector
-    return sf.Vector2i(x, y)
-
-cdef inline sf.Vector2u to_vector2u(vector):
-    w, h = vector
-    return sf.Vector2u(w, h)
-
-cdef inline sf.Vector2f to_vector2f(vector):
-    w, h = vector
-    return sf.Vector2f(w, h)
-
-cdef inline sf.Vector3f to_vector3f(vector):
-    w, h, z = vector
-    return sf.Vector3f(w, h, z)
-
-cdef inline Vector3 to_vector3(sf.Vector3f* vector):
-    return Vector3(vector.x, vector.y, vector.z)
+    cdef class sfml.system.Time [object PyTimeObject]:
+        cdef sf.Time *p_this
 
 cdef extern from "pysfml/system_api.h":
-    object wrap_string(const sf.String* p)
+    object wrap_string(const sf.String*)
     sf.String to_string(object string)
+
+    cdef object wrap_vector2(sf.Vector2[NumericObject]*)
+    cdef object wrap_vector2i(sf.Vector2i)
+    cdef object wrap_vector2u(sf.Vector2u)
+    cdef object wrap_vector2f(sf.Vector2f)
+
+    cdef sf.Vector2i to_vector2i(object)
+    cdef sf.Vector2u to_vector2u(object)
+    cdef sf.Vector2f to_vector2f(object)
+
+    cdef object wrap_vector3(sf.Vector3[NumericObject]*)
+    cdef object wrap_vector3i(sf.Vector3i)
+    cdef object wrap_vector3f(sf.Vector3f)
+
+    cdef sf.Vector3i to_vector3i(object)
+    cdef sf.Vector3f to_vector3f(object)
+
+    cdef object wrap_time(sf.Time*)

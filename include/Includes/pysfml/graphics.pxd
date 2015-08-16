@@ -33,6 +33,9 @@ cdef extern from "pysfml/graphics.h":
     cdef class sfml.graphics.Color [object PyColorObject]:
         cdef sf.Color *p_this
 
+    cdef class sfml.graphics.BlendMode [object PyBlendModeObject]:
+        cdef sf.BlendMode *p_this
+
     cdef class sfml.graphics.Image [object PyImageObject]:
         cdef sf.Image *p_this
 
@@ -63,30 +66,17 @@ cdef extern from "pysfml/graphics.h":
     cdef class sfml.graphics.RenderStates [object PyRenderStatesObject]:
         pass
 
-cdef inline sf.FloatRect to_floatrect(rectangle):
-    l, t, w, h = rectangle
-    return sf.FloatRect(l, t, w, h)
+cdef extern from "pysfml/window_api.h":
+    cdef Color wrap_color(sf.Color *p)
 
-cdef inline sf.IntRect to_intrect(rectangle):
-    l, t, w, h = rectangle
-    return sf.IntRect(l, t, w, h)
+    cdef Rectangle intrect_to_rectangle(sf.IntRect*)
+    cdef Rectangle floatrect_to_rectangle(sf.FloatRect*)
+    cdef sf.FloatRect to_floatrect(object)
+    cdef sf.IntRect to_intrect(object)
 
-cdef inline Rectangle intrect_to_rectangle(sf.IntRect* intrect):
-    return Rectangle((intrect.left, intrect.top), (intrect.width, intrect.height))
-
-cdef inline Rectangle floatrect_to_rectangle(sf.FloatRect* floatrect):
-    return Rectangle((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
-
-cdef inline Color wrap_color(sf.Color *p):
-    cdef Color r = Color.__new__(Color)
-    r.p_this = p
-    return r
-
-cdef inline ConvexShape wrap_convexshape(sf.ConvexShape *p):
-    cdef ConvexShape r = ConvexShape.__new__(ConvexShape)
-    r.p_this = p
-    r.p_drawable = <sf.Drawable*>p
-    r.p_transformable = <sf.Transformable*>p
-    r.p_shape = <sf.Shape*>p
-
-    return r
+    cdef BlendMode wrap_blendmode(sf.BlendMode*)
+    cdef Image wrap_image(sf.Image*)
+    cdef Texture wrap_texture(sf.Texture*, bint)
+    cdef RenderStates wrap_renderstates(sf.RenderStates*, bint)
+    cdef object wrap_convexshape(sf.ConvexShape*)
+    cdef object wrap_rendertarget(sf.RenderTarget*)

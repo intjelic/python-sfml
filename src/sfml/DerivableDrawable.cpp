@@ -38,7 +38,7 @@ void DerivableDrawable::draw(sf::RenderTarget& target, sf::RenderStates states) 
     static char methodName[] = "draw";
 
     PyObject* pyTarget = (PyObject*)(wrap_rendertarget(&target));
-    PyObject* pyStates = (PyObject*)(api_wrap_renderstates(&states));
+    PyObject* pyStates = (PyObject*)(wrap_renderstates(&states, false));
 
     PyObject* success = PyObject_CallMethod(m_pyobj, methodName, format, pyTarget, pyStates);
 

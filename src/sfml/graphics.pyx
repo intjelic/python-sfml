@@ -70,14 +70,7 @@ from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2f
 from pysfml.system cimport to_string, wrap_string
 from pysfml.window cimport VideoMode, ContextSettings, Pixels, Window
-from pysfml.graphics cimport to_intrect, to_floatrect
-from pysfml.graphics cimport intrect_to_rectangle, floatrect_to_rectangle
-
-cdef Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
-    cdef Pixels r = Pixels.__new__(Pixels)
-    r.p_array, r.m_width, r.m_height = p, w, h
-    return r
-
+from pysfml.window cimport wrap_pixels
 
 class PrimitiveType:
     POINTS = sf.primitivetype.Points
@@ -176,6 +169,19 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
         if left < right and top < bottom:
             return Rectangle((left, top), (right-left, bottom-top))
 
+cdef api Rectangle intrect_to_rectangle(sf.IntRect* intrect):
+    return Rectangle((intrect.left, intrect.top), (intrect.width, intrect.height))
+
+cdef api Rectangle floatrect_to_rectangle(sf.FloatRect* floatrect):
+    return Rectangle((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
+
+cdef api sf.FloatRect to_floatrect(rectangle):
+    l, t, w, h = rectangle
+    return sf.FloatRect(l, t, w, h)
+
+cdef api sf.IntRect to_intrect(rectangle):
+    l, t, w, h = rectangle
+    return sf.IntRect(l, t, w, h)
 
 cdef public class Color [type PyColorType, object PyColorObject]:
     BLACK = Color(0, 0, 0)
@@ -266,7 +272,7 @@ cdef public class Color [type PyColorType, object PyColorObject]:
         p.r, p.g, p.b, p.a = self
         return p
 
-cdef api object wrap_color(sf.Color *p):
+cdef api Color wrap_color(sf.Color *p):
     cdef Color r = Color.__new__(Color)
     r.p_this = p
     return r
@@ -361,11 +367,6 @@ cdef Transform wrap_transform(sf.Transform *p, bint d=True):
     r.delete_this = d
     return r
 
-cdef Transformable wrap_transformable(sf.Transformable *p):
-    cdef Transformable r = Transformable.__new__(Transformable)
-    r.p_this = p
-    return r
-
 
 cdef public class BlendMode[type PyBlendModeType, object PyBlendModeObject]:
     cdef sf.BlendMode *p_this
@@ -451,7 +452,7 @@ cdef public class BlendMode[type PyBlendModeType, object PyBlendModeObject]:
         def __set__(self, sf.blendmode.Equation alpha_equation):
             self.p_this[0].alphaEquation = alpha_equation
 
-cdef BlendMode wrap_blendmode(sf.BlendMode *p):
+cdef api BlendMode wrap_blendmode(sf.BlendMode *p):
     cdef BlendMode blendmode = BlendMode()
     blendmode.p_this[0] = p[0]
     return blendmode
@@ -460,7 +461,6 @@ BLEND_ALPHA = wrap_blendmode(<sf.BlendMode*>&sf.BlendAlpha)
 BLEND_ADD = wrap_blendmode(<sf.BlendMode*>&sf.BlendAdd)
 BLEND_MULTIPLY = wrap_blendmode(<sf.BlendMode*>&sf.BlendMultiply)
 BLEND_NONE = wrap_blendmode(<sf.BlendMode*>&sf.BlendNone)
-
 
 cdef public class Image[type PyImageType, object PyImageObject]:
     cdef sf.Image *p_this
@@ -581,7 +581,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
         self.p_this.flipVertically()
 
 
-cdef Image wrap_image(sf.Image *p):
+cdef api Image wrap_image(sf.Image *p):
     cdef Image r = Image.__new__(Image)
     r.p_this = p
     return r
@@ -609,12 +609,12 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
     def __copy__(self):
         cdef sf.Texture *p = new sf.Texture()
         p[0] = self.p_this[0]
-        return wrap_texture(p)
+        return wrap_texture(p, True)
 
     def __deepcopy__(self):
         cdef sf.Texture *p = new sf.Texture()
         p[0] = self.p_this[0]
-        return wrap_texture(p)
+        return wrap_texture(p, True)
 
     def draw(self, RenderTarget target, states):
         target.p_rendertarget.draw((<sf.Drawable*>self.p_this)[0])
@@ -624,7 +624,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         cdef sf.Texture *p = new sf.Texture()
 
         if p.create(width, height):
-            return wrap_texture(p)
+            return wrap_texture(p, True)
 
         del p
         raise ValueError(popLastErrorMessage())
@@ -634,7 +634,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         cdef sf.Texture *p = new sf.Texture()
 
         if p.create(width, height):
-            return wrap_texture(p)
+            return wrap_texture(p, True)
 
         del p
         raise ValueError(popLastErrorMessage())
@@ -648,10 +648,10 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         encoded_filename = encoded_filename_temporary
 
         if not area:
-            if p.loadFromFile(encoded_filename): return wrap_texture(p)
+            if p.loadFromFile(encoded_filename): return wrap_texture(p, True)
         else:
             l, t, w, h = area
-            if p.loadFromFile(encoded_filename, sf.IntRect(l, t, w, h)): return wrap_texture(p)
+            if p.loadFromFile(encoded_filename, sf.IntRect(l, t, w, h)): return wrap_texture(p, True)
 
         del p
         raise IOError(popLastErrorMessage())
@@ -661,10 +661,10 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         cdef sf.Texture *p = new sf.Texture()
 
         if not area:
-            if p.loadFromMemory(<char*>data, len(data)): return wrap_texture(p)
+            if p.loadFromMemory(<char*>data, len(data)): return wrap_texture(p, True)
         else:
             l, t, w, h = area
-            if p.loadFromMemory(<char*>data, len(data), sf.IntRect(l, t, w, h)): return wrap_texture(p)
+            if p.loadFromMemory(<char*>data, len(data), sf.IntRect(l, t, w, h)): return wrap_texture(p, True)
 
         del p
         raise IOError(popLastErrorMessage())
@@ -674,10 +674,10 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         cdef sf.Texture *p = new sf.Texture()
 
         if not area:
-            if p.loadFromImage(image.p_this[0]): return wrap_texture(p)
+            if p.loadFromImage(image.p_this[0]): return wrap_texture(p, True)
         else:
             l, t, w, h = area
-            if p.loadFromImage(image.p_this[0], sf.IntRect(l, t, w, h)): return wrap_texture(p)
+            if p.loadFromImage(image.p_this[0], sf.IntRect(l, t, w, h)): return wrap_texture(p, True)
 
         del p
         raise IOError(popLastErrorMessage())
@@ -792,14 +792,14 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
     def copy(self):
         cdef sf.Texture *p = new sf.Texture()
         p[0] = self.p_this[0]
-        return wrap_texture(p)
+        return wrap_texture(p, True)
 
     @classmethod
     def get_maximum_size(cls):
         return sf.texture.getMaximumSize()
 
 
-cdef Texture wrap_texture(sf.Texture *p, bint d=True):
+cdef api Texture wrap_texture(sf.Texture *p, bint d):
     cdef Texture r = Texture.__new__(Texture)
     r.p_this = p
     r.delete_this = d
@@ -1174,28 +1174,22 @@ cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObj
             self.p_this.shader = shader.p_this
             self.m_shader = shader
 
-cdef RenderStates wrap_renderstates(sf.RenderStates *p, bint d=True):
+cdef api RenderStates wrap_renderstates(sf.RenderStates *p, bint d):
     cdef RenderStates r = RenderStates.__new__(RenderStates)
     r.p_this = p
     r.delete_this = d
-    r.m_transform = wrap_transform(&p.transform, False)
-    if p.texture: r.m_texture = wrap_texture(<sf.Texture*>p.texture, False)
-    else: r.m_texture = None
-    if p.shader: r.m_shader = wrap_shader(<sf.Shader*>p.shader, False)
-    else: r.m_shader = None
-    return r
 
-cdef api object api_wrap_renderstates(sf.RenderStates *p):
-    cdef RenderStates r = RenderStates.__new__(RenderStates)
-    r.p_this = p
-    r.delete_this = False
     r.m_transform = wrap_transform(&p.transform, False)
-    if p.texture: r.m_texture = wrap_texture(<sf.Texture*>p.texture, False)
-    else: r.m_texture = None
-    if p.shader: r.m_shader = wrap_shader(<sf.Shader*>p.shader, False)
-    else: r.m_shader = None
-    return r
+    if p.texture:
+        r.m_texture = wrap_texture(<sf.Texture*>p.texture, False)
+    else:
+        r.m_texture = None
+    if p.shader:
+        r.m_shader = wrap_shader(<sf.Shader*>p.shader, False)
+    else:
+        r.m_shader = None
 
+    return r
 
 cdef public class Drawable[type PyDrawableType, object PyDrawableObject]:
     cdef sf.Drawable *p_drawable
@@ -1274,6 +1268,11 @@ cdef class Transformable:
             cdef sf.Transform *p = new sf.Transform()
             p[0] = self.p_this.getInverseTransform()
             return wrap_transform(p)
+
+cdef Transformable wrap_transformable(sf.Transformable *p):
+    cdef Transformable r = Transformable.__new__(Transformable)
+    r.p_this = p
+    return r
 
 cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableType, object PyTransformableDrawableObject]:
     cdef sf.Transformable *p_transformable

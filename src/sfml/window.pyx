@@ -105,7 +105,7 @@ cdef public class Event[type PyEventType, object PyEventObject]:
             self.p_this.type = type
 
 
-cdef Event wrap_event(sf.Event *p):
+cdef api Event wrap_event(sf.Event *p):
     cdef Event event
 
     if p.type == sf.event.Closed:
@@ -736,7 +736,7 @@ cdef public class Pixels[type PyPixelsType, object PyPixelsObject]:
         def __get__(self):
             return (<char*>self.p_array)[:self.width*self.height*4]
 
-cdef public Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
+cdef api Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
     cdef Pixels r = Pixels.__new__(Pixels)
     r.p_array, r.m_width, r.m_height = p, w, h
     return r
