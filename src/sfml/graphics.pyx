@@ -35,11 +35,12 @@ from sfml cimport Uint8, Uint16, Uint32, Uint64
 cdef extern from "pysfml/system_api.h":
     object popLastErrorMessage()
     int import_sfml__system()
+
 import_sfml__system()
 
 cdef extern from "DerivableDrawable.hpp":
     cdef cppclass DerivableDrawable:
-        DerivableDrawable(void*)
+        DerivableDrawable(object)
 
 cdef extern from "DerivableRenderWindow.hpp":
     cdef cppclass DerivableRenderWindow:
@@ -1178,7 +1179,7 @@ cdef public class Drawable[type PyDrawableType, object PyDrawableObject]:
             raise NotImplementedError('Drawable is abstact')
 
         if self.p_drawable is NULL:
-            self.p_drawable = <sf.Drawable*>new DerivableDrawable(<void*>self)
+            self.p_drawable = <sf.Drawable*>new DerivableDrawable(self)
 
     def __dealloc__(self):
         if self.p_drawable is not NULL:

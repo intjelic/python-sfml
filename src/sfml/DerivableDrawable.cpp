@@ -23,28 +23,28 @@
 //------------------------------------------------------------------------------
 
 #include "DerivableDrawable.hpp"
-#include <iostream>
+#include <SFML/Graphics.hpp>
+#include "pysfml/graphics_api.h"
 
-DerivableDrawable::DerivableDrawable(void* pyobj):
-sf::Drawable (),
-m_pyobj      (static_cast<PyObject*>(pyobj))
+DerivableDrawable::DerivableDrawable(PyObject* object) :
+m_object(object)
 {
     import_sfml__graphics(); // make sure the graphics module is imported
 };
 
-void DerivableDrawable::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void DerivableDrawable::draw(sf::RenderTarget& target_, sf::RenderStates states_) const
 {
     static char format[] = "(O, O)";
     static char methodName[] = "draw";
 
-    PyObject* pyTarget = (PyObject*)(wrap_rendertarget(&target));
-    PyObject* pyStates = (PyObject*)(wrap_renderstates(&states, false));
+    PyObject* target = (PyObject*)(wrap_rendertarget(&target_));
+    PyObject* states = (PyObject*)(wrap_renderstates(&states_, false));
 
-    PyObject* success = PyObject_CallMethod(m_pyobj, methodName, format, pyTarget, pyStates);
+    PyObject* success = PyObject_CallMethod(m_object, methodName, format, target, states);
 
     if(!success)
         PyErr_Print();
 
-    Py_DECREF(pyTarget);
-    Py_DECREF(pyStates);
+    Py_DECREF(target);
+    Py_DECREF(states);
 }

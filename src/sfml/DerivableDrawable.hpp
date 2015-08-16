@@ -22,24 +22,21 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //------------------------------------------------------------------------------
 
-#ifndef DERIVABLE_DRAWABLE_HPP
-#define DERIVABLE_DRAWABLE_HPP
+#ifndef PYSFML_DERIVABLEDRAWABLE_HPP
+#define PYSFML_DERIVABLEDRAWABLE_HPP
 
 #include "Python.h"
-#include <SFML/Graphics.hpp>
-#include "pysfml/graphics_api.h"
-
+#include <SFML/Graphics/Drawable.hpp>
 
 class DerivableDrawable : public sf::Drawable
 {
-public :
-    DerivableDrawable(void* pyThis);
+public:
+    DerivableDrawable(PyObject* object);
 
-protected:
+private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-    PyObject* m_pyobj;
+    PyObject* m_object;
 };
 
-
-#endif // DERIVABLE_DRAWABLE_HPP
+#endif // PYSFML_DERIVABLEDRAWABLE_HPP
