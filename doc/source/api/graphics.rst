@@ -45,10 +45,10 @@ PrimitiveType
       List of individual quads.
 
 
-Rectangle
-^^^^^^^^^
+Rect
+^^^^
 
-.. class:: Rectangle
+.. class:: Rect
 
    Utility class for manipulating 2D axis aligned rectangles.
 
@@ -58,11 +58,11 @@ Rectangle
    variables (left, top, width and height) are public and can be
    accessed directly via attributes, just like :class:`.Vector2`.
 
-   Unlike SFML, :class:`Rectangle` does define functions to emulate
+   Unlike SFML, :class:`Rect` does define functions to emulate
    the properties that are not directly members (such as right, bottom,
    center, etc.).
 
-   :class:`Rectangle` uses the usual rules for its boundaries:
+   :class:`Rect` uses the usual rules for its boundaries:
 
       * The left and top edges are included in the rectangle's area
       * The right (left + width) and bottom (top + height) edges are excluded from the rectangle's area
@@ -72,14 +72,14 @@ Rectangle
    Usage example::
 
       # define a rectangle, located at (0, 0) with a size of 20x5
-      r1 = sf.Rectangle(sf.Vector2(0, 0), sf.Vector2(20, 5))
-      # or r1 = sf.Rectangle((0, 0), (20, 5))
+      r1 = sf.Rect(sf.Vector2(0, 0), sf.Vector2(20, 5))
+      # or r1 = sf.Rect((0, 0), (20, 5))
 
       # define another rectangle, located at (4, 2) with a size of 18x10
       position = sf.Vector2(4, 2)
       size = sf.Vector2(18, 10)
 
-      r2 = sf.Rectangle(position, size)
+      r2 = sf.Rect(position, size)
 
       # test intersections with the point (3, 1)
       b1 = r1.contains(sf.Vector2(3, 1)) # True
@@ -89,11 +89,11 @@ Rectangle
       result = r1.intersects(r2) # True
 
       # as there's an intersection, the result is not None but (4, 2, 16, 3)
-      assert result == sf.Rectangle((4, 2), (16, 3))
+      assert result == sf.Rect((4, 2), (16, 3))
 
-   .. method:: Rectangle(position=(0, 0), size=(0, 0))
+   .. method:: Rect(position=(0, 0), size=(0, 0))
 
-      Construct an :class:`sfml.graphics.Rectangle`
+      Construct an :class:`sfml.graphics.Rect`
 
    .. attribute:: position
 
@@ -106,22 +106,22 @@ Rectangle
    .. attribute:: left
 
       Left coordinate of the rectangle. This attribute is provided as a
-      shortcut to sfml.graphics.Rectangle.position.x
+      shortcut to sfml.graphics.Rect.position.x
 
    .. attribute:: top
 
       Top coordinate of the rectangle. This attribute is provided as a
-      shortcut to sfml.graphics.Rectangle.position.y
+      shortcut to sfml.graphics.Rect.position.y
 
    .. attribute:: width
 
       Width of the rectangle. This attribute is provided as a
-      shortcut to sfml.graphics.Rectangle.size.width
+      shortcut to sfml.graphics.Rect.size.width
 
    .. attribute:: height
 
       Height of the rectangle. This attribute is provided as a
-      shortcut to sfml.graphics.Rectangle.position.height
+      shortcut to sfml.graphics.Rect.position.height
 
    .. attribute:: center
 
@@ -149,9 +149,9 @@ Rectangle
       This overload returns the overlapped rectangle if an intersection
       is found.
 
-      :param sfml.graphics.Rectangle rectangle: Rectangle to test
+      :param sfml.graphics.Rect rectangle: Rectangle to test
       :return: Rectangle filled with the intersection or None
-      :rtype: :class:`sfml.graphics.Rectangle` or None
+      :rtype: :class:`sfml.graphics.Rect` or None
 
 
 Color
@@ -296,7 +296,7 @@ Transform
 
       # use the result to transform stuff...
       point = transform.transform_point((10, 20))
-      rectangle = transform.transform_rectangle(sf.Rectangle((0, 0), (10, 100)))
+      rectangle = transform.transform_rectangle(sf.Rect((0, 0), (10, 100)))
 
    .. py:classmethod:: from_values(a00, a01, a02, a10, a11, a12, a20, a21, a22)
 
@@ -351,9 +351,9 @@ Transform
       bounding rectangle of the transformed rectangle is returned.
 
       :param rectangle: Rectangle to transform
-      :type rectangle: :class:`sfml.graphics.Rectangle` or tuple
+      :type rectangle: :class:`sfml.graphics.Rect` or tuple
       :return: Transformed rectangle
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
    .. py:method:: combine(transform)
 
@@ -366,7 +366,7 @@ Transform
       This function returns a reference *self*, so that calls can be
       chained.
 
-      :param sfml.graphics.Rectangle transform: Transform to combine with this transform
+      :param sfml.graphics.Rect transform: Transform to combine with this transform
       :return: Return itself
       :rtype: :class:`sfml.graphics.Transform`
 
@@ -726,7 +726,7 @@ Image
       :param dest: Coordinate of the destination position
       :type dest: :class:`sfml.system.Vector2` or None
       :param source_rect: Sub-rectangle of the source image to copy
-      :type source_rect: :class:`sfml.graphics.Rectangle` or tuple
+      :type source_rect: :class:`sfml.graphics.Rect` or tuple
       :param bool apply_alpha: Should the copy take in account the source transparency ?
 
    .. py:attribute:: pixels
@@ -890,7 +890,7 @@ Texture
 
       The area argument can be used to load only a sub-rectangle of the
       whole image. If you want the entire image then leave the default
-      value (which is an empty :class:`Rectangle`). If the area
+      value (which is an empty :class:`Rect`). If the area
       rectangle crosses the bounds of the image, it is adjusted to fit
       the image size.
 
@@ -902,7 +902,7 @@ Texture
       :raise: :class:`IOError` - The texture failed to load
       :param str filename: Path of the image file to load
       :param area: Area of the image to load
-      :type area: :class:`sfml.graphics.Rectangle`
+      :type area: :class:`sfml.graphics.Rect`
       :rtype: :class:`sfml.graphics.Texture`
 
    .. py:classmethod:: from_memory(data, area=(0, 0, 0, 0))
@@ -916,7 +916,7 @@ Texture
 
       The area argument can be used to load only a sub-rectangle of the
       whole image. If you want the entire image then leave the default
-      value (which is an empty :class:`Rectangle`). If the area
+      value (which is an empty :class:`Rect`). If the area
       rectangle crosses the bounds of the image, it is adjusted to fit
       the image size.
 
@@ -928,7 +928,7 @@ Texture
       :raise: :class:`IOError` - The texture failed to load
       :param bytes data: Data to load
       :param area: Area of the image to load
-      :type area: :class:`sfml.graphics.Rectangle`
+      :type area: :class:`sfml.graphics.Rect`
       :rtype: :class:`sfml.graphics.Texture`
 
    .. py:classmethod:: from_image(image[, area=(0, 0, 0, 0)])
@@ -937,7 +937,7 @@ Texture
 
       The area argument can be used to load only a sub-rectangle of the
       whole image. If you want the entire image then leave the default
-      value (which is an empty :class:`Rectangle`). If the area
+      value (which is an empty :class:`Rect`). If the area
       rectangle crosses the bounds of the image, it is adjusted to fit
       the image size.
 
@@ -948,7 +948,7 @@ Texture
 
       :raise: :class:`sfml.system.SFMLException` - The texture failed to load
       :param sfml.graphics.Image image: Image to load into the texture
-      :param sfml.graphics.Rectangle area: Area of the image to load
+      :param sfml.graphics.Rect area: Area of the image to load
       :rtype: :class:`sfml.graphics.Texture`
 
    .. py:attribute:: size
@@ -1136,14 +1136,14 @@ Glyph
       Bounding rectangle of the glyph, in coordinates relative to the
       baseline.
 
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
    .. py:attribute:: texture_rectangle
 
       :class:`Texture` coordinates of the glyph inside the font's
       texture.
 
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
 Font
 ^^^^
@@ -1964,7 +1964,7 @@ Sprite
 
       # create a sprite
       sprite = sf.Sprite(texture)
-      sprite.texture_rectangle = sf.Rectangle((10, 10), (50, 30))
+      sprite.texture_rectangle = sf.Rect((10, 10), (50, 30))
       sprite.color = sf.Color(255, 255, 255, 200)
       sprite.position = sf.Vector2(100, 25)
 
@@ -1977,7 +1977,7 @@ Sprite
       Construct the sprite from (a sub-rectangle of) a source texture.
 
       :param sfml.graphics.Texture texture: Source texture
-      :param sfml.graphics.Rectangle rectangle: Sub-rectangle of the texture to assign to the sprite
+      :param sfml.graphics.Rect rectangle: Sub-rectangle of the texture to assign to the sprite
 
    .. py:attribute:: texture
 
@@ -2024,7 +2024,7 @@ Sprite
       function returns the bounds of the entity in the entity's
       coordinate system.
 
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
    .. py:attribute:: global_bounds
 
@@ -2036,7 +2036,7 @@ Sprite
       function returns the bounds of the sprite in the global 2D
       world's coordinate system.
 
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
 Text
 ^^^^
@@ -2188,7 +2188,7 @@ Text
       property returns the bounds of the entity in the entity's
       coordinate system.
 
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
    .. py:attribute:: global_bounds
 
@@ -2200,7 +2200,7 @@ Text
       property returns the bounds of the text in the global 2D world's
       coordinate system.
 
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
    .. py:method:: find_character_pos(index)
 
@@ -2277,7 +2277,7 @@ Shape
       the whole texture, but rather a part of it. By default, the
       texture rectangle covers the entire texture.
 
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
    .. py:attribute:: fill_color
 
@@ -2319,7 +2319,7 @@ Shape
       function returns the bounds of the entity in the entity's
       coordinate system.
 
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
    .. py:attribute:: global_bounds
 
@@ -2331,7 +2331,7 @@ Shape
       function returns the bounds of the sprite in the global 2D
       world's coordinate system.
 
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
 CircleShape
 ^^^^^^^^^^^
@@ -2668,7 +2668,7 @@ VertexArray
       This returns the axis-aligned rectangle that contains all the
       vertices of the array.
 
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
 
 View
@@ -2703,13 +2703,13 @@ View
       view = sf.View()
 
       # initialize the view to a rectangle located at (100, 100) and with a size of 400x200
-      view.reset(sf.Rectangle((100, 100), (400, 200)))
+      view.reset(sf.Rect((100, 100), (400, 200)))
 
       # rotate it by 45 degrees
       view.rotate(45)
 
       # set its target viewport to be half of the window
-      view.viewport = sf.Rectangle((0, 0), (0.5, 1))
+      view.viewport = sf.Rect((0, 0), (0.5, 1))
 
       # apply it
       window.view = view
@@ -2727,7 +2727,7 @@ View
 
       Construct the view, and optionally from a rectangle.
 
-      :param sfml.graphics.Rectangle rectangle: Rectangle defining the zone to display
+      :param sfml.graphics.Rect rectangle: Rectangle defining the zone to display
 
    .. attribute:: center
 
@@ -2766,7 +2766,7 @@ View
 
       Note that this function resets the rotation angle to 0.
 
-      :param sfml.graphics.Rectangle rectangle: Rectangle defining the zone to display
+      :param sfml.graphics.Rect rectangle: Rectangle defining the zone to display
 
    .. method:: move(offset)
 
@@ -2883,7 +2883,7 @@ RenderTarget
 
       :param sfml.graphics.View view: The view for which we want to compute the viewport
       :return: Viewport rectangle, expressed in pixels
-      :rtype: :class:`sfml.graphics.Rectangle`
+      :rtype: :class:`sfml.graphics.Rect`
 
    .. py:method:: convert_coords(point[, view])
 

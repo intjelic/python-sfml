@@ -51,13 +51,13 @@ cdef extern from *:
 
 from libc.stdlib cimport malloc, free
 
-__all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Transform',
+__all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Rect', 'Transform',
             'Image', 'Texture', 'Glyph', 'Font', 'Shader',
             'RenderStates', 'Drawable', 'Transformable', 'Sprite',
             'Text', 'Shape', 'CircleShape', 'ConvexShape',
             'RectangleShape', 'Vertex', 'VertexArray', 'View',
             'RenderTarget', 'RenderTexture', 'RenderWindow',
-            'HandledWindow', 'Rectangle', 'TransformableDrawable']
+            'HandledWindow', 'TransformableDrawable']
 
 __all__ += ['BLEND_ALPHA', 'BLEND_ADD', 'BLEND_MULTIPLY', 'BLEND_NONE']
 
@@ -83,7 +83,7 @@ class PrimitiveType:
     QUADS = sf.primitivetype.Quads
 
 
-cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
+cdef public class Rect[type PyRectType, object PyRectObject]:
     cdef public Vector2 position
     cdef public Vector2 size
 
@@ -94,12 +94,12 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
         self.size = Vector2(width, height)
 
     def __repr__(self):
-        return "Rectangle(left={0}, top={1}, width={2}, height={3})".format(self.left, self.top, self.width, self.height)
+        return "Rect(left={0}, top={1}, width={2}, height={3})".format(self.left, self.top, self.width, self.height)
 
     def __str__(self):
         return "({0}, {1}, {2}, {3})".format(self.left, self.top, self.width, self.height)
 
-    def __richcmp__(Rectangle x, y, op):
+    def __richcmp__(Rect x, y, op):
         try: left, top, width, height = y
         except Exception: return False
 
@@ -111,7 +111,7 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
         return iter((self.left, self.top, self.width, self.height))
 
     def __copy__(self):
-        cdef Rectangle p = Rectangle.__new__(Rectangle)
+        cdef Rect p = Rect.__new__(Rect)
         p.position = copy(self.position)
         p.size = copy(self.size)
         return p
@@ -151,7 +151,7 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
     def intersects(self, rectangle):
         # make sure the rectangle is a rectangle (to get its right/bottom border)
         l, t, w, h = rectangle
-        rectangle = Rectangle((l, t), (w, h))
+        rectangle = Rect((l, t), (w, h))
 
         # compute the intersection boundaries
         left = max(self.left, rectangle.left)
@@ -162,13 +162,13 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
         # if the intersection is valid (positive non zero area), then
         # there is an intersection
         if left < right and top < bottom:
-            return Rectangle((left, top), (right-left, bottom-top))
+            return Rect((left, top), (right-left, bottom-top))
 
-cdef api Rectangle intrect_to_rectangle(sf.IntRect* intrect):
-    return Rectangle((intrect.left, intrect.top), (intrect.width, intrect.height))
+cdef api Rect intrect_to_rectangle(sf.IntRect* intrect):
+    return Rect((intrect.left, intrect.top), (intrect.width, intrect.height))
 
-cdef api Rectangle floatrect_to_rectangle(sf.FloatRect* floatrect):
-    return Rectangle((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
+cdef api Rect floatrect_to_rectangle(sf.FloatRect* floatrect):
+    return Rect((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
 
 cdef api sf.FloatRect to_floatrect(rectangle):
     l, t, w, h = rectangle
@@ -325,7 +325,7 @@ cdef class Transform:
 
     def transform_rectangle(self, rectangle):
         cdef sf.FloatRect p = self.p_this.transformRect(to_floatrect(rectangle))
-        return Rectangle((p.left, p.top), (p.width, p.height))
+        return Rect((p.left, p.top), (p.width, p.height))
 
     def combine(self, Transform transform):
         self.p_this.combine(transform.p_this[0])

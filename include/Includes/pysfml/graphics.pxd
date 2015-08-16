@@ -26,7 +26,7 @@ cimport sfml as sf
 from pysfml.system cimport Vector2
 
 cdef extern from "pysfml/graphics.h":
-    cdef class sfml.graphics.Rectangle [object PyRectangleObject]:
+    cdef class sfml.graphics.Rect [object PyRectObject]:
         cdef public Vector2 position
         cdef public Vector2 size
 
@@ -69,8 +69,8 @@ cdef extern from "pysfml/graphics.h":
 cdef extern from "pysfml/window_api.h":
     cdef Color wrap_color(sf.Color *p)
 
-    cdef Rectangle intrect_to_rectangle(sf.IntRect*)
-    cdef Rectangle floatrect_to_rectangle(sf.FloatRect*)
+    cdef Rect intrect_to_rectangle(sf.IntRect*)
+    cdef Rect floatrect_to_rectangle(sf.FloatRect*)
     cdef sf.FloatRect to_floatrect(object)
     cdef sf.IntRect to_intrect(object)
 

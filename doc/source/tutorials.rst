@@ -166,7 +166,7 @@ size. ::
 ::
 
    position, size = sf.Vector2(5, 10), sf.Vector2(150, 160)
-   rectangle = sf.Rectangle(position, size)
+   rectangle = sf.Rect(position, size)
 
 
 This has been implemented as such because you may want to create a
@@ -176,14 +176,14 @@ variables representing the position and the size. In both cases you can
 create a rectangle in one line! ::
 
    left, top, width, height = 5, 10, 150, 160
-   rectangle = sf.Rectangle((left, top), (width, height))
+   rectangle = sf.Rect((left, top), (width, height))
    # or the ugly and verbose alternative
-   rectangle = sf.Rectangle(sf.Vector2(left, top), sf.Vector2(width, height))
+   rectangle = sf.Rect(sf.Vector2(left, top), sf.Vector2(width, height))
 
 ::
 
    position, size = (5, 10), (150, 160)
-   rectangle = sf.Rectangle(position, size)
+   rectangle = sf.Rect(position, size)
 
 Making the rectangle require four numeric values in its constructor
 would have involved writing more lines if you had only a position and a
@@ -191,7 +191,7 @@ size in hand ::
 
     x, y = position
     w, h = size
-    rectangle = sf.Rectangle(x, y, w, h)
+    rectangle = sf.Rect(x, y, w, h)
 
 
 Drawable
@@ -316,7 +316,7 @@ Many classes are unpackable
 	depth_bits, stencil_bits, antialiasing, minor_version, major_version = sf.ContextSettings()
 
 	r, g, b, a = sf.Color.CYAN
-	left, top, width, height = sf.Rectangle((5, 10), (15, 20))
+	left, top, width, height = sf.Rect((5, 10), (15, 20))
 
 If you need to discard a value, use _ ::
 
