@@ -27,6 +27,7 @@
 
 #include "Python.h"
 #include <SFML/Audio.hpp>
+#include "pysfml/NumericObject.hpp"
 #include "pysfml/audio_api.h"
 #include "pysfml/system_api.h"
 
@@ -43,6 +44,5 @@ protected:
 
     PyObject* m_pyobj;
 };
-
 
 #endif // DERIVABLE_SOUND_STREAM_HPP

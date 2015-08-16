@@ -22,6 +22,9 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
+cdef extern from "pysfml/NumericObject.hpp":
+    pass
+
 cimport cython
 from cython.operator cimport dereference as deref, preincrement as inc
 from cpython.version cimport PY_VERSION_HEX
@@ -31,6 +34,11 @@ from libcpp.vector cimport vector
 cimport sfml as sf
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
+
+from pysfml.system cimport Vector2, Vector3
+from pysfml.system cimport to_vector2i, to_vector2u
+from pysfml.system cimport wrap_vector2i
+from pysfml.system cimport to_string, wrap_string
 
 cdef extern from "pysfml/system_api.h":
     object popLastErrorMessage()
@@ -51,16 +59,8 @@ __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
             'Window', 'Keyboard', 'Joystick', 'Mouse', 'Touch',
             'Sensor', 'Context']
 
-
-import sys
-
 if PY_VERSION_HEX >= 0x03000000:
     unichr = chr
-
-from pysfml.system cimport Vector2, Vector3
-from pysfml.system cimport to_vector2i, to_vector2u
-from pysfml.system cimport to_string, wrap_string
-
 
 cdef class Style:
     NONE = sf.style.None
@@ -804,7 +804,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
     property position:
         def __get__(self):
-            return Vector2(self.p_window.getPosition().x, self.p_window.getPosition().y)
+            return wrap_vector2i(self.p_window.getPosition())
 
         def __set__(self, position):
             self.p_window.setPosition(to_vector2i(position))

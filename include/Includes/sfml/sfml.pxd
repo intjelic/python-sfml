@@ -94,8 +94,21 @@ cdef extern from "SFML/System.hpp" namespace "sf":
     cdef cppclass Vector2[T]:
         Vector2()
         Vector2(T, T)
+        Vector2(const Vector2[T]&)
         T x
         T y
+
+        Vector2[T] operator-() const
+        Vector2[T] operator+(const Vector2[T]&) const
+        Vector2[T] operator-(const Vector2[T]&) const
+        Vector2[T] operator*(T) const
+        Vector2[T] operator/(T) const
+#        Vector2[T]& operator+=(const Vector2[T]&) const
+#        Vector2[T]& operator-=(const Vector2[T]&) const
+#        Vector2[T]& operator*=(T) const
+#        Vector2[T]& operator/=(T) const
+        bint operator==(const Vector2[T]&) const
+        bint operator!=(const Vector2[T]&) const
 
     ctypedef Vector2[int] Vector2i
     ctypedef Vector2[unsigned int] Vector2u
@@ -104,9 +117,22 @@ cdef extern from "SFML/System.hpp" namespace "sf":
     cdef cppclass Vector3[T]:
         Vector3()
         Vector3(T, T, T)
+        Vector3(const Vector3[T]&)
         T x
         T y
         T z
+
+        Vector3[T] operator-() const
+        Vector3[T] operator+(const Vector3[T]&) const
+        Vector3[T] operator-(const Vector3[T]&) const
+        Vector3[T] operator*(T) const
+        Vector3[T] operator/(T) const
+#        Vector3[T]& operator+=(const Vector3[T]&) const
+#        Vector3[T]& operator-=(const Vector3[T]&) const
+#        Vector3[T]& operator*=(T) const
+#        Vector3[T]& operator/=(T) const
+        bint operator==(const Vector3[T]&) const
+        bint operator!=(const Vector3[T]&) const
 
     ctypedef Vector3[int] Vector3i
     ctypedef Vector3[float] Vector3f

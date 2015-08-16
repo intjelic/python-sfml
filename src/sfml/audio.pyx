@@ -22,6 +22,9 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
+cdef extern from "pysfml/NumericObject.hpp":
+    pass
+
 #from libc.stdlib cimport malloc, free
 #from cython.operator cimport preincrement as preinc, dereference as deref
 
@@ -34,7 +37,9 @@ from libcpp.vector cimport vector
 cimport sfml as sf
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
-from sfml cimport Vector3f
+from pysfml.system cimport Vector3, Time
+from pysfml.system cimport wrap_vector3f, to_vector3f
+from pysfml.system cimport wrap_time, to_vector3f
 
 
 cdef extern from "pysfml/system_api.h":
@@ -51,14 +56,6 @@ cdef extern from "DerivableSoundRecorder.hpp":
     cdef cppclass DerivableSoundRecorder:
         DerivableSoundRecorder(void*)
 
-from pysfml.system cimport Vector3, Time
-from pysfml.system cimport to_vector3
-
-cdef Time wrap_time(sf.Time* p):
-    cdef Time r = Time.__new__(Time)
-    r.p_this = p
-    return r
-
 
 cdef class Listener:
     def __init__(self):
@@ -74,33 +71,30 @@ cdef class Listener:
 
     @classmethod
     def get_position(cls):
-        cdef Vector3f v = sf.listener.getPosition()
-        return to_vector3(&v)
+        cdef sf.Vector3f p = sf.listener.getPosition()
+        return wrap_vector3f(p)
 
     @classmethod
     def set_position(cls, position):
-        x, y, z = position
-        sf.listener.setPosition(x, y, z)
+        sf.listener.setPosition(to_vector3f(position))
 
     @classmethod
     def get_direction(cls):
-        cdef Vector3f v = sf.listener.getDirection()
-        return to_vector3(&v)
+        cdef sf.Vector3f p = sf.listener.getDirection()
+        return wrap_vector3f(p)
 
     @classmethod
     def set_direction(cls, direction):
-        x, y, z = direction
-        sf.listener.setDirection(x, y, z)
+        sf.listener.setDirection(to_vector3f(direction))
 
     @classmethod
     def get_up_vector(cls):
-        cdef Vector3f v = sf.listener.getUpVector()
-        return to_vector3(&v)
+        cdef sf.Vector3f p = sf.listener.getUpVector()
+        return wrap_vector3f(p)
 
     @classmethod
     def set_up_vector(cls, up_vector):
-        x, y, z = up_vector
-        sf.listener.setUpVector(x, y, z)
+        sf.listener.setUpVector(to_vector3f(up_vector))
 
 cdef class Chunk:
     cdef Int16* m_samples
@@ -275,12 +269,11 @@ cdef class SoundSource:
 
     property position:
         def __get__(self):
-            cdef Vector3f v = self.p_soundsource.getPosition()
-            return to_vector3(&v)
+            cdef sf.Vector3f p = self.p_soundsource.getPosition()
+            return wrap_vector3f(p)
 
         def __set__(self, position):
-            x, y, z = position
-            self.p_soundsource.setPosition(x, y, z)
+            self.p_soundsource.setPosition(to_vector3f(position))
 
     property relative_to_listener:
         def __get__(self):

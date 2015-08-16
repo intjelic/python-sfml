@@ -23,8 +23,6 @@
 #-------------------------------------------------------------------------------
 
 from __future__ import division
-from numbers import Number, Integral
-from copy import deepcopy
 
 cimport cython
 
@@ -35,9 +33,13 @@ cimport sfml as sf
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
 
-#cdef extern from "<string>" namespace "std":
-    #cdef cppclass string:
-        #char* c_str()
+cdef extern from "pysfml/NumericObject.hpp":
+    cdef cppclass NumericObject:
+        NumericObject()
+        NumericObject(object)
+
+        object get()
+        void set(object)
 
 cdef extern from *:
     ctypedef int wchar_t
@@ -83,8 +85,13 @@ cdef api object wrap_string(const sf.String* p):
     return PyUnicode_FromWideChar(p.toWideString().c_str(), p.getSize())
 
 cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
-    cdef public object x
-    cdef public object y
+    cdef sf.Vector2[NumericObject] *p_this
+
+    def __cinit__(self):
+        self.p_this = new sf.Vector2[NumericObject]()
+
+    def __dealloc__(self):
+        del self.p_this
 
     def __init__(self, x=0, y=0):
         self.x = x
@@ -96,160 +103,155 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
     def __str__(self):
         return "({0}, {1})".format(self.x, self.y)
 
-    def __richcmp__(Vector2 x, y, op):
-        x1, y1 = x
-        try: x2, y2 = y
-        except TypeError:
-            return op == 3
+    def __richcmp__(Vector2 self, other_, op):
+        cdef Vector2 other
 
-        if op == 2: return x1 == x2 and y1 == y2
-        elif op == 3: return not (x1 == x2 and y1 == y2)
-        else: raise NotImplementedError
+        if isinstance(other_, Vector2):
+            other = <Vector2>other_
+        else:
+            x, y = other_
+            other = Vector2(x, y)
+
+        if op == 2:
+            return self.p_this[0] == other.p_this[0]
+        elif op == 3:
+            return self.p_this[0] != other.p_this[0]
+        else:
+            raise NotImplemented
 
     def __iter__(self):
         return iter((self.x, self.y))
 
+    def __add__(Vector2 self, other):
+        cdef sf.Vector2[NumericObject] *p = new sf.Vector2[NumericObject]()
 
-    def __add__(self, other):
-        if isinstance(other, Number):
-            return Vector2(self[0] + other, self[1] + other)
+        if isinstance(other, Vector2):
+            p[0] = self.p_this[0] + (<Vector2>other).p_this[0]
         else:
-            return Vector2(self[0] + other[0], self[1] + other[1])
+            x, y = other
+            p[0] = self.p_this[0] + Vector2(x, y).p_this[0]
 
-    def __sub__(self, other):
-        if isinstance(other, Number):
-            return Vector2(self[0] - other, self[1] - other)
+        return wrap_vector2(p)
+
+    def __sub__(Vector2 self, other):
+        cdef sf.Vector2[NumericObject] *p = new sf.Vector2[NumericObject]()
+
+        if isinstance(other, Vector2):
+            p[0] = self.p_this[0] - (<Vector2>other).p_this[0]
         else:
-            return Vector2(self[0] - other[0], self[1] - other[1])
+            x, y = other
+            p[0] = self.p_this[0] - Vector2(x, y).p_this[0]
 
-    def __mul__(self, other):
-        if isinstance(other, Number):
-            return Vector2(self[0] * other, self[1] * other)
+        return wrap_vector2(p)
+
+    def __mul__(Vector2 self, other):
+        cdef sf.Vector2[NumericObject] *p = new sf.Vector2[NumericObject]()
+        p[0] = self.p_this[0] * NumericObject(other)
+
+        return wrap_vector2(p)
+
+    # Todo: I couldn't get the / operator working and as a workaround, I
+    # reimplemented the logic in Python (I have to report this bug)
+    def __div__(Vector2 self, other):
+        return Vector2(self.x / other, self.y / other)
+
+    def __iadd__(Vector2 self, other):
+        if isinstance(other, Vector2):
+            self.p_this[0] += (<Vector2>other).p_this[0]
         else:
-            return Vector2(self[0] * other[0], self[1] * other[1])
+            x, y = other
+            self.p_this[0] += Vector2(x, y).p_this[0]
 
-    def __truediv__(self, other):
-        if isinstance(other, Number):
-            return Vector2(self[0] / other, self[1] / other)
-        else:
-            return Vector2(self[0] / other[0], self[1] / other[1])
-
-    def __floordiv__(self, other):
-        if isinstance(other, Number):
-            return Vector2(self[0] // other, self[1] // other)
-        else:
-            return Vector2(self[0] // other[0], self[1] // other[1])
-
-    def __div__(self, other):
-        if isinstance(other, Integral):
-            return self.__floordiv__(other)
-        elif isinstance(other, Number) and not isinstance(other, Integral):
-            return self.__truediv__(other)
-        elif all(isinstance(i, Integral) for i in other):
-            return self.__floordiv__(other)
-        else:
-            return self.__truediv__(other)
-
-    def __mod__(self, other):
-        if isinstance(other, Number):
-            return Vector2(self[0] % other, self[1] % other)
-        else:
-            return Vector2(self[0] % other[0], self[1] % other[1])
-
-    def __divmod__(self, other):
-        return self // other, self % other
-
-    def __iadd__(self, other):
-        if isinstance(other, Number):
-            self[0] += other
-            self[1] += other
-        else:
-            self[0] += other[0]
-            self[1] += other[1]
         return self
 
-    def __isub__(self, other):
-        if isinstance(other, Number):
-            self[0] -= other
-            self[1] -= other
+    def __isub__(Vector2 self, other):
+        if isinstance(other, Vector2):
+            self.p_this[0] -= (<Vector2>other).p_this[0]
         else:
-            self[0] -= other[0]
-            self[1] -= other[1]
+            x, y = other
+            self.p_this[0] -= Vector2(x, y).p_this[0]
+
         return self
 
     def __imul__(self, other):
-        if isinstance(other, Number):
-            self[0] *= other
-            self[1] *= other
-        else:
-            self[0] *= other[0]
-            self[1] *= other[1]
+        self.p_this[0] *= NumericObject(other)
+
         return self
 
-    def __itruediv__(self, other):
-        if isinstance(other, Number):
-            self[0] /= other
-            self[1] /= other
-        else:
-            self[0] /= other[0]
-            self[1] /= other[1]
-        return self
+    # Todo: I couldn't get the =/ operator working and as a workaround, I
+    # reimplemented the logic in Python (I have to report this bug)
+    def __idiv__(Vector2 self, other):
+        self.x /= other
+        self.y /= other
 
-    def __ifloordiv__(self, other):
-        if isinstance(other, Number):
-            self[0] //= other
-            self[1] //= other
-        else:
-            self[0] //= other[0]
-            self[1] //= other[1]
-        return self
-
-    def __idiv__(self, other):
-        if isinstance(other, Integral):
-            return self.__ifloordiv__(other)
-        elif isinstance(other, Number) and not isinstance(other, Integral):
-            return self.__itruediv__(other)
-        elif all(isinstance(i, Integral) for i in other):
-            return self.__ifloordiv__(other)
-        else:
-            return self.__itruediv__(other)
-
-    def __imod__(self, other):
-        if isinstance(other, Number):
-            self[0] %= other
-            self[1] %= other
-        else:
-            self[0] %= other[0]
-            self[1] %= other[1]
         return self
 
     def __neg__(self):
-        cdef Vector2 p = Vector2.__new__(Vector2)
-        p.x, p.y = self
-        p.x, p.y = -p.x, -p.y
-        return p
-
-    def __pos__(self):
-        cdef Vector2 p = Vector2.__new__(Vector2)
-        p.x, p.y = self
-        p.x, p.y = +p.x, +p.y
-        return p
+        cdef sf.Vector2[NumericObject] *p = new sf.Vector2[NumericObject]()
+        p[0] = -self.p_this[0]
+        return wrap_vector2(p)
 
     def __copy__(self):
-        cdef Vector2 p = Vector2.__new__(Vector2)
-        p.x, p.y = self
-        return p
+        cdef sf.Vector2[NumericObject] *p = new sf.Vector2[NumericObject](self.p_this[0])
+        return wrap_vector2(p)
 
-    def __deepcopy__(self):
-        cdef Vector2 p = Vector2.__new__(Vector2)
-        p.x, p.y = deepcopy(self.x), deepcopy(self.y)
-        return p
+    property x:
+        def __get__(self):
+            return self.p_this.x.get()
 
+        def __set__(self, object x):
+            self.p_this.x.set(x)
+
+    property y:
+        def __get__(self):
+            return self.p_this.y.get()
+
+        def __set__(self, object y):
+            self.p_this.y.set(y)
+
+cdef api Vector2 wrap_vector2(sf.Vector2[NumericObject]* p):
+    cdef Vector2 r = Vector2.__new__(Vector2)
+    r.p_this = p
+    return r
+
+cdef api object wrap_vector2i(sf.Vector2i p):
+    cdef Vector2 r = Vector2.__new__(Vector2)
+    r.x = p.x
+    r.y = p.y
+    return r
+
+cdef api object wrap_vector2u(sf.Vector2u p):
+    cdef Vector2 r = Vector2.__new__(Vector2)
+    r.x = p.x
+    r.y = p.y
+    return r
+
+cdef api object wrap_vector2f(sf.Vector2f p):
+    cdef Vector2 r = Vector2.__new__(Vector2)
+    r.x = p.x
+    r.y = p.y
+    return r
+
+cdef api sf.Vector2i to_vector2i(vector):
+    x, y = vector
+    return sf.Vector2i(x, y)
+
+cdef api sf.Vector2u to_vector2u(vector):
+    x, y = vector
+    return sf.Vector2u(x, y)
+
+cdef api sf.Vector2f to_vector2f(vector):
+    x, y = vector
+    return sf.Vector2f(x, y)
 
 cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
-    cdef public object x
-    cdef public object y
-    cdef public object z
+    cdef sf.Vector3[NumericObject] *p_this
+
+    def __cinit__(self):
+        self.p_this = new sf.Vector3[NumericObject]()
+
+    def __dealloc__(self):
+        del self.p_this
 
     def __init__(self, x=0, y=0, z=0):
         self.x = x
@@ -263,185 +265,130 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
         return "({0}, {1}, {2})".format(self.x, self.y, self.z)
 
     def __richcmp__(Vector3 x, y, op):
-        x1, y1, z1 = x
-        try: x2, y2, z2 = y
-        except TypeError:
-            return op == 3
-
-        if op == 2: return x1 == x2 and y1 == y2 and z1 == z2
-        elif op == 3: return not (x1 == x2 and y1 == y2 and z1 == z2)
-        else: raise NotImplementedError
+        raise NotImplemented
 
     def __iter__(self):
         return iter((self.x, self.y, self.z))
 
+    def __add__(Vector3 self, other):
+        cdef sf.Vector3[NumericObject] *p = new sf.Vector3[NumericObject]()
 
-    def __add__(self, other):
-        if isinstance(other, Number):
-            return Vector3(self[0] + other,
-                           self[1] + other, self[2] + other)
+        if isinstance(other, Vector3):
+            p[0] = self.p_this[0] + (<Vector3>other).p_this[0]
         else:
-            return Vector3(self[0] + other[0],
-                           self[1] + other[1], self[2] + other[2])
+            x, y, z = other
+            p[0] = self.p_this[0] + Vector3(x, y, z).p_this[0]
 
-    def __sub__(self, other):
-        if isinstance(other, Number):
-            return Vector3(self[0] - other,
-                           self[1] - other, self[2] - other)
+        return wrap_vector3(p)
+
+    def __sub__(Vector3 self, other):
+        cdef sf.Vector3[NumericObject] *p = new sf.Vector3[NumericObject]()
+
+        if isinstance(other, Vector3):
+            p[0] = self.p_this[0] - (<Vector3>other).p_this[0]
         else:
-            return Vector3(self[0] - other[0],
-                           self[1] - other[1], self[2] - other[2])
+            x, y, z = other
+            p[0] = self.p_this[0] - Vector3(x, y, z).p_this[0]
 
-    def __mul__(self, other):
-        if isinstance(other, Number):
-            return Vector3(self[0] * other,
-                           self[1] * other, self[2] * other)
+        return wrap_vector3(p)
+
+    def __mul__(Vector3 self, other):
+        cdef sf.Vector3[NumericObject] *p = new sf.Vector3[NumericObject]()
+        p[0] = self.p_this[0] * NumericObject(other)
+
+        return wrap_vector3(p)
+
+    # Todo: I couldn't get the / operator working and as a workaround, I
+    # reimplemented the logic in Python (I have to report this bug)
+    def __div__(Vector3 self, other):
+        return Vector3(self.x / other, self.y / other, self.z / other)
+
+    def __iadd__(Vector3 self, other):
+        if isinstance(other, Vector3):
+            self.p_this[0] += (<Vector3>other).p_this[0]
         else:
-            return Vector3(self[0] * other[0],
-                           self[1] * other[1], self[2] * other[2])
+            x, y, z = other
+            self.p_this[0] += Vector3(x, y, z).p_this[0]
 
-    def __truediv__(self, other):
-        if isinstance(other, Number):
-            return Vector3(self[0] / other,
-                           self[1] / other, self[2] / other)
-        else:
-            return Vector3(self[0] / other[0],
-                           self[1] / other[1], self[2] / other[2])
-
-    def __floordiv__(self, other):
-        if isinstance(other, Number):
-            return Vector3(self[0] // other,
-                           self[1] // other, self[2] // other)
-        else:
-            return Vector3(self[0] // other[0],
-                           self[1] // other[1], self[2] // other[2])
-
-    def __div__(self, other):
-        if isinstance(other, Integral):
-            return self.__floordiv__(other)
-        elif isinstance(other, Number) and not isinstance(other, Integral):
-            return self.__truediv__(other)
-        elif all(isinstance(i, Integral) for i in other):
-            return self.__floordiv__(other)
-        else:
-            return self.__truediv__(other)
-
-    def __mod__(self, other):
-        if isinstance(other, Number):
-            return Vector3(self[0] % other,
-                           self[1] % other, self[2] % other)
-        else:
-            return Vector3(self[0] % other[0],
-                           self[1] % other[1], self[2] % other[2])
-
-    def __divmod__(self, other):
-        return self // other, self % other
-
-    def __iadd__(self, other):
-        if isinstance(other, Number):
-            self[0] += other
-            self[1] += other
-            self[2] += other
-        else:
-            self[0] += other[0]
-            self[1] += other[1]
-            self[2] += other[2]
         return self
 
-    def __isub__(self, other):
-        if isinstance(other, Number):
-            self[0] -= other
-            self[1] -= other
-            self[2] -= other
+    def __isub__(Vector3 self, other):
+        if isinstance(other, Vector3):
+            self.p_this[0] -= (<Vector3>other).p_this[0]
         else:
-            self[0] -= other[0]
-            self[1] -= other[1]
-            self[2] -= other[2]
+            x, y, z = other
+            self.p_this[0] -= Vector3(x, y, z).p_this[0]
+
         return self
 
     def __imul__(self, other):
-        if isinstance(other, Number):
-            self[0] *= other
-            self[1] *= other
-            self[2] *= other
-        else:
-            self[0] *= other[0]
-            self[1] *= other[1]
-            self[2] *= other[2]
+        self.p_this[0] *= NumericObject(other)
+
         return self
 
-    def __itruediv__(self, other):
-        if isinstance(other, Number):
-            self[0] /= other
-            self[1] /= other
-            self[2] /= other
-        else:
-            self[0] /= other[0]
-            self[1] /= other[1]
-            self[2] /= other[2]
-        return self
+    # Todo: I couldn't get the =/ operator working and as a workaround, I
+    # reimplemented the logic in Python (I have to report this bug)
+    def __idiv__(Vector3 self, other):
+        self.x /= other
+        self.y /= other
+        self.z /= other
 
-    def __ifloordiv__(self, other):
-        if isinstance(other, Number):
-            self[0] //= other
-            self[1] //= other
-            self[2] //= other
-        else:
-            self[0] //= other[0]
-            self[1] //= other[1]
-            self[2] //= other[2]
-        return self
-
-    def __div__(self, other):
-        if isinstance(other, Integral):
-            return self.__ifloordiv__(other)
-        elif isinstance(other, Number) and not isinstance(other, Integral):
-            return self.__itruediv__(other)
-        elif all(isinstance(i, Integral) for i in other):
-            return self.__ifloordiv__(other)
-        else:
-            return self.__itruediv__(other)
-
-    def __imod__(self, other):
-        if isinstance(other, Number):
-            self[0] %= other
-            self[1] %= other
-            self[2] %= other
-        else:
-            self[0] %= other[0]
-            self[1] %= other[1]
-            self[2] %= other[2]
         return self
 
     def __neg__(self):
-        cdef Vector3 p = Vector3.__new__(Vector3)
-        p.x, p.y, p.z = self
-        p.x, p.y, p.z = -p.x, -p.y, -p.z
-        return p
-
-    def __pos__(self):
-        cdef Vector3 p = Vector3.__new__(Vector3)
-        p.x, p.y, p.z = self
-        p.x, p.y, p.z = +p.x, +p.y, +p.z
-        return p
+        return self
 
     def __copy__(self):
-        cdef Vector3 p = Vector3.__new__(Vector3)
-        p.x, p.y, p.z = self
-        return p
+        cdef sf.Vector3[NumericObject] *p = new sf.Vector3[NumericObject](self.p_this[0])
+        return wrap_vector3(p)
 
-    def __deepcopy__(self):
-        cdef Vector3 p = Vector3.__new__(Vector3)
-        p.x, p.y, p.z = deepcopy(self.x), deepcopy(self.y), deepcopy(self.z)
-        return p
+    property x:
+        def __get__(self):
+            return self.p_this.x.get()
 
+        def __set__(self, object x):
+            self.p_this.x.set(x)
 
-cdef api object wrap_vector2f(sf.Vector2f* p):
-    cdef Vector2 r = Vector2.__new__(Vector2)
-    r.x = p.x
-    r.y = p.y
+    property y:
+        def __get__(self):
+            return self.p_this.y.get()
+
+        def __set__(self, object y):
+            self.p_this.y.set(y)
+
+    property z:
+        def __get__(self):
+            return self.p_this.z.get()
+
+        def __set__(self, object z):
+            self.p_this.z.set(z)
+
+cdef api object wrap_vector3(sf.Vector3[NumericObject]* p):
+    cdef Vector3 r = Vector3.__new__(Vector3)
+    r.p_this = p
     return r
 
+cdef api object wrap_vector3i(sf.Vector3i p):
+    cdef Vector3 r = Vector3.__new__(Vector3)
+    r.x = p.x
+    r.y = p.y
+    r.z = p.z
+    return r
+
+cdef api object wrap_vector3f(sf.Vector3f p):
+    cdef Vector3 r = Vector3.__new__(Vector3)
+    r.x = p.x
+    r.y = p.y
+    r.z = p.z
+    return r
+
+cdef api sf.Vector3i to_vector3i(vector):
+    x, y, z = vector
+    return sf.Vector3i(x, y, z)
+
+cdef api sf.Vector3f to_vector3f(vector):
+    x, y, z = vector
+    return sf.Vector3f(x, y, z)
 
 cdef public class Time[type PyTimeType, object PyTimeObject]:
     ZERO = wrap_time(<sf.Time*>&sf.time.Zero)

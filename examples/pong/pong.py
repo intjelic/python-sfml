@@ -113,7 +113,7 @@ while window.is_open:
             if ball.position.y + ball_radius > right_paddle.position.y + paddle_size.y / 2:
                 right_paddle_speed = paddle_speed
             elif ball.position.y - ball_radius < right_paddle.position.y - paddle_size.y / 2:
-                right_paddle_speed = - paddle_speed
+                right_paddle_speed = -paddle_speed
             else:
                 right_paddle_speed = 0
 

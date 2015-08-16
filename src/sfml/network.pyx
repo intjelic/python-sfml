@@ -22,6 +22,9 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
+cdef extern from "pysfml/NumericObject.hpp":
+    pass
+
 from cython.operator cimport dereference as deref
 from cython.operator cimport preincrement as inc
 

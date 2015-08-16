@@ -236,7 +236,8 @@ if __name__ == "__main__":
     while window.is_open:
 
         # update the current example
-        x, y = sf.Mouse.get_position(window) / window.size
+        x = sf.Mouse.get_position(window).x / window.size.x
+        y = sf.Mouse.get_position(window).y / window.size.y
         effects[current].update(clock.elapsed_time.seconds, x, y)
 
         # process events

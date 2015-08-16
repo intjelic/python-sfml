@@ -38,20 +38,17 @@ NumericObject::NumericObject(const NumericObject& copy)
 NumericObject::NumericObject(PyObject* object)
 : m_object(object)
 {
-    if (object != 0)
-        Py_INCREF(m_object);
-    else
-        m_object = NULL;
+    Py_XINCREF(m_object);
 }
 
 NumericObject::~NumericObject()
 {
-    Py_DECREF(m_object);
+    Py_XDECREF(m_object);
 }
-
 
 PyObject* NumericObject::NumericObject::get()
 {
+    Py_XINCREF(m_object);
     return m_object;
 }
 
