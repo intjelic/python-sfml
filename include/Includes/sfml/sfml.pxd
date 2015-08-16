@@ -57,19 +57,20 @@ cdef extern from "SFML/System.hpp" namespace "sf":
         Int32 asMilliseconds() const
         Int64 asMicroseconds() const
         Time operator-()
-        bint operator==(Time&)
-        bint operator!=(Time&)
-        bint operator<(Time&)
-        bint operator>(Time&)
-        bint operator<=(Time&)
-        bint operator>=(Time&)
-        Time operator+(Time&)
-        Time operator-(Time&)
+        bint operator==(Time)
+        bint operator!=(Time)
+        bint operator<(Time)
+        bint operator>(Time)
+        bint operator<=(Time)
+        bint operator>=(Time)
+        Time operator+(Time)
+        Time operator-(Time)
         Time operator*(float)
         Time operator*(Int64)
         Time operator/(float)
         Time operator/(Int64)
-        Time operator%(Time&)
+        float operator/(Time)
+        Time operator%(Time)
 
     cdef void sleep(Time) nogil
 

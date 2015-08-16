@@ -50,6 +50,13 @@ cdef extern from "error.hpp":
     void restorePythonErrorBuffer()
     object getLastErrorMessage()
 
+cdef extern from "hacks.h":
+    sf.Time Time_div_int(sf.Time left, Int64)
+    sf.Time Time_div_float(sf.Time left, float)
+    float Time_div_Time(sf.Time, sf.Time)
+    void Time_idiv_int(sf.Time&, Int64)
+    void Time_idiv_float(sf.Time&, float)
+
 __all__ = ['Time', 'sleep', 'Clock', 'seconds', 'milliseconds', 'microseconds',
             'Vector2', 'Vector3']
 
@@ -440,6 +447,38 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
         p[0] = x.p_this[0] - y.p_this[0]
         return wrap_time(p)
 
+    def __mul__(Time self, other):
+        cdef sf.Time* p = new sf.Time()
+
+        if isinstance(other, (int, long)):
+            p[0] = self.p_this[0] * <Int64>other
+        elif isinstance(other, float):
+            p[0] = self.p_this[0] * <float>other
+        else:
+            return NotImplemented
+
+        return wrap_time(p)
+
+    def __truediv__(Time self, other):
+        cdef sf.Time* p
+
+        if isinstance(other, Time):
+#            return self.p_this[0] / (<Time>other).p_this[0]
+            return Time_div_Time(self.p_this[0], (<Time>other).p_this[0])
+        else:
+            p = new sf.Time()
+            if isinstance(other, (int, long)):
+#                p[0] = self.p_this[0] / <Int64>other
+                p[0] = Time_div_int(self.p_this[0], <Int64>other)
+            elif isinstance(other, float):
+#                p[0] = self.p_this[0] / <float>other
+                p[0] = Time_div_float(self.p_this[0], <float>other)
+            else:
+                del p
+                return NotImplemented
+
+            return wrap_time(p)
+
     def __mod__(Time x, Time y):
         cdef sf.Time* p = new sf.Time()
         p[0] = x.p_this[0] % y.p_this[0]
@@ -451,6 +490,28 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
 
     def __isub__(self, Time x):
         self.p_this[0] -= x.p_this[0]
+        return self
+
+    def __imul__(Time self, other):
+        if isinstance(other, (int, long)):
+            self.p_this[0] *= <Int64>other
+        elif isinstance(other, float):
+            self.p_this[0] *= <float>other
+        else:
+            return NotImplemented
+
+        return self
+
+    def __itruediv__(Time self, other):
+        if isinstance(other, (int, long)):
+#            self.p_this[0] /= <Int64>other
+            Time_idiv_int(self.p_this[0], <Int64>other)
+        elif isinstance(other, float):
+#            self.p_this[0] /= <float>other
+            Time_idiv_float(self.p_this[0], <float>other)
+        else:
+            return NotImplemented
+
         return self
 
     def __imod__(self, Time x):

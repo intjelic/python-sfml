@@ -22,8 +22,21 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //------------------------------------------------------------------------------
 
+#ifndef PYSFML_HACKS_HPP
+#define PYSFML_HACKS_HPP
+
 #include <Python.h>
+#include <SFML/System.hpp>
 
 #if PY_VERSION_HEX >= 0x03000000
     #define PyString_AsString PyBytes_AsString
 #endif
+
+sf::Time Time_div_int(sf::Time left, sf::Int64 right);
+sf::Time Time_div_float(sf::Time left, float right);
+float Time_div_Time(sf::Time left, sf::Time right);
+
+void Time_idiv_int(sf::Time& left, sf::Int64 right);
+void Time_idiv_float(sf::Time& left, float right);
+
+#endif // PYSFML_HACKS_HPP
