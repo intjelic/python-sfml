@@ -264,8 +264,21 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
     def __str__(self):
         return "({0}, {1}, {2})".format(self.x, self.y, self.z)
 
-    def __richcmp__(Vector3 x, y, op):
-        raise NotImplemented
+    def __richcmp__(Vector3 self, other_, op):
+        cdef Vector3 other
+
+        if isinstance(other_, Vector3):
+            other = <Vector3>other_
+        else:
+            x, y, z = other_
+            other = Vector3(x, y, z)
+
+        if op == 2:
+            return self.p_this[0] == other.p_this[0]
+        elif op == 3:
+            return self.p_this[0] != other.p_this[0]
+        else:
+            raise NotImplemented
 
     def __iter__(self):
         return iter((self.x, self.y, self.z))
@@ -336,7 +349,9 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
         return self
 
     def __neg__(self):
-        return self
+        cdef sf.Vector3[NumericObject] *p = new sf.Vector3[NumericObject]()
+        p[0] = -self.p_this[0]
+        return wrap_vector3(p)
 
     def __copy__(self):
         cdef sf.Vector3[NumericObject] *p = new sf.Vector3[NumericObject](self.p_this[0])
