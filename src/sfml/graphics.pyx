@@ -115,12 +115,6 @@ cdef public class Rectangle [type PyRectangleType, object PyRectangleObject]:
         p.size = copy(self.size)
         return p
 
-    def __deepcopy__(self):
-        cdef Rectangle p = Rectangle.__new__(Rectangle)
-        p.position = copy(self.position)
-        p.size = copy(self.size)
-        return p
-
     property left:
         def __get__(self):
             return self.position.x
@@ -263,11 +257,6 @@ cdef public class Color [type PyColorType, object PyColorObject]:
             self.p_this.a = a
 
     def __copy__(self):
-        cdef Color p = Color.__new__(Color)
-        p.r, p.g, p.b, p.a = self
-        return p
-
-    def __deepcopy__(self):
         cdef Color p = Color.__new__(Color)
         p.r, p.g, p.b, p.a = self
         return p
@@ -487,11 +476,6 @@ cdef public class Image[type PyImageType, object PyImageObject]:
         p[0] = self.p_this[0]
         return wrap_image(p)
 
-    def __deepcopy__(self):
-        cdef sf.Image *p = new sf.Image()
-        p[0] = self.p_this[0]
-        return wrap_image(p)
-
     @classmethod
     def create(cls, unsigned int width, unsigned int height, Color color=None):
         cdef sf.Image *p = new sf.Image()
@@ -607,11 +591,6 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         return "Texture(size={0}, smooth={1}, repeated={2})".format(self.size, self.smooth, self.repeated)
 
     def __copy__(self):
-        cdef sf.Texture *p = new sf.Texture()
-        p[0] = self.p_this[0]
-        return wrap_texture(p, True)
-
-    def __deepcopy__(self):
         cdef sf.Texture *p = new sf.Texture()
         p[0] = self.p_this[0]
         return wrap_texture(p, True)

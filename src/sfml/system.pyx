@@ -468,11 +468,6 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
         p[0] = self.p_this[0]
         return wrap_time(p)
 
-    def __deepcopy__(self):
-        cdef sf.Time* p = new sf.Time()
-        p[0] = self.p_this[0]
-        return wrap_time(p)
-
 
 cdef api object wrap_time(sf.Time* p):
     cdef Time r = Time.__new__(Time)
