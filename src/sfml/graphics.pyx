@@ -596,9 +596,6 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         p[0] = self.p_this[0]
         return wrap_texture(p, True)
 
-    def draw(self, RenderTarget target, states):
-        target.p_rendertarget.draw((<sf.Drawable*>self.p_this)[0])
-
     @classmethod
     def create(cls, unsigned int width, unsigned int height):
         cdef sf.Texture *p = new sf.Texture()
@@ -1345,9 +1342,6 @@ cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpri
     def __repr__(self):
         return "Sprite(texture={0}, texture_rectangle={1}, color={2})".format(id(self.texture), self.texture_rectangle, self.color)
 
-    def draw(self, RenderTarget target, RenderStates states):
-        target.p_rendertarget.draw((<sf.Drawable*>self.p_this)[0])
-
     property texture:
         def __get__(self):
             return self.m_texture
@@ -1724,9 +1718,6 @@ cdef class VertexArray(Drawable):
 
     def __setitem__(self, unsigned int index, Vertex key):
         self.p_this[0][index] = key.p_this[0]
-
-    def draw(self, RenderTarget target, RenderStates states):
-        target.p_rendertarget.draw((<sf.Drawable*>self.p_this)[0])
 
     def clear(self):
         self.p_this.clear()
