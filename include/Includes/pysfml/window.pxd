@@ -28,6 +28,7 @@ from sfml cimport Uint8
 cdef extern from "pysfml/window.h":
     cdef class sfml.window.VideoMode [object PyVideoModeObject]:
         cdef sf.VideoMode *p_this
+        cdef bint delete_this
 
     cdef class sfml.window.ContextSettings [object PyContextSettingsObject]:
         cdef sf.ContextSettings *p_this
