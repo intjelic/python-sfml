@@ -22,9 +22,6 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-cdef extern from "pysfml/NumericObject.hpp":
-    pass
-
 #from libc.stdlib cimport malloc, free
 #from cython.operator cimport preincrement as preinc, dereference as deref
 
@@ -180,7 +177,8 @@ cdef class SoundBuffer:
         encoded_filename_temporary = filename.encode('UTF-8')
         encoded_filename = encoded_filename_temporary
 
-        if p.loadFromFile(encoded_filename): return wrap_soundbuffer(p)
+        if p.loadFromFile(encoded_filename):
+            return wrap_soundbuffer(p)
 
         del p
         raise IOError(popLastErrorMessage())
@@ -189,7 +187,8 @@ cdef class SoundBuffer:
     def from_memory(cls, bytes data):
         cdef sf.SoundBuffer *p = new sf.SoundBuffer()
 
-        if p.loadFromMemory(<char*>data, len(data)): return wrap_soundbuffer(p)
+        if p.loadFromMemory(<char*>data, len(data)):
+            return wrap_soundbuffer(p)
 
         del p
         raise IOError(popLastErrorMessage())
@@ -411,8 +410,11 @@ cdef class SoundStream(SoundSource):
         if self.__class__ not in [Music]:
             (<DerivableSoundStream*>self.p_soundstream).initialize(channel_count, sample_rate)
 
-    def on_get_data(self, data): pass
-    def on_seek(self, time_offset): pass
+    def on_get_data(self, data):
+        pass
+
+    def on_seek(self, time_offset):
+        pass
 
 cdef class Music(SoundStream):
     cdef sf.Music *p_this
@@ -524,7 +526,7 @@ cdef class SoundRecorder:
 
 cdef class SoundBufferRecorder(SoundRecorder):
     cdef sf.SoundBufferRecorder *p_this
-    cdef SoundBuffer             m_buffer
+    cdef SoundBuffer m_buffer
 
     def __init__(self):
         if self.p_this is NULL:

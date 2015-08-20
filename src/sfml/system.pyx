@@ -423,12 +423,18 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
         return "{0} milliseconds".format(self.milliseconds)
 
     def __richcmp__(Time x, Time y, int op):
-        if op == 0:   return x.p_this[0] <  y.p_this[0]
-        elif op == 2: return x.p_this[0] == y.p_this[0]
-        elif op == 4: return x.p_this[0] >  y.p_this[0]
-        elif op == 1: return x.p_this[0] <= y.p_this[0]
-        elif op == 3: return x.p_this[0] != y.p_this[0]
-        elif op == 5: return x.p_this[0] >= y.p_this[0]
+        if op == 0:
+            return x.p_this[0] <  y.p_this[0]
+        elif op == 2:
+            return x.p_this[0] == y.p_this[0]
+        elif op == 4:
+            return x.p_this[0] >  y.p_this[0]
+        elif op == 1:
+            return x.p_this[0] <= y.p_this[0]
+        elif op == 3:
+            return x.p_this[0] != y.p_this[0]
+        elif op == 5:
+            return x.p_this[0] >= y.p_this[0]
 
     def __add__(Time x, Time y):
         cdef sf.Time* p = new sf.Time()

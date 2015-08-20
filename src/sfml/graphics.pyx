@@ -22,8 +22,6 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #-------------------------------------------------------------------------------
 
-cdef extern from "pysfml/NumericObject.hpp":
-    pass
 
 from libcpp.vector cimport vector
 
@@ -232,9 +230,12 @@ cdef public class Color [type PyColorType, object PyColorObject]:
         return iter((self.r, self.g, self.b, self.a))
 
     def __richcmp__(Color x, Color y, int op):
-        if op == 2: return x.p_this[0] == y.p_this[0]
-        elif op == 3: return x.p_this[0] != y.p_this[0]
-        else: return NotImplemented
+        if op == 2:
+            return x.p_this[0] == y.p_this[0]
+        elif op == 3:
+            return x.p_this[0] != y.p_this[0]
+        else:
+            return NotImplemented
 
     def __add__(Color x, Color y):
         r = Color(0, 0, 0)
@@ -505,15 +506,23 @@ cdef public class Image[type PyImageType, object PyImageObject]:
     @classmethod
     def create(cls, unsigned int width, unsigned int height, Color color=None):
         cdef sf.Image *p = new sf.Image()
-        if not color: p.create(width, height)
-        else: p.create(width, height, color.p_this[0])
+
+        if not color:
+            p.create(width, height)
+        else:
+            p.create(width, height, color.p_this[0])
+
         return wrap_image(p)
 
     @classmethod
     def from_size(cls, unsigned int width, unsigned int height, Color color=None):
         cdef sf.Image *p = new sf.Image()
-        if not color: p.create(width, height)
-        else: p.create(width, height, color.p_this[0])
+
+        if not color:
+            p.create(width, height)
+        else:
+            p.create(width, height, color.p_this[0])
+
         return wrap_image(p)
 
     @classmethod
@@ -557,7 +566,8 @@ cdef public class Image[type PyImageType, object PyImageObject]:
         encoded_filename_temporary = filename.encode('UTF-8')
         encoded_filename = encoded_filename_temporary
 
-        if not self.p_this.saveToFile(encoded_filename): raise IOError(popLastErrorMessage())
+        if not self.p_this.saveToFile(encoded_filename):
+            raise IOError(popLastErrorMessage())
 
     property size:
         def __get__(self):
@@ -576,8 +586,11 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 
     def blit(self, Image source, dest, source_rect=None, bint apply_alpha=False):
         x, y = dest
-        if not source_rect: self.p_this.copy(source.p_this[0], x, y, sf.IntRect(0, 0, 0, 0), apply_alpha)
-        else: self.p_this.copy(source.p_this[0], x, y, to_intrect(source_rect), apply_alpha)
+
+        if not source_rect:
+            self.p_this.copy(source.p_this[0], x, y, sf.IntRect(0, 0, 0, 0), apply_alpha)
+        else:
+            self.p_this.copy(source.p_this[0], x, y, to_intrect(source_rect), apply_alpha)
 
     property pixels:
         def __get__(self):
@@ -602,7 +615,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
     PIXELS = sf.texture.Pixels
 
     cdef sf.Texture *p_this
-    cdef bint               delete_this
+    cdef bint delete_this
 
     cdef object __weakref__
 
@@ -650,10 +663,12 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         encoded_filename = encoded_filename_temporary
 
         if not area:
-            if p.loadFromFile(encoded_filename): return wrap_texture(p, True)
+            if p.loadFromFile(encoded_filename):
+                return wrap_texture(p, True)
         else:
             l, t, w, h = area
-            if p.loadFromFile(encoded_filename, sf.IntRect(l, t, w, h)): return wrap_texture(p, True)
+            if p.loadFromFile(encoded_filename, sf.IntRect(l, t, w, h)):
+                return wrap_texture(p, True)
 
         del p
         raise IOError(popLastErrorMessage())
@@ -663,10 +678,12 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         cdef sf.Texture *p = new sf.Texture()
 
         if not area:
-            if p.loadFromMemory(<char*>data, len(data)): return wrap_texture(p, True)
+            if p.loadFromMemory(<char*>data, len(data)):
+                return wrap_texture(p, True)
         else:
             l, t, w, h = area
-            if p.loadFromMemory(<char*>data, len(data), sf.IntRect(l, t, w, h)): return wrap_texture(p, True)
+            if p.loadFromMemory(<char*>data, len(data), sf.IntRect(l, t, w, h)):
+                return wrap_texture(p, True)
 
         del p
         raise IOError(popLastErrorMessage())
@@ -676,10 +693,12 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         cdef sf.Texture *p = new sf.Texture()
 
         if not area:
-            if p.loadFromImage(image.p_this[0]): return wrap_texture(p, True)
+            if p.loadFromImage(image.p_this[0]):
+                return wrap_texture(p, True)
         else:
             l, t, w, h = area
-            if p.loadFromImage(image.p_this[0], sf.IntRect(l, t, w, h)): return wrap_texture(p, True)
+            if p.loadFromImage(image.p_this[0], sf.IntRect(l, t, w, h)):
+                return wrap_texture(p, True)
 
         del p
         raise IOError(popLastErrorMessage())
@@ -726,7 +745,8 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
             if len(args) == 2:
                 if type(args[1]) in [Vector2, tuple]:
                     self.update_from_pixels(args[0], args[1])
-                else: raise UserWarning("The second argument must be either a sf.Vector2 or a tuple")
+                else:
+                    raise UserWarning("The second argument must be either a sf.Vector2 or a tuple")
             else:
                 self.update_from_pixels(args[0])
 
@@ -734,7 +754,8 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
             if len(args) == 2:
                 if type(args[1]) in [Vector2, tuple]:
                     self.update_from_image(args[0], args[1])
-                else: raise UserWarning("The second argument must be either a sf.Vector2 or a tuple")
+                else:
+                    raise UserWarning("The second argument must be either a sf.Vector2 or a tuple")
             else:
                 self.update_from_image(args[0])
 
@@ -742,11 +763,13 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
             if len(args) == 2:
                 if type(args[1]) in [Vector2, tuple]:
                     self.update_from_window(args[0], args[1])
-                else: raise UserWarning("The second argument must be either a sf.Vector2 or a tuple")
+                else:
+                    raise UserWarning("The second argument must be either a sf.Vector2 or a tuple")
             else:
                 self.update_from_window(args[0])
 
-        else: raise UserWarning("The first argument must be either sf.Pixels, sf.Image or sf.Window")
+        else:
+            raise UserWarning("The first argument must be either sf.Pixels, sf.Image or sf.Window")
 
 
     def update_from_pixels(self, Pixels pixels, position=None):
@@ -1136,12 +1159,18 @@ cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObj
         self.m_shader = None
 
         self.blendmode = blendmode
-        if transform: self.transform = transform
-        if texture: self.texture = texture
-        if shader: self.shader = shader
+        if transform:
+            self.transform = transform
+
+        if texture:
+            self.texture = texture
+
+        if shader:
+            self.shader = shader
 
     def __dealloc__(self):
-        if self.delete_this: del self.p_this
+        if self.delete_this:
+            del self.p_this
 
     def __repr__(self):
         return "RenderStates(blendmode={0}, transform={1}, texture={2}, shader={3})".format(id(self.blendmode), id(self.transform), id(self.texture), id(self.shader))
@@ -1675,12 +1704,18 @@ cdef class Vertex:
         self.p_this = new sf.Vertex()
         self.delete_this = True
 
-        if position: self.position = position
-        if color: self.color = color
-        if tex_coords: self.tex_coords = tex_coords
+        if position:
+            self.position = position
+
+        if color:
+            self.color = color
+
+        if tex_coords:
+            self.tex_coords = tex_coords
 
     def __dealloc__(self):
-        if self.delete_this: del self.p_this
+        if self.delete_this:
+            del self.p_this
 
     def __repr__(self):
         return "Vertex(position={0}, color={1}, tex_coords={2})".format(self.position, self.color, self.tex_coords)
@@ -1772,8 +1807,10 @@ cdef class View:
     cdef RenderTarget  m_rendertarget
 
     def __init__(self, rectangle=None):
-        if not rectangle: self.p_this = new sf.View()
-        else: self.p_this = new sf.View(to_floatrect(rectangle))
+        if not rectangle:
+            self.p_this = new sf.View()
+        else:
+            self.p_this = new sf.View(to_floatrect(rectangle))
 
     def __dealloc__(self):
         del self.p_this
@@ -1874,8 +1911,10 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
             raise NotImplementedError('RenderTarget is abstact')
 
     def clear(self, Color color=None):
-        if not color: self.p_rendertarget.clear()
-        else: self.p_rendertarget.clear(color.p_this[0])
+        if not color:
+            self.p_rendertarget.clear()
+        else:
+            self.p_rendertarget.clear(color.p_this[0])
 
     property view:
         def __get__(self):
@@ -1901,22 +1940,28 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
     def map_pixel_to_coords(self, point, View view=None):
         cdef sf.Vector2f ret
 
-        if not view: ret = self.p_rendertarget.mapPixelToCoords(to_vector2i(point))
-        else: ret = self.p_rendertarget.mapPixelToCoords(to_vector2i(point), view.p_this[0])
+        if not view:
+            ret = self.p_rendertarget.mapPixelToCoords(to_vector2i(point))
+        else:
+            ret = self.p_rendertarget.mapPixelToCoords(to_vector2i(point), view.p_this[0])
 
         return Vector2(ret.x, ret.y)
 
     def map_coords_to_pixel(self, point, View view=None):
         cdef sf.Vector2i ret
 
-        if not view: ret = self.p_rendertarget.mapCoordsToPixel(to_vector2f(point))
-        else: ret = self.p_rendertarget.mapCoordsToPixel(to_vector2f(point), view.p_this[0])
+        if not view:
+            ret = self.p_rendertarget.mapCoordsToPixel(to_vector2f(point))
+        else:
+            ret = self.p_rendertarget.mapCoordsToPixel(to_vector2f(point), view.p_this[0])
 
         return Vector2(ret.x, ret.y)
 
     def draw(self, Drawable drawable, RenderStates states=None):
-        if not states: self.p_rendertarget.draw(drawable.p_drawable[0])
-        else: self.p_rendertarget.draw(drawable.p_drawable[0], states.p_this[0])
+        if not states:
+            self.p_rendertarget.draw(drawable.p_drawable[0])
+        else:
+            self.p_rendertarget.draw(drawable.p_drawable[0], states.p_this[0])
 
     property size:
         def __get__(self):
@@ -1964,8 +2009,10 @@ cdef class RenderWindow(Window):
         return "RenderWindow(position={0}, size={1}, is_open={2})".format(self.position, self.size, self.is_open)
 
     def clear(self, Color color=None):
-        if not color: self.p_this.clear()
-        else: self.p_this.clear(color.p_this[0])
+        if not color:
+            self.p_this.clear()
+        else:
+            self.p_this.clear(color.p_this[0])
 
     property view:
         def __get__(self):
@@ -1991,22 +2038,28 @@ cdef class RenderWindow(Window):
     def map_pixel_to_coords(self, point, View view=None):
         cdef sf.Vector2f ret
 
-        if not view: ret = self.p_this.mapPixelToCoords(to_vector2i(point))
-        else: ret = self.p_this.mapPixelToCoords(to_vector2i(point), view.p_this[0])
+        if not view:
+            ret = self.p_this.mapPixelToCoords(to_vector2i(point))
+        else:
+            ret = self.p_this.mapPixelToCoords(to_vector2i(point), view.p_this[0])
 
         return Vector2(ret.x, ret.y)
 
     def map_coords_to_pixel(self, point, View view=None):
         cdef sf.Vector2i ret
 
-        if not view: ret = self.p_this.mapCoordsToPixel(to_vector2f(point))
-        else: ret = self.p_this.mapCoordsToPixel(to_vector2f(point), view.p_this[0])
+        if not view:
+            ret = self.p_this.mapCoordsToPixel(to_vector2f(point))
+        else:
+            ret = self.p_this.mapCoordsToPixel(to_vector2f(point), view.p_this[0])
 
         return Vector2(ret.x, ret.y)
 
     def draw(self, Drawable drawable, RenderStates states=None):
-        if not states: self.p_this.draw(drawable.p_drawable[0])
-        else: self.p_this.draw(drawable.p_drawable[0], states.p_this[0])
+        if not states:
+            self.p_this.draw(drawable.p_drawable[0])
+        else:
+            self.p_this.draw(drawable.p_drawable[0], states.p_this[0])
 
     def push_GL_states(self):
         self.p_this.pushGLStates()
@@ -2025,7 +2078,7 @@ cdef class RenderWindow(Window):
 
 cdef class RenderTexture(RenderTarget):
     cdef sf.RenderTexture *p_this
-    cdef Texture           m_texture
+    cdef Texture m_texture
 
     def __init__(self, unsigned int width, unsigned int height, bint depthBuffer=False):
         if self.p_this is NULL:
@@ -2072,7 +2125,7 @@ cdef class RenderTexture(RenderTarget):
 
 cdef class HandledWindow(RenderTarget):
     cdef sf.RenderWindow *p_this
-    cdef sf.Window       *p_window
+    cdef sf.Window *p_window
 
     def __init__(self):
         if self.p_this is NULL:
@@ -2087,8 +2140,10 @@ cdef class HandledWindow(RenderTarget):
             del self.p_this
 
     def create(self, unsigned long window_handle, ContextSettings settings=None):
-        if not settings: self.p_this.create(<sf.WindowHandle>window_handle)
-        else: self.p_this.create(<sf.WindowHandle>window_handle, settings.p_this[0])
+        if not settings:
+            self.p_this.create(<sf.WindowHandle>window_handle)
+        else:
+            self.p_this.create(<sf.WindowHandle>window_handle, settings.p_this[0])
 
     def display(self):
         self.p_window.display()

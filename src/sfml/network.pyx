@@ -35,7 +35,6 @@ from libcpp.vector cimport vector
 cimport sfml as sf
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
-
 from pysfml.system cimport Time
 
 cdef class IpAddress:
@@ -58,12 +57,18 @@ cdef class IpAddress:
         return self.string.decode('utf-8')
 
     def __richcmp__(IpAddress x, IpAddress y, int op):
-        if op == 0:   return x.p_this[0] <  y.p_this[0]
-        elif op == 2: return x.p_this[0] == y.p_this[0]
-        elif op == 4: return x.p_this[0] >  y.p_this[0]
-        elif op == 1: return x.p_this[0] <= y.p_this[0]
-        elif op == 3: return x.p_this[0] != y.p_this[0]
-        elif op == 5: return x.p_this[0] >= y.p_this[0]
+        if op == 0:
+            return x.p_this[0] <  y.p_this[0]
+        elif op == 2:
+            return x.p_this[0] == y.p_this[0]
+        elif op == 4:
+            return x.p_this[0] >  y.p_this[0]
+        elif op == 1:
+            return x.p_this[0] <= y.p_this[0]
+        elif op == 3:
+            return x.p_this[0] != y.p_this[0]
+        elif op == 5:
+            return x.p_this[0] >= y.p_this[0]
 
     @classmethod
     def from_string(self, _string):
@@ -101,8 +106,12 @@ cdef class IpAddress:
     @classmethod
     def get_public_address(self, Time timeout=None):
         cdef sf.IpAddress* p = new sf.IpAddress()
-        if not timeout: p[0] = sf.ipaddress.getPublicAddress()
-        else: p[0] = sf.ipaddress.getPublicAddress(timeout.p_this[0])
+
+        if not timeout:
+            p[0] = sf.ipaddress.getPublicAddress()
+        else:
+            p[0] = sf.ipaddress.getPublicAddress(timeout.p_this[0])
+
         return wrap_ipaddress(p)
 
 cdef wrap_ipaddress(sf.IpAddress* p):

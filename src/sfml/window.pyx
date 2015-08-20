@@ -570,7 +570,8 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
         self.delete_this = True
 
     def __dealloc__(self):
-        if self.delete_this: del self.p_this
+        if self.delete_this:
+            del self.p_this
 
     def __repr__(self):
         return "VideoMode(size={0}, bpp={1})".format(self.size, self.bpp)
@@ -579,12 +580,18 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
         return "{0}x{1}x{2}".format(self.width, self.height, self.bpp)
 
     def __richcmp__(VideoMode x, VideoMode y, int op):
-        if op == 0:   return x.p_this[0] <  y.p_this[0]
-        elif op == 2: return x.p_this[0] == y.p_this[0]
-        elif op == 4: return x.p_this[0] >  y.p_this[0]
-        elif op == 1: return x.p_this[0] <= y.p_this[0]
-        elif op == 3: return x.p_this[0] != y.p_this[0]
-        elif op == 5: return x.p_this[0] >= y.p_this[0]
+        if op == 0:
+            return x.p_this[0] <  y.p_this[0]
+        elif op == 2:
+            return x.p_this[0] == y.p_this[0]
+        elif op == 4:
+            return x.p_this[0] >  y.p_this[0]
+        elif op == 1:
+            return x.p_this[0] <= y.p_this[0]
+        elif op == 3:
+            return x.p_this[0] != y.p_this[0]
+        elif op == 5:
+            return x.p_this[0] >= y.p_this[0]
 
     def __iter__(self):
         return iter((self.size, self.bpp))
@@ -1058,8 +1065,10 @@ cdef class Mouse:
     def get_position(cls, Window window=None):
         cdef sf.Vector2i p
 
-        if window is None: p = sf.mouse.getPosition()
-        else: p = sf.mouse.getPosition(window.p_window[0])
+        if window is None:
+            p = sf.mouse.getPosition()
+        else:
+            p = sf.mouse.getPosition(window.p_window[0])
 
         return Vector2(p.x, p.y)
 
@@ -1068,8 +1077,10 @@ cdef class Mouse:
         cdef sf.Vector2i p
         p.x, p.y = position
 
-        if window is None: sf.mouse.setPosition(p)
-        else: sf.mouse.setPosition(p, window.p_window[0])
+        if window is None:
+            sf.mouse.setPosition(p)
+        else:
+            sf.mouse.setPosition(p, window.p_window[0])
 
 
 cdef class Touch:
@@ -1084,8 +1095,10 @@ cdef class Touch:
     def get_position(cls, int finger, Window window=None):
         cdef sf.Vector2i p
 
-        if window is None: p = sf.touch.getPosition(finger)
-        else: p = sf.touch.getPosition(finger, window.p_window[0])
+        if window is None:
+            p = sf.touch.getPosition(finger)
+        else:
+            p = sf.touch.getPosition(finger, window.p_window[0])
 
         return Vector2(p.x, p.y)
 

@@ -41,7 +41,7 @@ cdef extern from "pysfml/graphics.h":
 
     cdef class sfml.graphics.Texture [object PyTextureObject]:
         cdef sf.Texture *p_this
-        cdef bint               delete_this
+        cdef bint delete_this
 
     cdef class sfml.graphics.Drawable [object PyDrawableObject]:
         cdef sf.Drawable *p_drawable
@@ -51,11 +51,11 @@ cdef extern from "pysfml/graphics.h":
 
     cdef class sfml.graphics.Sprite(TransformableDrawable) [object PySpriteObject]:
         cdef sf.Sprite *p_this
-        cdef Texture           m_texture
+        cdef Texture m_texture
 
     cdef class sfml.graphics.Shape(TransformableDrawable) [object PyShapeObject]:
         cdef sf.Shape *p_shape
-        cdef Texture          m_texture
+        cdef Texture m_texture
 
     cdef class sfml.graphics.ConvexShape(Shape) [object PyConvexShapeObject]:
         cdef sf.ConvexShape *p_this
