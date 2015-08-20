@@ -30,7 +30,7 @@
 DerivableDrawable::DerivableDrawable(PyObject* object) :
 m_object(object)
 {
-    import_sfml__graphics(); // make sure the graphics module is imported
+    import_sfml__graphics();
 };
 
 void DerivableDrawable::draw(sf::RenderTarget& target_, sf::RenderStates states_) const

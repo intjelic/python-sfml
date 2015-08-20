@@ -34,6 +34,9 @@ cdef class Chunk[type PyChunkType, object PyChunkObject]:
         cdef bint   delete_this
 
 cdef extern from "pysfml/audio_api.h":
+    cdef void import_sfml__audio()
+
     cdef object create_chunk()
     cdef Int16* terminate_chunk(object)
     cdef object wrap_chunk(Int16*, unsigned int, bint)
+

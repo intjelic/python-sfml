@@ -39,10 +39,8 @@ from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2u
 from pysfml.system cimport wrap_vector2i
 from pysfml.system cimport to_string, wrap_string
+from pysfml.system cimport popLastErrorMessage, import_sfml__system
 
-cdef extern from "pysfml/system_api.h":
-    object popLastErrorMessage()
-    int import_sfml__system()
 import_sfml__system()
 
 cdef extern from "DerivableWindow.hpp":

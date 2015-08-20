@@ -66,7 +66,9 @@ cdef extern from "pysfml/graphics.h":
     cdef class sfml.graphics.RenderStates [object PyRenderStatesObject]:
         pass
 
-cdef extern from "pysfml/window_api.h":
+cdef extern from "pysfml/graphics_api.h":
+    cdef void import_sfml__graphics()
+
     cdef Color wrap_color(sf.Color *p)
 
     cdef Rect wrap_rect(sf.Rect[NumericObject]*)

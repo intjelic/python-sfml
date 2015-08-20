@@ -23,15 +23,14 @@
 //------------------------------------------------------------------------------
 
 #include "DerivableSoundStream.hpp"
-#include <iostream>
 
 DerivableSoundStream::DerivableSoundStream(void* pyobj):
 sf::SoundStream (),
 m_pyobj         (static_cast<PyObject*>(pyobj))
 {
     PyEval_InitThreads();
-    import_sfml__system(); // make sure the system module is imported
-    import_sfml__audio(); // make sure the audio module is imported
+    import_sfml__system();
+    import_sfml__audio();
 };
 
 void DerivableSoundStream::initialize(unsigned int channelCount, unsigned int sampleRate)

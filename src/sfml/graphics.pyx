@@ -32,12 +32,6 @@ from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
 
 
-cdef extern from "pysfml/system_api.h":
-    object popLastErrorMessage()
-    int import_sfml__system()
-
-import_sfml__system()
-
 cdef extern from "DerivableDrawable.hpp":
     cdef cppclass DerivableDrawable:
         DerivableDrawable(object)
@@ -71,8 +65,11 @@ from pysfml.system cimport NumericObject
 from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2f
 from pysfml.system cimport to_string, wrap_string
+from pysfml.system cimport popLastErrorMessage, import_sfml__system
 from pysfml.window cimport VideoMode, ContextSettings, Pixels, Window
 from pysfml.window cimport wrap_pixels
+
+import_sfml__system()
 
 class PrimitiveType:
     POINTS = sf.primitivetype.Points

@@ -43,6 +43,10 @@ cdef extern from "pysfml/system.h":
         cdef sf.Time *p_this
 
 cdef extern from "pysfml/system_api.h":
+    int import_sfml__system()
+
+    object popLastErrorMessage()
+
     object wrap_string(const sf.String*)
     sf.String to_string(object string)
 

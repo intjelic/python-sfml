@@ -40,11 +40,8 @@ from sfml cimport Uint8, Uint16, Uint32, Uint64
 from pysfml.system cimport Vector3, Time
 from pysfml.system cimport wrap_vector3f, to_vector3f
 from pysfml.system cimport wrap_time, to_vector3f
+from pysfml.system cimport popLastErrorMessage, import_sfml__system
 
-
-cdef extern from "pysfml/system_api.h":
-    object popLastErrorMessage()
-    int import_sfml__system()
 import_sfml__system()
 
 cdef extern from "DerivableSoundStream.hpp":
