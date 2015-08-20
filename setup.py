@@ -101,7 +101,7 @@ window = extension(
 
 graphics = extension(
     'graphics',
-    [sources['graphics'], 'src/sfml/DerivableRenderWindow.cpp', 'src/sfml/DerivableDrawable.cpp'],
+    [sources['graphics'], 'src/sfml/DerivableRenderWindow.cpp', 'src/sfml/DerivableDrawable.cpp', 'src/sfml/NumericObject.cpp'],
     ['sfml-system', 'sfml-window', 'sfml-graphics'])
 
 audio = extension(

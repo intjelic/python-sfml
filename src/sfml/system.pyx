@@ -32,14 +32,7 @@ from libcpp.vector cimport vector
 cimport sfml as sf
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
-
-cdef extern from "pysfml/NumericObject.hpp":
-    cdef cppclass NumericObject:
-        NumericObject()
-        NumericObject(object)
-
-        object get()
-        void set(object)
+from pysfml.system cimport NumericObject
 
 cdef extern from *:
     ctypedef int wchar_t

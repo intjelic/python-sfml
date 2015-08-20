@@ -27,6 +27,10 @@ cimport sfml as sf
 cdef extern from "pysfml/NumericObject.hpp":
     cdef cppclass NumericObject:
         NumericObject()
+        NumericObject(object)
+
+        object get()
+        void set(object)
 
 cdef extern from "pysfml/system.h":
     cdef class sfml.system.Vector2 [object PyVector2Object]:

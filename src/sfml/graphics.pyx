@@ -67,6 +67,7 @@ numeric_type = [int, long, float, long]
 import sys
 from copy import copy, deepcopy
 
+from pysfml.system cimport NumericObject
 from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2f
 from pysfml.system cimport to_string, wrap_string
@@ -84,14 +85,21 @@ class PrimitiveType:
 
 
 cdef public class Rect[type PyRectType, object PyRectObject]:
-    cdef public Vector2 position
-    cdef public Vector2 size
+    cdef sf.Rect[NumericObject] *p_this
+
+    def __cinit__(self):
+        self.p_this = new sf.Rect[NumericObject]()
+
+    def __dealloc__(self):
+        del self.p_this
 
     def __init__(self, position=(0, 0), size=(0, 0)):
         left, top = position
         width, height = size
-        self.position = Vector2(left, top)
-        self.size = Vector2(width, height)
+        self.left = left
+        self.top = top
+        self.width = width
+        self.height = height
 
     def __repr__(self):
         return "Rect(left={0}, top={1}, width={2}, height={3})".format(self.left, self.top, self.width, self.height)
@@ -99,76 +107,96 @@ cdef public class Rect[type PyRectType, object PyRectObject]:
     def __str__(self):
         return "({0}, {1}, {2}, {3})".format(self.left, self.top, self.width, self.height)
 
-    def __richcmp__(Rect x, y, op):
-        try: left, top, width, height = y
-        except Exception: return False
+    def __richcmp__(Rect self, other_, op):
+        cdef Rect other
 
-        if op == 2: return x.position == Vector2(left, top) and x.size == Vector2(width, height)
-        elif op == 3: return not (x.position == Vector2(left, top) and x.size == Vector2(width, height))
-        else: raise NotImplementedError
+        if isinstance(other_, Rect):
+            other = <Rect>other_
+        else:
+            left, top, width, height = other_
+            other = Rect((left, top), (width, height))
+
+        if op == 2:
+            return self.p_this[0] == other.p_this[0]
+        elif op == 3:
+            return self.p_this[0] != other.p_this[0]
+        else:
+            raise NotImplemented
 
     def __iter__(self):
         return iter((self.left, self.top, self.width, self.height))
 
     def __copy__(self):
-        cdef Rect p = Rect.__new__(Rect)
-        p.position = copy(self.position)
-        p.size = copy(self.size)
-        return p
+        cdef sf.Rect[NumericObject] *p = new sf.Rect[NumericObject](self.p_this[0])
+        return wrap_rect(p)
 
     property left:
         def __get__(self):
-            return self.position.x
+            return self.p_this.left.get()
 
         def __set__(self, left):
-            self.position.x = left
+            self.p_this.left.set(left)
 
     property top:
         def __get__(self):
-            return self.position.y
+            return self.p_this.top.get()
 
         def __set__(self, top):
-            self.position.y = top
+            self.p_this.top.set(top)
 
     property width:
         def __get__(self):
-            return self.size.x
+            return self.p_this.width.get()
 
         def __set__(self, width):
-            self.size.x = width
+            self.p_this.width.set(width)
 
     property height:
         def __get__(self):
-            return self.size.y
+            return self.p_this.height.get()
 
         def __set__(self, height):
-            self.size.y = height
+            self.p_this.height.set(height)
 
     def contains(self, point):
-        x, y = point
-        return x >= self.left and x < self.right and y >= self.top and y < self.bottom
+        if isinstance(point, Vector2):
+            return self.p_this.contains((<Vector2>point).p_this[0])
+        else:
+            x, y = point
+            return self.p_this.contains(Vector2(x, y).p_this[0])
 
     def intersects(self, rectangle):
-        # make sure the rectangle is a rectangle (to get its right/bottom border)
-        l, t, w, h = rectangle
-        rectangle = Rect((l, t), (w, h))
+        cdef Rect intersection = Rect()
 
-        # compute the intersection boundaries
-        left = max(self.left, rectangle.left)
-        top = max(self.top, rectangle.top)
-        right = min(self.right, rectangle.right)
-        bottom = min(self.bottom, rectangle.bottom)
+        if isinstance(rectangle, Rect):
+            self.p_this.intersects((<Rect>rectangle).p_this[0], intersection.p_this[0])
+        else:
+            left, top, width, height = rectangle
+            self.p_this.intersects(Rect((left, top), (width, height)).p_this[0], intersection.p_this[0])
 
-        # if the intersection is valid (positive non zero area), then
-        # there is an intersection
-        if left < right and top < bottom:
-            return Rect((left, top), (right-left, bottom-top))
+        return intersection
 
-cdef api Rect intrect_to_rectangle(sf.IntRect* intrect):
-    return Rect((intrect.left, intrect.top), (intrect.width, intrect.height))
 
-cdef api Rect floatrect_to_rectangle(sf.FloatRect* floatrect):
-    return Rect((floatrect.left, floatrect.top), (floatrect.width, floatrect.height))
+cdef api Rect wrap_rect(sf.Rect[NumericObject]* p):
+    cdef Rect r = Rect.__new__(Rect)
+    r.p_this = p
+    return r
+
+cdef api Rect wrap_intrect(sf.IntRect* p):
+    cdef Rect r = Rect.__new__(Rect)
+    r.left = p.left
+    r.top = p.top
+    r.width = p.width
+    r.height = p.height
+    return r
+
+cdef api Rect wrap_floatrect(sf.FloatRect* p):
+    cdef Rect r = Rect.__new__(Rect)
+    r.left = p.left
+    r.top = p.top
+    r.width = p.width
+    r.height = p.height
+    return r
 
 cdef api sf.FloatRect to_floatrect(rectangle):
     l, t, w, h = rectangle
@@ -804,14 +832,14 @@ cdef class Glyph:
 
     property bounds:
         def __get__(self):
-            return floatrect_to_rectangle(&self.p_this.bounds)
+            return wrap_floatrect(&self.p_this.bounds)
 
         def __set__(self, bounds):
             self.p_this.bounds = to_floatrect(bounds)
 
     property texture_rectangle:
         def __get__(self):
-            return intrect_to_rectangle(&self.p_this.textureRect)
+            return wrap_intrect(&self.p_this.textureRect)
 
         def __set__(self, texture_rectangle):
             self.p_this.textureRect = to_intrect(texture_rectangle)
@@ -1352,7 +1380,7 @@ cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpri
 
     property texture_rectangle:
         def __get__(self):
-            return intrect_to_rectangle(<sf.IntRect*>(&self.p_this.getTextureRect()))
+            return wrap_intrect(<sf.IntRect*>(&self.p_this.getTextureRect()))
 
         def __set__(self, rectangle):
             self.p_this.setTextureRect(to_intrect(rectangle))
@@ -1369,12 +1397,12 @@ cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpri
     property local_bounds:
         def __get__(self):
             cdef sf.FloatRect p = self.p_this.getLocalBounds()
-            return floatrect_to_rectangle(&p)
+            return wrap_floatrect(&p)
 
     property global_bounds:
         def __get__(self):
             cdef sf.FloatRect p = self.p_this.getGlobalBounds()
-            return floatrect_to_rectangle(&p)
+            return wrap_floatrect(&p)
 
 
 cdef class Text(TransformableDrawable):
@@ -1451,12 +1479,12 @@ cdef class Text(TransformableDrawable):
     property local_bounds:
         def __get__(self):
             cdef sf.FloatRect p = self.p_this.getLocalBounds()
-            return floatrect_to_rectangle(&p)
+            return wrap_floatrect(&p)
 
     property global_bounds:
         def __get__(self):
             cdef sf.FloatRect p = self.p_this.getGlobalBounds()
-            return floatrect_to_rectangle(&p)
+            return wrap_floatrect(&p)
 
     def find_character_pos(self, size_t index):
         cdef sf.Vector2f p = self.p_this.findCharacterPos(index)
@@ -1489,7 +1517,7 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 
     property texture_rectangle:
         def __get__(self):
-            return intrect_to_rectangle(<sf.IntRect*>(&self.p_shape.getTextureRect()))
+            return wrap_intrect(<sf.IntRect*>(&self.p_shape.getTextureRect()))
 
         def __set__(self, rectangle):
             self.p_shape.setTextureRect(to_intrect(rectangle))
@@ -1522,12 +1550,12 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
     property local_bounds:
         def __get__(self):
             cdef sf.FloatRect p = self.p_shape.getLocalBounds()
-            return floatrect_to_rectangle(&p)
+            return wrap_floatrect(&p)
 
     property global_bounds:
         def __get__(self):
             cdef sf.FloatRect p = self.p_shape.getGlobalBounds()
-            return floatrect_to_rectangle(&p)
+            return wrap_floatrect(&p)
 
     property point_count:
         def __get__(self):
@@ -1738,7 +1766,7 @@ cdef class VertexArray(Drawable):
     property bounds:
         def __get__(self):
             cdef sf.FloatRect p = self.p_this.getBounds()
-            return floatrect_to_rectangle(&p)
+            return wrap_floatrect(&p)
 
 
 cdef class View:
@@ -1782,7 +1810,7 @@ cdef class View:
 
     property viewport:
         def __get__(self):
-            return floatrect_to_rectangle(<sf.FloatRect*>(&self.p_this.getViewport()))
+            return wrap_floatrect(<sf.FloatRect*>(&self.p_this.getViewport()))
 
         def __set__(self, viewport):
             self.p_this.setViewport(to_floatrect(viewport))
@@ -1871,7 +1899,7 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 
     def get_viewport(self, View view):
         cdef sf.IntRect p = self.p_rendertarget.getViewport(view.p_this[0])
-        return intrect_to_rectangle(&p)
+        return wrap_intrect(&p)
 
     def map_pixel_to_coords(self, point, View view=None):
         cdef sf.Vector2f ret
@@ -1961,7 +1989,7 @@ cdef class RenderWindow(Window):
 
     def get_viewport(self, View view):
         cdef sf.IntRect p = self.p_this.getViewport(view.p_this[0])
-        return intrect_to_rectangle(&p)
+        return wrap_intrect(&p)
 
     def map_pixel_to_coords(self, point, View view=None):
         cdef sf.Vector2f ret

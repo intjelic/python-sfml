@@ -24,6 +24,7 @@
 
 #include "DerivableDrawable.hpp"
 #include <SFML/Graphics.hpp>
+#include "pysfml/NumericObject.hpp"
 #include "pysfml/graphics_api.h"
 
 DerivableDrawable::DerivableDrawable(PyObject* object) :

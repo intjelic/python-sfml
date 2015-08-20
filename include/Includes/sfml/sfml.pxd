@@ -318,6 +318,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         Rect()
         Rect(T, T, T, T)
         Rect(const Vector2[T]&, const Vector2[T]&)
+        Rect(const Rect[T]&)
         bint contains(T, T) const
         bint contains(const Vector2[T]&) const
         bint intersects(const Rect[T]&) const
@@ -326,6 +327,9 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         T top
         T width
         T height
+
+        bint operator==(const Rect[T]&) const
+        bint operator!=(const Rect[T]&) const
 
     ctypedef Rect[int] IntRect
     ctypedef Rect[float] FloatRect
