@@ -1,6 +1,6 @@
 [submodule "add-ons/sfemovie"]
 	path = add-ons/sfemovie
-	url = git@github.com:Sonkun/python-sfemovie.git
+	url = http://github.com/Sonkun/python-sfemovie
 [submodule "add-ons/thor"]
 	path = add-ons/thor
-	url = git@github.com:Sonkun/python-thor.git
+	url = http://github.com/Sonkun/python-thor
