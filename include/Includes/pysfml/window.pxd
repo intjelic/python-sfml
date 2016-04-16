@@ -47,7 +47,7 @@ cdef extern from "pysfml/window.h":
         cdef bint            m_vertical_synchronization
 
 cdef extern from "pysfml/window_api.h":
-    cdef void import_sfml__audio()
+    cdef void import_sfml__window()
 
     cdef VideoMode wrap_videomode(sf.VideoMode *p, bint d)
     cdef ContextSettings wrap_contextsettings(sf.ContextSettings *v)
