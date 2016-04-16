@@ -49,7 +49,7 @@ cdef extern from "DerivableWindow.hpp":
 
 from libc.stdlib cimport malloc, free
 
-__all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event',
+__all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event', 'EventType',
             'CloseEvent', 'ResizeEvent', 'FocusEvent', 'TextEvent',
             'KeyEvent', 'MouseWheelEvent', 'MouseButtonEvent',
             'MouseMoveEvent', 'MouseEvent', 'JoystickButtonEvent',
@@ -68,6 +68,31 @@ cdef class Style:
     FULLSCREEN = sf.style.Fullscreen
     DEFAULT = sf.style.Default
 
+cdef class EventType:
+    CLOSED = sf.event.Closed
+    RESIZED = sf.event.Resized
+    LOST_FOCUS = sf.event.LostFocus
+    GAINED_FOCUS = sf.event.GainedFocus
+    TEXT_ENTERED = sf.event.TextEntered
+    KEY_PRESSED = sf.event.KeyPressed
+    KEY_RELEASED = sf.event.KeyReleased
+    MOUSE_WHEEL_MOVED = sf.event.MouseWheelMoved
+    MOUSE_WHEEL_SCROLLED = sf.event.MouseWheelScrolled
+    MOUSE_BUTTON_PRESSED = sf.event.MouseButtonPressed
+    MOUSE_BUTTON_RELEASED = sf.event.MouseButtonReleased
+    MOUSE_MOVED = sf.event.MouseMoved
+    MOUSE_ENTERED = sf.event.MouseEntered
+    MOUSE_LEFT = sf.event.MouseLeft
+    JOYSTICK_BUTTON_PRESSED = sf.event.JoystickButtonPressed
+    JOYSTICK_BUTTON_RELEASED = sf.event.JoystickButtonReleased
+    JOYSTICK_MOVED = sf.event.JoystickMoved
+    JOYSTICK_CONNECTED = sf.event.JoystickConnected
+    JOYSTICK_DISCONNECTED = sf.event.JoystickDisconnected
+    TOUCH_BEGAN = sf.event.TouchBegan
+    TOUCH_MOVED = sf.event.TouchMoved
+    TOUCH_ENDED = sf.event.TouchEnded
+    SENSOR_CHANGED = sf.event.SensorChanged
+    COUNT = sf.event.Count
 
 cdef public class Event[type PyEventType, object PyEventObject]:
     PRESSED = True
