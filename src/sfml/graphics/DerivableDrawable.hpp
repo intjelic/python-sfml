@@ -22,8 +22,8 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //------------------------------------------------------------------------------
 
-#ifndef PYSFML_DERIVABLEDRAWABLE_HPP
-#define PYSFML_DERIVABLEDRAWABLE_HPP
+#ifndef PYSFML_GRAPHICS_DERIVABLEDRAWABLE_HPP
+#define PYSFML_GRAPHICS_DERIVABLEDRAWABLE_HPP
 
 #include "Python.h"
 #include <SFML/Graphics/Drawable.hpp>
@@ -39,4 +39,4 @@ private:
     PyObject* m_object;
 };
 
-#endif // PYSFML_DERIVABLEDRAWABLE_HPP
+#endif // PYSFML_GRAPHICS_DERIVABLEDRAWABLE_HPP

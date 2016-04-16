@@ -22,12 +22,12 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //------------------------------------------------------------------------------
 
-#ifndef PYSFML_ERROR_HPP
-#define PYSFML_ERROR_HPP
+#ifndef PYSFML_SYSTEM_ERROR_HPP
+#define PYSFML_SYSTEM_ERROR_HPP
 
 #include "Python.h"
 
 void restorePythonErrorBuffer();
 PyObject* getLastErrorMessage();
 
-#endif // PYSFML_ERROR_HPP
+#endif // PYSFML_SYSTEM_ERROR_HPP

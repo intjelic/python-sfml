@@ -22,8 +22,8 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //------------------------------------------------------------------------------
 
-#ifndef PYSFML_DERIVABLEWINDOW_HPP
-#define PYSFML_DERIVABLEWINDOW_HPP
+#ifndef PYSFML_WINDOW_DERIVABLEWINDOW_HPP
+#define PYSFML_WINDOW_DERIVABLEWINDOW_HPP
 
 #include "Python.h"
 #include <SFML/Window/Window.hpp>
@@ -41,4 +41,4 @@ private:
     PyObject* m_object;
 };
 
-#endif // PYSFML_DERIVABLEWINDOW_HPP
+#endif // PYSFML_WINDOW_DERIVABLEWINDOW_HPP

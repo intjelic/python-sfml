@@ -22,8 +22,8 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //------------------------------------------------------------------------------
 
-#ifndef PYSFML_DERIVABLERENDERWINDOW_HPP
-#define PYSFML_DERIVABLERENDERWINDOW_HPP
+#ifndef PYSFML_GRAPHICS_DERIVABLERENDERWINDOW_HPP
+#define PYSFML_GRAPHICS_DERIVABLERENDERWINDOW_HPP
 
 #include "Python.h"
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -41,4 +41,4 @@ private:
     PyObject* m_object;
 };
 
-#endif // PYSFML_DERIVABLERENDERWINDOW_HPP
+#endif // PYSFML_GRAPHICS_DERIVABLERENDERWINDOW_HPP

@@ -22,8 +22,8 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //------------------------------------------------------------------------------
 
-#ifndef DERIVABLE_SOUND_STREAM_HPP
-#define DERIVABLE_SOUND_STREAM_HPP
+#ifndef PYSFML_SYSTEM_DERIVABLESOUNDSTREAM_HPP
+#define PYSFML_SYSTEM_DERIVABLESOUNDSTREAM_HPP
 
 #include "Python.h"
 #include <SFML/Audio.hpp>
@@ -45,4 +45,4 @@ protected:
     PyObject* m_pyobj;
 };
 
-#endif // DERIVABLE_SOUND_STREAM_HPP
+#endif // PYSFML_SYSTEM_DERIVABLESOUNDSTREAM_HPP

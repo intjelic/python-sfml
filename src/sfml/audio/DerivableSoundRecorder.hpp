@@ -22,8 +22,8 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //------------------------------------------------------------------------------
 
-#ifndef DERIVABLE_SOUND_RECORDER_HPP
-#define DERIVABLE_SOUND_RECORDER_HPP
+#ifndef PYSFML_AUDIO_DERIVABLESOUNDRECORDER_HPP
+#define PYSFML_AUDIO_DERIVABLESOUNDRECORDER_HPP
 
 #include "Python.h"
 #include <SFML/Audio.hpp>
@@ -44,4 +44,4 @@ protected:
 };
 
 
-#endif // DERIVABLE_SOUND_RECORDER_HPP
+#endif // PYSFML_AUDIO_DERIVABLESOUNDRECORDER_HPP
