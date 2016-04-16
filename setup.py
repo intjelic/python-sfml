@@ -29,14 +29,16 @@ class CythonBuildExt(build_ext):
         # move its headers (foo.h and foo_api.h) to include/pysfml
         destination = os.path.join('include', 'pysfml')
 
-        source = os.path.join('src', 'sfml', module + '.h')
+        filename = module + '.h'
+        source = os.path.join('src', 'sfml', module, filename)
         if os.path.isfile(source):
             try:
                 shutil.move(source, destination)
             except shutil.Error:
                 pass
 
-        source = os.path.join('src', 'sfml', module + '_api.h')
+        filename = module + '_api.h'
+        source = os.path.join('src', 'sfml', module, filename)
         if os.path.isfile(source):
             try:
                 shutil.move(source, destination)
@@ -65,9 +67,9 @@ def remove_if_exist(filename):
             pass
 
 for module in modules:
-    remove_if_exist(os.path.join(include_path, module + '.h'))
-    remove_if_exist(os.path.join(include_path, module + '._api.h'))
-    remove_if_exist(os.path.join(source_path, module + '.cpp'))
+    remove_if_exist(os.path.join(include_path, module, module + '.h'))
+    remove_if_exist(os.path.join(include_path, module, module + '._api.h'))
+    remove_if_exist(os.path.join(source_path, module, module + '.cpp'))
 
 # use extlibs on Windows only
 if platform.system() == 'Windows':
@@ -83,7 +85,7 @@ if platform.system() == 'Windows':
 else:
     extension = lambda name, files, libs: Extension(
         name='sfml.' + name,
-        sources=files,
+        sources= [os.path.join('src', 'sfml', name, filename) for filename in files],
         include_dirs=['include', 'include/Includes'],
         language='c++',
         libraries=libs,
@@ -92,26 +94,27 @@ else:
 
 system = extension(
     'system',
-    [sources['system'], 'src/sfml/error.cpp', 'src/sfml/NumericObject.cpp', 'src/sfml/hacks.cpp'],
+    ['system.pyx', 'error.cpp', 'hacks.cpp'],#, 'NumericObject.cpp'],
     ['sfml-system'])
 
 window = extension(
-    'window', [sources['window'], 'src/sfml/DerivableWindow.cpp'],
+    'window',
+    ['window.pyx', 'DerivableWindow.cpp'],
     ['sfml-system', 'sfml-window'])
 
 graphics = extension(
     'graphics',
-    [sources['graphics'], 'src/sfml/DerivableRenderWindow.cpp', 'src/sfml/DerivableDrawable.cpp', 'src/sfml/NumericObject.cpp'],
+    ['graphics.pyx', 'DerivableRenderWindow.cpp', 'DerivableDrawable.cpp'],
     ['sfml-system', 'sfml-window', 'sfml-graphics'])
 
 audio = extension(
     'audio',
-    [sources['audio'], 'src/sfml/DerivableSoundRecorder.cpp', 'src/sfml/DerivableSoundStream.cpp'],
+    ['audio.pyx', 'DerivableSoundRecorder.cpp', 'DerivableSoundStream.cpp'],
     ['sfml-system', 'sfml-audio'])
 
 network = extension(
     'network',
-    [sources['network']],
+    ['network.pyx'],
     ['sfml-system', 'sfml-network'])
 
 major, minor, _, _ , _ = sys.version_info
