@@ -7,7 +7,7 @@
 
 cimport sfml as sf
 
-cdef extern from "pysfml/NumericObject.hpp":
+cdef extern from "pysfml/system/NumericObject.hpp":
     cdef cppclass NumericObject:
         NumericObject()
         NumericObject(object)
@@ -15,7 +15,7 @@ cdef extern from "pysfml/NumericObject.hpp":
         object get()
         void set(object)
 
-cdef extern from "pysfml/system.h":
+cdef extern from "pysfml/system/system.h":
     cdef class sfml.system.Vector2 [object PyVector2Object]:
         cdef sf.Vector2[NumericObject] *p_this
 
@@ -25,7 +25,7 @@ cdef extern from "pysfml/system.h":
     cdef class sfml.system.Time [object PyTimeObject]:
         cdef sf.Time *p_this
 
-cdef extern from "pysfml/system_api.h":
+cdef extern from "pysfml/system/system_api.h":
     int import_sfml__system()
 
     object popLastErrorMessage()

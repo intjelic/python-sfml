@@ -12,9 +12,9 @@
 
 #include "Python.h"
 #include <SFML/Audio.hpp>
-#include "pysfml/NumericObject.hpp"
-#include "pysfml/audio_api.h"
-#include "pysfml/system_api.h"
+#include <pysfml/audio/audio_api.h>
+#include <pysfml/system/NumericObject.hpp>
+#include <pysfml/system/system_api.h>
 
 class DerivableSoundStream : public sf::SoundStream
 {

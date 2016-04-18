@@ -8,7 +8,7 @@
 cimport sfml as sf
 from pysfml.system cimport Int16
 
-cdef extern from "pysfml/audio.h":
+cdef extern from "pysfml/audio/audio.h":
 
 cdef class Chunk[type PyChunkType, object PyChunkObject]:
     cdef class sfml.audio.Chunk [object PyChunkObject]:
@@ -16,7 +16,7 @@ cdef class Chunk[type PyChunkType, object PyChunkObject]:
         cdef size_t m_sampleCount
         cdef bint   delete_this
 
-cdef extern from "pysfml/audio_api.h":
+cdef extern from "pysfml/audio/audio_api.h":
     cdef void import_sfml__audio()
 
     cdef object create_chunk()

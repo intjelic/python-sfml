@@ -5,9 +5,6 @@
 # This file is part of PySFML project and is available under the zlib
 # license.
 
-cdef extern from "pysfml/NumericObject.hpp":
-    pass
-
 cimport cython
 from cython.operator cimport dereference as deref, preincrement as inc
 from cpython.version cimport PY_VERSION_HEX
@@ -26,7 +23,7 @@ from pysfml.system cimport popLastErrorMessage, import_sfml__system
 
 import_sfml__system()
 
-cdef extern from "DerivableWindow.hpp":
+cdef extern from "pysfml/window/DerivableWindow.hpp":
     cdef cppclass DerivableWindow:
         DerivableWindow(object)
 

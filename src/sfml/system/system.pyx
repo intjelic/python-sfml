@@ -22,11 +22,11 @@ cdef extern from *:
     ctypedef void* PyUnicodeObject
     object PyUnicode_FromWideChar(const wchar_t *w, Py_ssize_t size)
 
-cdef extern from "error.hpp":
+cdef extern from "pysfml/system/error.hpp":
     void restorePythonErrorBuffer()
     object getLastErrorMessage()
 
-cdef extern from "hacks.h":
+cdef extern from "pysfml/system/hacks.hpp":
     sf.Time Time_div_int(sf.Time left, Int64)
     sf.Time Time_div_float(sf.Time left, float)
     float Time_div_Time(sf.Time, sf.Time)

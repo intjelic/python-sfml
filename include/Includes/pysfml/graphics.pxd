@@ -9,7 +9,7 @@ cimport sfml as sf
 from pysfml.system cimport Vector2
 from pysfml.system cimport NumericObject
 
-cdef extern from "pysfml/graphics.h":
+cdef extern from "pysfml/graphics/graphics.h":
     cdef class sfml.graphics.Rect [object PyRectObject]:
         cdef sf.Rect[NumericObject] *p_this
 
@@ -49,7 +49,7 @@ cdef extern from "pysfml/graphics.h":
     cdef class sfml.graphics.RenderStates [object PyRenderStatesObject]:
         pass
 
-cdef extern from "pysfml/graphics_api.h":
+cdef extern from "pysfml/graphics/graphics_api.h":
     cdef void import_sfml__graphics()
 
     cdef Color wrap_color(sf.Color *p)

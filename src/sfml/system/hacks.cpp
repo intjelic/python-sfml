@@ -7,7 +7,7 @@
 * license.
 */
 
-#include "hacks.h"
+#include <pysfml/system/hacks.hpp>
 
 sf::Time Time_div_int(sf::Time left, sf::Int64 right)
 {

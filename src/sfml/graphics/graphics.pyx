@@ -11,12 +11,11 @@ cimport sfml as sf
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
 
-
-cdef extern from "DerivableDrawable.hpp":
+cdef extern from "pysfml/graphics/DerivableDrawable.hpp":
     cdef cppclass DerivableDrawable:
         DerivableDrawable(object)
 
-cdef extern from "DerivableRenderWindow.hpp":
+cdef extern from "pysfml/graphics/DerivableRenderWindow.hpp":
     cdef cppclass DerivableRenderWindow:
         DerivableRenderWindow(object)
 

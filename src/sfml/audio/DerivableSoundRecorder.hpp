@@ -12,8 +12,7 @@
 
 #include "Python.h"
 #include <SFML/Audio.hpp>
-#include "pysfml/audio_api.h"
-
+#include <pysfml/audio/audio_api.h>
 
 class DerivableSoundRecorder : public sf::SoundRecorder
 {

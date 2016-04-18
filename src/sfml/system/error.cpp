@@ -7,9 +7,9 @@
 * license.
 */
 
-#include "error.hpp"
-#include <sstream>
+#include <pysfml/system/error.hpp>
 #include <SFML/System.hpp>
+#include <sstream>
 
 static std::stringbuf buffer;
 

@@ -7,7 +7,7 @@
 * license.
 */
 
-#include "DerivableWindow.hpp"
+#include <pysfml/window/DerivableWindow.hpp>
 
 DerivableWindow::DerivableWindow(PyObject* object) :
 m_object(object)

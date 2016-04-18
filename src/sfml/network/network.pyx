@@ -5,8 +5,8 @@
 # This file is part of PySFML project and is available under the zlib
 # license.
 
-cdef extern from "pysfml/NumericObject.hpp":
-    pass
+#cdef extern from "pysfml/NumericObject.hpp":
+#    pass
 
 from cython.operator cimport dereference as deref
 from cython.operator cimport preincrement as inc

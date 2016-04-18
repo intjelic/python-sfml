@@ -7,10 +7,10 @@
 * license.
 */
 
-#include "DerivableDrawable.hpp"
 #include <SFML/Graphics.hpp>
-#include "pysfml/NumericObject.hpp"
-#include "pysfml/graphics_api.h"
+#include <pysfml/graphics/DerivableDrawable.hpp>
+#include <pysfml/graphics/NumericObject.hpp>
+#include <pysfml/graphics/graphics_api.h>
 
 DerivableDrawable::DerivableDrawable(PyObject* object) :
 m_object(object)

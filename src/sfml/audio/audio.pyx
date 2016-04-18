@@ -24,12 +24,12 @@ from pysfml.system cimport popLastErrorMessage, import_sfml__system
 
 import_sfml__system()
 
-cdef extern from "DerivableSoundStream.hpp":
+cdef extern from "pysfml/audio/DerivableSoundStream.hpp":
     cdef cppclass DerivableSoundStream:
         DerivableSoundStream(void*)
         void initialize(unsigned int, unsigned int)
 
-cdef extern from "DerivableSoundRecorder.hpp":
+cdef extern from "pysfml/audio/DerivableSoundRecorder.hpp":
     cdef cppclass DerivableSoundRecorder:
         DerivableSoundRecorder(void*)
 

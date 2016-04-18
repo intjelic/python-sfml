@@ -7,5 +7,5 @@
 
 cimport sfml as sf
 
-cdef extern from "pysfml/network_api.h":
+cdef extern from "pysfml/network/network_api.h":
     cdef void import_sfml__network()
