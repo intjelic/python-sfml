@@ -113,7 +113,7 @@ else:
 
 system = extension(
     'system',
-    ['system.pyx', 'error.cpp', 'hacks.cpp'],#, 'NumericObject.cpp'],
+    ['system.pyx', 'error.cpp', 'hacks.cpp', 'NumericObject.cpp'],
     ['sfml-system'])
 
 window = extension(
@@ -123,7 +123,7 @@ window = extension(
 
 graphics = extension(
     'graphics',
-    ['graphics.pyx', 'DerivableRenderWindow.cpp', 'DerivableDrawable.cpp'],
+    ['graphics.pyx', 'DerivableRenderWindow.cpp', 'DerivableDrawable.cpp', 'NumericObject.cpp'],
     ['sfml-system', 'sfml-window', 'sfml-graphics'])
 
 audio = extension(
