@@ -150,7 +150,7 @@ cdef class SoundBuffer:
             del self.p_this
 
     def __repr__(self):
-        return "SoundBuffer(samples={0}, sample_rate={1}, channel_count={2}, duration={3})".format(self.samples[:10], self.sample_rate, self.channel_count, self.duration)
+        return "SoundBuffer(sample_rate={0}, channel_count={1}, duration={2})".format(self.sample_rate, self.channel_count, self.duration)
 
     @classmethod
     def from_file(cls, filename):
