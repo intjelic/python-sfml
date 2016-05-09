@@ -78,8 +78,7 @@ if platform.system() == 'Windows':
         include_dirs=['include', os.path.normpath('extlibs/sfml/include')],
         library_dirs=[os.path.normpath('extlibs/sfml/lib/' + arch)],
         language='c++',
-        libraries=libs,
-        extra_compile_args=['-fpermissive']
+        libraries=libs
         )
 else:
     extension = lambda name, files, libs: Extension(
@@ -88,7 +87,6 @@ else:
         include_dirs=['include/Includes'],
         language='c++',
         libraries=libs,
-        extra_compile_args=['-fpermissive']
         )
 
 system = extension(
