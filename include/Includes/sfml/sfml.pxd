@@ -417,6 +417,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         bint isSmooth() const
         void setRepeated(bint)
         bint isRepeated() const
+        unsigned int getNativeHandle() const
 
     cdef cppclass Glyph:
         Glyph()

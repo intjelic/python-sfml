@@ -795,6 +795,10 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         def __set__(self, bint repeated):
             self.p_this.setRepeated(repeated)
 
+    property native_handle:
+        def __get__(self):
+            return self.p_this.getNativeHandle()
+
     @classmethod
     def get_maximum_size(cls):
         return sf.texture.getMaximumSize()
