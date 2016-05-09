@@ -151,6 +151,7 @@ kwargs = dict(
                         'Topic :: Games/Entertainment',
                         'Topic :: Multimedia',
                         'Topic :: Software Development :: Libraries :: Python Modules'],
+            keywords='sfml SFML simple fast multimedia system window graphics audio network pySFML PySFML python-sfml',
             cmdclass={'build_ext': CythonBuildExt})
 
 setup(**kwargs)
