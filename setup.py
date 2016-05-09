@@ -70,26 +70,6 @@ class CythonBuildExt(build_ext):
 
 modules = ['system', 'window', 'graphics', 'audio', 'network']
 
-sources = {module: os.path.join('src', 'sfml', module + '.pyx') for module in modules}
-headers = {module: os.path.join('include', 'pysfml', module + '.h') for module in modules}
-api_headers = {module: os.path.join('include', 'pysfml', module + '._api.h') for module in modules}
-
-include_path = os.path.join('include', 'pysfml')
-source_path = os.path.join('src', 'sfml')
-
-# clean the directory (remove generated C++ files by Cython)
-def remove_if_exist(filename):
-    if os.path.isfile(filename):
-        try:
-            os.remove(filename)
-        except OSError:
-            pass
-
-for module in modules:
-    remove_if_exist(os.path.join(include_path, module, module + '.h'))
-    remove_if_exist(os.path.join(include_path, module, module + '._api.h'))
-    remove_if_exist(os.path.join(source_path, module, module + '.cpp'))
-
 # use extlibs on Windows only
 if platform.system() == 'Windows':
     extension = lambda name, files, libs: Extension(
