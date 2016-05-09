@@ -795,11 +795,6 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         def __set__(self, bint repeated):
             self.p_this.setRepeated(repeated)
 
-    def copy(self):
-        cdef sf.Texture *p = new sf.Texture()
-        p[0] = self.p_this[0]
-        return wrap_texture(p, True)
-
     @classmethod
     def get_maximum_size(cls):
         return sf.texture.getMaximumSize()
