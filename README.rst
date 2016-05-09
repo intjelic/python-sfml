@@ -1,30 +1,27 @@
-About
-=====
-These are Python bindings for `SFML <http://www.sfml-dev.org/>`_, made available
-under the terms of the `zlib/libpng <http://opensource.org/licenses/Zlib>`_ license.
+This is version 2.3.2 of the official Python bindings for SFML, based on
+SFML 2.3.2, and is made available under the terms of the zlib/libpng
+license.
 
-By combining the strength of SFML with the ease of the Python language,
-we can provide an amazing tool to quickly build multimedia software.
+As for most of Python projects, the easiest way to get the latest stable
+version is through PyPi. Just issue the following command in a terminal::
 
-Getting the Code
-================
-After you've installed `Git <http://git-scm.com/downloads>`_, you may issue
-the following command to obtain the source::
+    pip install pysfml
 
-    git clone git@github.com:Sonkun/python-sfml.git
+You might want to work with the development version in which case you
+have to compile by yourself. First, obtain the source::
+
+    git clone https://github.com/Sonkun/python-sfml.git
     cd python-sfml
 
-Resources
-=========
-* Website: http://python-sfml.org
-* Documentation: http://python-sfml.org/api/api_index.html
-* Github: https://github.com/Sonkun/python-sfml
-* Bug Tracker: http://github.com/Sonkun/python-sfml/issues
-* Wiki: https://github.com/Sonkun/python-sfml/wiki
+Then, compiling is simply a matter of `python setup.py install` in  a
+terminal after you installed the dependencies which are Cython and SFML
+itself.
 
-Contact Information
-===================
-Feel free to email us with any questions or concerns:
+Please visit the website for any complementary information on this
+project. Also, feel free to email us with any questions or concerns:
 
 * `Jonathan De Wachter <mailto:dewachter.jonathan@gmail.com>`_
-* `Edwin Marshall <mailto:emarshall85@gmail.com>`_
+* `Edwin Marshall      <mailto:emarshall85@gmail.com>`_
+
+You're also encouraged to visit (and contribute) to the wiki which
+gathers various piece of code, tutorials, tips and tricks.
