@@ -12,6 +12,12 @@
 #include <pysfml/graphics/NumericObject.hpp>
 #include <pysfml/graphics/graphics_api.h>
 
+const sf::Uint8* getPixelsPtr(PyObject* memoryview)
+{
+    Py_buffer* buffer = PyMemoryView_GET_BUFFER(memoryview);
+    return static_cast<const sf::Uint8*>(buffer->buf);
+}
+
 DerivableDrawable::DerivableDrawable(PyObject* object) :
 m_object(object)
 {

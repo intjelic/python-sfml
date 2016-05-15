@@ -13,6 +13,9 @@
 #include "Python.h"
 #include <SFML/Graphics/Drawable.hpp>
 
+
+const sf::Uint8* getPixelsPtr(PyObject* memoryview);
+
 class DerivableDrawable : public sf::Drawable
 {
 public:

@@ -15,12 +15,11 @@ cdef extern from "pysfml/graphics/DerivableDrawable.hpp":
     cdef cppclass DerivableDrawable:
         DerivableDrawable(object)
 
+    const Uint8* getPixelsPtr(object)
+
 cdef extern from "pysfml/graphics/DerivableRenderWindow.hpp":
     cdef cppclass DerivableRenderWindow:
         DerivableRenderWindow(object)
-
-cdef extern from *:
-    ctypedef void* PyUnicodeObject
 
 from libc.stdlib cimport malloc, free
 
@@ -45,8 +44,7 @@ from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2f
 from pysfml.system cimport to_string, wrap_string
 from pysfml.system cimport popLastErrorMessage, import_sfml__system
-from pysfml.window cimport VideoMode, ContextSettings, Pixels, Window
-from pysfml.window cimport wrap_pixels
+from pysfml.window cimport VideoMode, ContextSettings, Window
 
 import_sfml__system()
 
@@ -484,6 +482,22 @@ cdef public class Image[type PyImageType, object PyImageObject]:
         p[0] = self.p_this[0]
         return wrap_image(p)
 
+    def __getbuffer__(self, Py_buffer *buffer, int flags):
+        buffer.buf = <char*>self.p_this.getPixelsPtr()
+        buffer.format = 'c'
+        buffer.internal = NULL
+        buffer.itemsize = 1
+        buffer.len = self.p_this.getSize().x * self.p_this.getSize().y * 4
+        buffer.ndim = 1
+        buffer.obj = self
+        buffer.readonly = 1
+        buffer.shape = NULL
+        buffer.strides = NULL
+        buffer.suboffsets = NULL
+
+    def __releasebuffer__(self, Py_buffer *buffer):
+        pass
+
     @classmethod
     def create(cls, unsigned int width, unsigned int height, Color color=None):
         cdef sf.Image *p = new sf.Image()
@@ -507,15 +521,12 @@ cdef public class Image[type PyImageType, object PyImageObject]:
         return wrap_image(p)
 
     @classmethod
-    def from_pixels(cls, Pixels pixels):
-        cdef sf.Image *p
+    def from_pixels(cls, int width, int height, pixels):
+        cdef sf.Image *p = new sf.Image()
+        cdef const sf.Uint8* pixels_ptr = getPixelsPtr(memoryview(pixels))
 
-        if pixels.p_array != NULL:
-            p = new sf.Image()
-            p.create(pixels.m_width, pixels.m_height, pixels.p_array)
-            return wrap_image(p)
-
-        raise ValueError("Failed to create texture, invalid array (NULL)")
+        p.create(width, height, pixels_ptr)
+        return wrap_image(p)
 
     @classmethod
     def from_file(cls, filename):
@@ -575,8 +586,7 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 
     property pixels:
         def __get__(self):
-            if self.p_this.getPixelsPtr():
-                return wrap_pixels(<Uint8*>self.p_this.getPixelsPtr(), self.width, self.height)
+            return memoryview(self)
 
     def flip_horizontally(self):
         self.p_this.flipHorizontally()
@@ -722,16 +732,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         if len(args) > 2:
             raise UserWarning("Too much arguments provided. It requires at most two.")
 
-        if type(args[0]) is Pixels:
-            if len(args) == 2:
-                if type(args[1]) in [Vector2, tuple]:
-                    self.update_from_pixels(args[0], args[1])
-                else:
-                    raise UserWarning("The second argument must be either a sf.Vector2 or a tuple")
-            else:
-                self.update_from_pixels(args[0])
-
-        elif type(args[0]) is Image:
+        if type(args[0]) is Image:
             if len(args) == 2:
                 if type(args[1]) in [Vector2, tuple]:
                     self.update_from_image(args[0], args[1])
@@ -752,13 +753,14 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         else:
             raise UserWarning("The first argument must be either sf.Pixels, sf.Image or sf.Window")
 
+    def update_from_pixels(self, pixels, *args):
+        cdef const sf.Uint8* pixels_ptr = getPixelsPtr(memoryview(pixels))
 
-    def update_from_pixels(self, Pixels pixels, position=None):
-        if not position:
-            self.p_this.update(pixels.p_array)
+        if not args:
+            self.p_this.update(pixels_ptr)
         else:
-            x, y = position
-            self.p_this.update(pixels.p_array, pixels.m_width, pixels.m_height, <unsigned int>x, <unsigned int>y)
+            width, height, x, y = args
+            self.p_this.update(pixels_ptr, width, height, x, y)
 
     def update_from_image(self, Image image, position=None):
         if not position:

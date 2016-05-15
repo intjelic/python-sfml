@@ -292,10 +292,6 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
 
 cimport blendmode, primitivetype, texture, shader, font, text, renderstates, transform
 
-cdef extern from *:
-    ctypedef unsigned char* const_Uint8_ptr "const unsigned char*"
-
-
 cdef extern from "SFML/Graphics.hpp" namespace "sf":
     cdef cppclass Rect[T]:
         Rect()
@@ -375,7 +371,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
     cdef cppclass Image:
         Image()
         void create(unsigned int, unsigned int)
-        void create(unsigned int, unsigned int, const const_Uint8_ptr)
+        void create(unsigned int, unsigned int, const Uint8*)
         void create(unsigned int, unsigned int, const Color)
         bint loadFromFile(char*&)
         bint loadFromMemory(const void*, size_t)

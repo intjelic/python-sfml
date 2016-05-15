@@ -33,9 +33,8 @@ __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event', 'EventType',
             'CloseEvent', 'ResizeEvent', 'FocusEvent', 'TextEvent',
             'KeyEvent', 'MouseWheelEvent', 'MouseButtonEvent',
             'MouseMoveEvent', 'MouseEvent', 'JoystickButtonEvent',
-            'JoystickMoveEvent', 'JoystickConnectEvent', 'Pixels',
-            'Window', 'Keyboard', 'Joystick', 'Mouse', 'Touch',
-            'Sensor', 'Context']
+            'JoystickMoveEvent', 'JoystickConnectEvent', 'Window',
+            'Keyboard', 'Joystick', 'Mouse', 'Touch', 'Sensor', 'Context']
 
 if PY_VERSION_HEX >= 0x03000000:
     unichr = chr
@@ -720,38 +719,6 @@ cdef ContextSettings wrap_contextsettings(sf.ContextSettings *v):
     return r
 
 
-cdef public class Pixels[type PyPixelsType, object PyPixelsObject]:
-    cdef Uint8*          p_array
-    cdef unsigned int    m_width
-    cdef unsigned int    m_height
-
-    def __init__(self):
-        raise UserWarning("This class is not meant to be used directly")
-
-    def __repr__(self):
-        return "Pixels(width={0}, height={1})".format(self.width, self.height)
-
-    def __getitem__(self, unsigned int index):
-        return self.p_this[index]
-
-    property width:
-        def __get__(self):
-            return self.m_width
-
-    property height:
-        def __get__(self):
-            return self.m_height
-
-    property data:
-        def __get__(self):
-            return (<char*>self.p_array)[:self.width*self.height*4]
-
-cdef api Pixels wrap_pixels(Uint8 *p, unsigned int w, unsigned int h):
-    cdef Pixels r = Pixels.__new__(Pixels)
-    r.p_array, r.m_width, r.m_height = p, w, h
-    return r
-
-
 cdef public class Window[type PyWindowType, object PyWindowObject]:
     cdef sf.Window *p_window
 
@@ -830,9 +797,8 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
         def __set__(self, title):
             self.p_window.setTitle(to_string(title))
 
-    property icon:
-        def __set__(self, Pixels icon):
-            self.p_window.setIcon(icon.m_width, icon.m_height, icon.p_array)
+    def set_icon(self, int width, int height, bytes pixels):
+        self.p_window.setIcon(width, height, <sf.Uint8*>pixels)
 
     property visible:
         def __set__(self, bint visible):
