@@ -1,6 +1,0 @@
-[EMPTY] Shapes
-==============
-
-Introduction
-------------
-.. todo ..
