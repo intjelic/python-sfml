@@ -74,8 +74,8 @@ modules = ['system', 'window', 'graphics', 'audio', 'network']
 if platform.system() == 'Windows':
     extension = lambda name, files, libs: Extension(
         name='sfml.' + name,
-        sources=files,
-        include_dirs=['include', os.path.normpath('extlibs/sfml/include')],
+        sources=[os.path.join('src', 'sfml', name, filename) for filename in files],
+        include_dirs=[os.path.normpath('include/Includes'), os.path.normpath('extlibs/sfml/include')],
         library_dirs=[os.path.normpath('extlibs/sfml/lib/' + arch)],
         language='c++',
         libraries=libs
