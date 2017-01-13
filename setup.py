@@ -70,55 +70,58 @@ class CythonBuildExt(build_ext):
 
 modules = ['system', 'window', 'graphics', 'audio', 'network']
 
-# use extlibs on Windows only
+extension = lambda name, files, libs: Extension(
+	name='sfml.' + name,
+	sources= [os.path.join('src', 'sfml', name, filename) for filename in files],
+	include_dirs=[os.path.join('include', 'Includes')],
+	language='c++',
+	libraries=libs,
+	define_macros=[('SFML_STATIC', '1')] if platform.system() == 'Windows' else [])
+
 if platform.system() == 'Windows':
-    extension = lambda name, files, libs: Extension(
-        name='sfml.' + name,
-        sources=[os.path.join('src', 'sfml', name, filename) for filename in files],
-        include_dirs=[os.path.normpath('include/Includes'), os.path.normpath('extlibs/sfml/include')],
-        library_dirs=[os.path.normpath('extlibs/sfml/lib/' + arch)],
-        language='c++',
-        libraries=libs
-        )
+	system_libs   = ['winmm', 'sfml-system-s']
+	window_libs   = ['user32', 'advapi32', 'winmm', 'sfml-system-s', 'gdi32', 'opengl32', 'sfml-window-s']
+	graphics_libs = ['user32', 'advapi32', 'winmm', 'sfml-system-s', 'gdi32', 'opengl32', 'sfml-window-s', 'freetype', 'jpeg', 'sfml-graphics-s']
+	audio_libs    = ['winmm', 'sfml-system-s', 'flac', 'vorbisenc', 'vorbisfile', 'vorbis', 'ogg', 'openal32', 'sfml-audio-s']
+	network_libs  = ['ws2_32', 'sfml-system-s', 'sfml-network-s']
 else:
-    extension = lambda name, files, libs: Extension(
-        name='sfml.' + name,
-        sources= [os.path.join('src', 'sfml', name, filename) for filename in files],
-        include_dirs=['include/Includes'],
-        language='c++',
-        libraries=libs,
-        )
+	system_libs   = ['sfml-system']
+	window_libs   = ['sfml-system', 'sfml-window']
+	graphics_libs = ['sfml-system', 'sfml-window', 'sfml-graphics']
+	audio_libs    = ['sfml-system', 'sfml-audio']
+	network_libs  = ['sfml-system', 'sfml-network']
+
 
 system = extension(
     'system',
     ['system.pyx', 'error.cpp', 'hacks.cpp', 'NumericObject.cpp'],
-    ['sfml-system'])
+    system_libs)
 
 window = extension(
     'window',
     ['window.pyx', 'DerivableWindow.cpp'],
-    ['sfml-system', 'sfml-window'])
+    window_libs)
 
 graphics = extension(
     'graphics',
     ['graphics.pyx', 'DerivableRenderWindow.cpp', 'DerivableDrawable.cpp', 'NumericObject.cpp'],
-    ['sfml-system', 'sfml-window', 'sfml-graphics'])
+    graphics_libs)
 
 audio = extension(
     'audio',
     ['audio.pyx', 'DerivableSoundRecorder.cpp', 'DerivableSoundStream.cpp'],
-    ['sfml-system', 'sfml-audio'])
+    audio_libs)
 
 network = extension(
     'network',
     ['network.pyx'],
-    ['sfml-system', 'sfml-network'])
+    network_libs)
 
 major, minor, _, _ , _ = sys.version_info
 
 data_files = []
 if platform.system() == 'Windows':
-    dlls = [("Lib\\site-packages\\sfml", glob('extlibs/sfml/bin/' + arch + '/*.dll'))]
+    dlls = [("Lib\\site-packages\\sfml", glob('extlibs\\' + arch + '\\openal32.dll'))]
     data_files += dlls
 
 with open('README.rst', 'r') as f:
