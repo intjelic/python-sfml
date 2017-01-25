@@ -553,10 +553,10 @@ cdef class SensorEvent(Event):
 
     property type:
         def __get__(self):
-            return self.p_this.type
+            return self.p_this.sensor.type
 
-        def __set__(self, int type):
-            self.p_this.sensor.type = <sf.sensor.Type>(type)
+        def __set__(self, sf.sensor.Type type):
+            self.p_this.sensor.type = type
 
     property data:
         def __get__(self):
