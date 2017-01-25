@@ -17,6 +17,10 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Mouse":
         XButton2
         ButtonCount
 
+    cdef enum Wheel:
+        VerticalWheel
+        HorizontalWheel
+
     bint isButtonPressed(Button)
     Vector2i getPosition()
     Vector2i getPosition(const Window&)

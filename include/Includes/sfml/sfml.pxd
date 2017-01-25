@@ -177,6 +177,12 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
         int x
         int y
 
+    cdef struct MouseWheelScrollEvent:
+        mouse.Wheel wheel
+        float delta
+        int x
+        int y
+
     cdef struct JoystickConnectEvent:
         unsigned int joystickId
 
@@ -209,6 +215,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
         MouseMoveEvent mouseMove
         MouseButtonEvent mouseButton
         MouseWheelEvent mouseWheel
+        MouseWheelScrollEvent mouseWheelScroll
         JoystickMoveEvent joystickMove
         JoystickButtonEvent joystickButton
         JoystickConnectEvent joystickConnect

@@ -31,7 +31,7 @@ from libc.stdlib cimport malloc, free
 
 __all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event', 'EventType',
             'CloseEvent', 'ResizeEvent', 'FocusEvent', 'TextEvent',
-            'KeyEvent', 'MouseWheelEvent', 'MouseButtonEvent',
+            'KeyEvent', 'MouseWheelEvent', 'MouseWheelScrollEvent', 'MouseButtonEvent',
             'MouseMoveEvent', 'MouseEvent', 'JoystickButtonEvent',
             'JoystickMoveEvent', 'JoystickConnectEvent', 'Window',
             'Keyboard', 'Joystick', 'Mouse', 'Touch', 'Sensor', 'Context']
@@ -127,7 +127,7 @@ cdef api Event wrap_event(sf.Event *p):
     elif p.type == sf.event.MouseWheelMoved:
         event = MouseWheelEvent.__new__(MouseWheelEvent)
     elif p.type == sf.event.MouseWheelScrolled:
-        event = MouseWheelEvent.__new__(MouseWheelEvent)
+        event = MouseWheelScrollEvent.__new__(MouseWheelScrollEvent)
     elif p.type == sf.event.MouseButtonPressed:
         event = wrap_mousebuttonevent(p, Event.PRESSED)
     elif p.type == sf.event.MouseButtonReleased:
@@ -297,6 +297,32 @@ cdef class MouseWheelEvent(Event):
 
     def __repr__(self):
         return "MouseWheelEvent(delta={0}, position={1})".format(self.delta, self.position)
+
+    property delta:
+        def __get__(self):
+            return self.p_this.mouseWheel.delta
+
+        def __set__(self, int delta):
+            self.p_this.mouseWheel.delta = delta
+
+    property position:
+        def __get__(self):
+            return Vector2(self.p_this.mouseWheel.x, self.p_this.mouseWheel.y)
+
+        def __set__(self, position):
+            self.p_this.mouseWheel.x, self.p_this.mouseWheel.y = position
+
+cdef class MouseWheelScrollEvent(Event):
+
+    def __repr__(self):
+        return "MouseWheelScrollEvent(wheel={0}, delta={1}, position={2})".format(self.wheel, self.delta, self.position)
+
+    property wheel:
+        def __get__(self):
+            return self.p_this.mouseWheelScroll.wheel
+
+        def __set__(self, sf.mouse.Wheel wheel):
+            self.p_this.mouseWheelScroll.wheel = wheel
 
     property delta:
         def __get__(self):
@@ -1024,6 +1050,9 @@ cdef class Mouse:
     X_BUTTON1 = sf.mouse.XButton1
     X_BUTTON2 = sf.mouse.XButton2
     BUTTON_COUNT = sf.mouse.ButtonCount
+
+    VERTICAL_WHEEL = sf.mouse.VerticalWheel
+    HORIZONTAL_WHEEL = sf.mouse.HorizontalWheel
 
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
