@@ -244,23 +244,23 @@ if __name__ == "__main__":
         for event in window.events:
 
             # close window: exit
-            if type(event) is sf.CloseEvent:
+            if event == sf.Event.CLOSED:
                 window.close()
 
-            if type(event) is sf.KeyEvent and event.pressed:
+            if event == sf.Event.KEY_PRESSED:
                 # escapte key: exit
-                if event.code == sf.Keyboard.ESCAPE:
+                if event['code'] == sf.Keyboard.ESCAPE:
                     window.close()
 
                 # left arrow key: previous shader
-                elif event.code is sf.Keyboard.LEFT:
+                elif event['code'] == sf.Keyboard.LEFT:
                     if current == 0: current = len(effects) - 1
                     else: current -= 1
 
                     description.string = "Current effect: {0}".format(effects[current].name)
 
                 # right arrow key: next shader
-                elif event.code is sf.Keyboard.RIGHT:
+                elif event['code'] == sf.Keyboard.RIGHT:
                     if current == len(effects) - 1: current = 0
                     else: current += 1
 

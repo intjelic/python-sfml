@@ -11,6 +11,8 @@ from cpython.version cimport PY_VERSION_HEX
 
 from libcpp.vector cimport vector
 
+import collections
+
 cimport sfml as sf
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
@@ -29,12 +31,12 @@ cdef extern from "pysfml/window/DerivableWindow.hpp":
 
 from libc.stdlib cimport malloc, free
 
-__all__ = ['Style', 'VideoMode', 'ContextSettings', 'Event', 'EventType',
-            'CloseEvent', 'ResizeEvent', 'FocusEvent', 'TextEvent',
-            'KeyEvent', 'MouseWheelEvent', 'MouseWheelScrollEvent', 'MouseButtonEvent',
-            'MouseMoveEvent', 'MouseEvent', 'JoystickButtonEvent',
-            'JoystickMoveEvent', 'JoystickConnectEvent', 'Window',
-            'Keyboard', 'Joystick', 'Mouse', 'Touch', 'Sensor', 'Context']
+__all__ = ['Style', 'VideoMode', 'ContextSettings', 'SizeEvent',
+            'KeyEvent', 'TextEvent', 'MouseMoveEvent', 'MouseButtonEvent',
+            'MouseWheelEvent', 'MouseWheelScrollEvent', 'JoystickMoveEvent',
+            'JoystickButtonEvent', 'JoystickConnectEvent', 'TouchEvent',
+            'SensorEvent', 'Event', 'Window', 'Keyboard', 'Joystick',
+            'Mouse', 'Touch', 'Sensor', 'Context']
 
 if PY_VERSION_HEX >= 0x03000000:
     unichr = chr
@@ -47,7 +49,463 @@ cdef class Style:
     FULLSCREEN = sf.style.Fullscreen
     DEFAULT = sf.style.Default
 
-cdef class EventType:
+
+cdef class SizeEvent:
+    cdef sf.SizeEvent* p_this
+    cdef bint          p_owned
+
+    def __init__(self):
+        self.p_this = new sf.SizeEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "SizeEvent(width={0}, height={1})".format(self.width, self.height)
+
+    property width:
+        def __get__(self):
+            return self.p_this.width
+
+        def __set__(self, unsigned int  width):
+            self.p_this.width = width
+
+    property height:
+        def __get__(self):
+            return self.p_this.height
+
+        def __set__(self, unsigned int  height):
+            self.p_this.height = height
+
+
+cdef class KeyEvent:
+    cdef sf.KeyEvent* p_this
+    cdef bint         p_owned
+
+    def __init__(self):
+        self.p_this = new sf.KeyEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "KeyEvent(code={0}, alt={1}, control={2}, shift={3}, system={4})".format(self.code,
+            self.alt, self.control, self.shift, self.system)
+
+    property code:
+        def __get__(self):
+            return self.p_this.code
+
+        def __set__(self, sf.keyboard.Key code):
+            self.p_this.code = code
+
+    property alt:
+        def __get__(self):
+            return self.p_this.alt
+
+        def __set__(self, bint alt):
+            self.p_this.alt = alt
+
+    property control:
+        def __get__(self):
+            return self.p_this.control
+
+        def __set__(self, bint control):
+            self.p_this.control = control
+
+    property shift:
+        def __get__(self):
+            return self.p_this.shift
+
+        def __set__(self, bint shift):
+            self.p_this.shift = shift
+
+    property system:
+        def __get__(self):
+            return self.p_this.system
+
+        def __set__(self, bint system):
+            self.p_this.system = system
+
+
+cdef class TextEvent:
+    cdef sf.TextEvent* p_this
+    cdef bint          p_owned
+
+    def __init__(self):
+        self.p_this = new sf.TextEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "TextEvent(unicode={0})".format(self.unicode)
+
+    property unicode:
+        def __get__(self):
+            return unichr(self.p_this.unicode)
+
+        def __set__(self, Uint32 unicode):
+            self.p_this.unicode = unicode
+
+
+cdef class MouseMoveEvent:
+    cdef sf.MouseMoveEvent* p_this
+    cdef bint               p_owned
+
+    def __init__(self):
+        self.p_this = new sf.MouseMoveEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "MouseMoveEvent(x={0}, y={1})".format(self.x, self.y)
+
+    property x:
+        def __get__(self):
+            return self.p_this.x
+
+        def __set__(self, int x):
+            self.p_this.x = x
+
+    property y:
+        def __get__(self):
+            return self.p_this.y
+
+        def __set__(self, int y):
+            self.p_this.y = y
+
+
+cdef class MouseButtonEvent:
+    cdef sf.MouseButtonEvent* p_this
+    cdef bint                 p_owned
+
+    def __init__(self):
+        self.p_this = new sf.MouseButtonEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "MouseButtonEvent(button={0}, x={1}, y={2})".format(self.button,
+            self.x, self.y)
+
+    property button:
+        def __get__(self):
+            return self.p_this.button
+
+        def __set__(self, sf.mouse.Button button):
+            self.p_this.button = button
+
+    property x:
+        def __get__(self):
+            return self.p_this.x
+
+        def __set__(self, int x):
+            self.p_this.x = x
+
+    property y:
+        def __get__(self):
+            return self.p_this.y
+
+        def __set__(self, int y):
+            self.p_this.y = y
+
+
+cdef class MouseWheelEvent:
+    cdef sf.MouseWheelEvent* p_this
+    cdef bint                p_owned
+
+    def __init__(self):
+        self.p_this = new sf.MouseWheelEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "MouseWheelEvent(delta={0}, x={1}, y={2})".format(self.delta,
+            self.x, self.y)
+
+    property delta:
+        def __get__(self):
+            return self.p_this.delta
+
+        def __set__(self, int delta):
+            self.p_this.delta = delta
+
+    property x:
+        def __get__(self):
+            return self.p_this.x
+
+        def __set__(self, int x):
+            self.p_this.x = x
+
+    property y:
+        def __get__(self):
+            return self.p_this.y
+
+        def __set__(self, int y):
+            self.p_this.y = y
+
+
+cdef class MouseWheelScrollEvent:
+    cdef sf.MouseWheelScrollEvent* p_this
+    cdef bint                      p_owned
+
+    def __init__(self):
+        self.p_this = new sf.MouseWheelScrollEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "MouseWheelScrollEvent(wheel={0}, delta={1}, x={2}, y={3})".format(self.wheel,
+            self.delta, self.x, self.y)
+
+    property wheel:
+        def __get__(self):
+            return self.p_this.wheel
+
+        def __set__(self, sf.mouse.Wheel wheel):
+            self.p_this.wheel = wheel
+
+    property delta:
+        def __get__(self):
+            return self.p_this.delta
+
+        def __set__(self, float delta):
+            self.p_this.delta = delta
+
+    property x:
+        def __get__(self):
+            return self.p_this.x
+
+        def __set__(self, int x):
+            self.p_this.x = x
+
+    property y:
+        def __get__(self):
+            return self.p_this.y
+
+        def __set__(self, int y):
+            self.p_this.y = y
+
+
+cdef class JoystickMoveEvent:
+    cdef sf.JoystickMoveEvent* p_this
+    cdef bint                  p_owned
+
+    def __init__(self):
+        self.p_this = new sf.JoystickMoveEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "JoystickMoveEvent(joystick_id={0}, axis={1}, position={2})".format(self.joystick_id,
+            self.axis, self.position)
+
+    property joystick_id:
+        def __get__(self):
+            return self.p_this.joystickId
+
+        def __set__(self, unsigned int joystick_id):
+            self.p_this.joystickId = joystick_id
+
+    property axis:
+        def __get__(self):
+            return self.p_this.axis
+
+        def __set__(self, sf.joystick.Axis axis):
+            self.p_this.axis = axis
+
+    property position:
+        def __get__(self):
+            return self.p_this.position
+
+        def __set__(self, float position):
+            self.p_this.position = position
+
+
+cdef class JoystickButtonEvent:
+    cdef sf.JoystickButtonEvent* p_this
+    cdef bint                    p_owned
+
+    def __init__(self):
+        self.p_this = new sf.JoystickButtonEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "JoystickButtonEvent(joystick_id={0}, button={1})".format(self.joystick_id,
+            self.button)
+
+    property joystick_id:
+        def __get__(self):
+            return self.p_this.joystickId
+
+        def __set__(self, unsigned int joystick_id):
+            self.p_this.joystickId = joystick_id
+
+    property button:
+        def __get__(self):
+            return self.p_this.button
+
+        def __set__(self, unsigned int button):
+            self.p_this.button = button
+
+
+cdef class JoystickConnectEvent:
+    cdef sf.JoystickConnectEvent* p_this
+    cdef bint                     p_owned
+
+    def __init__(self):
+        self.p_this = new sf.JoystickConnectEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "JoystickConnectEvent(joystick_id={0})".format(self.joystick_id)
+
+    property joystick_id:
+        def __get__(self):
+            return self.p_this.joystickId
+
+        def __set__(self, unsigned int joystick_id):
+            self.p_this.joystickId = joystick_id
+
+
+cdef class TouchEvent:
+    cdef sf.TouchEvent* p_this
+    cdef bint           p_owned
+
+    def __init__(self):
+        self.p_this = new sf.TouchEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "TouchEvent(finger={0}, x={1}, y={2})".format(self.finger,
+            self.x, self.y)
+
+    property finger:
+        def __get__(self):
+            return self.p_this.finger
+
+        def __set__(self, int finger):
+            self.p_this.finger = finger
+
+    property x:
+        def __get__(self):
+            return self.p_this.x
+
+        def __set__(self, int x):
+            self.p_this.x = x
+
+    property y:
+        def __get__(self):
+            return self.p_this.y
+
+        def __set__(self, int y):
+            self.p_this.y = y
+
+
+cdef class SensorEvent:
+    cdef sf.SensorEvent* p_this
+    cdef bint            p_owned
+
+    def __init__(self):
+        self.p_this = new sf.SensorEvent()
+        self.p_owned = True
+
+    def __dealloc__(self):
+        if self.p_owned:
+            del self.p_this
+
+    def __repr__(self):
+        return "SensorEvent(type={0}, x={1}, y={2}, z={3})".format(self.type,
+            self.x, self.y, self.z)
+
+    property type:
+        def __get__(self):
+            return self.p_this.type
+
+        def __set__(self, sf.sensor.Type type):
+            self.p_this.type = type
+
+    property x:
+        def __get__(self):
+            return self.p_this.x
+
+        def __set__(self, float x):
+            self.p_this.x = x
+
+    property y:
+        def __get__(self):
+            return self.p_this.y
+
+        def __set__(self, float y):
+            self.p_this.y = y
+
+    property z:
+        def __get__(self):
+            return self.p_this.z
+
+        def __set__(self, float z):
+            self.p_this.z = z
+
+
+class EventData(collections.Mapping):
+    def __init__(self, event, attributes):
+        self.event = event
+        self.attributes = attributes
+
+    def __getitem__(self, name):
+        if name not in self.attributes:
+            raise KeyError("Event has no {0} attribute".format(name))
+
+        return self.event.__class__.__dict__[name].__get__(self.event)
+
+    def __setitem__(self, name, value):
+        if name not in self.attributes:
+            raise KeyError("Event has no {0} attribute".format(name))
+
+        self.event.__class__.__dict__[name].__set__(self.event, value)
+
+    def __iter__(self):
+        return iter(self.attributes)
+
+    def __len__(self):
+        return len(self.attributes)
+
+
+cdef public class Event[type PyEventType, object PyEventObject]:
     CLOSED = sf.event.Closed
     RESIZED = sf.event.Resized
     LOST_FOCUS = sf.event.LostFocus
@@ -73,31 +531,41 @@ cdef class EventType:
     SENSOR_CHANGED = sf.event.SensorChanged
     COUNT = sf.event.Count
 
-cdef public class Event[type PyEventType, object PyEventObject]:
-    PRESSED = True
-    RELEASED = False
-    GAINED = True
-    LOST = False
-    ENTERED = True
-    LEFT = False
-    CONNECTED = True
-    DISCONNECTED = False
-
     cdef sf.Event *p_this
+    cdef object data
 
-    def __init__(self):
+    def __init__(self, type=CLOSED):
         self.p_this = new sf.Event()
+        self.type = type
 
     def __dealloc__(self):
         del self.p_this
 
+    def __repr__(self):
+        return "Event(type={0}, data={1})".format(self.type, self.items())
+
+    def __contains__(self, item):
+        return self.data.__contains__(item)
+
     def __richcmp__(self, other, int op):
         if op == 2:
-            return isinstance(self, other)
+            return self.type == other
         elif op == 3:
-            return not isinstance(self, other)
+            return self.type != other
         else:
             return NotImplemented
+
+    def __getitem__(self, name):
+        if not self.data:
+            raise KeyError("Event has no data")
+
+        return self.data[name]
+
+    def __setitem__(self, name, value):
+        if not self.data:
+            raise KeyError("Event has no data")
+
+        self.data[name] = value
 
     property type:
         def __get__(self):
@@ -106,490 +574,91 @@ cdef public class Event[type PyEventType, object PyEventObject]:
         def __set__(self, sf.event.EventType type):
             self.p_this.type = type
 
+            if type == self.RESIZED:
+                event = SizeEvent.__new__(SizeEvent)
+                (<SizeEvent>event).p_this = &self.p_this.size
+                (<SizeEvent>event).p_owned = False
+                self.data = EventData(event,  ['width', 'height'])
+            elif type == self.KEY_PRESSED or type == self.KEY_RELEASED:
+                event = KeyEvent.__new__(KeyEvent)
+                (<KeyEvent>event).p_this = &self.p_this.key
+                self.data = EventData(event,  ['code', 'alt', 'control', 'shift', 'system'])
+            elif type == self.TEXT_ENTERED:
+                event = TextEvent.__new__(TextEvent)
+                (<TextEvent>event).p_this = &self.p_this.text
+                self.data = EventData(event,  ['unicode'])
+            elif type == self.MOUSE_MOVED:
+                event = MouseMoveEvent.__new__(MouseMoveEvent)
+                (<MouseMoveEvent>event).p_this = &self.p_this.mouseMove
+                self.data = EventData(event,  ['x', 'y'])
+            elif type == self.MOUSE_BUTTON_PRESSED or type == self.MOUSE_BUTTON_RELEASED:
+                event = MouseButtonEvent.__new__(MouseButtonEvent)
+                (<MouseButtonEvent>event).p_this = &self.p_this.mouseButton
+                self.data = EventData(event,  ['button', 'x', 'y'])
+            elif type == self.MOUSE_WHEEL_MOVED:
+                event = MouseWheelEvent.__new__(MouseWheelEvent)
+                (<MouseWheelEvent>event).p_this = &self.p_this.mouseWheel
+                self.data = EventData(event,  ['delta', 'x', 'y'])
+            elif type == self.MOUSE_WHEEL_SCROLLED:
+                event = MouseWheelScrollEvent.__new__(MouseWheelScrollEvent)
+                (<MouseWheelScrollEvent>event).p_this = &self.p_this.mouseWheelScroll
+                self.data = EventData(event,  ['wheel', 'delta', 'x', 'y'])
+            elif type == self.JOYSTICK_MOVED:
+                event = JoystickMoveEvent.__new__(JoystickMoveEvent)
+                (<JoystickMoveEvent>event).p_this = &self.p_this.joystickMove
+                self.data = EventData(event,  ['joystick_id', 'axis', 'position'])
+            elif type == self.JOYSTICK_BUTTON_PRESSED or type == self.JOYSTICK_BUTTON_RELEASED:
+                event = JoystickButtonEvent.__new__(JoystickButtonEvent)
+                (<JoystickButtonEvent>event).p_this = &self.p_this.joystickButton
+                self.data = EventData(event,  ['joystick_id', 'button'])
+            elif type == self.JOYSTICK_CONNECTED or type == self.JOYSTICK_DISCONNECTED:
+                event = JoystickConnectEvent.__new__(JoystickConnectEvent)
+                (<JoystickConnectEvent>event).p_this = &self.p_this.joystickConnect
+                self.data = EventData(event,  ['joystick_id'])
+            elif type == self.TOUCH_BEGAN or type == self.TOUCH_MOVED or type == self.TOUCH_ENDED:
+                event = TouchEvent.__new__(TouchEvent)
+                (<TouchEvent>event).p_this = &self.p_this.touch
+                self.data = EventData(event,  ['finger', 'x', 'y'])
+            elif type == self.SENSOR_CHANGED:
+                event = SensorEvent.__new__(SensorEvent)
+                (<SensorEvent>event).p_this = &self.p_this.sensor
+                self.data = EventData(event,  ['type', 'x', 'y', 'z'])
+            else:
+                self.data = None
+
+    def get(self, key, default=None):
+        if not self.data:
+            return None
+
+        return self.data.get(key, default)
+
+    def items(self):
+        if not self.data:
+            return []
+
+        return self.data.items()
+
+    def keys(self):
+        if not self.data:
+            return []
+
+        return self.data.keys()
+
+    def values(self):
+        if not self.data:
+            return []
+
+        return self.data.values()
 
 cdef api Event wrap_event(sf.Event *p):
-    cdef Event event
-
-    if p.type == sf.event.Closed:
-        event = CloseEvent.__new__(CloseEvent)
-    elif p.type == sf.event.Resized:
-        event = ResizeEvent.__new__(ResizeEvent)
-    elif p.type == sf.event.LostFocus:
-        event = wrap_focusevent(p, Event.LOST)
-    elif p.type == sf.event.GainedFocus:
-        event = wrap_focusevent(p, Event.GAINED)
-    elif p.type == sf.event.TextEntered:
-        event = TextEvent.__new__(TextEvent)
-    elif p.type == sf.event.KeyPressed:
-        event = wrap_keyevent(p, Event.PRESSED)
-    elif p.type == sf.event.KeyReleased:
-        event = wrap_keyevent(p, Event.RELEASED)
-    elif p.type == sf.event.MouseWheelMoved:
-        event = MouseWheelEvent.__new__(MouseWheelEvent)
-    elif p.type == sf.event.MouseWheelScrolled:
-        event = MouseWheelScrollEvent.__new__(MouseWheelScrollEvent)
-    elif p.type == sf.event.MouseButtonPressed:
-        event = wrap_mousebuttonevent(p, Event.PRESSED)
-    elif p.type == sf.event.MouseButtonReleased:
-        event = wrap_mousebuttonevent(p, Event.RELEASED)
-    elif p.type == sf.event.MouseMoved:
-        event = MouseMoveEvent.__new__(MouseMoveEvent)
-    elif p.type == sf.event.MouseEntered:
-        event = wrap_mouseevent(p, Event.ENTERED)
-    elif p.type == sf.event.MouseLeft:
-        event = wrap_mouseevent(p, Event.LEFT)
-    elif p.type == sf.event.JoystickButtonPressed:
-        event = wrap_joystickbuttonevent(p, Event.PRESSED)
-    elif p.type == sf.event.JoystickButtonReleased:
-        event = wrap_joystickbuttonevent(p, Event.RELEASED)
-    elif p.type == sf.event.JoystickMoved:
-        event = JoystickMoveEvent.__new__(JoystickMoveEvent)
-    elif p.type == sf.event.JoystickConnected:
-        event = wrap_joystickconnectevent(p, Event.CONNECTED)
-    elif p.type == sf.event.JoystickDisconnected:
-        event = wrap_joystickconnectevent(p, Event.DISCONNECTED)
-    elif p.type == sf.event.TouchBegan:
-        event = wrap_touchevent(p, Event.PRESSED)
-    elif p.type == sf.event.TouchEnded:
-        event = wrap_touchevent(p, Event.RELEASED)
-    elif p.type == sf.event.TouchMoved:
-        event = TouchMoveEvent.__new__(TouchMoveEvent)
-    elif p.type == sf.event.SensorChanged:
-        event = SensorEvent.__new__(SensorEvent)
+    cdef Event event = Event.__new__(Event)
 
     event.p_this = p
+    event.data = None
+
+    event.type = p.type
+
     return event
-
-cdef class CloseEvent(Event):
-
-    def __repr__(self):
-        return "CloseEvent()"
-
-cdef class ResizeEvent(Event):
-
-    def __repr__(self):
-        return "ResizeEvent(size={0})".format(self.size)
-
-    property size:
-        def __get__(self):
-            return Vector2(self.width, self.height)
-
-        def __set__(self, size):
-            self.width, self.height = size
-
-    property width:
-        def __get__(self):
-            return self.p_this.size.width
-
-        def __set__(self, unsigned int  width):
-            self.p_this.size.width = width
-
-    property height:
-        def __get__(self):
-            return self.p_this.size.height
-
-        def __set__(self, unsigned int  height):
-            self.p_this.size.height = height
-
-cdef class FocusEvent(Event):
-    cdef bint state
-
-    def __repr__(self):
-        return "FocusEvent(states={0})".format(self.state)
-
-    property gained:
-        def __get__(self):
-            return self.state
-
-        def __set__(self, bint gained):
-            self.state = gained
-
-    property lost:
-        def __get__(self):
-            return not self.state
-
-        def __set__(self, bint lost):
-            self.state = not lost
-
-cdef FocusEvent wrap_focusevent(sf.Event *p, bint state):
-    cdef FocusEvent r = FocusEvent.__new__(FocusEvent)
-    r.p_this = p
-    r.state = state
-    return r
-
-
-cdef class TextEvent(Event):
-
-    def __repr__(self):
-        return "TextEvent(unicode={0})".format(self.unicode)
-
-    property unicode:
-        def __get__(self):
-            return unichr(self.p_this.text.unicode)
-
-        def __set__(self, Uint32 unicode):
-            self.p_this.text.unicode = unicode
-
-
-cdef class KeyEvent(Event):
-    cdef bint state
-
-    def __repr__(self):
-        return "KeyEvent(states={0}, code={1}, alt={2}, control={3}, shift={4}, system={5})".format(self.state, self.code, self.alt, self.control, self.shift, self.system)
-
-    property pressed:
-        def __get__(self):
-            return self.state
-
-        def __set__(self, bint pressed):
-            self.state = pressed
-
-    property released:
-        def __get__(self):
-            return not self.state
-
-        def __set__(self, bint released):
-            self.state = not released
-
-    property code:
-        def __get__(self):
-            return self.p_this.key.code
-
-        def __set__(self, sf.keyboard.Key code):
-            self.p_this.key.code = code
-
-    property alt:
-        def __get__(self):
-            return self.p_this.key.alt
-
-        def __set__(self, bint alt):
-            self.p_this.key.alt = alt
-
-    property control:
-        def __get__(self):
-            return self.p_this.key.control
-
-        def __set__(self, bint control):
-            self.p_this.key.control = control
-
-    property shift:
-        def __get__(self):
-            return self.p_this.key.shift
-
-        def __set__(self, bint shift):
-            self.p_this.key.shift = shift
-
-    property system:
-        def __get__(self):
-            return self.p_this.key.system
-
-        def __set__(self, bint system):
-            self.p_this.key.system = system
-
-cdef KeyEvent wrap_keyevent(sf.Event *p, bint state):
-    cdef KeyEvent r = KeyEvent.__new__(KeyEvent)
-    r.p_this = p
-    r.state = state
-    return r
-
-
-cdef class MouseWheelEvent(Event):
-
-    def __repr__(self):
-        return "MouseWheelEvent(delta={0}, position={1})".format(self.delta, self.position)
-
-    property delta:
-        def __get__(self):
-            return self.p_this.mouseWheel.delta
-
-        def __set__(self, int delta):
-            self.p_this.mouseWheel.delta = delta
-
-    property position:
-        def __get__(self):
-            return Vector2(self.p_this.mouseWheel.x, self.p_this.mouseWheel.y)
-
-        def __set__(self, position):
-            self.p_this.mouseWheel.x, self.p_this.mouseWheel.y = position
-
-cdef class MouseWheelScrollEvent(Event):
-
-    def __repr__(self):
-        return "MouseWheelScrollEvent(wheel={0}, delta={1}, position={2})".format(self.wheel, self.delta, self.position)
-
-    property wheel:
-        def __get__(self):
-            return self.p_this.mouseWheelScroll.wheel
-
-        def __set__(self, sf.mouse.Wheel wheel):
-            self.p_this.mouseWheelScroll.wheel = wheel
-
-    property delta:
-        def __get__(self):
-            return self.p_this.mouseWheel.delta
-
-        def __set__(self, int delta):
-            self.p_this.mouseWheel.delta = delta
-
-    property position:
-        def __get__(self):
-            return Vector2(self.p_this.mouseWheel.x, self.p_this.mouseWheel.y)
-
-        def __set__(self, position):
-            self.p_this.mouseWheel.x, self.p_this.mouseWheel.y = position
-
-cdef class MouseButtonEvent(Event):
-    cdef bint state
-
-    def __repr__(self):
-        return "MouseButtonEvent(states={0}, position={1}, button={2})".format(self.state, self.position, self.button)
-
-    property pressed:
-        def __get__(self):
-            return self.state
-
-        def __set__(self, bint pressed):
-            self.state = pressed
-
-    property released:
-        def __get__(self):
-            return not self.state
-
-        def __set__(self, bint released):
-            self.state = not released
-
-    property position:
-        def __get__(self):
-            return Vector2(self.p_this.mouseButton.x, self.p_this.mouseButton.y)
-
-        def __set__(self, position):
-            self.p_this.mouseButton.x, self.p_this.mouseButton.y = position
-
-    property button:
-        def __get__(self):
-            return self.p_this.mouseButton.button
-
-        def __set__(self, sf.mouse.Button button):
-            self.p_this.mouseButton.button = button
-
-cdef MouseButtonEvent wrap_mousebuttonevent(sf.Event *p, bint state):
-    cdef MouseButtonEvent r = MouseButtonEvent.__new__(MouseButtonEvent)
-    r.p_this = p
-    r.state = state
-    return r
-
-
-cdef class MouseMoveEvent(Event):
-    def __repr__(self):
-        return "MouseMoveEvent(position={0})".format(self.position)
-
-    property position:
-        def __get__(self):
-            return Vector2(self.p_this.mouseMove.x, self.p_this.mouseMove.y)
-
-        def __set__(self, position):
-            self.p_this.mouseMove.x, self.p_this.mouseMove.y = position
-
-
-cdef class MouseEvent(Event):
-    cdef bint state
-
-    def __repr__(self):
-        return "MouseEvent(state={0})".format(self.state)
-
-    property entered:
-        def __get__(self):
-            return self.state
-
-        def __set__(self, bint entered):
-            self.state = entered
-
-    property left:
-        def __get__(self):
-            return not self.state
-
-        def __set__(self, bint left):
-            self.state = not left
-
-cdef MouseEvent wrap_mouseevent(sf.Event *p, bint state):
-    cdef MouseEvent r = MouseEvent.__new__(MouseEvent)
-    r.p_this = p
-    r.state = state
-    return r
-
-
-cdef class JoystickButtonEvent(Event):
-    cdef bint state
-
-    def __repr__(self):
-        return "JoystickButtonEvent(state={0}, joystick_id={1}, button={2})".format(self.state, self.joystick_id, self.button)
-
-    property pressed:
-        def __get__(self):
-            return self.state
-
-        def __set__(self, bint pressed):
-            self.state = pressed
-
-    property released:
-        def __get__(self):
-            return not self.state
-
-        def __set__(self, bint released):
-            self.state = not released
-
-    property joystick_id:
-        def __get__(self):
-            return self.p_this.joystickButton.joystickId
-
-        def __set__(self, unsigned int joystick_id):
-            self.p_this.joystickButton.joystickId = joystick_id
-
-    property button:
-        def __get__(self):
-            return self.p_this.joystickButton.button
-
-        def __set__(self, unsigned int button):
-            self.p_this.joystickButton.button = button
-
-cdef JoystickButtonEvent wrap_joystickbuttonevent(sf.Event *p, bint state):
-    cdef JoystickButtonEvent r = JoystickButtonEvent.__new__(JoystickButtonEvent)
-    r.p_this = p
-    r.state = state
-    return r
-
-
-cdef class JoystickMoveEvent(Event):
-
-    def __repr__(self):
-        return "JoystickMoveEvent(joystick_id={0}, axis={1}, position={2})".format(self.joystick_id, self.axis, self.position)
-
-    property joystick_id:
-        def __get__(self):
-            return self.p_this.joystickMove.joystickId
-
-        def __set__(self, unsigned int joystick_id):
-            self.p_this.joystickMove.joystickId = joystick_id
-
-    property axis:
-        def __get__(self):
-            return self.p_this.joystickMove.axis
-
-        def __set__(self, sf.joystick.Axis axis):
-            self.p_this.joystickMove.axis = axis
-
-    property position:
-        def __get__(self):
-            return self.p_this.joystickMove.position
-
-        def __set__(self, float position):
-            self.p_this.joystickMove.position = position
-
-
-cdef class JoystickConnectEvent(Event):
-    cdef bint state
-
-    def __repr__(self):
-        return "JoystickConnectEvent(state={0}, joystick_id={1})".format(self.state, self.joystick_id)
-
-    property connected:
-        def __get__(self):
-            return self.state
-
-        def __set__(self, bint connected):
-            self.state = connected
-
-    property disconnected:
-        def __get__(self):
-            return not self.state
-
-        def __set__(self, bint disconnected):
-            self.state = not disconnected
-
-    property joystick_id:
-        def __get__(self):
-            return self.p_this.joystickConnect.joystickId
-
-        def __set__(self, unsigned int joystick_id):
-            self.p_this.joystickConnect.joystickId = joystick_id
-
-cdef JoystickConnectEvent wrap_joystickconnectevent(sf.Event *p, bint state):
-    cdef JoystickConnectEvent r = JoystickConnectEvent.__new__(JoystickConnectEvent)
-    r.p_this = p
-    r.state = state
-    return r
-
-
-cdef class TouchEvent(Event):
-    cdef bint state
-
-    def __repr__(self):
-        return "TouchEvent(states={0}, position={1}, finger={2})".format(self.state, self.position, self.finger)
-
-    property pressed:
-        def __get__(self):
-            return self.state
-
-        def __set__(self, bint pressed):
-            self.state = pressed
-
-    property released:
-        def __get__(self):
-            return not self.state
-
-        def __set__(self, bint released):
-            self.state = not released
-
-    property position:
-        def __get__(self):
-            return Vector2(self.p_this.touch.x, self.p_this.touch.y)
-
-        def __set__(self, position):
-            self.p_this.touch.x, self.p_this.touch.y = position
-
-    property finger:
-        def __get__(self):
-            return self.p_this.touch.finger
-
-        def __set__(self, int finger):
-            self.p_this.touch.finger = finger
-
-cdef TouchEvent wrap_touchevent(sf.Event *p, bint state):
-    cdef TouchEvent r = TouchEvent.__new__(TouchEvent)
-    r.p_this = p
-    r.state = state
-    return r
-
-cdef class TouchMoveEvent(Event):
-    def __repr__(self):
-        return "TouchMoveEvent(position={0})".format(self.position)
-
-    property position:
-        def __get__(self):
-            return Vector2(self.p_this.touch.x, self.p_this.touch.y)
-
-        def __set__(self, position):
-            self.p_this.touch.x, self.p_this.touch.y = position
-
-cdef class SensorEvent(Event):
-    cdef bint state
-
-    def __repr__(self):
-        return "SensorEvent(type={0}, data={1})".format(self.type, self.data)
-
-    property type:
-        def __get__(self):
-            return self.p_this.sensor.type
-
-        def __set__(self, sf.sensor.Type type):
-            self.p_this.sensor.type = type
-
-    property data:
-        def __get__(self):
-            return Vector3(self.p_this.sensor.x, self.p_this.sensor.y, self.p_this.sensor.z)
-
-        def __set__(self, data):
-            self.p_this.sensor.x, self.p_this.sensor.y, self.p_this.sensor.z = data
 
 cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
     cdef sf.VideoMode *p_this

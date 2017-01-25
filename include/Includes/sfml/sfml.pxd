@@ -149,58 +149,58 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 cimport style, event, videomode, keyboard, joystick, mouse, touch, sensor
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Event":
-    cdef struct SizeEvent:
+    cdef cppclass SizeEvent:
         unsigned int width
         unsigned int height
 
-    cdef struct KeyEvent:
+    cdef cppclass KeyEvent:
         keyboard.Key code
         bint alt
         bint control
         bint shift
         bint system
 
-    cdef struct TextEvent:
+    cdef cppclass TextEvent:
         Uint32 unicode
 
-    cdef struct MouseMoveEvent:
+    cdef cppclass MouseMoveEvent:
         int x
         int y
 
-    cdef struct MouseButtonEvent:
+    cdef cppclass MouseButtonEvent:
         mouse.Button button
         int x
         int y
 
-    cdef struct MouseWheelEvent:
+    cdef cppclass MouseWheelEvent:
         int delta
         int x
         int y
 
-    cdef struct MouseWheelScrollEvent:
+    cdef cppclass MouseWheelScrollEvent:
         mouse.Wheel wheel
         float delta
         int x
         int y
 
-    cdef struct JoystickConnectEvent:
+    cdef cppclass JoystickConnectEvent:
         unsigned int joystickId
 
-    cdef struct JoystickMoveEvent:
+    cdef cppclass JoystickMoveEvent:
         unsigned int joystickId
         joystick.Axis axis
         float position
 
-    cdef struct JoystickButtonEvent:
+    cdef cppclass JoystickButtonEvent:
         unsigned int joystickId
         unsigned int button
 
-    cdef struct TouchEvent:
+    cdef cppclass TouchEvent:
         unsigned int finger
         int x
         int y
 
-    cdef struct SensorEvent:
+    cdef cppclass SensorEvent:
         sensor.Type type
         float x
         float y

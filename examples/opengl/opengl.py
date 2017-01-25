@@ -51,15 +51,15 @@ while window.is_open:
     for event in window.events:
 
         # close window : exit
-        if event == sf.CloseEvent:
+        if event.type == sf.Event.CLOSED:
             window.close()
 
         # escape key : exit
-        if event == sf.KeyEvent and event.code == sf.Keyboard.ESCAPE:
+        if event.type == sf.Event.KEY_PRESSED and event['code'] == sf.Keyboard.ESCAPE:
             window.close()
 
         # adjust the viewport when the window is resized
-        if event == sf.ResizeEvent:
+        if event.type == sf.Event.RESIZED:
             glViewport(0, 0, event.width, event.height)
 
     # draw the background
