@@ -31,7 +31,7 @@ NumericObject::~NumericObject()
     Py_XDECREF(m_object);
 }
 
-PyObject* NumericObject::NumericObject::get()
+PyObject* NumericObject::get()
 {
     Py_XINCREF(m_object);
     return m_object;
