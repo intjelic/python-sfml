@@ -2,7 +2,7 @@ import sys, os, platform
 import os.path, shutil
 from glob import glob
 from subprocess import call
-from distutils.core import setup, Command, Extension
+from setuptools import setup, Command, Extension
 
 try:
     from Cython.Distutils import build_ext
