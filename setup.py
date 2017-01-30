@@ -74,6 +74,7 @@ extension = lambda name, files, libs: Extension(
 	name='sfml.' + name,
 	sources= [os.path.join('src', 'sfml', name, filename) for filename in files],
 	include_dirs=[os.path.join('include', 'Includes')],
+	library_dirs=[os.path.join('extlibs', 'libs-msvc-universal', arch)] if sys.hexversion >= 0x03050000 else [],
 	language='c++',
 	libraries=libs,
 	define_macros=[('SFML_STATIC', '1')] if platform.system() == 'Windows' else [])
