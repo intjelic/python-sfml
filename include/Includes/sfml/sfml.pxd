@@ -286,8 +286,6 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
         bint hasFocus() const
         void display()
         WindowHandle getSystemHandle() const
-        void onCreate()
-        void onResize()
 
     cdef cppclass Context:
         Context()

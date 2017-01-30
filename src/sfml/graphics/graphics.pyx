@@ -21,6 +21,9 @@ cdef extern from "pysfml/graphics/DerivableRenderWindow.hpp":
     cdef cppclass DerivableRenderWindow:
         DerivableRenderWindow(object)
 
+        void createWindow()
+        void resizeWindow()
+
 from libc.stdlib cimport malloc, free
 
 __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Rect', 'Transform',
@@ -2057,6 +2060,11 @@ cdef class RenderWindow(Window):
         p[0] = self.p_this.capture()
         return wrap_image(p)
 
+    def on_create(self):
+        (<DerivableRenderWindow*>self.p_this).createWindow()
+
+    def on_resize(self):
+        (<DerivableRenderWindow*>self.p_this).resizeWindow()
 
 cdef class RenderTexture(RenderTarget):
     cdef sf.RenderTexture *p_this

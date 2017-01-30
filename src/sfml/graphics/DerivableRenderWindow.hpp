@@ -18,6 +18,9 @@ class DerivableRenderWindow : public sf::RenderWindow
 public:
     DerivableRenderWindow(PyObject* object);
 
+    void createWindow();
+    void resizeWindow();
+
 protected:
     virtual void onCreate();
     virtual void onResize();

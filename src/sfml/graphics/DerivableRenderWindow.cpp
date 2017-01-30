@@ -14,6 +14,16 @@ m_object(object)
 {
 }
 
+void DerivableRenderWindow::createWindow()
+{
+    sf::RenderWindow::onCreate();
+}
+
+void DerivableRenderWindow::resizeWindow()
+{
+    sf::RenderWindow::onResize();
+}
+
 void DerivableRenderWindow::onCreate()
 {
     static char method[] = "on_create";
