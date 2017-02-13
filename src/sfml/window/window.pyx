@@ -690,8 +690,8 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
     cdef sf.VideoMode *p_this
     cdef bint delete_this
 
-    def __init__(self, unsigned int width, unsigned int height, unsigned int bpp=32):
-        self.p_this = new sf.VideoMode(width, height, bpp)
+    def __init__(self, unsigned int width, unsigned int height, unsigned int bits_per_pixel=32):
+        self.p_this = new sf.VideoMode(width, height, bits_per_pixel)
         self.delete_this = True
 
     def __dealloc__(self):
@@ -699,10 +699,10 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
             del self.p_this
 
     def __repr__(self):
-        return "VideoMode(size={0}, bpp={1})".format(self.size, self.bpp)
+        return "VideoMode(size={0}, size={1}, bits_per_pixel={2})".format(self.width, self.height, self.bits_per_pixel)
 
     def __str__(self):
-        return "{0}x{1}x{2}".format(self.width, self.height, self.bpp)
+        return "{0}x{1}x{2}".format(self.width, self.height, self.bits_per_pixel)
 
     def __richcmp__(VideoMode x, VideoMode y, int op):
         if op == 0:
@@ -719,7 +719,7 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
             return x.p_this[0] >= y.p_this[0]
 
     def __iter__(self):
-        return iter((self.size, self.bpp))
+        return iter((self.width, self.height, self.bits_per_pixel))
 
     property width:
         def __get__(self):
@@ -735,12 +735,12 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
         def __set__(self, unsigned int height):
             self.p_this.height = height
 
-    property bpp:
+    property bits_per_pixel:
         def __get__(self):
             return self.p_this.bitsPerPixel
 
-        def __set__(self, unsigned int bpp):
-            self.p_this.bitsPerPixel = bpp
+        def __set__(self, unsigned int bits_per_pixel):
+            self.p_this.bitsPerPixel = bits_per_pixel
 
     @classmethod
     def get_desktop_mode(cls):
