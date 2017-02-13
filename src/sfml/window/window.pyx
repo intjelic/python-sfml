@@ -11,6 +11,7 @@ from cpython.version cimport PY_VERSION_HEX
 from libcpp.vector cimport vector
 
 import collections
+from enum import IntEnum
 
 cimport sfml as sf
 from sfml cimport Int8, Int16, Int32, Int64
@@ -40,7 +41,7 @@ __all__ = ['Style', 'VideoMode', 'ContextSettings', 'SizeEvent',
 if PY_VERSION_HEX >= 0x03000000:
     unichr = chr
 
-cdef class Style:
+class Style(IntEnum):
     NONE = sf.style.None
     TITLEBAR = sf.style.Titlebar
     RESIZE = sf.style.Resize
@@ -503,8 +504,7 @@ class EventData(collections.Mapping):
     def __len__(self):
         return len(self.attributes)
 
-
-cdef public class Event[type PyEventType, object PyEventObject]:
+class EventType(IntEnum):
     CLOSED = sf.event.Closed
     RESIZED = sf.event.Resized
     LOST_FOCUS = sf.event.LostFocus
@@ -530,10 +530,37 @@ cdef public class Event[type PyEventType, object PyEventObject]:
     SENSOR_CHANGED = sf.event.SensorChanged
     COUNT = sf.event.Count
 
+
+cdef public class Event[type PyEventType, object PyEventObject]:
     cdef sf.Event *p_this
     cdef object data
 
-    def __init__(self, type=CLOSED):
+    CLOSED = EventType.CLOSED
+    RESIZED = EventType.RESIZED
+    LOST_FOCUS = EventType.LOST_FOCUS
+    GAINED_FOCUS = EventType.GAINED_FOCUS
+    TEXT_ENTERED = EventType.TEXT_ENTERED
+    KEY_PRESSED = EventType.KEY_PRESSED
+    KEY_RELEASED = EventType.KEY_RELEASED
+    MOUSE_WHEEL_MOVED = EventType.MOUSE_WHEEL_MOVED
+    MOUSE_WHEEL_SCROLLED = EventType.MOUSE_WHEEL_SCROLLED
+    MOUSE_BUTTON_PRESSED = EventType.MOUSE_BUTTON_PRESSED
+    MOUSE_BUTTON_RELEASED = EventType.MOUSE_BUTTON_RELEASED
+    MOUSE_MOVED = EventType.MOUSE_MOVED
+    MOUSE_ENTERED = EventType.MOUSE_ENTERED
+    MOUSE_LEFT = EventType.MOUSE_LEFT
+    JOYSTICK_BUTTON_PRESSED = EventType.JOYSTICK_BUTTON_PRESSED
+    JOYSTICK_BUTTON_RELEASED = EventType.JOYSTICK_BUTTON_RELEASED
+    JOYSTICK_MOVED = EventType.JOYSTICK_MOVED
+    JOYSTICK_CONNECTED = EventType.JOYSTICK_CONNECTED
+    JOYSTICK_DISCONNECTED = EventType.JOYSTICK_DISCONNECTED
+    TOUCH_BEGAN = EventType.TOUCH_BEGAN
+    TOUCH_MOVED = EventType.TOUCH_MOVED
+    TOUCH_ENDED = EventType.TOUCH_ENDED
+    SENSOR_CHANGED = EventType.SENSOR_CHANGED
+    COUNT = EventType.COUNT
+
+    def __init__(self, type=EventType.CLOSED):
         self.p_this = new sf.Event()
         self.type = type
 
@@ -948,7 +975,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
         pass
 
 
-cdef class Keyboard:
+class Key(IntEnum):
     A = sf.keyboard.A
     B = sf.keyboard.B
     C = sf.keyboard.C
@@ -1052,6 +1079,111 @@ cdef class Keyboard:
     PAUSE = sf.keyboard.Pause
     KEY_COUNT = sf.keyboard.KeyCount
 
+
+cdef class Keyboard:
+    A = Key.A
+    B = Key.B
+    C = Key.C
+    D = Key.D
+    E = Key.E
+    F = Key.F
+    G = Key.G
+    H = Key.H
+    I = Key.I
+    J = Key.J
+    K = Key.K
+    L = Key.L
+    M = Key.M
+    N = Key.N
+    O = Key.O
+    P = Key.P
+    Q = Key.K
+    R = Key.R
+    S = Key.S
+    T = Key.T
+    U = Key.U
+    V = Key.V
+    W = Key.W
+    X = Key.X
+    Y = Key.Y
+    Z = Key.Z
+    NUM0 = Key.NUM0
+    NUM1 = Key.NUM1
+    NUM2 = Key.NUM2
+    NUM3 = Key.NUM3
+    NUM4 = Key.NUM4
+    NUM5 = Key.NUM5
+    NUM6 = Key.NUM6
+    NUM7 = Key.NUM7
+    NUM8 = Key.NUM8
+    NUM9 = Key.NUM9
+    ESCAPE = Key.ESCAPE
+    L_CONTROL = Key.L_CONTROL
+    L_SHIFT = Key.L_SHIFT
+    L_ALT = Key.L_ALT
+    L_SYSTEM = Key.L_SYSTEM
+    R_CONTROL = Key.R_CONTROL
+    R_SHIFT = Key.R_SHIFT
+    R_ALT = Key.R_ALT
+    R_SYSTEM = Key.R_SYSTEM
+    MENU = Key.MENU
+    L_BRACKET = Key.L_BRACKET
+    R_BRACKET = Key.R_BRACKET
+    SEMI_COLON = Key.SEMI_COLON
+    COMMA = Key.COMMA
+    PERIOD = Key.PERIOD
+    QUOTE = Key.QUOTE
+    SLASH = Key.SLASH
+    BACK_SLASH = Key.BACK_SLASH
+    TILDE = Key.TILDE
+    EQUAL = Key.EQUAL
+    DASH = Key.DASH
+    SPACE = Key.SPACE
+    RETURN = Key.RETURN
+    BACK_SPACE = Key.BACK_SPACE
+    TAB = Key.TAB
+    PAGE_UP = Key.PAGE_UP
+    PAGE_DOWN = Key.PAGE_DOWN
+    END = Key.END
+    HOME = Key.HOME
+    INSERT = Key.INSERT
+    DELETE = Key.DELETE
+    ADD = Key.ADD
+    SUBTRACT = Key.SUBTRACT
+    MULTIPLY = Key.MULTIPLY
+    DIVIDE = Key.DIVIDE
+    LEFT = Key.LEFT
+    RIGHT = Key.RIGHT
+    UP = Key.UP
+    DOWN = Key.DOWN
+    NUMPAD0 = Key.NUMPAD0
+    NUMPAD1 = Key.NUMPAD1
+    NUMPAD2 = Key.NUMPAD2
+    NUMPAD3 = Key.NUMPAD3
+    NUMPAD4 = Key.NUMPAD4
+    NUMPAD5 = Key.NUMPAD5
+    NUMPAD6 = Key.NUMPAD6
+    NUMPAD7 = Key.NUMPAD7
+    NUMPAD8 = Key.NUMPAD8
+    NUMPAD9 = Key.NUMPAD9
+    F1 = Key.F1
+    F2 = Key.F2
+    F3 = Key.F3
+    F4 = Key.F4
+    F5 = Key.F5
+    F6 = Key.F6
+    F7 = Key.F7
+    F8 = Key.F8
+    F9 = Key.F9
+    F10 = Key.F10
+    F11 = Key.F11
+    F12 = Key.F12
+    F13 = Key.F13
+    F14 = Key.F14
+    F15 = Key.F15
+    PAUSE = Key.PAUSE
+    KEY_COUNT = Key.KEY_COUNT
+
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
 
@@ -1063,11 +1195,7 @@ cdef class Keyboard:
     def set_virtual_keyboard_visible(cls, bint visible):
         sf.keyboard.setVirtualKeyboardVisible(visible)
 
-cdef class Joystick:
-    COUNT = sf.joystick.Count
-    BUTTON_COUNT = sf.joystick.ButtonCount
-    AXIS_COUNT = sf.joystick.AxisCount
-
+class Axis(IntEnum):
     X = sf.joystick.X
     Y = sf.joystick.Y
     Z = sf.joystick.Z
@@ -1076,6 +1204,11 @@ cdef class Joystick:
     V = sf.joystick.V
     POV_X = sf.joystick.PovX
     POV_Y = sf.joystick.PovY
+
+cdef class Joystick:
+    COUNT = sf.joystick.Count
+    BUTTON_COUNT = sf.joystick.ButtonCount
+    AXIS_COUNT = sf.joystick.AxisCount
 
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
@@ -1110,8 +1243,7 @@ cdef class Joystick:
     def update(cls):
         sf.joystick.update()
 
-
-cdef class Mouse:
+class Button(IntEnum):
     LEFT = sf.mouse.Left
     RIGHT = sf.mouse.Right
     MIDDLE = sf.mouse.Middle
@@ -1119,9 +1251,11 @@ cdef class Mouse:
     X_BUTTON2 = sf.mouse.XButton2
     BUTTON_COUNT = sf.mouse.ButtonCount
 
+class Wheel(IntEnum):
     VERTICAL_WHEEL = sf.mouse.VerticalWheel
     HORIZONTAL_WHEEL = sf.mouse.HorizontalWheel
 
+cdef class Mouse:
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
 
@@ -1171,7 +1305,7 @@ cdef class Touch:
         return Vector2(p.x, p.y)
 
 
-cdef class Sensor:
+class Type(IntEnum):
     ACCELEROMETER = sf.sensor.Accelerometer
     GYROSCOPE = sf.sensor.Gyroscope
     MAGNETOMETER = sf.sensor.Magnetometer
@@ -1180,6 +1314,7 @@ cdef class Sensor:
     ORIENTATION = sf.sensor.Orientation
     SENSOR_COUNT = sf.sensor.Count
 
+cdef class Sensor:
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
 

@@ -21,6 +21,8 @@ from pysfml.system cimport wrap_vector3f, to_vector3f
 from pysfml.system cimport wrap_time, to_vector3f
 from pysfml.system cimport popLastErrorMessage, import_sfml__system
 
+from enum import IntEnum
+
 import_sfml__system()
 
 cdef extern from "pysfml/audio/DerivableSoundStream.hpp":
@@ -220,12 +222,12 @@ cdef SoundBuffer wrap_soundbuffer(sf.SoundBuffer *p, bint delete_this=True):
     r.delete_this = delete_this
     return r
 
-
-cdef class SoundSource:
+class Status(IntEnum):
     STOPPED = sf.soundsource.Stopped
     PAUSED = sf.soundsource.Paused
     PLAYING = sf.soundsource.Playing
 
+cdef class SoundSource:
     cdef sf.SoundSource *p_soundsource
 
     def __init__(self, *args, **kwargs):

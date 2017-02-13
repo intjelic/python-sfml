@@ -40,6 +40,7 @@ numeric_type = [int, long, float, long]
 
 import sys
 from copy import copy, deepcopy
+from enum import IntEnum
 
 from pysfml.system cimport NumericObject
 from pysfml.system cimport Vector2, Vector3
@@ -364,10 +365,7 @@ cdef Transform wrap_transform(sf.Transform *p, bint d=True):
     r.delete_this = d
     return r
 
-
-cdef public class BlendMode[type PyBlendModeType, object PyBlendModeObject]:
-    cdef sf.BlendMode *p_this
-
+class Factor(IntEnum):
     ZERO = sf.blendmode.Zero
     ONE = sf.blendmode.One
     SRC_COLOR = sf.blendmode.SrcColor
@@ -379,8 +377,12 @@ cdef public class BlendMode[type PyBlendModeType, object PyBlendModeObject]:
     DST_ALPHA = sf.blendmode.DstAlpha
     ONE_MINUS_DST_ALPHA = sf.blendmode.OneMinusDstAlpha
 
+class Equation(IntEnum):
     ADD = sf.blendmode.Add
     SUBTRACT = sf.blendmode.Subtract
+
+cdef public class BlendMode[type PyBlendModeType, object PyBlendModeObject]:
+    cdef sf.BlendMode *p_this
 
     def __cinit__(self,
         sf.blendmode.Factor color_source_factor = sf.blendmode.SrcAlpha,
@@ -602,11 +604,11 @@ cdef api Image wrap_image(sf.Image *p):
     r.p_this = p
     return r
 
-
-cdef public class Texture[type PyTextureType, object PyTextureObject]:
+class CoordinateType(IntEnum):
     NORMALIZED = sf.texture.Normalized
     PIXELS = sf.texture.Pixels
 
+cdef public class Texture[type PyTextureType, object PyTextureObject]:
     cdef sf.Texture *p_this
     cdef bint delete_this
 
@@ -1415,13 +1417,14 @@ cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpri
             return wrap_floatrect(&p)
 
 
-cdef class Text(TransformableDrawable):
+class Style(IntEnum):
     REGULAR    = sf.text.Regular
     BOLD       = sf.text.Bold
     ITALIC     = sf.text.Italic
     UNDERLINED = sf.text.Underlined
     STRIKE_THROUGH = sf.text.StrikeThrough
 
+cdef class Text(TransformableDrawable):
     cdef sf.Text *p_this
     cdef Font     m_font
 

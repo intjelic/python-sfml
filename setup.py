@@ -130,6 +130,11 @@ with open('README.rst', 'r') as f:
 
 ext_modules=[system, window, graphics, audio, network]
 
+install_requires = []
+
+if sys.version_info < (3, 4):
+    install_requires.append('enum34')
+
 kwargs = dict(
             name='pySFML',
             ext_modules=ext_modules,
@@ -156,6 +161,7 @@ kwargs = dict(
                         'Topic :: Multimedia',
                         'Topic :: Software Development :: Libraries :: Python Modules'],
             keywords='sfml SFML simple fast multimedia system window graphics audio network pySFML PySFML python-sfml',
+            install_requires=install_requires,
             cmdclass={'build_ext': CythonBuildExt})
 
 setup(**kwargs)
