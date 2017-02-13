@@ -979,6 +979,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
 
 
 class Key(IntEnum):
+    UNKNOWN = sf.keyboard.Unknown
     A = sf.keyboard.A
     B = sf.keyboard.B
     C = sf.keyboard.C
