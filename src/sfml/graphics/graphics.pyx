@@ -312,7 +312,7 @@ cdef class Transform:
         return self
 
     @classmethod
-    def from_values(self, float a00, float a01, float a02, float a10, float a11, float a12, float a20, float a21, float a22):
+    def from_values(cls, float a00, float a01, float a02, float a10, float a11, float a12, float a20, float a21, float a22):
         cdef Transform r = Transform.__new__(Transform)
         r.p_this = new sf.Transform(a00, a01, a02, a10, a11, a12, a20, a21, a22)
         return r
@@ -780,8 +780,8 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
             x, y = position
             self.p_this.update(window.p_window[0], <unsigned int>x, <unsigned int>y)
 
-    @classmethod
-    def bind(cls, Texture texture=None, sf.texture.CoordinateType coordinate_type=sf.texture.Normalized):
+    @staticmethod
+    def bind(Texture texture=None, sf.texture.CoordinateType coordinate_type=sf.texture.Normalized):
         if not texture:
             sf.texture.bind(NULL, coordinate_type)
         else:
@@ -805,8 +805,8 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         def __get__(self):
             return self.p_this.getNativeHandle()
 
-    @classmethod
-    def get_maximum_size(cls):
+    @staticmethod
+    def get_maximum_size():
         return sf.texture.getMaximumSize()
 
 
@@ -1109,15 +1109,15 @@ cdef class Shader:
 
         self.p_this.setParameter(encoded_name, sf.shader.CurrentTexture)
 
-    @classmethod
-    def bind(cls, Shader shader=None):
+    @staticmethod
+    def bind(Shader shader=None):
         if not shader:
             sf.shader.bind(NULL)
         else:
             sf.shader.bind(shader.p_this)
 
-    @classmethod
-    def is_available(cls):
+    @staticmethod
+    def is_available():
         return sf.shader.isAvailable()
 
 

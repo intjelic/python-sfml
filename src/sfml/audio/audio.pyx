@@ -39,39 +39,39 @@ cdef class Listener:
     def __init__(self):
         NotImplementedError("This class is not meant to be instantiated!")
 
-    @classmethod
-    def get_global_volume(cls):
+    @staticmethod
+    def get_global_volume():
         return sf.listener.getGlobalVolume()
 
-    @classmethod
-    def set_global_volume(cls, float volume):
+    @staticmethod
+    def set_global_volume(float volume):
         sf.listener.setGlobalVolume(volume)
 
-    @classmethod
-    def get_position(cls):
+    @staticmethod
+    def get_position():
         cdef sf.Vector3f p = sf.listener.getPosition()
         return wrap_vector3f(p)
 
-    @classmethod
-    def set_position(cls, position):
+    @staticmethod
+    def set_position(position):
         sf.listener.setPosition(to_vector3f(position))
 
-    @classmethod
-    def get_direction(cls):
+    @staticmethod
+    def get_direction():
         cdef sf.Vector3f p = sf.listener.getDirection()
         return wrap_vector3f(p)
 
-    @classmethod
-    def set_direction(cls, direction):
+    @staticmethod
+    def set_direction(direction):
         sf.listener.setDirection(to_vector3f(direction))
 
-    @classmethod
-    def get_up_vector(cls):
+    @staticmethod
+    def get_up_vector():
         cdef sf.Vector3f p = sf.listener.getUpVector()
         return wrap_vector3f(p)
 
-    @classmethod
-    def set_up_vector(cls, up_vector):
+    @staticmethod
+    def set_up_vector(up_vector):
         sf.listener.setUpVector(to_vector3f(up_vector))
 
 cdef public class Chunk[type PyChunkType, object PyChunkObject]:
@@ -487,16 +487,16 @@ cdef class SoundRecorder:
         def __get__(self):
             return self.p_soundrecorder.getSampleRate()
 
-    @classmethod
-    def is_available(cls):
+    @staticmethod
+    def is_available():
         return sf.soundrecorder.isAvailable()
 
-    @classmethod
-    def get_available_devices(cls):
+    @staticmethod
+    def get_available_devices():
         return sf.soundrecorder.getAvailableDevices()
 
-    @classmethod
-    def get_default_device(cls):
+    @staticmethod
+    def get_default_device():
         return sf.soundrecorder.getDefaultDevice()
 
     def on_start(self):

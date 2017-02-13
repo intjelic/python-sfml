@@ -742,15 +742,15 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
         def __set__(self, unsigned int bits_per_pixel):
             self.p_this.bitsPerPixel = bits_per_pixel
 
-    @classmethod
-    def get_desktop_mode(cls):
+    @staticmethod
+    def get_desktop_mode():
         cdef sf.VideoMode *p = new sf.VideoMode()
         p[0] = sf.videomode.getDesktopMode()
 
         return wrap_videomode(p, True)
 
-    @classmethod
-    def get_fullscreen_modes(cls):
+    @staticmethod
+    def get_fullscreen_modes():
         cdef list modes = []
         cdef vector[sf.VideoMode] *v = new vector[sf.VideoMode]()
         v[0] = sf.videomode.getFullscreenModes()
@@ -1190,12 +1190,12 @@ cdef class Keyboard:
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
 
-    @classmethod
-    def is_key_pressed(cls, int key):
+    @staticmethod
+    def is_key_pressed(int key):
         return sf.keyboard.isKeyPressed(<sf.keyboard.Key>key)
 
-    @classmethod
-    def set_virtual_keyboard_visible(cls, bint visible):
+    @staticmethod
+    def set_virtual_keyboard_visible(bint visible):
         sf.keyboard.setVirtualKeyboardVisible(visible)
 
 class Axis(IntEnum):
@@ -1216,34 +1216,34 @@ cdef class Joystick:
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
 
-    @classmethod
-    def is_connected(cls, unsigned int joystick):
+    @staticmethod
+    def is_connected(unsigned int joystick):
         return sf.joystick.isConnected(joystick)
 
-    @classmethod
-    def get_button_count(cls, unsigned int joystick):
+    @staticmethod
+    def get_button_count(unsigned int joystick):
         return sf.joystick.getButtonCount(joystick)
 
-    @classmethod
-    def has_axis(cls, unsigned int joystick, int axis):
+    @staticmethod
+    def has_axis(unsigned int joystick, int axis):
         return sf.joystick.hasAxis(joystick, <sf.joystick.Axis>axis)
 
-    @classmethod
-    def is_button_pressed(cls, unsigned int joystick, unsigned int button):
+    @staticmethod
+    def is_button_pressed(unsigned int joystick, unsigned int button):
         return sf.joystick.isButtonPressed(joystick, button)
 
-    @classmethod
-    def get_axis_position(cls, unsigned int joystick, int axis):
+    @staticmethod
+    def get_axis_position(unsigned int joystick, int axis):
         return sf.joystick.getAxisPosition(joystick, <sf.joystick.Axis> axis)
 
-    @classmethod
-    def get_identification(cls, unsigned int joystick):
+    @staticmethod
+    def get_identification(unsigned int joystick):
         cdef sf.joystick.Identification identification
         identification = sf.joystick.getIdentification(joystick)
         return (identification.name.toAnsiString(), identification.vendorId, identification.productId)
 
-    @classmethod
-    def update(cls):
+    @staticmethod
+    def update():
         sf.joystick.update()
 
 class Button(IntEnum):
@@ -1262,12 +1262,12 @@ cdef class Mouse:
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
 
-    @classmethod
-    def is_button_pressed(cls, int button):
+    @staticmethod
+    def is_button_pressed(int button):
         return sf.mouse.isButtonPressed(<sf.mouse.Button>button)
 
-    @classmethod
-    def get_position(cls, Window window=None):
+    @staticmethod
+    def get_position(Window window=None):
         cdef sf.Vector2i p
 
         if window is None:
@@ -1277,8 +1277,8 @@ cdef class Mouse:
 
         return Vector2(p.x, p.y)
 
-    @classmethod
-    def set_position(cls, position, Window window=None):
+    @staticmethod
+    def set_position(position, Window window=None):
         cdef sf.Vector2i p
         p.x, p.y = position
 
@@ -1292,12 +1292,12 @@ cdef class Touch:
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
 
-    @classmethod
-    def is_down(cls, int finger):
+    @staticmethod
+    def is_down(int finger):
         return sf.touch.isDown(finger)
 
-    @classmethod
-    def get_position(cls, int finger, Window window=None):
+    @staticmethod
+    def get_position(int finger, Window window=None):
         cdef sf.Vector2i p
 
         if window is None:
@@ -1321,16 +1321,16 @@ cdef class Sensor:
     def __init__(self):
         raise NotImplementedError("This class is not meant to be instantiated!")
 
-    @classmethod
-    def is_available(cls, int sensor):
+    @staticmethod
+    def is_available(int sensor):
         return sf.sensor.isAvailable(<sf.sensor.Type>(sensor))
 
-    @classmethod
-    def set_enabled(cls, int sensor, bint enabled):
+    @staticmethod
+    def set_enabled(int sensor, bint enabled):
         sf.sensor.setEnabled(<sf.sensor.Type>(sensor), enabled)
 
-    @classmethod
-    def get_value(cls, int sensor):
+    @staticmethod
+    def get_value(int sensor):
         cdef sf.Vector3f value
         value = sf.sensor.getValue(<sf.sensor.Type>(sensor))
         return Vector3(value.x, value.y, value.z)
