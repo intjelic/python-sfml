@@ -784,11 +784,16 @@ cdef VideoMode wrap_videomode(sf.VideoMode *p, bint d):
     return r
 
 
+class Attribute(IntEnum):
+    DEFAULT = sf.contextsettings.Default
+    CORE = sf.contextsettings.Core
+    DEBUG = sf.contextsettings.Debug
+
 cdef public class ContextSettings[type PyContextSettingsType, object PyContextSettingsObject]:
     cdef sf.ContextSettings *p_this
 
-    def __init__(self, unsigned int depth=0, unsigned int stencil=0, unsigned int antialiasing=0, unsigned int major=2, unsigned int minor=0):
-        self.p_this = new sf.ContextSettings(depth, stencil, antialiasing, major, minor)
+    def __init__(self, unsigned int depth=0, unsigned int stencil=0, unsigned int antialiasing=0, unsigned int major=2, unsigned int minor=0, int attributes=Attribute.DEFAULT):
+        self.p_this = new sf.ContextSettings(depth, stencil, antialiasing, major, minor, attributes)
 
     def __dealloc__(self):
         del self.p_this
@@ -833,6 +838,13 @@ cdef public class ContextSettings[type PyContextSettingsType, object PyContextSe
 
         def __set__(self, unsigned int minor_version):
             self.p_this.minorVersion = minor_version
+
+    property attribute_flags:
+        def __get__(self):
+            return self.p_this.attributeFlags
+
+        def __set__(self, int attribute_flags):
+            self.p_this.attributeFlags = attribute_flags
 
 cdef ContextSettings wrap_contextsettings(sf.ContextSettings *v):
     cdef ContextSettings r = ContextSettings.__new__(ContextSettings)

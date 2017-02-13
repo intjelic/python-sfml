@@ -145,7 +145,7 @@ cdef extern from "SFML/System.hpp" namespace "sf":
     cdef cppclass InputStream
     cdef cppclass Utf
 
-cimport style, event, videomode, keyboard, joystick, mouse, touch, sensor
+cimport style, event, videomode, contextsettings, keyboard, joystick, mouse, touch, sensor
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Event":
     cdef cppclass SizeEvent:
@@ -228,11 +228,13 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
         ContextSettings(unsigned int, unsigned int, unsigned int)
         ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int)
         ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
+        ContextSettings(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, Uint32)
         unsigned int depthBits
         unsigned int stencilBits
         unsigned int antialiasingLevel
         unsigned int majorVersion
         unsigned int minorVersion
+        Uint32 attributeFlags
 
     cdef cppclass VideoMode:
         VideoMode()
