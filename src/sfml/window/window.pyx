@@ -735,15 +735,6 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
         def __set__(self, unsigned int height):
             self.p_this.height = height
 
-    property size:
-        def __get__(self):
-            return Vector2(self.p_this.width, self.p_this.height)
-
-        def __set__(self, value):
-            width, height = value
-            self.p_this.width = width
-            self.p_this.height = height
-
     property bpp:
         def __get__(self):
             return self.p_this.bitsPerPixel
