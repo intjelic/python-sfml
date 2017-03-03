@@ -1199,7 +1199,7 @@ cdef public class Drawable[type PyDrawableType, object PyDrawableObject]:
     def draw(self, RenderTarget target, RenderStates states):
         pass
 
-cdef class Transformable:
+cdef class NativeTransformable:
     cdef sf.Transformable *p_this
 
     def __cinit__(self):
@@ -1207,9 +1207,6 @@ cdef class Transformable:
 
     def __dealloc__(self):
         del self.p_this
-
-    def __repr__(self):
-        return "Transformable(position={0}, rotation={1}, ratio={2}, origin={3})".format(self.position, self.rotation, self.ratio, self.origin)
 
     property position:
         def __get__(self):
@@ -1260,8 +1257,65 @@ cdef class Transformable:
             p[0] = self.p_this.getInverseTransform()
             return wrap_transform(p)
 
-cdef Transformable wrap_transformable(sf.Transformable *p):
-    cdef Transformable r = Transformable.__new__(Transformable)
+class Transformable:
+    def __init__(self):
+        self._transformable = NativeTransformable()
+
+    def __repr__(self):
+        return "Transformable(position={0}, rotation={1}, ratio={2}, origin={3})".format(self.position, self.rotation, self.ratio, self.origin)
+
+    @property
+    def position(self):
+        return self._transformable.position
+
+    @position.setter
+    def position(self, position):
+        self._transformable.position = position
+
+    @property
+    def rotation(self):
+        return self._transformable.rotation
+
+    @rotation.setter
+    def rotation(self, angle):
+        self._transformable.rotation = angle
+
+    @property
+    def ratio(self):
+        return self._transformable.ratio
+
+    @ratio.setter
+    def ratio(self, factor):
+        self._transformable.ratio = factor
+
+    @property
+    def origin(self):
+        return self._transformable.origin
+
+    @origin.setter
+    def origin(self, origin):
+        self._transformable.origin = origin
+
+    def move(self, offset):
+        self._transformable.move(offset)
+
+    def rotate(self, angle):
+        self._transformable.rotate(angle)
+
+    def scale(self, factor):
+        self._transformable.scale(factor)
+
+    @property
+    def transform(self):
+        return self._transformable.transform
+
+    @property
+    def inverse_transform(self):
+        return self._transformable.inverse_transform
+
+
+cdef NativeTransformable wrap_transformable(sf.Transformable *p):
+    cdef NativeTransformable r = NativeTransformable.__new__(NativeTransformable)
     r.p_this = p
     return r
 
