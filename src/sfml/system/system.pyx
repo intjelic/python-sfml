@@ -52,19 +52,41 @@ cdef api object popLastErrorMessage():
 # redirect SFML errors to our stream buffer
 restoreErrorHandler()
 
-from cpython.string cimport PyString_AsString
+cdef api sf.String to_string(basestring string):
+    # To have a portable string convertion implementation, the only
+    # reliable encoding format is UTF-32 (wchar isn't supported on Mac
+    # OS X. And given SFML converts into UTF-32 internally, we can
+    # simplify the implementation by letting Python convert it into a
+    # UTF-32 bytes array and let SFML trivially copy it.
 
-cdef api sf.String to_string(object string):
-    cdef char* cstring = NULL
+    # We must discard the 4 first bytes that corresponds to the Unicode
+    # byte order marks which SFML doesn't support, and add the NULL
+    # character at the end.
+    #
+    # Check out the following string example 'My' before and after the
+    # removal.
+    #
+    # b'\xff\xfe\x00\x00M\x00\x00\x00y\x00\x00\x00'
+    # b'M\x00\x00\x00y\x00\x00\x00\x00\x00\x00\x00'
+    #
+    bytes_string = string.encode('UTF-32')[4:] + b'\x00\x00\x00\x00'
 
-    string = string + "\0"
-    string = string.encode("utf-32")
-
-    cstring = PyString_AsString(string)
-    return sf.String(<Uint32*>cstring)
+    # We must read the underlying bytes array. In Cython, this is done
+    # in the following fashion.
+    cdef char* bytes_pointer = bytes_string
+    return sf.String(<Uint32*>bytes_pointer)
 
 cdef api object wrap_string(const sf.String* p):
-    return PyUnicode_FromWideChar(p.toWideString().c_str(), p.getSize())
+    # To simplify the implementation, we get the underlying UTF-32
+    # strings and let Python decode it.
+    cdef char* bytes_pointer = <char*>p.getData()
+
+    # Cython won't properly make a Python bytes string because it's
+    # going to stop at the first NULL character. Instead we specify its
+    # length manually.
+    bytes_string = bytes_pointer[:p.getSize()*4]
+
+    return bytes_string.decode('UTF-32')
 
 cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
     cdef sf.Vector2[NumericObject] *p_this

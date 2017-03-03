@@ -4,15 +4,7 @@
 # This file is part of PySFML project and is available under the zlib
 # license.
 
-cdef extern from *:
-    ctypedef int wchar_t
-
-cdef extern from "<string>" namespace "std":
-    cdef cppclass string:
-        char* c_str()
-
-    cdef cppclass wstring:
-        wchar_t* c_str()
+from libcpp.string cimport string
 
 cimport time
 
@@ -67,13 +59,12 @@ cdef extern from "SFML/System.hpp" namespace "sf":
 
     cdef cppclass String:
         String()
-        String(const wchar_t*)
         String(const Uint32*)
         string toAnsiString()
-        wstring toWideString()
         void clear()
         int getSize() const
         bint isEmpty() const
+        const Uint32* getData() const
 
     cdef cppclass Vector2[T]:
         Vector2()
