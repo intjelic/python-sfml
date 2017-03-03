@@ -1241,7 +1241,7 @@ cdef class Joystick:
     def get_identification(unsigned int joystick):
         cdef sf.joystick.Identification identification
         identification = sf.joystick.getIdentification(joystick)
-        return (identification.name.toAnsiString(), identification.vendorId, identification.productId)
+        return (wrap_string(&identification.name), identification.vendorId, identification.productId)
 
     @staticmethod
     def update():
