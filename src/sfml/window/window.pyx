@@ -151,8 +151,8 @@ cdef class TextEvent:
         def __get__(self):
             return unichr(self.p_this.unicode)
 
-        def __set__(self, Uint32 unicode):
-            self.p_this.unicode = unicode
+        def __set__(self, Py_UNICODE _unicode):
+            self.p_this.unicode = _unicode
 
 
 cdef class MouseMoveEvent:
