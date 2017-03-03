@@ -154,14 +154,10 @@ cdef class SoundBuffer:
         return "SoundBuffer(sample_rate={0}, channel_count={1}, duration={2})".format(self.sample_rate, self.channel_count, self.duration)
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, basestring filename):
         cdef sf.SoundBuffer *p = new sf.SoundBuffer()
-        cdef char* encoded_filename
 
-        encoded_filename_temporary = filename.encode('UTF-8')
-        encoded_filename = encoded_filename_temporary
-
-        if p.loadFromFile(encoded_filename):
+        if p.loadFromFile(filename.encode('UTF-8')):
             return wrap_soundbuffer(p)
 
         del p
@@ -187,13 +183,10 @@ cdef class SoundBuffer:
         del p
         raise IOError(popLastErrorMessage())
 
-    def to_file(self, filename):
+    def to_file(self, basestring filename):
         cdef char* encoded_filename
 
-        encoded_filename_temporary = filename.encode('UTF-8')
-        encoded_filename = encoded_filename_temporary
-
-        self.p_this.saveToFile(encoded_filename)
+        self.p_this.saveToFile(filename.encode('UTF-8'))
 
     property samples:
         def __get__(self):
@@ -416,14 +409,10 @@ cdef class Music(SoundStream):
         return "Music(buffer={0}, status={1}, playing_offset={2})".format(id(self.buffer), self.status, self.playing_offset)
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, basestring filename):
         cdef sf.Music *p = new sf.Music()
-        cdef char* encoded_filename
 
-        encoded_filename_temporary = filename.encode('UTF-8')
-        encoded_filename = encoded_filename_temporary
-
-        if p.openFromFile(encoded_filename):
+        if p.openFromFile(filename.encode('UTF-8')):
             return wrap_music(p)
 
         del p

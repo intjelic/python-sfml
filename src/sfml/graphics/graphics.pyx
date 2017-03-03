@@ -5,6 +5,7 @@
 # license.
 
 from libcpp.vector cimport vector
+from libcpp.string cimport string
 
 cimport sfml as sf
 from sfml cimport Int8, Int16, Int32, Int64
@@ -533,14 +534,10 @@ cdef public class Image[type PyImageType, object PyImageObject]:
         return wrap_image(p)
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, basestring filename):
         cdef sf.Image *p = new sf.Image()
-        cdef char* encoded_filename
 
-        encoded_filename_temporary = filename.encode('UTF-8')
-        encoded_filename = encoded_filename_temporary
-
-        if p.loadFromFile(encoded_filename):
+        if p.loadFromFile(filename.encode('UTF-8')):
             return wrap_image(p)
 
         del p
@@ -556,13 +553,8 @@ cdef public class Image[type PyImageType, object PyImageObject]:
         del p
         raise IOError(popLastErrorMessage())
 
-    def to_file(self, filename):
-        cdef char* encoded_filename
-
-        encoded_filename_temporary = filename.encode('UTF-8')
-        encoded_filename = encoded_filename_temporary
-
-        if not self.p_this.saveToFile(encoded_filename):
+    def to_file(self, basestring filename):
+        if not self.p_this.saveToFile(filename.encode('UTF-8')):
             raise IOError(popLastErrorMessage())
 
     property size:
@@ -650,19 +642,15 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         raise ValueError(popLastErrorMessage())
 
     @classmethod
-    def from_file(cls, filename, area=None):
+    def from_file(cls, basestring filename, area=None):
         cdef sf.Texture *p = new sf.Texture()
-        cdef char* encoded_filename
-
-        encoded_filename_temporary = filename.encode('UTF-8')
-        encoded_filename = encoded_filename_temporary
 
         if not area:
-            if p.loadFromFile(encoded_filename):
+            if p.loadFromFile(filename.encode('UTF-8')):
                 return wrap_texture(p, True)
         else:
             l, t, w, h = area
-            if p.loadFromFile(encoded_filename, sf.IntRect(l, t, w, h)):
+            if p.loadFromFile(filename.encode('UTF-8'), sf.IntRect(l, t, w, h)):
                 return wrap_texture(p, True)
 
         del p
@@ -870,14 +858,10 @@ cdef class Font:
         return "Font()"
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, basestring filename):
         cdef sf.Font *p = new sf.Font()
-        cdef char* encoded_filename
 
-        encoded_filename_temporary = filename.encode('UTF-8')
-        encoded_filename = encoded_filename_temporary
-
-        if p.loadFromFile(encoded_filename):
+        if p.loadFromFile(filename.encode('UTF-8')):
             return wrap_font(p)
 
         del p
@@ -936,27 +920,17 @@ cdef class Shader:
         return "Shader()"
 
     @classmethod
-    def from_file(cls, vertex=None, fragment=None):
+    def from_file(cls, basestring vertex=None, basestring fragment=None):
         cdef sf.Shader *p = new sf.Shader()
-        cdef char* encoded_vertex_filename
-        cdef char* encoded_fragment_filename
-
-        if vertex:
-            encoded_vertex_filename_temporary = vertex.encode('utf-8')
-            encoded_vertex_filename = encoded_vertex_filename_temporary
-
-        if fragment:
-            encoded_fragment_filename_temporary = fragment.encode('utf-8')
-            encoded_fragment_filename = encoded_fragment_filename_temporary
 
         if vertex and fragment:
-            if p.loadFromFile(encoded_vertex_filename, encoded_fragment_filename):
+            if p.loadFromFile(<string>vertex.encode('UTF-8'), <string>fragment.encode('UTF-8')):
                 return wrap_shader(p)
         elif vertex:
-            if p.loadFromFile(encoded_vertex_filename, sf.shader.Vertex):
+            if p.loadFromFile(<string>vertex.encode('UTF-8'), <sf.shader.Type>sf.shader.Vertex):
                 return wrap_shader(p)
         elif fragment:
-            if p.loadFromFile(encoded_fragment_filename, sf.shader.Fragment):
+            if p.loadFromFile(<string>fragment.encode('UTF-8'), <sf.shader.Type>sf.shader.Fragment):
                 return wrap_shader(p)
         else:
             raise TypeError("This method takes at least 1 argument (0 given)")

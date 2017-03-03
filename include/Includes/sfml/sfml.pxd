@@ -370,10 +370,10 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         void create(unsigned int, unsigned int)
         void create(unsigned int, unsigned int, const Uint8*)
         void create(unsigned int, unsigned int, const Color)
-        bint loadFromFile(char*&)
+        bint loadFromFile(const string&)
         bint loadFromMemory(const void*, size_t)
         bint loadFromStream(InputStream&)
-        bint saveToFile(const char*&) const
+        bint saveToFile(const string&) const
         Vector2u getSize() const
         void createMaskFromColor(const Color&)
         void createMaskFromColor(const Color&, Uint8)
@@ -390,8 +390,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         Texture()
         Texture(const Texture&)
         bint create(unsigned int, unsigned int)
-        bint loadFromFile(const char*&)
-        bint loadFromFile(const char*&, const IntRect&)
+        bint loadFromFile(const string&)
+        bint loadFromFile(const string&, const IntRect&)
         bint loadFromMemory(const void*, size_t)
         bint loadFromMemory(const void*, size_t, const IntRect&)
         bint loadFromStream(InputStream&)
@@ -421,7 +421,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
     cdef cppclass Font:
         Font()
         Font(const Font&)
-        bint loadFromFile(const char*&)
+        bint loadFromFile(const string&)
         bint loadFromMemory(const void*, size_t)
         bint loadFromStream(InputStream&)
         Glyph& getGlyph(Uint32, unsigned int, bint) const
@@ -432,8 +432,8 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
     cdef cppclass Shader:
         Shader()
-        bint loadFromFile(const char*&, shader.Type)
-        bint loadFromFile(const char*&, const char*&)
+        bint loadFromFile(const string&, shader.Type)
+        bint loadFromFile(const string&, const string&)
         bint loadFromMemory(const char*&, shader.Type)
         bint loadFromMemory(const char*&, const char*&)
         bint loadFromStream(InputStream&, shader.Type)
@@ -681,11 +681,11 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
     cdef cppclass SoundBuffer:
         SoundBuffer()
         SoundBuffer(const SoundBuffer&)
-        bint loadFromFile(const char*&)
+        bint loadFromFile(const string&)
         bint loadFromMemory(const void*, size_t)
         bint loadFromStream(InputStream&)
         bint loadFromSamples(const Int16*, size_t, unsigned int, unsigned int)
-        bint saveToFile(const char*&) const
+        bint saveToFile(const string&) const
         const Int16* getSamples() const
         size_t getSampleCount() const
         unsigned int getSampleRate() const
@@ -738,7 +738,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
 
     cdef cppclass Music:
         Music()
-        bint openFromFile(const char*&)
+        bint openFromFile(const string&)
         bint openFromMemory(const void*, size_t)
         bint openFromStream(InputStream&)
         Time getDuration() const
