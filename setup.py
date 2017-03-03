@@ -125,7 +125,7 @@ if platform.system() == 'Windows':
     dlls = [("Lib\\site-packages\\sfml", glob('extlibs\\' + arch + '\\openal32.dll'))]
     data_files += dlls
 
-with open('README.rst', 'r') as f:
+with open('README.md', 'r') as f:
     long_description = f.read()
 
 ext_modules=[system, window, graphics, audio, network]
