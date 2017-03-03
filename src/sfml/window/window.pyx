@@ -783,7 +783,7 @@ class Attribute(IntEnum):
 cdef public class ContextSettings[type PyContextSettingsType, object PyContextSettingsObject]:
     cdef sf.ContextSettings *p_this
 
-    def __init__(self, unsigned int depth=0, unsigned int stencil=0, unsigned int antialiasing=0, unsigned int major=2, unsigned int minor=0, int attributes=Attribute.DEFAULT):
+    def __init__(self, unsigned int depth=0, unsigned int stencil=0, unsigned int antialiasing=0, unsigned int major=1, unsigned int minor=1, int attributes=Attribute.DEFAULT):
         self.p_this = new sf.ContextSettings(depth, stencil, antialiasing, major, minor, attributes)
 
     def __dealloc__(self):
