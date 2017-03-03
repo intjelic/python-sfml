@@ -690,8 +690,8 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
     cdef sf.VideoMode *p_this
     cdef bint delete_this
 
-    def __init__(self, unsigned int width, unsigned int height, unsigned int bits_per_pixel=32):
-        self.p_this = new sf.VideoMode(width, height, bits_per_pixel)
+    def __init__(self, unsigned int mode_width, unsigned int mode_height, unsigned int mode_bits_per_pixel=32):
+        self.p_this = new sf.VideoMode(mode_width, mode_height, mode_bits_per_pixel)
         self.delete_this = True
 
     def __dealloc__(self):
