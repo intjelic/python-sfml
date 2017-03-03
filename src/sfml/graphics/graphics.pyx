@@ -1402,7 +1402,7 @@ cdef class Text(TransformableDrawable):
     cdef sf.Text *p_this
     cdef Font     m_font
 
-    def __init__(self, string=None, Font font=None, unsigned int character_size=30):
+    def __init__(self, unicode string=None, Font font=None, unsigned int character_size=30):
         if self.p_this is NULL:
             self.p_this = new sf.Text()
             self.p_drawable = <sf.Drawable*>self.p_this
@@ -1429,7 +1429,7 @@ cdef class Text(TransformableDrawable):
         def __get__(self):
             return wrap_string(&self.p_this.getString())
 
-        def __set__(self, string):
+        def __set__(self, unicode string):
             self.p_this.setString(to_string(string))
 
     property font:
@@ -1955,7 +1955,7 @@ cdef api object wrap_rendertarget(sf.RenderTarget* p):
 cdef class RenderWindow(Window):
     cdef sf.RenderWindow *p_this
 
-    def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=ContextSettings()):
+    def __init__(self, VideoMode mode, unicode title, Uint32 style=sf.style.Default, ContextSettings settings=ContextSettings()):
         if self.p_this == NULL:
             self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(self)
             self.p_this.create(mode.p_this[0], to_string(title), style, settings.p_this[0])

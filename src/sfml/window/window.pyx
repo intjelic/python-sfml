@@ -846,7 +846,7 @@ cdef ContextSettings wrap_contextsettings(sf.ContextSettings *v):
 cdef public class Window[type PyWindowType, object PyWindowObject]:
     cdef sf.Window *p_window
 
-    def __init__(self, VideoMode mode, title, Uint32 style=sf.style.Default, ContextSettings settings=ContextSettings()):
+    def __init__(self, VideoMode mode, unicode title, Uint32 style=sf.style.Default, ContextSettings settings=ContextSettings()):
         if self.p_window == NULL:
             self.p_window = <sf.Window*>new DerivableWindow(self)
             self.p_window.create(mode.p_this[0], to_string(title), style, settings.p_this[0])
@@ -918,7 +918,7 @@ cdef public class Window[type PyWindowType, object PyWindowObject]:
             self.p_window.setSize(to_vector2u(size))
 
     property title:
-        def __set__(self, title):
+        def __set__(self, unicode title):
             self.p_window.setTitle(to_string(title))
 
     def set_icon(self, int width, int height, bytes pixels):
