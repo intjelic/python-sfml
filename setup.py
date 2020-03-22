@@ -13,6 +13,9 @@ except ImportError:
     print("Please install Cython and try again.")
     exit(1)
 
+SFML_HEADERS = os.getenv('SFML_HEADERS')
+SFML_LIBRARIES = os.getenv('SFML_LIBRARIES')
+
 if platform.architecture()[0] == "32bit":
     arch = "x86"
 elif platform.architecture()[0] == "64bit":
@@ -75,11 +78,24 @@ class CythonBuildExt(build_ext):
 
         return ret
 
+include_dirs = []
+library_dirs = []
+
+include_dirs.append(os.path.join('include', 'Includes'))
+if SFML_HEADERS:
+    include_dirs.append(SFML_HEADERS)
+
+if sys.hexversion >= 0x03050000:
+    library_dirs.append(os.path.join('extlibs', 'libs-msvc-universal', arch))
+
+if SFML_LIBRARIES:
+    include_dirs.append(SFML_LIBRARIES)
+
 def extension(name, files, libs): return Extension(
         name='sfml.' + name,
         sources=[os.path.join('src', 'sfml', name, filename) for filename in files],
-        include_dirs=[os.path.join('include', 'Includes')],
-        library_dirs=[os.path.join('extlibs', 'libs-msvc-universal', arch)] if sys.hexversion >= 0x03050000 else [],
+        include_dirs=include_dirs,
+        library_dirs=library_dirs,
         language='c++',
         libraries=libs,
         define_macros=[('SFML_STATIC', '1')] if platform.system() == 'Windows' else []
