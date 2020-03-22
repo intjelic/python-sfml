@@ -130,8 +130,6 @@ with open('README.md', 'r') as f:
 
 ext_modules=[system, window, graphics, audio, network]
 
-install_requires = []
-
 kwargs = dict(
             name='pySFML',
             ext_modules=ext_modules,
@@ -157,7 +155,7 @@ kwargs = dict(
                         'Topic :: Multimedia',
                         'Topic :: Software Development :: Libraries :: Python Modules'],
             keywords='sfml SFML simple fast multimedia system window graphics audio network pySFML PySFML python-sfml',
-            install_requires=install_requires,
+            install_requires=['Cython'],
             cmdclass={'build_ext': CythonBuildExt})
 
 setup(**kwargs)
