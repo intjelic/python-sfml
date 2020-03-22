@@ -3,6 +3,9 @@
 
 name: Python package for Ubuntu
 
+env:
+  SFML_VERSION: 2.5.1
+
 on:
   push:
     branches: [ master ]
@@ -31,6 +34,7 @@ jobs:
         sudo apt-get install libx11-dev libgl1-mesa-dev libudev-dev libopenal-dev libvorbis-dev libflac-dev libxrandr-dev libfreetype6-dev
         git clone https://github.com/sfml/sfml
         cd sfml/
+        git checkout tags/$SFML_VERSION
         cmake .
         make
         sudo make install
