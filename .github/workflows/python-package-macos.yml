@@ -1,0 +1,36 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python package for macOS
+
+env:
+  SFML_VERSION: 2.5.1
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        curl -O https://www.sfml-dev.org/files/SFML-2.5.1-macOS-clang.tar.gz
+        tar -xvf SFML-2.5.1-macOS-clang.tar.gz
+        export CPLUS_INCLUDE_PATH=`pwd`/SFML-2.5.1-macos-clang/include
+        export LIBRARY_PATH=`pwd`/SFML-2.5.1-macos-clang/lib
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Build bindings
+      run: |
+        python setup.py build
