@@ -1,5 +1,8 @@
-import sys, os, platform
-import os.path, shutil
+import sys
+import os
+import platform
+import os.path
+import shutil
 from glob import glob
 from subprocess import call
 from setuptools import setup, Command, Extension
@@ -7,19 +10,21 @@ from setuptools import setup, Command, Extension
 try:
     from Cython.Distutils import build_ext
 except ImportError:
-    print("Please install cython and try again.")
-    raise SystemExit
+    print("Please install Cython and try again.")
+    exit(1)
 
 if platform.architecture()[0] == "32bit":
-	arch = "x86"
+    arch = "x86"
 elif platform.architecture()[0] == "64bit":
-	arch = "x64"
+    arch = "x64"
 
 class CythonBuildExt(build_ext):
-    """ Updated version of cython build_ext command to deal with the
-        generated API headers. C/C++ header files are all moved to the
-        temporary build directory before being properly installed on
-        the system.
+    """ Updated version of cython build_ext command.
+
+    This version of cython build_ext command include generated API headers to
+    the build process of subsequent extensions. The C/C++ header files are all
+    moved to the temporary build directory before being properly installed on
+    the system.
     """
 
     def cython_sources(self, sources, extension):
@@ -42,7 +47,8 @@ class CythonBuildExt(build_ext):
             header_files.remove(os.path.join('src', 'sfml', module, module + '_api.h'))
 
         # create the temporary destination in the build directory
-        destination = os.path.join(self.build_temp, 'include', 'pysfml', module)
+        destination = os.path.join(
+            self.build_temp, 'include', 'pysfml', module)
 
         if not os.path.exists(destination):
             os.makedirs(destination)
@@ -56,7 +62,8 @@ class CythonBuildExt(build_ext):
                     pass
 
         # add the temporary header directory to compilation options
-        self.compiler.include_dirs.append(os.path.join(self.build_temp, 'include'))
+        self.compiler.include_dirs.append(
+            os.path.join(self.build_temp, 'include'))
 
         # update data_files to install the files on the system
 
@@ -68,40 +75,76 @@ class CythonBuildExt(build_ext):
 
         return ret
 
-modules = ['system', 'window', 'graphics', 'audio', 'network']
-
-extension = lambda name, files, libs: Extension(
-	name='sfml.' + name,
-	sources= [os.path.join('src', 'sfml', name, filename) for filename in files],
-	include_dirs=[os.path.join('include', 'Includes')],
-	library_dirs=[os.path.join('extlibs', 'libs-msvc-universal', arch)] if sys.hexversion >= 0x03050000 else [],
-	language='c++',
-	libraries=libs,
-	define_macros=[('SFML_STATIC', '1')] if platform.system() == 'Windows' else [])
+def extension(name, files, libs): return Extension(
+        name='sfml.' + name,
+        sources=[os.path.join('src', 'sfml', name, filename) for filename in files],
+        include_dirs=[os.path.join('include', 'Includes')],
+        library_dirs=[os.path.join('extlibs', 'libs-msvc-universal', arch)] if sys.hexversion >= 0x03050000 else [],
+        language='c++',
+        libraries=libs,
+        define_macros=[('SFML_STATIC', '1')] if platform.system() == 'Windows' else []
+    )
 
 if platform.system() == 'Windows':
-	system_libs   = ['winmm', 'sfml-system-s']
-	window_libs   = ['user32', 'advapi32', 'winmm', 'sfml-system-s', 'gdi32', 'opengl32', 'sfml-window-s']
-	graphics_libs = ['user32', 'advapi32', 'winmm', 'sfml-system-s', 'gdi32', 'opengl32', 'sfml-window-s', 'freetype', 'jpeg', 'sfml-graphics-s']
-	audio_libs    = ['winmm', 'sfml-system-s', 'flac', 'vorbisenc', 'vorbisfile', 'vorbis', 'ogg', 'openal32', 'sfml-audio-s']
-	network_libs  = ['ws2_32', 'sfml-system-s', 'sfml-network-s']
+    system_libs = [
+        'winmm',
+        'sfml-system-s'
+    ]
+    window_libs = [
+      'user32',
+      'advapi32',
+      'winmm',
+      'sfml-system-s',
+      'gdi32',
+      'opengl32',
+      'sfml-window-s'
+    ]
+    graphics_libs = [
+        'user32',
+        'advapi32',
+        'winmm',
+        'sfml-system-s',
+        'gdi32',
+        'opengl32',
+        'sfml-window-s',
+        'freetype',
+        'jpeg',
+        'sfml-graphics-s'
+    ]
+    audio_libs = [
+        'winmm',
+        'sfml-system-s',
+        'flac',
+        'vorbisenc',
+        'vorbisfile',
+        'vorbis',
+        'ogg',
+        'openal32',
+        'sfml-audio-s'
+    ]
+    network_libs = [
+        'ws2_32',
+        'sfml-system-s',
+        'sfml-network-s'
+    ]
 else:
-	system_libs   = ['sfml-system']
-	window_libs   = ['sfml-system', 'sfml-window']
-	graphics_libs = ['sfml-system', 'sfml-window', 'sfml-graphics']
-	audio_libs    = ['sfml-system', 'sfml-audio']
-	network_libs  = ['sfml-system', 'sfml-network']
-
+    system_libs   = ['sfml-system']
+    window_libs   = ['sfml-system', 'sfml-window']
+    graphics_libs = ['sfml-system', 'sfml-window', 'sfml-graphics']
+    audio_libs    = ['sfml-system', 'sfml-audio']
+    network_libs  = ['sfml-system', 'sfml-network']
 
 system = extension(
     'system',
     ['system.pyx', 'error.cpp', 'hacks.cpp', 'NumericObject.cpp'],
-    system_libs)
+    system_libs
+)
 
 window = extension(
     'window',
     ['window.pyx', 'DerivableWindow.cpp'],
-    window_libs)
+    window_libs
+)
 
 graphics = extension(
     'graphics',
@@ -111,14 +154,16 @@ graphics = extension(
 audio = extension(
     'audio',
     ['audio.pyx', 'DerivableSoundRecorder.cpp', 'DerivableSoundStream.cpp'],
-    audio_libs)
+    audio_libs
+)
 
 network = extension(
     'network',
     ['network.pyx'],
-    network_libs)
+    network_libs
+)
 
-major, minor, _, _ , _ = sys.version_info
+major, minor, _, _, _ = sys.version_info
 
 data_files = []
 if platform.system() == 'Windows':
@@ -128,34 +173,33 @@ if platform.system() == 'Windows':
 with open('README.md', 'r') as f:
     long_description = f.read()
 
-ext_modules=[system, window, graphics, audio, network]
-
-kwargs = dict(
-            name='pySFML',
-            ext_modules=ext_modules,
-            package_dir={'': 'src'},
-            packages=['sfml'],
-            data_files=data_files,
-            version='2.3.2.dev1',
-            description='Python bindings for SFML',
-            long_description=long_description,
-            author='Jonathan de Wachter',
-            author_email='dewachter.jonathan@gmail.com',
-            url='http://python-sfml.org',
-            classifiers=['Development Status :: 5 - Production/Stable',
-                        'Intended Audience :: Developers',
-                        'License :: OSI Approved :: zlib/libpng License',
-                        'Operating System :: OS Independent',
-                        'Programming Language :: Python :: 3',
-                        'Programming Language :: Cython',
-                        'Programming Language :: C++',
-                        'Programming Language :: Python',
-                        'Programming Language :: Python :: Implementation :: CPython',
-                        'Topic :: Games/Entertainment',
-                        'Topic :: Multimedia',
-                        'Topic :: Software Development :: Libraries :: Python Modules'],
-            keywords='sfml SFML simple fast multimedia system window graphics audio network pySFML PySFML python-sfml',
-            install_requires=['Cython'],
-            cmdclass={'build_ext': CythonBuildExt})
-
-setup(**kwargs)
+setup(
+    name='pySFML',
+    ext_modules=[system, window, graphics, audio, network],
+    package_dir={'': 'src'},
+    packages=['sfml'],
+    data_files=data_files,
+    version='2.3.2.dev1',
+    description='Python bindings for SFML',
+    long_description=long_description,
+    author='Jonathan de Wachter',
+    author_email='dewachter.jonathan@gmail.com',
+    url='http://python-sfml.org',
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: zlib/libpng License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Cython',
+        'Programming Language :: C++',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Topic :: Games/Entertainment',
+        'Topic :: Multimedia',
+        'Topic :: Software Development :: Libraries :: Python Modules'
+    ],
+    keywords='sfml SFML simple fast multimedia system window graphics audio network pySFML PySFML python-sfml',
+    install_requires=['Cython'],
+    cmdclass={'build_ext': CythonBuildExt}
+)
