@@ -45,7 +45,3 @@ jobs:
     - name: Test building bindings
       run: |
         python setup.py build
-    - name: Test with pytest
-      run: |
-        pip install pytest
-        pytest
