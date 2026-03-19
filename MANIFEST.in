@@ -1,5 +1,4 @@
-include README.rst
+include README.md
+include LICENSE.txt
 recursive-include src *.hpp
 recursive-include include *
-include extlibs/x86/openal32.dll
-include extlibs/x64/openal32.dll

@@ -1,8 +1,7 @@
 # PySFML - Python bindings for SFML
-# Copyright (c) 2012-2017, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# Copyright (c) 2012-2026, Jonathan De Wachter <dewachter.jonathan@gmail.com>
 #
-# This file is part of PySFML project and is available under the zlib
-# license.
+# This file is part of PySFML and is available under the zlib license.
 
 #from libc.stdlib cimport malloc, free
 #from cython.operator cimport preincrement as preinc, dereference as deref
@@ -14,16 +13,14 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 cimport sfml as sf
-from sfml cimport Int8, Int16, Int32, Int64
-from sfml cimport Uint8, Uint16, Uint32, Uint64
-from pysfml.system cimport Vector3, Time
-from pysfml.system cimport wrap_vector3f, to_vector3f
-from pysfml.system cimport wrap_time, to_vector3f
-from pysfml.system cimport popLastErrorMessage, import_sfml__system
+from sfml cimport listener as sf_listener
+from sfml cimport soundrecorder as sf_soundrecorder
+from sfml cimport soundsource as sf_soundsource
+from pysfml cimport system as pysfml_system
 
 from enum import IntEnum
 
-import_sfml__system()
+pysfml_system.import_sfml__system()
 
 cdef extern from "pysfml/audio/DerivableSoundStream.hpp":
     cdef cppclass DerivableSoundStream:
@@ -41,41 +38,44 @@ cdef class Listener:
 
     @staticmethod
     def get_global_volume():
-        return sf.listener.getGlobalVolume()
+        return sf_listener.getGlobalVolume()
 
     @staticmethod
     def set_global_volume(float volume):
-        sf.listener.setGlobalVolume(volume)
+        sf_listener.setGlobalVolume(volume)
 
     @staticmethod
     def get_position():
-        cdef sf.Vector3f p = sf.listener.getPosition()
-        return wrap_vector3f(p)
+        cdef sf.Vector3f p = sf_listener.getPosition()
+        return pysfml_system.wrap_vector3f(p)
 
     @staticmethod
     def set_position(position):
-        sf.listener.setPosition(to_vector3f(position))
+        cdef sf.Vector3f p = pysfml_system.to_vector3f(position)
+        sf_listener.setPosition(p.x, p.y, p.z)
 
     @staticmethod
     def get_direction():
-        cdef sf.Vector3f p = sf.listener.getDirection()
-        return wrap_vector3f(p)
+        cdef sf.Vector3f p = sf_listener.getDirection()
+        return pysfml_system.wrap_vector3f(p)
 
     @staticmethod
     def set_direction(direction):
-        sf.listener.setDirection(to_vector3f(direction))
+        cdef sf.Vector3f p = pysfml_system.to_vector3f(direction)
+        sf_listener.setDirection(p.x, p.y, p.z)
 
     @staticmethod
     def get_up_vector():
-        cdef sf.Vector3f p = sf.listener.getUpVector()
-        return wrap_vector3f(p)
+        cdef sf.Vector3f p = sf_listener.getUpVector()
+        return pysfml_system.wrap_vector3f(p)
 
     @staticmethod
     def set_up_vector(up_vector):
-        sf.listener.setUpVector(to_vector3f(up_vector))
+        cdef sf.Vector3f p = pysfml_system.to_vector3f(up_vector)
+        sf_listener.setUpVector(p.x, p.y, p.z)
 
 cdef public class Chunk[type PyChunkType, object PyChunkObject]:
-    cdef Int16* m_samples
+    cdef sf.Int16* m_samples
     cdef size_t m_sampleCount
     cdef bint   delete_this
 
@@ -83,6 +83,10 @@ cdef public class Chunk[type PyChunkType, object PyChunkObject]:
         self.m_samples = NULL
         self.m_sampleCount = 0
         self.delete_this = False
+
+    def __init__(self, data=None):
+        if data is not None:
+            self.data = data
 
     def __dealloc__(self):
         if self.delete_this:
@@ -95,9 +99,13 @@ cdef public class Chunk[type PyChunkType, object PyChunkObject]:
         return self.m_sampleCount
 
     def __getitem__(self, size_t key):
+        if key >= self.m_sampleCount:
+            raise IndexError("chunk index out of range")
         return self.m_samples[key]
 
-    def __setitem__(self, size_t key, Int16 other):
+    def __setitem__(self, size_t key, sf.Int16 other):
+        if key >= self.m_sampleCount:
+            raise IndexError("chunk assignment index out of range")
         self.m_samples[key] = other
 
     property data:
@@ -105,18 +113,27 @@ cdef public class Chunk[type PyChunkType, object PyChunkObject]:
             return (<char*>self.m_samples)[:len(self)*2]
 
         def __set__(self, bdata):
-            cdef char* data = <bytes>bdata
+            cdef bytes data = bytes(bdata)
+            cdef Py_ssize_t data_length = len(data)
 
-            if len(bdata) % 2:
+            if data_length % 2:
                 raise ValueError("Chunk data length must be even as it represents a 16bit array")
 
             if self.delete_this:
                 free(self.m_samples)
+                self.m_samples = NULL
                 self.m_sampleCount = 0
 
-            self.m_samples = <Int16*>malloc(len(bdata))
-            memcpy(self.m_samples, data, len(bdata))
-            self.m_sampleCount = len(bdata) // 2
+            if data_length == 0:
+                self.delete_this = True
+                return
+
+            self.m_samples = <sf.Int16*>malloc(data_length)
+            if self.m_samples == NULL:
+                raise MemoryError()
+
+            memcpy(self.m_samples, <char*>data, data_length)
+            self.m_sampleCount = data_length // 2
 
             self.delete_this = True
 
@@ -127,12 +144,12 @@ cdef api object create_chunk():
     r.delete_this = False
     return r
 
-cdef api Int16* terminate_chunk(chunk):
+cdef api sf.Int16* terminate_chunk(chunk):
     cdef Chunk p = <Chunk>chunk
     p.delete_this = False
     return p.m_samples
 
-cdef api object wrap_chunk(Int16* samples, unsigned int sample_count, bint delete):
+cdef api object wrap_chunk(sf.Int16* samples, unsigned int sample_count, bint delete):
     cdef Chunk r = Chunk.__new__(Chunk)
     r.m_samples = samples
     r.m_sampleCount = sample_count
@@ -154,14 +171,14 @@ cdef class SoundBuffer:
         return "SoundBuffer(sample_rate={0}, channel_count={1}, duration={2})".format(self.sample_rate, self.channel_count, self.duration)
 
     @classmethod
-    def from_file(cls, basestring filename):
+    def from_file(cls, str filename):
         cdef sf.SoundBuffer *p = new sf.SoundBuffer()
 
         if p.loadFromFile(filename.encode('UTF-8')):
             return wrap_soundbuffer(p)
 
         del p
-        raise IOError(popLastErrorMessage())
+        raise IOError(pysfml_system.popLastErrorMessage())
 
     @classmethod
     def from_memory(cls, bytes data):
@@ -171,7 +188,7 @@ cdef class SoundBuffer:
             return wrap_soundbuffer(p)
 
         del p
-        raise IOError(popLastErrorMessage())
+        raise IOError(pysfml_system.popLastErrorMessage())
 
     @classmethod
     def from_samples(cls, Chunk samples, unsigned int channel_count, unsigned int sample_rate):
@@ -181,9 +198,9 @@ cdef class SoundBuffer:
             return wrap_soundbuffer(p)
 
         del p
-        raise IOError(popLastErrorMessage())
+        raise IOError(pysfml_system.popLastErrorMessage())
 
-    def to_file(self, basestring filename):
+    def to_file(self, str filename):
         cdef char* encoded_filename
 
         self.p_this.saveToFile(filename.encode('UTF-8'))
@@ -191,7 +208,7 @@ cdef class SoundBuffer:
     property samples:
         def __get__(self):
             cdef Chunk r = Chunk.__new__(Chunk)
-            r.m_samples = <Int16*>self.p_this.getSamples()
+            r.m_samples = <sf.Int16*>self.p_this.getSamples()
             r.m_sampleCount = self.p_this.getSampleCount()
             return r
 
@@ -207,7 +224,7 @@ cdef class SoundBuffer:
         def __get__(self):
             cdef sf.Time* p = new sf.Time()
             p[0] = self.p_this.getDuration()
-            return wrap_time(p)
+            return pysfml_system.wrap_time(p)
 
 cdef SoundBuffer wrap_soundbuffer(sf.SoundBuffer *p, bint delete_this=True):
     cdef SoundBuffer r = SoundBuffer.__new__(SoundBuffer)
@@ -216,9 +233,9 @@ cdef SoundBuffer wrap_soundbuffer(sf.SoundBuffer *p, bint delete_this=True):
     return r
 
 class Status(IntEnum):
-    STOPPED = sf.soundsource.Stopped
-    PAUSED = sf.soundsource.Paused
-    PLAYING = sf.soundsource.Playing
+    STOPPED = sf_soundsource.Stopped
+    PAUSED = sf_soundsource.Paused
+    PLAYING = sf_soundsource.Playing
 
 cdef class SoundSource:
     cdef sf.SoundSource *p_soundsource
@@ -243,10 +260,10 @@ cdef class SoundSource:
     property position:
         def __get__(self):
             cdef sf.Vector3f p = self.p_soundsource.getPosition()
-            return wrap_vector3f(p)
+            return pysfml_system.wrap_vector3f(p)
 
         def __set__(self, position):
-            self.p_soundsource.setPosition(to_vector3f(position))
+            self.p_soundsource.setPosition(pysfml_system.to_vector3f(position))
 
     property relative_to_listener:
         def __get__(self):
@@ -319,9 +336,9 @@ cdef class Sound(SoundSource):
         def __get__(self):
             cdef sf.Time* p = new sf.Time()
             p[0] = self.p_this.getPlayingOffset()
-            return wrap_time(p)
+            return pysfml_system.wrap_time(p)
 
-        def __set__(self, Time time_offset):
+        def __set__(self, pysfml_system.Time time_offset):
             self.p_this.setPlayingOffset(time_offset.p_this[0])
 
     property status:
@@ -371,9 +388,9 @@ cdef class SoundStream(SoundSource):
         def __get__(self):
             cdef sf.Time* p = new sf.Time()
             p[0] = self.p_soundstream.getPlayingOffset()
-            return wrap_time(p)
+            return pysfml_system.wrap_time(p)
 
-        def __set__(self, Time time_offset):
+        def __set__(self, pysfml_system.Time time_offset):
             self.p_soundstream.setPlayingOffset(time_offset.p_this[0])
 
     property loop:
@@ -409,14 +426,14 @@ cdef class Music(SoundStream):
         return "Music(buffer={0}, status={1}, playing_offset={2})".format(id(self.buffer), self.status, self.playing_offset)
 
     @classmethod
-    def from_file(cls, basestring filename):
+    def from_file(cls, str filename):
         cdef sf.Music *p = new sf.Music()
 
         if p.openFromFile(filename.encode('UTF-8')):
             return wrap_music(p)
 
         del p
-        raise IOError(popLastErrorMessage())
+        raise IOError(pysfml_system.popLastErrorMessage())
 
     @classmethod
     def from_memory(cls, bytes data):
@@ -426,13 +443,13 @@ cdef class Music(SoundStream):
             return wrap_music(p)
 
         del p
-        raise IOError(popLastErrorMessage())
+        raise IOError(pysfml_system.popLastErrorMessage())
 
     property duration:
         def __get__(self):
             cdef sf.Time* p = new sf.Time()
             p[0] = self.p_this.getDuration()
-            return wrap_time(p)
+            return pysfml_system.wrap_time(p)
 
 
 cdef Music wrap_music(sf.Music *p):
@@ -478,15 +495,15 @@ cdef class SoundRecorder:
 
     @staticmethod
     def is_available():
-        return sf.soundrecorder.isAvailable()
+        return sf_soundrecorder.isAvailable()
 
     @staticmethod
     def get_available_devices():
-        return sf.soundrecorder.getAvailableDevices()
+        return sf_soundrecorder.getAvailableDevices()
 
     @staticmethod
     def get_default_device():
-        return sf.soundrecorder.getDefaultDevice()
+        return sf_soundrecorder.getDefaultDevice()
 
     def on_start(self):
         return True

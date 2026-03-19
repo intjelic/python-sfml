@@ -1,20 +1,19 @@
-from sfml import sf
-import client, server
+import client
+import server
 
-# python 2.* compatability
-try: input = raw_input
-except NameError: pass
 
-# choose a random port for opening sockets (ports < 1024 are reserved)
 PORT = 2435
 
-# client or server ?
-print("Do you want to be a server (s) or a client (c) ?")
-who = input()
 
-if who == 's':
-    server.do_server(PORT)
-else:
-    client.do_client(PORT)
+def main():
+    print("Do you want to be a server (s) or a client (c) ?")
+    who = input().strip().lower()
 
-input("Press any key to exit...")
+    if who == 's':
+        server.run_server(PORT)
+    else:
+        client.run_client(PORT)
+
+
+if __name__ == "__main__":
+    main()

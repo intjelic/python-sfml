@@ -1,11 +1,16 @@
 # PySFML - Python bindings for SFML
-# Copyright (c) 2012-2017, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# Copyright (c) 2012-2026, Jonathan De Wachter <dewachter.jonathan@gmail.com>
 #
-# This file is part of PySFML project and is available under the zlib
-# license.
+# This file is part of PySFML and is available under the zlib license.
 
-from sfml cimport Vector2i
-from sfml cimport Window
+cdef extern from "SFML/System/Vector2.hpp" namespace "sf":
+    cdef cppclass Vector2i "sf::Vector2<int>":
+        int x
+        int y
+
+cdef extern from "SFML/Window/Window.hpp" namespace "sf":
+    cdef cppclass Window:
+        pass
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Mouse":
     cdef enum Button:

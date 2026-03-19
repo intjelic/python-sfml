@@ -1,63 +1,59 @@
-from sfml import sf
 from struct import pack
-from random import randint
 
-# python 2.* compatability
-try: input = raw_input
-except NameError: pass
+from sfml import audio as sf_audio
+from sfml import network as sf_network
 
-AUDIO_DATA, END_OF_STREAM = list(range(1, 3))
 
-class NetworkRecorder(sf.SoundRecorder):
+AUDIO_DATA = 1
+END_OF_STREAM = 2
+
+
+class NetworkRecorder(sf_audio.SoundRecorder):
     def __init__(self, host, port):
-        sf.SoundRecorder.__init__(self)
+        sf_audio.SoundRecorder.__init__(self)
 
-        self.host = host # address of the remote host
-        self.port = port # remote port
-        self.socket = sf.TcpSocket() # socket used to communicate with the server
+        self.host = host
+        self.port = port
+        self.socket = sf_network.TcpSocket()
 
     def on_start(self):
-        try: self.socket.connect(self.host, self.port)
-        except sf.SocketException as error: return False
+        try:
+            self.socket.connect(self.host, self.port)
+        except sf_network.SocketException:
+            return False
 
         return True
 
     def on_process_samples(self, chunk):
-        # pack the audio samples
-        data = pack("B", AUDIO_DATA)
-        data += pack("I", len(chunk.data))
-        data += chunk.data
+        payload = chunk.data
+        data = pack("!BI", AUDIO_DATA, len(payload)) + payload
 
-        # send the audio packet
-        try: self.socket.send(data)
-        except sf.SocketException: return False
+        try:
+            self.socket.send(data)
+        except sf_network.SocketException:
+            return False
 
         return True
 
     def on_stop(self):
-        # send a "end-of-stream" signal
-        self.socket.send(bytes(END_OF_STREAM))
+        try:
+            self.socket.send(bytes([END_OF_STREAM]))
+        finally:
+            self.socket.disconnect()
 
-        # close the socket
-        self.socket.disconnect()
 
-def do_client(port):
-    # check that the device can capture audio
-    if not sf.SoundRecorder.is_available():
+def run_client(port):
+    if not sf_audio.SoundRecorder.is_available():
         print("Sorry, audio capture is not supported by your system")
         return
 
-    # ask for server address
     server = input("Type address or name of the server to connect to: ")
-    server = sf.IpAddress.from_string(server)
+    server = sf_network.IpAddress.from_string(server)
 
-    # create an instance of our custom recorder
     recorder = NetworkRecorder(server, port)
 
-    # wait for the user input...
     input("Press enter to start recording audio")
 
-    # start capturing audio data
     recorder.start(44100)
     input("Recording... press enter to stop")
     recorder.stop()

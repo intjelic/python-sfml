@@ -1,124 +1,111 @@
 import threading
-from time import sleep
-from sfml import sf
 from struct import unpack
 
-# python 2.* compatability
-try: input = raw_input
-except NameError: pass
+from sfml import audio as sf_audio
+from sfml import network as sf_network
+from sfml import system as sf_system
 
-AUDIO_DATA, END_OF_STREAM = list(range(1, 3))
 
-class NetworkAudioStream(sf.SoundStream):
+AUDIO_DATA = 1
+END_OF_STREAM = 2
+CHUNK_SAMPLE_COUNT = 4096
+
+
+def receive_exact(socket, size):
+    data = bytearray()
+
+    while len(data) < size:
+        chunk = socket.receive(size - len(data))
+        if not chunk:
+            raise sf_network.SocketDisconnected("Connection closed while receiving audio data")
+        data.extend(chunk)
+
+    return bytes(data)
+
+
+class NetworkAudioStream(sf_audio.SoundStream):
     def __init__(self):
-        sf.SoundStream.__init__(self)
+        sf_audio.SoundStream.__init__(self)
 
         self.offset = 0
         self.has_finished = False
-        self.listener = sf.TcpListener()
-        self.samples = sf.Chunk()
+        self.listener = sf_network.TcpListener()
+        self.samples = bytearray()
+        self.lock = threading.Lock()
+        self.client = None
 
-        # set the sound parameters
         self.initialize(1, 44100)
 
-    def start(self, port):
+    def start_stream(self, port):
         if not self.has_finished:
             try:
-                # listen to the given port for incoming connections
                 self.listener.listen(port)
                 print("Server is listening to port {0}, waiting for connections... ".format(port))
 
-                # wait for a connection
                 self.client = self.listener.accept()
-                print("Client connected: {0}".format(self.client.remote_address))
+                print("Client connected: {0}".format(self.client.remote_address.string.decode("utf-8", errors="replace")))
 
-            except sf.SocketException: return
+            except sf_network.SocketException as error:
+                print(error)
+                return
 
-            # start playback
             self.play()
-
-            # start receiving audio data
             self.receive_loop()
-
         else:
-            # start playback
             self.play()
 
     def on_get_data(self, chunk):
-        # we have reached the end of the buffer and all audio data have been played : we can stop playback
-        if self.offset >= len(self.samples) and self.has_finished:
-            return False
+        while True:
+            with self.lock:
+                available_samples = len(self.samples) // 2 - self.offset
+                if available_samples > 0:
+                    sample_count = min(CHUNK_SAMPLE_COUNT, available_samples)
+                    start = self.offset * 2
+                    end = start + sample_count * 2
+                    chunk.data = bytes(self.samples[start:end])
+                    self.offset += len(chunk)
+                    return True
 
-        # no new data has arrived since last update : wait until we get some
-        while self.offset >= len(self.samples) and not self.has_finished:
-            sf.sleep(sf.milliseconds(10))
+                if self.has_finished:
+                    return False
 
-        # don't forget to lock as we run in two separate threads
-        lock = threading.Lock()
-        lock.acquire()
-
-        # fill audio data to pass to the stream
-        chunk.data = self.samples.data[self.offset*2:]
-
-        # update the playing offset
-        self.offset += len(chunk)
-
-        lock.release()
-
-        return True
+            sf_system.sleep(sf_system.milliseconds(10))
 
     def on_seek(self, time_offset):
         self.offset = time_offset.milliseconds * self.sample_rate * self.channel_count // 1000
 
     def receive_loop(self):
-        lock = threading.RLock()
-
         while not self.has_finished:
-            # get waiting audio data from the network
-            data = self.client.receive(1)
+            try:
+                message_id = unpack("!B", receive_exact(self.client, 1))[0]
 
-            # extract the id message
-            id = unpack("B", data)[0]
-
-            if id == AUDIO_DATA:
-                # extract audio samples from the packet, and append it to our samples buffer
-                data = self.client.receive(4)
-                sample_count = unpack("I", data)[0]
-
-                samples = self.client.receive(sample_count)
-
-                # don't forget the other thread can access the sample array at any time
-                lock.acquire()
-                self.samples.data += samples
-                lock.release()
-
-            elif id == END_OF_STREAM:
-                # end of stream reached : we stop receiving audio data
-                print("Audio data has been 100% received!")
+                if message_id == AUDIO_DATA:
+                    payload_size = unpack("!I", receive_exact(self.client, 4))[0]
+                    payload = receive_exact(self.client, payload_size)
+                    with self.lock:
+                        self.samples.extend(payload)
+                elif message_id == END_OF_STREAM:
+                    print("Audio data has been 100% received!")
+                    self.has_finished = True
+                else:
+                    print("Invalid data received...")
+                    self.has_finished = True
+            except sf_network.SocketException as error:
+                print(error)
                 self.has_finished = True
 
-            else:
-                # something's wrong...
-                print("Invalid data received...")
-                self.has_finished = True
 
-def do_server(port):
-    # build an audio stream to play sound data as it is received through the network
+def run_server(port):
     audio_stream = NetworkAudioStream()
-    audio_stream.start(port)
+    audio_stream.start_stream(port)
 
-    # loop until the sound playback is finished
-    while audio_stream.status != sf.SoundStream.STOPPED:
-        # leave some CPU time for other threads
-        sf.sleep(sf.milliseconds(100))
+    while audio_stream.status != sf_audio.Status.STOPPED:
+        sf_system.sleep(sf_system.milliseconds(100))
 
-
-    # wait until the user presses 'enter' key
     input("Press enter to replay the sound...")
 
-    # replay the sound (just to make sure replaying the received data is OK)
-    audio_stream.play();
+    audio_stream.playing_offset = sf_system.seconds(0)
+    audio_stream.play()
 
-    # loop until the sound playback is finished
-    while audio_stream.status != sf.SoundStream.STOPPED:
-        sf.sleep(sf.milliseconds(100))
+    while audio_stream.status != sf_audio.Status.STOPPED:
+        sf_system.sleep(sf_system.milliseconds(100))

@@ -1,0 +1,73 @@
+[build-system]
+requires = [
+    "setuptools>=77",
+    "setuptools-scm>=8",
+    "Cython>=3.2,<3.3",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "SFML"
+dynamic = ["version"]
+description = "Python bindings for SFML"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Zlib"
+authors = [
+    { name = "Jonathan de Wachter", email = "dewachter.jonathan@gmail.com" },
+]
+maintainers = [
+    { name = "Jonathan de Wachter", email = "dewachter.jonathan@gmail.com" },
+]
+keywords = ["sfml", "python", "bindings", "graphics", "audio", "window", "network"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Cython",
+    "Programming Language :: C++",
+    "Topic :: Games/Entertainment",
+    "Topic :: Multimedia",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/intjelic/python-sfml"
+Issues = "https://github.com/intjelic/python-sfml/issues"
+Repository = "https://github.com/intjelic/python-sfml"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8",
+]
+
+[tool.setuptools]
+packages = ["sfml"]
+package-dir = {"" = "src"}
+include-package-data = false
+
+[tool.setuptools.package-data]
+sfml = ["py.typed", "*.pyi"]
+
+[tool.setuptools_scm]
+fallback_version = "0.0.dev0"
+local_scheme = "no-local-version"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.cibuildwheel]
+build = "cp310-* cp311-* cp312-* cp313-*"
+skip = "*-musllinux*"
+test-extras = ["test"]
+test-command = "python {project}/.github/scripts/run-wheel-tests.py {project}"
+build-verbosity = 1

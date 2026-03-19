@@ -1,13 +1,12 @@
 # PySFML - Python bindings for SFML
-# Copyright (c) 2012-2017, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# Copyright (c) 2012-2026, Jonathan De Wachter <dewachter.jonathan@gmail.com>
 #
-# This file is part of PySFML project and is available under the zlib
-# license.
+# This file is part of PySFML and is available under the zlib license.
 
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
-from ftp cimport response
+from sfml.ftp cimport response
 
 cdef extern from "SFML/Network.hpp" namespace "sf::Ftp":
     cdef enum TransferMode:

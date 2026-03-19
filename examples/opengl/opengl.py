@@ -1,162 +1,161 @@
-import OpenGL
-from OpenGL.GL import *
-from OpenGL.GLU import *
+from pathlib import Path
 
-from sfml import sf
+from OpenGL.GL import GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_TEST, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR, GL_MODELVIEW, GL_PROJECTION, GL_QUADS, GL_RGBA, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TRUE, GL_UNSIGNED_BYTE, glBegin, glBindTexture, glClear, glClearDepth, glColor4f, glDeleteTextures, glDepthMask, glEnable, glEnd, glGenTextures, glLoadIdentity, glMatrixMode, glRotatef, glTexCoord2f, glTexParameteri, glTranslatef, glVertex3f, glViewport
+from OpenGL.GLU import gluBuild2DMipmaps, gluPerspective
 
-# create the main window
-window = sf.RenderWindow(sf.VideoMode(800, 600), "pySFML - OpenGL", sf.Style.DEFAULT, sf.ContextSettings(32))
-window.vertical_synchronization = True
+from sfml import graphics as sf_graphics
+from sfml import system as sf_system
+from sfml import window as sf_window
 
-# load a font for drawing some text
-font = sf.Font.from_file("resources/sansation.ttf")
 
-# create a sprite for the background
-background_texture = sf.Texture.from_file("resources/background.jpg")
-background = sf.Sprite(background_texture)
+RESOURCE_DIR = Path(__file__).resolve().parent / "resources"
 
-# load an OpenGL texture.
-# we could directly use a sf.Texture as an OpenGL texture (with its bind() member function),
-# but here we want more control on it (generate mipmaps, ...) so we create a new one from an image
-texture = 0
-image = sf.Image.from_file("resources/texture.jpg")
-glGenTextures(1, texture)
-glBindTexture(GL_TEXTURE_2D, texture)
-gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, image.size.x, image.size.y, GL_RGBA, GL_UNSIGNED_BYTE, image.pixels.data)
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
 
-# enable Z-buffer read and write
-glEnable(GL_DEPTH_TEST)
-glDepthMask(GL_TRUE)
-glClearDepth(1.)
+def main():
+    render_window = sf_graphics.RenderWindow(
+        sf_window.VideoMode(800, 600),
+        "PySFML - OpenGL",
+        sf_window.Style.DEFAULT,
+        sf_window.ContextSettings(depth=32),
+    )
+    render_window.vertical_synchronization = True
 
-# setup a perspective projection
-glMatrixMode(GL_PROJECTION)
-glLoadIdentity()
-gluPerspective(90., 1., 1., 500.)
+    font = sf_graphics.Font.from_file(str(RESOURCE_DIR / "sansation.ttf"))
+    background_texture = sf_graphics.Texture.from_file(str(RESOURCE_DIR / "background.jpg"))
+    background = sf_graphics.Sprite(background_texture)
 
-# bind our texture
-glEnable(GL_TEXTURE_2D)
-glBindTexture(GL_TEXTURE_2D, texture)
-glColor4f(1., 1., 1., 1.)
+    image = sf_graphics.Image.from_file(str(RESOURCE_DIR / "texture.jpg"))
+    texture_id = int(glGenTextures(1))
+    glBindTexture(GL_TEXTURE_2D, texture_id)
+    gluBuild2DMipmaps(
+        GL_TEXTURE_2D,
+        GL_RGBA,
+        image.size.x,
+        image.size.y,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        image.pixels,
+    )
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
 
-# create a clock for measuring the time elapsed
-clock = sf.Clock()
+    glEnable(GL_DEPTH_TEST)
+    glDepthMask(GL_TRUE)
+    glClearDepth(1.0)
+    glViewport(0, 0, render_window.size.x, render_window.size.y)
 
-# start game loop
-while window.is_open:
-
-    # process events
-    for event in window.events:
-
-        # close window : exit
-        if event.type == sf.Event.CLOSED:
-            window.close()
-
-        # escape key : exit
-        if event.type == sf.Event.KEY_PRESSED and event['code'] == sf.Keyboard.ESCAPE:
-            window.close()
-
-        # adjust the viewport when the window is resized
-        if event.type == sf.Event.RESIZED:
-            glViewport(0, 0, event.width, event.height)
-
-    # draw the background
-    window.push_GL_states()
-    window.draw(background)
-    window.pop_GL_states()
-
-    # activate the window before using OpenGL commands.
-    # this is useless here because we have only one window which is
-    # always the active one, but don't forget it if you use multiple windows
-    window.active = True
-
-    # clear the depth buffer
-    glClear(GL_DEPTH_BUFFER_BIT);
-
-    # we get the position of the mouse cursor, so that we can move the box accordingly
-    x = sf.Mouse.get_position(window).x * 200. / window.size.x - 100.
-    y = -sf.Mouse.get_position(window).y * 200. / window.size.y + 100.
-
-    # apply some transformations
-    glMatrixMode(GL_MODELVIEW)
+    glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glTranslatef(x, y, -100.)
-    glRotatef(clock.elapsed_time.seconds * 50., 1., 0., 0.)
-    glRotatef(clock.elapsed_time.seconds * 30., 0., 1., 0.)
-    glRotatef(clock.elapsed_time.seconds * 90., 0., 0., 1.)
+    gluPerspective(90.0, render_window.size.x / float(render_window.size.y), 1.0, 500.0)
 
-    # draw a cube
-    size = 20.
-    glBegin(GL_QUADS)
+    glEnable(GL_TEXTURE_2D)
+    glBindTexture(GL_TEXTURE_2D, texture_id)
+    glColor4f(1.0, 1.0, 1.0, 1.0)
 
-    glTexCoord2f(0, 0)
-    glVertex3f(-size, -size, -size)
-    glTexCoord2f(0, 1)
-    glVertex3f(-size,  size, -size)
-    glTexCoord2f(1, 1)
-    glVertex3f( size,  size, -size)
-    glTexCoord2f(1, 0)
-    glVertex3f( size, -size, -size)
+    title = sf_graphics.Text("PySFML / OpenGL demo", font)
+    title.color = sf_graphics.Color(255, 255, 255, 170)
+    title.position = (230, 450)
 
-    glTexCoord2f(0, 0)
-    glVertex3f(-size, -size, size)
-    glTexCoord2f(0, 1)
-    glVertex3f(-size,  size, size)
-    glTexCoord2f(1, 1)
-    glVertex3f( size,  size, size)
-    glTexCoord2f(1, 0)
-    glVertex3f( size, -size, size)
+    clock = sf_system.Clock()
 
-    glTexCoord2f(0, 0)
-    glVertex3f(-size, -size, -size)
-    glTexCoord2f(0, 1)
-    glVertex3f(-size,  size, -size)
-    glTexCoord2f(1, 1)
-    glVertex3f(-size,  size,  size)
-    glTexCoord2f(1, 0)
-    glVertex3f(-size, -size,  size)
+    try:
+        while render_window.is_open:
+            for event in render_window.events:
+                if event.type == sf_window.EventType.CLOSED:
+                    render_window.close()
+                elif event.type == sf_window.EventType.KEY_PRESSED and event.get("code") == sf_window.Keyboard.ESCAPE:
+                    render_window.close()
+                elif event.type == sf_window.EventType.RESIZED:
+                    glViewport(0, 0, event["width"], event["height"])
+                    glMatrixMode(GL_PROJECTION)
+                    glLoadIdentity()
+                    gluPerspective(90.0, event["width"] / float(event["height"]), 1.0, 500.0)
 
-    glTexCoord2f(0, 0)
-    glVertex3f(size, -size, -size)
-    glTexCoord2f(0, 1)
-    glVertex3f(size,  size, -size)
-    glTexCoord2f(1, 1)
-    glVertex3f(size,  size,  size)
-    glTexCoord2f(1, 0)
-    glVertex3f(size, -size,  size)
+            render_window.push_GL_states()
+            render_window.draw(background)
+            render_window.pop_GL_states()
 
-    glTexCoord2f(0, 1)
-    glVertex3f(-size, -size,  size)
-    glTexCoord2f(0, 0)
-    glVertex3f(-size, -size, -size)
-    glTexCoord2f(1, 0)
-    glVertex3f( size, -size, -size)
-    glTexCoord2f(1, 1)
-    glVertex3f( size, -size,  size)
+            render_window.active = True
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-    glTexCoord2f(0, 1)
-    glVertex3f(-size, size,  size)
-    glTexCoord2f(0, 0)
-    glVertex3f(-size, size, -size)
-    glTexCoord2f(1, 0)
-    glVertex3f( size, size, -size)
-    glTexCoord2f(1, 1)
-    glVertex3f( size, size,  size)
+            mouse_position = sf_window.Mouse.get_position(render_window)
+            x = mouse_position.x * 200.0 / render_window.size.x - 100.0
+            y = -mouse_position.y * 200.0 / render_window.size.y + 100.0
+            elapsed_seconds = clock.elapsed_time.seconds
 
-    glEnd()
+            glMatrixMode(GL_MODELVIEW)
+            glLoadIdentity()
+            glTranslatef(x, y, -100.0)
+            glRotatef(elapsed_seconds * 50.0, 1.0, 0.0, 0.0)
+            glRotatef(elapsed_seconds * 30.0, 0.0, 1.0, 0.0)
+            glRotatef(elapsed_seconds * 90.0, 0.0, 0.0, 1.0)
 
-    # draw some text on top of our OpenGL object
-    window.push_GL_states()
-    text = sf.Text("pySFML / OpenGL demo", font)
-    text.color = sf.Color(255, 255, 255, 170)
-    text.position = (230, 450)
-    window.draw(text)
-    window.pop_GL_states()
+            size = 20.0
+            glBegin(GL_QUADS)
 
-    # finally, display the rendered frame on screen
-    window.display()
+            glTexCoord2f(0, 0)
+            glVertex3f(-size, -size, -size)
+            glTexCoord2f(0, 1)
+            glVertex3f(-size, size, -size)
+            glTexCoord2f(1, 1)
+            glVertex3f(size, size, -size)
+            glTexCoord2f(1, 0)
+            glVertex3f(size, -size, -size)
 
-# don't forget to destroy our texture
-glDeleteTextures(1, texture)
+            glTexCoord2f(0, 0)
+            glVertex3f(-size, -size, size)
+            glTexCoord2f(0, 1)
+            glVertex3f(-size, size, size)
+            glTexCoord2f(1, 1)
+            glVertex3f(size, size, size)
+            glTexCoord2f(1, 0)
+            glVertex3f(size, -size, size)
+
+            glTexCoord2f(0, 0)
+            glVertex3f(-size, -size, -size)
+            glTexCoord2f(0, 1)
+            glVertex3f(-size, size, -size)
+            glTexCoord2f(1, 1)
+            glVertex3f(-size, size, size)
+            glTexCoord2f(1, 0)
+            glVertex3f(-size, -size, size)
+
+            glTexCoord2f(0, 0)
+            glVertex3f(size, -size, -size)
+            glTexCoord2f(0, 1)
+            glVertex3f(size, size, -size)
+            glTexCoord2f(1, 1)
+            glVertex3f(size, size, size)
+            glTexCoord2f(1, 0)
+            glVertex3f(size, -size, size)
+
+            glTexCoord2f(0, 1)
+            glVertex3f(-size, -size, size)
+            glTexCoord2f(0, 0)
+            glVertex3f(-size, -size, -size)
+            glTexCoord2f(1, 0)
+            glVertex3f(size, -size, -size)
+            glTexCoord2f(1, 1)
+            glVertex3f(size, -size, size)
+
+            glTexCoord2f(0, 1)
+            glVertex3f(-size, size, size)
+            glTexCoord2f(0, 0)
+            glVertex3f(-size, size, -size)
+            glTexCoord2f(1, 0)
+            glVertex3f(size, size, -size)
+            glTexCoord2f(1, 1)
+            glVertex3f(size, size, size)
+
+            glEnd()
+
+            render_window.push_GL_states()
+            render_window.draw(title)
+            render_window.pop_GL_states()
+            render_window.display()
+    finally:
+        glDeleteTextures([texture_id])
+
+
+if __name__ == "__main__":
+    main()

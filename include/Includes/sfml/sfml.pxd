@@ -1,12 +1,9 @@
 # PySFML - Python bindings for SFML
-# Copyright (c) 2012-2017, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# Copyright (c) 2012-2026, Jonathan De Wachter <dewachter.jonathan@gmail.com>
 #
-# This file is part of PySFML project and is available under the zlib
-# license.
+# This file is part of PySFML and is available under the zlib license.
 
 from libcpp.string cimport string
-
-cimport time
 
 cdef extern from "SFML/System.hpp" namespace "sf":
     # 8 bits integer types
@@ -136,7 +133,7 @@ cdef extern from "SFML/System.hpp" namespace "sf":
     cdef cppclass InputStream
     cdef cppclass Utf
 
-cimport style, event, videomode, contextsettings, keyboard, joystick, mouse, touch, sensor
+from sfml cimport style, event, videomode, contextsettings, keyboard, joystick, mouse, touch, sensor
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Event":
     cdef cppclass SizeEvent:
@@ -287,7 +284,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf":
     cdef cppclass GlResource:
         GlResource()
 
-cimport blendmode, primitivetype, texture, shader, font, text, renderstates, transform
+from sfml cimport blendmode, primitivetype, texture, shader, font, text, renderstates, transform
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf":
     cdef cppclass Rect[T]:
@@ -674,7 +671,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
 
 
 from libcpp.string cimport string
-cimport listener, soundsource, soundrecorder, soundstream
+from sfml cimport listener, soundsource, soundrecorder, soundstream
 
 cdef extern from "SFML/Audio.hpp" namespace "sf":
 
@@ -756,7 +753,7 @@ cdef extern from "SFML/Audio.hpp" namespace "sf":
         const SoundBuffer& getBuffer() const
 
 
-cimport ipaddress, socket, udpsocket, ftp, http
+from sfml cimport socket, udpsocket, ftp, http
 
 cdef extern from "SFML/Network.hpp" namespace "sf":
     cdef cppclass IpAddress:
@@ -772,6 +769,10 @@ cdef extern from "SFML/Network.hpp" namespace "sf":
         bint operator>(IpAddress&)
         bint operator<=(IpAddress&)
         bint operator>=(IpAddress&)
+
+from sfml cimport ipaddress
+
+cdef extern from "SFML/Network.hpp" namespace "sf":
 
     cdef cppclass Packet:
         Packet()

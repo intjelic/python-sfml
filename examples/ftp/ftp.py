@@ -1,113 +1,102 @@
-import os
-import sfml.network as sf
+from sfml import network as sf_network
 
-# python 2.* compatability
-try: input = raw_input
-except NameError: pass
 
-# choose the server address
-address = input("Enter the FTP server address: ")
-address = sf.IpAddress.from_string(address)
+def decode_bytes(value):
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return str(value)
 
-# create the server object which with you will communicate
-server = sf.Ftp()
 
-# connect to the server
-response = server.connect(address)
-print(response)
-if not response.ok: exit()
+def print_response(response):
+    print(f"Status: {response.status}")
+    print(decode_bytes(response.message).strip())
 
-# ask for user name and password
-user = input("User name: ")
-password = input("Password: ")
 
-# login to the server
-response = server.login(user, password)
-print(response)
-if not response.ok: exit()
+def main():
+    address_text = input("Enter the FTP server address: ").strip()
+    address = sf_network.IpAddress.from_string(address_text)
+    server = sf_network.Ftp()
+    connected = False
 
-# main menu
-choice = 0
-while True:
-    print("===========================================================")
-    print("Choose an action:")
-    print("1. Print working directory")
-    print("2. Print contents of working directory")
-    print("3. Change directory")
-    print("4. Create directory")
-    print("5. Delete directory")
-    print("6. Rename file")
-    print("7. Remove file")
-    print("8. Download file")
-    print("9. Upload file")
-    print("0. Disconnect\n\n")
+    try:
+        response = server.connect(address)
+        print_response(response)
+        if not response.ok:
+            return
 
-    choice = int(input("Your choice: "))
+        connected = True
+        user = input("User name: ").strip()
+        password = input("Password: ").strip()
 
-    os.system('clear')
+        response = server.login(user, password)
+        print_response(response)
+        if not response.ok:
+            return
 
-    if choice == 1:
-        # print the current server directory
-        response = server.get_working_directory()
-        print(response)
-        print("Current directory is {0}".format(response.get_directory()))
-    elif choice == 2:
-        # print the contents of the current server directory
-        response = server.get_directory_listing()
-        print(response)
-        for filename in response.filenames:
-            print(filename)
-    elif choice == 3:
-        # change the current directory
-        directory = input("Choose a directory: ")
-        response = server.change_directory(directory)
-        print(response)
-    elif choice == 4:
-        # create a new directory
-        directory = input("Name of the directory to create: ")
-        response = server.create_directory(directory)
-        print(response)
-    elif choice == 5:
-        # remove an existing directory
-        directory = input("Name of the directory to remove: ")
-        response = server.delete_directory(directory)
-        print(response)
-    elif choice == 6:
-        # rename a file
-        source = input("Name of the file to rename: ")
-        destination = input("New name: ")
-        response = server.rename_file(source, destination)
-        print(response)
-    elif choice == 7:
-        # remove an existing directory
-        filename = input("Name of the file to remove: ")
-        response = server.delete_file(filename)
-        print(response)
-    elif choice == 8:
-        # download a file from server
-        filename = input("Filename of the file to download (relative to current directory): ")
-        directory = input("Directory to download the file to: ")
-        response = server.download(filename, directory)
-        print(response)
-    elif choice == 9:
-        # upload a file to server
-        filename = input("Path of the file to upload (absolute or relative to working directory): ")
-        directory = input("Directory to upload the file to (relative to current directory): ")
-        response = server.upload(filename, directory)
-        print(response)
-    elif choice == 0:
-        break
-    else:
-        # wrong choice
-        print("Invalid choice!")
-        os.system('clear')
+        while True:
+            print("=" * 59)
+            print("Choose an action:")
+            print("1. Print working directory")
+            print("2. Print contents of working directory")
+            print("3. Change directory")
+            print("4. Create directory")
+            print("5. Delete directory")
+            print("6. Rename file")
+            print("7. Remove file")
+            print("8. Download file")
+            print("9. Upload file")
+            print("0. Disconnect")
 
-    if choice == 0:
-        break
+            try:
+                choice = int(input("Your choice: ").strip())
+            except ValueError:
+                print("Invalid choice.")
+                continue
 
-# disconnect from the server
-print("Disconnecting from server...")
-response = server.disconnect()
+            if choice == 1:
+                response = server.get_working_directory()
+                print_response(response)
+                if response.ok:
+                    print(f"Current directory: {decode_bytes(response.get_directory())}")
+            elif choice == 2:
+                response = server.get_directory_listing()
+                print_response(response)
+                if response.ok:
+                    for filename in response.filenames:
+                        print(decode_bytes(filename))
+            elif choice == 3:
+                directory = input("Choose a directory: ").strip()
+                print_response(server.change_directory(directory))
+            elif choice == 4:
+                directory = input("Name of the directory to create: ").strip()
+                print_response(server.create_directory(directory))
+            elif choice == 5:
+                directory = input("Name of the directory to remove: ").strip()
+                print_response(server.delete_directory(directory))
+            elif choice == 6:
+                source = input("Name of the file to rename: ").strip()
+                destination = input("New name: ").strip()
+                print_response(server.rename_file(source, destination))
+            elif choice == 7:
+                filename = input("Name of the file to remove: ").strip()
+                print_response(server.delete_file(filename))
+            elif choice == 8:
+                filename = input("Filename to download: ").strip()
+                directory = input("Local destination directory: ").strip() or "."
+                print_response(server.download(filename, directory))
+            elif choice == 9:
+                filename = input("Local file to upload: ").strip()
+                directory = input("Remote destination directory: ").strip()
+                print_response(server.upload(filename, directory))
+            elif choice == 0:
+                break
+            else:
+                print("Invalid choice.")
+    finally:
+        if connected:
+            print("Disconnecting from server...")
+            server.disconnect()
 
-# wait until the user presses 'enter' key
-input("Press enter to exit...")
+
+if __name__ == "__main__":
+    main()

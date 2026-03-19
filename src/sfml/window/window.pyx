@@ -1,8 +1,7 @@
 # PySFML - Python bindings for SFML
-# Copyright (c) 2012-2017, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# Copyright (c) 2012-2026, Jonathan De Wachter <dewachter.jonathan@gmail.com>
 #
-# This file is part of PySFML project and is available under the zlib
-# license.
+# This file is part of PySFML and is available under the zlib license.
 
 cimport cython
 from cython.operator cimport dereference as deref, preincrement as inc
@@ -10,7 +9,7 @@ from cpython.version cimport PY_VERSION_HEX
 
 from libcpp.vector cimport vector
 
-import collections
+from collections.abc import Mapping
 from enum import IntEnum
 
 cimport sfml as sf
@@ -481,7 +480,7 @@ cdef class SensorEvent:
             self.p_this.z = z
 
 
-class EventData(collections.Mapping):
+class EventData(Mapping):
     def __init__(self, event, attributes):
         self.event = event
         self.attributes = attributes
@@ -571,6 +570,9 @@ cdef public class Event[type PyEventType, object PyEventObject]:
         return "Event(type={0}, data={1})".format(self.type, self.items())
 
     def __contains__(self, item):
+        if not self.data:
+            return False
+
         return self.data.__contains__(item)
 
     def __richcmp__(self, other, int op):
@@ -654,7 +656,7 @@ cdef public class Event[type PyEventType, object PyEventObject]:
 
     def get(self, key, default=None):
         if not self.data:
-            return None
+            return default
 
         return self.data.get(key, default)
 
@@ -752,13 +754,12 @@ cdef public class VideoMode[type PyVideoModeType, object PyVideoModeObject]:
     @staticmethod
     def get_fullscreen_modes():
         cdef list modes = []
-        cdef vector[sf.VideoMode] *v = new vector[sf.VideoMode]()
-        v[0] = sf.videomode.getFullscreenModes()
+        cdef const vector[sf.VideoMode]* v = &sf.videomode.getFullscreenModes()
 
-        cdef vector[sf.VideoMode].iterator it = v.begin()
+        cdef vector[sf.VideoMode].const_iterator it = deref(v).begin()
         cdef sf.VideoMode vm
 
-        while it != v.end():
+        while it != deref(v).end():
             vm = deref(it)
             modes.append(VideoMode(vm.width, vm.height, vm.bitsPerPixel))
             inc(it)
@@ -1241,7 +1242,7 @@ cdef class Joystick:
     def get_identification(unsigned int joystick):
         cdef sf.joystick.Identification identification
         identification = sf.joystick.getIdentification(joystick)
-        return (wrap_string(&identification.name), identification.vendorId, identification.productId)
+        return (wrap_string(<const sf.String*>&identification.name), identification.vendorId, identification.productId)
 
     @staticmethod
     def update():
@@ -1274,7 +1275,7 @@ cdef class Mouse:
         if window is None:
             p = sf.mouse.getPosition()
         else:
-            p = sf.mouse.getPosition(window.p_window[0])
+            p = sf.mouse.getPosition(<sf.mouse.Window&>window.p_window[0])
 
         return Vector2(p.x, p.y)
 
@@ -1284,9 +1285,9 @@ cdef class Mouse:
         p.x, p.y = position
 
         if window is None:
-            sf.mouse.setPosition(p)
+            sf.mouse.setPosition(<sf.mouse.Vector2i>p)
         else:
-            sf.mouse.setPosition(p, window.p_window[0])
+            sf.mouse.setPosition(<sf.mouse.Vector2i>p, <sf.mouse.Window&>window.p_window[0])
 
 
 cdef class Touch:
@@ -1304,7 +1305,7 @@ cdef class Touch:
         if window is None:
             p = sf.touch.getPosition(finger)
         else:
-            p = sf.touch.getPosition(finger, window.p_window[0])
+            p = sf.touch.getPosition(finger, <sf.touch.Window&>window.p_window[0])
 
         return Vector2(p.x, p.y)
 

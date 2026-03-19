@@ -1,8 +1,7 @@
 # PySFML - Python bindings for SFML
-# Copyright (c) 2012-2017, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# Copyright (c) 2012-2026, Jonathan De Wachter <dewachter.jonathan@gmail.com>
 #
-# This file is part of PySFML project and is available under the zlib
-# license.
+# This file is part of PySFML and is available under the zlib license.
 
 from libcpp.vector cimport vector
 from libcpp.string cimport string
@@ -36,8 +35,8 @@ __all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Rect', 'Transform',
 
 __all__ += ['BLEND_ALPHA', 'BLEND_ADD', 'BLEND_MULTIPLY', 'BLEND_NONE']
 
-string_type = [bytes, unicode, str]
-numeric_type = [int, long, float, long]
+string_type = [bytes, str]
+numeric_type = [int, float]
 
 import sys
 from copy import copy, deepcopy
@@ -773,7 +772,7 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         if not texture:
             sf.texture.bind(NULL, coordinate_type)
         else:
-            sf.texture.bind(texture.p_this, coordinate_type)
+            sf.texture.bind(<const sf.Texture*>texture.p_this, coordinate_type)
 
     property smooth:
         def __get__(self):
@@ -1088,7 +1087,7 @@ cdef class Shader:
         if not shader:
             sf.shader.bind(NULL)
         else:
-            sf.shader.bind(shader.p_this)
+            sf.shader.bind(<const sf.Shader*>shader.p_this)
 
     @staticmethod
     def is_available():

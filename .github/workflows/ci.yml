@@ -1,0 +1,305 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - "v*"
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  editable-linux:
+    name: Editable Linux (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+
+    env:
+      ALSOFT_DRIVERS: "null"
+      SFML_VERSION: 2.6.2
+      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-2.6.2-install
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            git \
+            libflac-dev \
+            libfreetype6-dev \
+            libgl1-mesa-dev \
+            libjpeg-dev \
+            libopenal-dev \
+            libudev-dev \
+            libvorbis-dev \
+            libx11-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            ninja-build \
+            pkg-config \
+            xvfb
+
+      - name: Build SFML 2.6.2
+        run: bash .github/scripts/build-sfml-unix.sh "$SFML_VERSION" "$SFML_INSTALL_PREFIX"
+
+      - name: Install Python tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[test]"
+
+      - name: Run pytest suite from editable install under Xvfb
+        env:
+          SFML_HEADERS: ${{ env.SFML_INSTALL_PREFIX }}/include
+          SFML_LIBRARIES: ${{ env.SFML_INSTALL_PREFIX }}/lib
+          PKG_CONFIG_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib/pkgconfig
+          LD_LIBRARY_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib
+        run: xvfb-run -a pytest -q tests --ignore=tests/test_window_xvfb.py --ignore=tests/test_graphics_xvfb.py
+
+      - name: Run Xvfb-backed window and graphics tests
+        if: matrix.python-version == '3.12'
+        env:
+          SFML_HEADERS: ${{ env.SFML_INSTALL_PREFIX }}/include
+          SFML_LIBRARIES: ${{ env.SFML_INSTALL_PREFIX }}/lib
+          PKG_CONFIG_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib/pkgconfig
+          LD_LIBRARY_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib
+        run: xvfb-run -a pytest -q tests/test_window_xvfb.py tests/test_graphics_xvfb.py
+
+  packaging-validation-linux:
+    name: Packaging Validation Linux
+    runs-on: ubuntu-24.04
+
+    env:
+      ALSOFT_DRIVERS: "null"
+      SFML_VERSION: 2.6.2
+      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-2.6.2-install
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            git \
+            libflac-dev \
+            libfreetype6-dev \
+            libgl1-mesa-dev \
+            libjpeg-dev \
+            libopenal-dev \
+            libudev-dev \
+            libvorbis-dev \
+            libx11-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            ninja-build \
+            pkg-config
+
+      - name: Build SFML 2.6.2
+        run: bash .github/scripts/build-sfml-unix.sh "$SFML_VERSION" "$SFML_INSTALL_PREFIX"
+
+      - name: Install packaging tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build twine
+
+      - name: Build sdist and wheel
+        env:
+          SFML_HEADERS: ${{ env.SFML_INSTALL_PREFIX }}/include
+          SFML_LIBRARIES: ${{ env.SFML_INSTALL_PREFIX }}/lib
+          PKG_CONFIG_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib/pkgconfig
+          LD_LIBRARY_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib
+        run: python -m build --sdist --wheel
+
+      - name: Validate artifact contents and metadata
+        run: |
+          python .github/scripts/validate-dist.py dist/*
+          python -m twine check dist/*
+
+      - name: Install built wheel in a clean environment
+        env:
+          LD_LIBRARY_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib
+        run: |
+          python -m venv .venv-wheel
+          . .venv-wheel/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install dist/*.whl "pytest>=8"
+          pytest -q tests/test_smoke_imports.py tests/test_typing_artifacts.py
+
+      - name: Install built sdist in a clean environment
+        env:
+          SFML_HEADERS: ${{ env.SFML_INSTALL_PREFIX }}/include
+          SFML_LIBRARIES: ${{ env.SFML_INSTALL_PREFIX }}/lib
+          PKG_CONFIG_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib/pkgconfig
+          LD_LIBRARY_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib
+        run: |
+          python -m venv .venv-sdist
+          . .venv-sdist/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install dist/*.tar.gz "pytest>=8"
+          pytest -q tests/test_smoke_imports.py tests/test_typing_artifacts.py
+
+  smoke-macos:
+    name: Smoke macOS
+    runs-on: macos-15
+
+    env:
+      ALSOFT_DRIVERS: "null"
+      SFML_VERSION: 2.6.2
+      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-2.6.2-install
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build SFML 2.6.2
+        run: bash .github/scripts/build-sfml-unix.sh "$SFML_VERSION" "$SFML_INSTALL_PREFIX" 1
+
+      - name: Install package and pytest
+        env:
+          SFML_HEADERS: ${{ env.SFML_INSTALL_PREFIX }}/include
+          SFML_LIBRARIES: ${{ env.SFML_INSTALL_PREFIX }}/lib
+          PKG_CONFIG_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib/pkgconfig
+          DYLD_LIBRARY_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[test]"
+
+      - name: Run smoke imports and typing-artifact checks
+        env:
+          DYLD_LIBRARY_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib
+        run: pytest -q tests/test_smoke_imports.py tests/test_typing_artifacts.py
+
+  smoke-windows:
+    name: Smoke Windows
+    runs-on: windows-2022
+
+    env:
+      SFML_VERSION: 2.6.2
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build SFML 2.6.2
+        shell: pwsh
+        run: |
+          $prefix = Join-Path $env:GITHUB_WORKSPACE '.deps\sfml-2.6.2-install'
+          "SFML_INSTALL_PREFIX=$prefix" >> $env:GITHUB_ENV
+          "SFML_HEADERS=$(Join-Path $prefix 'include')" >> $env:GITHUB_ENV
+          "SFML_LIBRARIES=$(Join-Path $prefix 'lib')" >> $env:GITHUB_ENV
+          .github/scripts/build-sfml-windows.ps1 -Version $env:SFML_VERSION -Prefix $prefix -Architecture x64
+
+      - name: Verify SFML headers are present
+        shell: pwsh
+        run: |
+          $configHeader = Join-Path $env:SFML_HEADERS 'SFML\Config.hpp'
+          if (-not (Test-Path $configHeader)) {
+            throw "Expected SFML header not found: $configHeader"
+          }
+          Get-Item $configHeader
+
+      - name: Install package and pytest
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[test]"
+
+      - name: Run smoke imports and typing-artifact checks
+        shell: pwsh
+        run: |
+          $env:PATH = "$(Join-Path $env:SFML_INSTALL_PREFIX 'bin');$env:PATH"
+          pytest -q tests/test_smoke_imports.py tests/test_typing_artifacts.py
+
+  typing-linux:
+    name: Typing Validation Linux
+    runs-on: ubuntu-24.04
+
+    env:
+      SFML_VERSION: 2.6.2
+      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-2.6.2-install
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            git \
+            libflac-dev \
+            libfreetype6-dev \
+            libgl1-mesa-dev \
+            libjpeg-dev \
+            libopenal-dev \
+            libudev-dev \
+            libvorbis-dev \
+            libx11-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            ninja-build \
+            pkg-config
+
+      - name: Build SFML 2.6.2
+        run: bash .github/scripts/build-sfml-unix.sh "$SFML_VERSION" "$SFML_INSTALL_PREFIX"
+
+      - name: Install package and mypy
+        env:
+          SFML_HEADERS: ${{ env.SFML_INSTALL_PREFIX }}/include
+          SFML_LIBRARIES: ${{ env.SFML_INSTALL_PREFIX }}/lib
+          PKG_CONFIG_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib/pkgconfig
+          LD_LIBRARY_PATH: ${{ env.SFML_INSTALL_PREFIX }}/lib
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e . "mypy>=1.11"
+
+      - name: Run curated typing check
+        run: python -m mypy --python-version 3.10 tests/typing/public_api_usage.py

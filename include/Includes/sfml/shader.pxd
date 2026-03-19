@@ -1,10 +1,11 @@
 # PySFML - Python bindings for SFML
-# Copyright (c) 2012-2017, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# Copyright (c) 2012-2026, Jonathan De Wachter <dewachter.jonathan@gmail.com>
 #
-# This file is part of PySFML project and is available under the zlib
-# license.
+# This file is part of PySFML and is available under the zlib license.
 
-from sfml cimport Shader
+cdef extern from "SFML/Graphics/Shader.hpp" namespace "sf":
+    cdef cppclass Shader:
+        pass
 
 cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
     cdef struct CurrentTextureType:

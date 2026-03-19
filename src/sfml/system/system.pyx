@@ -1,8 +1,7 @@
 # PySFML - Python bindings for SFML
-# Copyright (c) 2012-2017, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# Copyright (c) 2012-2026, Jonathan De Wachter <dewachter.jonathan@gmail.com>
 #
-# This file is part of PySFML project and is available under the zlib
-# license.
+# This file is part of PySFML and is available under the zlib license.
 
 from __future__ import division
 
@@ -12,6 +11,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 cimport sfml as sf
+from sfml cimport time as sf_time
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
 from pysfml.system cimport NumericObject
@@ -121,7 +121,7 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
         elif op == 3:
             return self.p_this[0] != other.p_this[0]
         else:
-            raise NotImplemented
+            return NotImplemented
 
     def __iter__(self):
         return iter((self.x, self.y))
@@ -153,6 +153,9 @@ cdef public class Vector2[type PyVector2Type, object PyVector2Object]:
         p[0] = self.p_this[0] * NumericObject(other)
 
         return wrap_vector2(p)
+
+    def __rmul__(Vector2 self, other):
+        return self * other
 
     # Todo: I couldn't get the / operator working and as a workaround, I
     # reimplemented the logic in Python (I have to report this bug)
@@ -282,7 +285,7 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
         elif op == 3:
             return self.p_this[0] != other.p_this[0]
         else:
-            raise NotImplemented
+            return NotImplemented
 
     def __iter__(self):
         return iter((self.x, self.y, self.z))
@@ -314,6 +317,9 @@ cdef public class Vector3[type PyVector3Type, object PyVector3Object]:
         p[0] = self.p_this[0] * NumericObject(other)
 
         return wrap_vector3(p)
+
+    def __rmul__(Vector3 self, other):
+        return self * other
 
     # Todo: I couldn't get the / operator working and as a workaround, I
     # reimplemented the logic in Python (I have to report this bug)
@@ -410,7 +416,7 @@ cdef api sf.Vector3f to_vector3f(vector):
     return sf.Vector3f(x, y, z)
 
 cdef public class Time[type PyTimeType, object PyTimeObject]:
-    ZERO = wrap_time(<sf.Time*>&sf.time.Zero)
+    ZERO = wrap_time(<sf.Time*>&sf_time.Zero)
 
     cdef sf.Time *p_this
 
@@ -453,7 +459,7 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
     def __mul__(Time self, other):
         cdef sf.Time* p = new sf.Time()
 
-        if isinstance(other, (int, long)):
+        if isinstance(other, int):
             p[0] = self.p_this[0] * <Int64>other
         elif isinstance(other, float):
             p[0] = self.p_this[0] * <float>other
@@ -461,6 +467,9 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
             return NotImplemented
 
         return wrap_time(p)
+
+    def __rmul__(Time self, other):
+        return self * other
 
     def __truediv__(Time self, other):
         cdef sf.Time* p
@@ -470,7 +479,7 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
             return Time_div_Time(self.p_this[0], (<Time>other).p_this[0])
         else:
             p = new sf.Time()
-            if isinstance(other, (int, long)):
+            if isinstance(other, int):
 #                p[0] = self.p_this[0] / <Int64>other
                 p[0] = Time_div_int(self.p_this[0], <Int64>other)
             elif isinstance(other, float):
@@ -496,7 +505,7 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
         return self
 
     def __imul__(Time self, other):
-        if isinstance(other, (int, long)):
+        if isinstance(other, int):
             self.p_this[0] *= <Int64>other
         elif isinstance(other, float):
             self.p_this[0] *= <float>other
@@ -506,7 +515,7 @@ cdef public class Time[type PyTimeType, object PyTimeObject]:
         return self
 
     def __itruediv__(Time self, other):
-        if isinstance(other, (int, long)):
+        if isinstance(other, int):
 #            self.p_this[0] /= <Int64>other
             Time_idiv_int(self.p_this[0], <Int64>other)
         elif isinstance(other, float):

@@ -1,8 +1,7 @@
 # PySFML - Python bindings for SFML
-# Copyright (c) 2012-2017, Jonathan De Wachter <dewachter.jonathan@gmail.com>
+# Copyright (c) 2012-2026, Jonathan De Wachter <dewachter.jonathan@gmail.com>
 #
-# This file is part of PySFML project and is available under the zlib
-# license.
+# This file is part of PySFML and is available under the zlib license.
 
 #cdef extern from "pysfml/NumericObject.hpp":
 #    pass
@@ -15,6 +14,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 cimport sfml as sf
+from sfml cimport ipaddress as sf_ipaddress
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
 from pysfml.system cimport Time
@@ -22,9 +22,9 @@ from pysfml.system cimport Time
 cdef class IpAddress:
     cdef sf.IpAddress *p_this
 
-    NONE = wrap_ipaddress(<sf.IpAddress*>&sf.ipaddress.None)
-    LOCAL_HOST = wrap_ipaddress(<sf.IpAddress*>&sf.ipaddress.LocalHost)
-    BROADCAST = wrap_ipaddress(<sf.IpAddress*>&sf.ipaddress.Broadcast)
+    NONE = wrap_ipaddress(<sf.IpAddress*>&sf_ipaddress.None)
+    LOCAL_HOST = wrap_ipaddress(<sf.IpAddress*>&sf_ipaddress.LocalHost)
+    BROADCAST = wrap_ipaddress(<sf.IpAddress*>&sf_ipaddress.Broadcast)
 
     def __init__(self):
         self.p_this = new sf.IpAddress()
@@ -82,17 +82,21 @@ cdef class IpAddress:
     @classmethod
     def get_local_address(self):
         cdef sf.IpAddress* p = new sf.IpAddress()
-        p[0] = sf.ipaddress.getLocalAddress()
+        p[0] = sf_ipaddress.getLocalAddress()
         return wrap_ipaddress(p)
 
     @classmethod
-    def get_public_address(self, Time timeout=None):
+    def get_public_address(self, timeout=None):
         cdef sf.IpAddress* p = new sf.IpAddress()
+        cdef Time timeout_value
+        cdef sf.Time timeout_native
 
-        if not timeout:
-            p[0] = sf.ipaddress.getPublicAddress()
+        if timeout is None:
+            p[0] = sf_ipaddress.getPublicAddress()
         else:
-            p[0] = sf.ipaddress.getPublicAddress(timeout.p_this[0])
+            timeout_value = <Time>timeout
+            timeout_native = timeout_value.p_this[0]
+            p[0] = sf_ipaddress.getPublicAddress(timeout_native)
 
         return wrap_ipaddress(p)
 

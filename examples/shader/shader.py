@@ -1,13 +1,19 @@
-from __future__ import division
-
-from random import randint
 from math import cos
+from pathlib import Path
+from random import randint
 
-from sfml import sf
+from sfml import graphics as sf_graphics
+from sfml import system as sf_system
+from sfml import window as sf_window
 
-class Effect(sf.Drawable):
+
+DATA_DIR = Path(__file__).resolve().parent / "data"
+ERROR_FONT = sf_graphics.Font.from_file(str(DATA_DIR / "sansation.ttf"))
+
+
+class Effect(sf_graphics.Drawable):
     def __init__(self, name):
-        sf.Drawable.__init__(self)
+        sf_graphics.Drawable.__init__(self)
 
         self._name = name
         self.is_loaded = False
@@ -26,8 +32,7 @@ class Effect(sf.Drawable):
         if self.is_loaded:
             self.on_draw(target, states)
         else:
-            error = sf.Text("Shader not\nsupported")
-            error.font = sf.Font.from_file("data/sansation.ttf")
+            error = sf_graphics.Text("Shader not\nsupported", ERROR_FONT)
             error.position = (320, 200)
             error.character_size = 36
             target.draw(error, states)
@@ -40,16 +45,12 @@ class Pixelate(Effect):
 
     def on_load(self):
         try:
-            # load the texture and initialize the sprite
-            self.texture = sf.Texture.from_file("data/background.jpg")
-            self.sprite = sf.Sprite(self.texture)
-
-            # load the shader
-            self.shader = sf.Shader.from_file(fragment="data/pixelate.frag")
+            self.texture = sf_graphics.Texture.from_file(str(DATA_DIR / "background.jpg"))
+            self.sprite = sf_graphics.Sprite(self.texture)
+            self.shader = sf_graphics.Shader.from_file(fragment=str(DATA_DIR / "pixelate.frag"))
             self.shader.set_parameter("texture")
-
         except IOError as error:
-            print("An error occured: {0}".format(error))
+            print(f"An error occurred: {error}")
             exit(1)
 
         return True
@@ -67,18 +68,17 @@ class WaveBlur(Effect):
         Effect.__init__(self, 'wave + blur')
 
     def on_load(self):
-        with open("data/text.txt") as file:
-            self.text = sf.Text(file.read())
-            self.text.font = sf.Font.from_file("data/sansation.ttf")
-            self.text.character_size = 22
+        with open(DATA_DIR / "text.txt", encoding="utf-8") as file:
+            self.text = sf_graphics.Text(file.read(), ERROR_FONT, 22)
             self.text.position = (30, 20)
 
         try:
-            # load the shader
-            self.shader = sf.Shader.from_file("data/wave.vert", "data/blur.frag")
-
+            self.shader = sf_graphics.Shader.from_file(
+                vertex=str(DATA_DIR / "wave.vert"),
+                fragment=str(DATA_DIR / "blur.frag"),
+            )
         except IOError as error:
-            print("An error occured: {0}".format(error))
+            print(f"An error occurred: {error}")
             exit(1)
 
         return True
@@ -97,26 +97,24 @@ class StormBlink(Effect):
     def __init__(self):
         Effect.__init__(self, 'storm + blink')
 
-        self.points = sf.VertexArray()
+        self.points = sf_graphics.VertexArray(sf_graphics.PrimitiveType.POINTS)
 
     def on_load(self):
-        # create the points
-        self.points.primitive_type = sf.PrimitiveType.POINTS
-
         for i in range(40000):
-            x = randint(0, 32767) % 800
-            y = randint(0, 32767) % 600
-            r = randint(0, 32767) % 255
-            g = randint(0, 32767) % 255
-            b = randint(0, 32767) % 255
-            self.points.append(sf.Vertex(sf.Vector2(x, y), sf.Color(r, g, b)))
+            x = randint(0, 799)
+            y = randint(0, 599)
+            r = randint(0, 254)
+            g = randint(0, 254)
+            b = randint(0, 254)
+            self.points.append(sf_graphics.Vertex((x, y), sf_graphics.Color(r, g, b)))
 
         try:
-            # load the shader
-            self.shader = sf.Shader.from_file("data/storm.vert", "data/blink.frag")
-
+            self.shader = sf_graphics.Shader.from_file(
+                vertex=str(DATA_DIR / "storm.vert"),
+                fragment=str(DATA_DIR / "blink.frag"),
+            )
         except IOError as error:
-            print("An error occured: {0}".format(error))
+            print(f"An error occurred: {error}")
             exit(1)
 
         return True
@@ -137,30 +135,25 @@ class Edge(Effect):
         Effect.__init__(self, "edge post-effect")
 
     def on_load(self):
-        # create the off-screen surface
-        self.surface = sf.RenderTexture(800, 600)
+        self.surface = sf_graphics.RenderTexture(800, 600)
         self.surface.smooth = True
 
-        # load the textures
-        self.background_texture = sf.Texture.from_file("data/sfml.png")
+        self.background_texture = sf_graphics.Texture.from_file(str(DATA_DIR / "sfml.png"))
         self.background_texture.smooth = True
 
-        self.entity_texture = sf.Texture.from_file("data/devices.png")
+        self.entity_texture = sf_graphics.Texture.from_file(str(DATA_DIR / "devices.png"))
         self.entity_texture.smooth = True
 
-        # initialize the background sprite
-        self.background_sprite = sf.Sprite(self.background_texture)
+        self.background_sprite = sf_graphics.Sprite(self.background_texture)
         self.background_sprite.position = (135, 100)
 
-        # load the moving entities
         self.entities = []
 
         for i in range(6):
-            sprite = sf.Sprite(self.entity_texture, (96 * i, 0, 96, 96))
+            sprite = sf_graphics.Sprite(self.entity_texture, (96 * i, 0, 96, 96))
             self.entities.append(sprite)
 
-        # load the shader
-        self.shader = sf.Shader.from_file(fragment="data/edge.frag")
+        self.shader = sf_graphics.Shader.from_file(fragment=str(DATA_DIR / "edge.frag"))
         self.shader.set_parameter("texture")
 
         return True
@@ -168,14 +161,12 @@ class Edge(Effect):
     def on_update(self, time, x, y):
         self.shader.set_parameter("edge_threshold", 1 - (x + y) / 2)
 
-        # update the position of the moving entities
         for i, entity in enumerate(self.entities):
-            x = cos(0.25 * (time * i + (len(self.entities) - i))) * 300 + 350
-            y = cos(0.25 * (time * (len(self.entities) - i) + i)) * 200 + 250
-            entity.position = (x, y)
+            x_position = cos(0.25 * (time * i + (len(self.entities) - i))) * 300 + 350
+            y_position = cos(0.25 * (time * (len(self.entities) - i) + i)) * 200 + 250
+            entity.position = (x_position, y_position)
 
-        # render the updated scene to the off-screen surface
-        self.surface.clear(sf.Color.WHITE)
+        self.surface.clear(sf_graphics.Color.WHITE)
         self.surface.draw(self.background_sprite)
 
         for entity in self.entities:
@@ -185,98 +176,67 @@ class Edge(Effect):
 
     def on_draw(self, target, states):
         states.shader = self.shader
-        target.draw(sf.Sprite(self.surface.texture), states)
+        target.draw(sf_graphics.Sprite(self.surface.texture), states)
 
 
 if __name__ == "__main__":
-    # create the main window
-    window = sf.RenderWindow(sf.VideoMode(800, 600), "pySFML - Shader")
-    window.vertical_synchronization = True
+    render_window = sf_graphics.RenderWindow(sf_window.VideoMode(800, 600), "PySFML - Shader")
+    render_window.vertical_synchronization = True
 
-    # create the effects
     effects = (Pixelate(), WaveBlur(), StormBlink(), Edge())
     current = 0
 
-    # initialize them
-    for effect in effects: effect.load()
+    for effect in effects:
+        effect.load()
 
-    # create the message background
     try:
-        text_background_texture = sf.Texture.from_file("data/text-background.png")
-
+        text_background_texture = sf_graphics.Texture.from_file(str(DATA_DIR / "text-background.png"))
     except IOError as error:
-        print("An error occured: {0}".format(error))
+        print(f"An error occurred: {error}")
         exit(1)
 
-    text_background = sf.Sprite(text_background_texture)
+    text_background = sf_graphics.Sprite(text_background_texture)
     text_background.position = (0, 520)
-    text_background.color = sf.Color(255, 255, 255, 200)
+    text_background.color = sf_graphics.Color(255, 255, 255, 200)
 
-    # load the messages font
     try:
-        font = sf.Font.from_file("data/sansation.ttf")
-
+        font = sf_graphics.Font.from_file(str(DATA_DIR / "sansation.ttf"))
     except IOError as error:
-        print("An error occured: {0}".format(error))
+        print(f"An error occurred: {error}")
         exit(1)
 
-    # create the description text
-    description = sf.Text("Current effect: {0}".format(effects[current].name), font, 20)
+    description = sf_graphics.Text(f"Current effect: {effects[current].name}", font, 20)
     description.position = (10, 530)
-    description.color = sf.Color(80, 80, 80)
+    description.color = sf_graphics.Color(80, 80, 80)
 
-    # create the instructions text
-    instructions = sf.Text("Press left and right arrows to change the current shader", font, 20)
+    instructions = sf_graphics.Text("Press left and right arrows to change the current shader", font, 20)
     instructions.position = (280, 555)
-    instructions.color = sf.Color(80, 80, 80)
+    instructions.color = sf_graphics.Color(80, 80, 80)
 
-    clock = sf.Clock()
+    clock = sf_system.Clock()
 
-    # start the game loop
-    while window.is_open:
-
-        # update the current example
-        x = sf.Mouse.get_position(window).x / window.size.x
-        y = sf.Mouse.get_position(window).y / window.size.y
+    while render_window.is_open:
+        mouse_position = sf_window.Mouse.get_position(render_window)
+        x = mouse_position.x / render_window.size.x
+        y = mouse_position.y / render_window.size.y
         effects[current].update(clock.elapsed_time.seconds, x, y)
 
-        # process events
-        for event in window.events:
+        for event in render_window.events:
+            if event.type == sf_window.EventType.CLOSED:
+                render_window.close()
+            elif event.type == sf_window.EventType.KEY_PRESSED:
+                if event.get("code") == sf_window.Keyboard.ESCAPE:
+                    render_window.close()
+                elif event.get("code") == sf_window.Keyboard.LEFT:
+                    current = len(effects) - 1 if current == 0 else current - 1
+                    description.string = f"Current effect: {effects[current].name}"
+                elif event.get("code") == sf_window.Keyboard.RIGHT:
+                    current = 0 if current == len(effects) - 1 else current + 1
+                    description.string = f"Current effect: {effects[current].name}"
 
-            # close window: exit
-            if event == sf.Event.CLOSED:
-                window.close()
-
-            if event == sf.Event.KEY_PRESSED:
-                # escapte key: exit
-                if event['code'] == sf.Keyboard.ESCAPE:
-                    window.close()
-
-                # left arrow key: previous shader
-                elif event['code'] == sf.Keyboard.LEFT:
-                    if current == 0: current = len(effects) - 1
-                    else: current -= 1
-
-                    description.string = "Current effect: {0}".format(effects[current].name)
-
-                # right arrow key: next shader
-                elif event['code'] == sf.Keyboard.RIGHT:
-                    if current == len(effects) - 1: current = 0
-                    else: current += 1
-
-                    description.string = "Current effect: {0}".format(effects[current].name)
-
-
-        # clear the window
-        window.clear(sf.Color(255, 128, 0))
-
-        # draw the current example
-        window.draw(effects[current])
-
-        # draw the text
-        window.draw(text_background)
-        window.draw(instructions)
-        window.draw(description)
-
-        # finally, display the rendered frame on screen
-        window.display()
+        render_window.clear(sf_graphics.Color(255, 128, 0))
+        render_window.draw(effects[current])
+        render_window.draw(text_background)
+        render_window.draw(instructions)
+        render_window.draw(description)
+        render_window.display()

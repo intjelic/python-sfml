@@ -18,7 +18,16 @@
 *.sql
 *.sqlite
 
-build
+build/
+dist/
+src/pySFML.egg-info/
+.eggs/
+
+.deps/
+.venv-build/
+.venv-wheel/
+.venv-sdist/
+.pytest_cache/
 
 install*
 
@@ -29,4 +38,4 @@ __pycache__
 *.cpp
 *.h
 
-*egg*
+*.egg-info/

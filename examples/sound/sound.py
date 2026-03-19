@@ -1,44 +1,39 @@
-from sfml import sf
+from pathlib import Path
+
+from sfml import audio as sf_audio
+from sfml import system as sf_system
+
+
+DATA_DIR = Path(__file__).resolve().parent / "data"
+
+
+def wait_until_stopped(sound_source):
+    while sound_source.status == sf_audio.Status.PLAYING:
+        sf_system.sleep(sf_system.milliseconds(100))
 
 def play_sound():
-    # load a sound buffer from a wav file
-    buffer = sf.SoundBuffer.from_file("data/canary.wav")
+    buffer = sf_audio.SoundBuffer.from_file(str(DATA_DIR / "canary.wav"))
 
-    # display sound informations
     print("canary.wav:")
     print("{0} seconds".format(buffer.duration))
     print("{0} samples / sec".format(buffer.sample_rate))
     print("{0} channels".format(buffer.channel_count))
 
-    # create a sound instance and play it
-    sound = sf.Sound(buffer)
-    sound.play();
-
-    # loop while the sound is playing
-    while sound.status == sf.Sound.PLAYING:
-        # leave some CPU time for other processes
-        sf.sleep(sf.milliseconds(100))
+    sound = sf_audio.Sound(buffer)
+    sound.play()
+    wait_until_stopped(sound)
 
 def play_music():
-    # load an ogg music file
-    music = sf.Music.from_file("data/orchestral.ogg")
+    music = sf_audio.Music.from_file(str(DATA_DIR / "orchestral.ogg"))
 
-    # display music informations
     print("orchestral.ogg:")
     print("{0} seconds".format(music.duration))
     print("{0} samples / sec".format(music.sample_rate))
     print("{0} channels".format(music.channel_count))
 
-    # play it
-    music.play();
-
-    # loop while the music is playing
-    while music.status == sf.Music.PLAYING:
-        # leave some CPU time for other processes
-        sf.sleep(sf.milliseconds(100))
+    music.play()
+    wait_until_stopped(music)
 
 if __name__ == "__main__":
     play_sound()
     play_music()
-
-    input("Press enter to exit...")

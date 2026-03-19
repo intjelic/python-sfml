@@ -4,7 +4,7 @@
 
         from sfml import sf
 
-        window = sf.RenderWindow(sf.VideoMode(w, h), "pySFML - Pong")
+        window = sf.RenderWindow(sf.VideoMode(w, h), "PySFML - Pong")
 """
 
 from sfml.system import *
