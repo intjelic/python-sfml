@@ -15,17 +15,27 @@ except ImportError:
 
 SFML_HEADERS = os.getenv('SFML_HEADERS')
 SFML_LIBRARIES = os.getenv('SFML_LIBRARIES')
+SFML_INSTALL_PREFIX = os.getenv('SFML_INSTALL_PREFIX')
 REPOSITORY_ROOT = os.path.abspath(os.path.dirname(__file__))
-DEFAULT_SFML_PREFIX = os.path.join(REPOSITORY_ROOT, '.deps', 'sfml-2.6.2-install')
+DEFAULT_SFML_PREFIX_NAMES = (
+    'sfml-3.0.2-install',
+    'sfml-3-install'
+)
 
 
 def resolve_sfml_path(explicit_path, *relative_parts):
     if explicit_path:
         return os.path.normpath(explicit_path)
 
-    candidate = os.path.join(DEFAULT_SFML_PREFIX, *relative_parts)
-    if os.path.isdir(candidate):
-        return os.path.normpath(candidate)
+    if SFML_INSTALL_PREFIX:
+        candidate = os.path.join(SFML_INSTALL_PREFIX, *relative_parts)
+        if os.path.isdir(candidate):
+            return os.path.normpath(candidate)
+
+    for prefix_name in DEFAULT_SFML_PREFIX_NAMES:
+        candidate = os.path.join(REPOSITORY_ROOT, '.deps', prefix_name, *relative_parts)
+        if os.path.isdir(candidate):
+            return os.path.normpath(candidate)
 
     return None
 
@@ -33,6 +43,34 @@ def resolve_sfml_path(explicit_path, *relative_parts):
 SFML_HEADERS = resolve_sfml_path(SFML_HEADERS, 'include')
 SFML_LIBRARIES = resolve_sfml_path(SFML_LIBRARIES, 'lib')
 WINDOWS_USE_SHARED_SFML = platform.system() == 'Windows'
+
+cpp_link_args = []
+
+if platform.system() == 'Windows':
+    cpp_compile_args = ['/std:c++17']
+else:
+    cpp_compile_args = ['-std=c++17']
+
+if platform.system() == 'Darwin':
+    minimum_macos_target = '10.15'
+    requested_macos_target = os.environ.get('MACOSX_DEPLOYMENT_TARGET', minimum_macos_target)
+
+    def parse_version(version):
+        parts = []
+        for part in version.split('.'):
+            if part.isdigit():
+                parts.append(int(part))
+            else:
+                break
+        return tuple(parts)
+
+    if parse_version(requested_macos_target) < parse_version(minimum_macos_target):
+        requested_macos_target = minimum_macos_target
+
+    os.environ['MACOSX_DEPLOYMENT_TARGET'] = requested_macos_target
+    macos_deployment_flag = f'-mmacosx-version-min={requested_macos_target}'
+    cpp_compile_args.append(macos_deployment_flag)
+    cpp_link_args.append(macos_deployment_flag)
 
 def stage_generated_headers(build_temp):
     staged_headers = []
@@ -87,6 +125,8 @@ def extension(name, files, libs): return Extension(
         library_dirs=library_dirs,
         language='c++',
         libraries=libs,
+        extra_compile_args=cpp_compile_args,
+        extra_link_args=cpp_link_args,
         define_macros=[('SFML_STATIC', '1')] if platform.system() == 'Windows' and not WINDOWS_USE_SHARED_SFML else []
     )
 

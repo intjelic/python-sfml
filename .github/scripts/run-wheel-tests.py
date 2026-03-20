@@ -21,7 +21,7 @@ def sanitized_env() -> dict[str, str]:
         env.pop(name, None)
 
     if os.name == "nt":
-        blocked = ("c:/cibw-sfml-2.6.2/bin", "c:\\cibw-sfml-2.6.2\\bin")
+        blocked = ("c:/cibw-sfml-3.0.2/bin", "c:\\cibw-sfml-3.0.2\\bin")
         path_parts = env.get("PATH", "").split(os.pathsep)
         env["PATH"] = os.pathsep.join(
             part

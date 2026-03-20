@@ -21,6 +21,8 @@ cdef extern from "pysfml/window/window.h":
         cdef sf.Window       *p_window
         cdef bint            m_visible
         cdef bint            m_vertical_synchronization
+        cdef object          p_minimum_size
+        cdef object          p_maximum_size
 
 cdef extern from "pysfml/window/window_api.h":
     cdef void import_sfml__window()

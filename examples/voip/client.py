@@ -8,6 +8,16 @@ AUDIO_DATA = 1
 END_OF_STREAM = 2
 
 
+def send_all(socket, data):
+    offset = 0
+
+    while offset < len(data):
+        sent = socket.send(data[offset:])
+        if sent <= 0:
+            raise sf_network.SocketError("socket.send() made no forward progress")
+        offset += sent
+
+
 class NetworkRecorder(sf_audio.SoundRecorder):
     def __init__(self, host, port):
         sf_audio.SoundRecorder.__init__(self)
@@ -29,7 +39,7 @@ class NetworkRecorder(sf_audio.SoundRecorder):
         data = pack("!BI", AUDIO_DATA, len(payload)) + payload
 
         try:
-            self.socket.send(data)
+            send_all(self.socket, data)
         except sf_network.SocketException:
             return False
 
@@ -37,7 +47,7 @@ class NetworkRecorder(sf_audio.SoundRecorder):
 
     def on_stop(self):
         try:
-            self.socket.send(bytes([END_OF_STREAM]))
+            send_all(self.socket, bytes([END_OF_STREAM]))
         finally:
             self.socket.disconnect()
 

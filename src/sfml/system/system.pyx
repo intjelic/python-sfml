@@ -11,6 +11,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 cimport sfml as sf
+from sfml cimport angle as sf_angle
 from sfml cimport time as sf_time
 from sfml cimport Int8, Int16, Int32, Int64
 from sfml cimport Uint8, Uint16, Uint32, Uint64
@@ -29,11 +30,13 @@ cdef extern from "pysfml/system/hacks.hpp":
     sf.Time Time_div_int(sf.Time left, Int64)
     sf.Time Time_div_float(sf.Time left, float)
     float Time_div_Time(sf.Time, sf.Time)
+    sf.String String_from_utf32(const Uint32*)
+    const Uint32* String_get_utf32_data(const sf.String&)
     void Time_idiv_int(sf.Time&, Int64)
     void Time_idiv_float(sf.Time&, float)
 
 __all__ = ['Time', 'sleep', 'Clock', 'seconds', 'milliseconds', 'microseconds',
-            'Vector2', 'Vector3']
+            'Angle', 'degrees', 'radians', 'Vector2', 'Vector3']
 
 # expose a function to restore the error handler
 cdef api void restoreErrorHandler():
@@ -74,12 +77,12 @@ cdef api sf.String to_string(basestring string):
     # We must read the underlying bytes array. In Cython, this is done
     # in the following fashion.
     cdef char* bytes_pointer = bytes_string
-    return sf.String(<Uint32*>bytes_pointer)
+    return String_from_utf32(<Uint32*>bytes_pointer)
 
 cdef api object wrap_string(const sf.String* p):
     # To simplify the implementation, we get the underlying UTF-32
     # strings and let Python decode it.
-    cdef char* bytes_pointer = <char*>p.getData()
+    cdef char* bytes_pointer = <char*>String_get_utf32_data(p[0])
 
     # Cython won't properly make a Python bytes string because it's
     # going to stop at the first NULL character. Instead we specify its
@@ -567,6 +570,153 @@ cdef api object wrap_time(sf.Time* p):
     r.p_this = p
     return r
 
+cdef public class Angle[type PyAngleType, object PyAngleObject]:
+    ZERO = wrap_angle(<sf.Angle*>&sf_angle.Zero)
+
+    cdef sf.Angle *p_this
+
+    def __cinit__(self):
+        self.p_this = new sf.Angle()
+
+    def __dealloc__(self):
+        del self.p_this
+
+    def __repr__(self):
+        return "Angle(degrees={0})".format(self.degrees)
+
+    def __str__(self):
+        return "{0} degrees".format(self.degrees)
+
+    def __richcmp__(Angle x, Angle y, int op):
+        if op == 0:
+            return x.p_this[0] < y.p_this[0]
+        elif op == 2:
+            return x.p_this[0] == y.p_this[0]
+        elif op == 4:
+            return x.p_this[0] > y.p_this[0]
+        elif op == 1:
+            return x.p_this[0] <= y.p_this[0]
+        elif op == 3:
+            return x.p_this[0] != y.p_this[0]
+        elif op == 5:
+            return x.p_this[0] >= y.p_this[0]
+
+    def __add__(Angle x, Angle y):
+        cdef sf.Angle* p = new sf.Angle()
+        p[0] = x.p_this[0] + y.p_this[0]
+        return wrap_angle(p)
+
+    def __sub__(Angle x, Angle y):
+        cdef sf.Angle* p = new sf.Angle()
+        p[0] = x.p_this[0] - y.p_this[0]
+        return wrap_angle(p)
+
+    def __mul__(Angle self, other):
+        cdef sf.Angle* p = new sf.Angle()
+
+        if isinstance(other, int) or isinstance(other, float):
+            p[0] = self.p_this[0] * <float>other
+        else:
+            del p
+            return NotImplemented
+
+        return wrap_angle(p)
+
+    def __rmul__(Angle self, other):
+        return self * other
+
+    def __truediv__(Angle self, other):
+        cdef sf.Angle* p
+
+        if isinstance(other, Angle):
+            return self.p_this[0] / (<Angle>other).p_this[0]
+
+        p = new sf.Angle()
+        if isinstance(other, int) or isinstance(other, float):
+            p[0] = self.p_this[0] / <float>other
+        else:
+            del p
+            return NotImplemented
+
+        return wrap_angle(p)
+
+    def __mod__(Angle x, Angle y):
+        cdef sf.Angle* p = new sf.Angle()
+        p[0] = x.p_this[0] % y.p_this[0]
+        return wrap_angle(p)
+
+    def __iadd__(self, Angle x):
+        self.p_this[0] += x.p_this[0]
+        return self
+
+    def __isub__(self, Angle x):
+        self.p_this[0] -= x.p_this[0]
+        return self
+
+    def __imul__(Angle self, other):
+        if isinstance(other, int) or isinstance(other, float):
+            self.p_this[0] *= <float>other
+        else:
+            return NotImplemented
+
+        return self
+
+    def __itruediv__(Angle self, other):
+        if isinstance(other, int) or isinstance(other, float):
+            self.p_this[0] /= <float>other
+        else:
+            return NotImplemented
+
+        return self
+
+    def __imod__(self, Angle x):
+        self.p_this[0] %= x.p_this[0]
+        return self
+
+    def __neg__(self):
+        cdef sf.Angle* p = new sf.Angle()
+        p[0] = -self.p_this[0]
+        return wrap_angle(p)
+
+    property degrees:
+        def __get__(self):
+            return self.p_this.asDegrees()
+
+    property radians:
+        def __get__(self):
+            return self.p_this.asRadians()
+
+    def wrap_signed(self):
+        cdef sf.Angle* p = new sf.Angle()
+        p[0] = self.p_this.wrapSigned()
+        return wrap_angle(p)
+
+    def wrap_unsigned(self):
+        cdef sf.Angle* p = new sf.Angle()
+        p[0] = self.p_this.wrapUnsigned()
+        return wrap_angle(p)
+
+    def __copy__(self):
+        cdef sf.Angle* p = new sf.Angle()
+        p[0] = self.p_this[0]
+        return wrap_angle(p)
+
+
+cdef api object wrap_angle(sf.Angle* p):
+    cdef Angle r = Angle.__new__(Angle)
+    r.p_this = p
+    return r
+
+
+cdef api sf.Angle to_angle(object angle):
+    if isinstance(angle, Angle):
+        return (<Angle>angle).p_this[0]
+
+    if isinstance(angle, int) or isinstance(angle, float):
+        return sf.degrees(<float>angle)
+
+    raise TypeError("angle must be an sfml.system.Angle or a number of degrees")
+
 def sleep(Time duration):
     with nogil: sf.sleep(duration.p_this[0])
 
@@ -591,9 +741,24 @@ cdef class Clock:
             p[0] = self.p_this.getElapsedTime()
             return wrap_time(p)
 
+    property is_running:
+        def __get__(self):
+            return self.p_this.isRunning()
+
+    def start(self):
+        self.p_this.start()
+
+    def stop(self):
+        self.p_this.stop()
+
     def restart(self):
         cdef sf.Time* p = new sf.Time()
         p[0] = self.p_this.restart()
+        return wrap_time(p)
+
+    def reset(self):
+        cdef sf.Time* p = new sf.Time()
+        p[0] = self.p_this.reset()
         return wrap_time(p)
 
 def seconds(float amount):
@@ -610,3 +775,13 @@ def microseconds(Int64 amount):
     cdef sf.Time* p = new sf.Time()
     p[0] = sf.microseconds(amount)
     return wrap_time(p)
+
+def degrees(float amount):
+    cdef sf.Angle* p = new sf.Angle()
+    p[0] = sf.degrees(amount)
+    return wrap_angle(p)
+
+def radians(float amount):
+    cdef sf.Angle* p = new sf.Angle()
+    p[0] = sf.radians(amount)
+    return wrap_angle(p)

@@ -9,6 +9,6 @@ cdef extern from "SFML/Window/VideoMode.hpp" namespace "sf":
     cdef cppclass VideoMode:
         pass
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::VideoMode":
-    cdef VideoMode& getDesktopMode()
+cdef extern from "pysfml/window/compat.hpp" namespace "pysfml::window_compat":
+    cdef VideoMode getDesktopMode()
     cdef const vector[VideoMode]& getFullscreenModes()

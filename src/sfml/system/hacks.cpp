@@ -7,7 +7,7 @@
 
 #include <pysfml/system/hacks.hpp>
 
-sf::Time Time_div_int(sf::Time left, sf::Int64 right)
+sf::Time Time_div_int(sf::Time left, std::int64_t right)
 {
     return left / right;
 }
@@ -22,7 +22,17 @@ float Time_div_Time(sf::Time left, sf::Time right)
     return left / right;
 }
 
-void Time_idiv_int(sf::Time& left, sf::Int64 right)
+sf::String String_from_utf32(const std::uint32_t* utf32_string)
+{
+    return sf::String(reinterpret_cast<const char32_t*>(utf32_string));
+}
+
+const std::uint32_t* String_get_utf32_data(const sf::String& string)
+{
+    return reinterpret_cast<const std::uint32_t*>(string.getData());
+}
+
+void Time_idiv_int(sf::Time& left, std::int64_t right)
 {
     left /= right;
 }

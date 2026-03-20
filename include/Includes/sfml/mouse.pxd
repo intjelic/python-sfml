@@ -12,7 +12,7 @@ cdef extern from "SFML/Window/Window.hpp" namespace "sf":
     cdef cppclass Window:
         pass
 
-cdef extern from "SFML/Window.hpp" namespace "sf::Mouse":
+cdef extern from "pysfml/window/compat.hpp" namespace "pysfml::mouse_compat":
     cdef enum Button:
         Left
         Right

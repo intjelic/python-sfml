@@ -4,11 +4,12 @@
 # This file is part of PySFML and is available under the zlib license.
 
 cdef extern from "SFML/Network.hpp" namespace "sf::Socket":
-    cdef enum Status:
-        Done
-        NotReady
-        Disconnected
-        Error
+    cdef enum Status "sf::Socket::Status":
+        Done "sf::Socket::Status::Done"
+        NotReady "sf::Socket::Status::NotReady"
+        Partial "sf::Socket::Status::Partial"
+        Disconnected "sf::Socket::Status::Disconnected"
+        Error "sf::Socket::Status::Error"
 
     cdef enum:
         AnyPort

@@ -15,6 +15,7 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf::Shader":
 
     cdef enum Type:
         Vertex
+        Geometry
         Fragment
 
     cdef bint isAvailable()

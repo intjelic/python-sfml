@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "SFML"
 dynamic = ["version"]
-description = "Python bindings for SFML"
+description = "Python bindings for SFML 3"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Zlib"
@@ -19,7 +19,7 @@ authors = [
 maintainers = [
     { name = "Jonathan de Wachter", email = "dewachter.jonathan@gmail.com" },
 ]
-keywords = ["sfml", "python", "bindings", "graphics", "audio", "window", "network"]
+keywords = ["sfml", "sfml3", "python", "bindings", "graphics", "audio", "window", "network"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",

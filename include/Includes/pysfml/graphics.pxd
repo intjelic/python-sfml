@@ -7,6 +7,49 @@ cimport sfml as sf
 from pysfml.system cimport Vector2
 from pysfml.system cimport NumericObject
 
+cdef extern from "SFML/Graphics.hpp" namespace "sf":
+    cdef cppclass Color:
+        pass
+
+    cdef cppclass BlendMode:
+        pass
+
+    cdef cppclass Image:
+        pass
+
+    cdef cppclass Texture:
+        pass
+
+    cdef cppclass Drawable:
+        pass
+
+    cdef cppclass Transformable:
+        pass
+
+    cdef cppclass Sprite:
+        pass
+
+    cdef cppclass Shape:
+        pass
+
+    cdef cppclass ConvexShape:
+        pass
+
+    cdef cppclass CircleShape:
+        pass
+
+    cdef cppclass RectangleShape:
+        pass
+
+    cdef cppclass RenderTarget:
+        pass
+
+    cdef cppclass RenderStates:
+        pass
+
+    ctypedef Rect[int] IntRect
+    ctypedef Rect[float] FloatRect
+
 cdef extern from "pysfml/graphics/graphics.h":
     cdef class sfml.graphics.Rect [object PyRectObject]:
         cdef sf.Rect[NumericObject] *p_this

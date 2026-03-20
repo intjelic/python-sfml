@@ -5,16 +5,422 @@
 
 from libcpp.vector cimport vector
 from libcpp.string cimport string
+from libc.stddef cimport size_t
 
 cimport sfml as sf
-from sfml cimport Int8, Int16, Int32, Int64
-from sfml cimport Uint8, Uint16, Uint32, Uint64
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf":
+    ctypedef sf.Rect[int] SfIntRect
+    ctypedef sf.Rect[float] SfFloatRect
+
+    cdef enum SfPrimitiveType "sf::PrimitiveType":
+        SfPrimitiveTypePoints "sf::PrimitiveType::Points"
+        SfPrimitiveTypeLines "sf::PrimitiveType::Lines"
+        SfPrimitiveTypeLineStrip "sf::PrimitiveType::LineStrip"
+        SfPrimitiveTypeTriangles "sf::PrimitiveType::Triangles"
+        SfPrimitiveTypeTriangleStrip "sf::PrimitiveType::TriangleStrip"
+        SfPrimitiveTypeTriangleFan "sf::PrimitiveType::TriangleFan"
+
+    cdef enum SfVertexBufferUsage "sf::VertexBuffer::Usage":
+        SfVertexBufferUsageStream "sf::VertexBuffer::Usage::Stream"
+        SfVertexBufferUsageDynamic "sf::VertexBuffer::Usage::Dynamic"
+        SfVertexBufferUsageStatic "sf::VertexBuffer::Usage::Static"
+
+    cdef enum SfTextStyle "sf::Text::Style":
+        SfTextRegular "sf::Text::Regular"
+        SfTextBold "sf::Text::Bold"
+        SfTextItalic "sf::Text::Italic"
+        SfTextUnderlined "sf::Text::Underlined"
+        SfTextStrikeThrough "sf::Text::StrikeThrough"
+
+    cdef cppclass SfVector2u "Vector2u":
+        SfVector2u()
+        SfVector2u(unsigned int, unsigned int)
+        unsigned int x
+        unsigned int y
+
+    cdef cppclass SfVector2f "Vector2f":
+        SfVector2f()
+        SfVector2f(float, float)
+        float x
+        float y
+
+    cdef cppclass SfVector2i "Vector2i":
+        SfVector2i()
+        SfVector2i(int, int)
+        int x
+        int y
+
+    cdef enum SfStencilComparison "sf::StencilComparison":
+        SfStencilComparisonNever "sf::StencilComparison::Never"
+        SfStencilComparisonLess "sf::StencilComparison::Less"
+        SfStencilComparisonLessEqual "sf::StencilComparison::LessEqual"
+        SfStencilComparisonGreater "sf::StencilComparison::Greater"
+        SfStencilComparisonGreaterEqual "sf::StencilComparison::GreaterEqual"
+        SfStencilComparisonEqual "sf::StencilComparison::Equal"
+        SfStencilComparisonNotEqual "sf::StencilComparison::NotEqual"
+        SfStencilComparisonAlways "sf::StencilComparison::Always"
+
+    cdef enum SfStencilUpdateOperation "sf::StencilUpdateOperation":
+        SfStencilUpdateOperationKeep "sf::StencilUpdateOperation::Keep"
+        SfStencilUpdateOperationZero "sf::StencilUpdateOperation::Zero"
+        SfStencilUpdateOperationReplace "sf::StencilUpdateOperation::Replace"
+        SfStencilUpdateOperationIncrement "sf::StencilUpdateOperation::Increment"
+        SfStencilUpdateOperationDecrement "sf::StencilUpdateOperation::Decrement"
+        SfStencilUpdateOperationInvert "sf::StencilUpdateOperation::Invert"
+
+    cdef cppclass SfStencilValue "StencilValue":
+        SfStencilValue(unsigned int)
+        unsigned int value
+
+    cdef cppclass SfStencilMode "StencilMode":
+        SfStencilComparison stencilComparison
+        SfStencilUpdateOperation stencilUpdateOperation
+        SfStencilValue stencilReference
+        SfStencilValue stencilMask
+        bint stencilOnly
+
+    cdef enum SfCoordinateType "sf::CoordinateType":
+        SfCoordinateTypeNormalized "sf::CoordinateType::Normalized"
+        SfCoordinateTypePixels "sf::CoordinateType::Pixels"
+
+    cdef cppclass SfDrawable "Drawable":
+        pass
+
+    cdef cppclass SfTransform "Transform":
+        SfTransform()
+        SfTransform(float, float, float, float, float, float, float, float, float)
+        const float* getMatrix() const
+        SfTransform getInverse() const
+        sf.Vector2f transformPoint(sf.Vector2f point) const
+        SfFloatRect transformRect(const SfFloatRect& rectangle) const
+        SfTransform& combine(const SfTransform& transform)
+        SfTransform operator*(const SfTransform& transform)
+        SfTransform& translate(sf.Vector2f offset)
+        SfTransform& rotate(sf.Angle angle)
+        SfTransform& rotate(sf.Angle angle, sf.Vector2f center)
+        SfTransform& scale(sf.Vector2f factors)
+        SfTransform& scale(sf.Vector2f factors, sf.Vector2f center)
+
+    const SfTransform SfTransformIdentity "sf::Transform::Identity"
+
+    cdef cppclass SfTransformable "Transformable":
+        void setPosition(sf.Vector2f position)
+        void setRotation(sf.Angle angle)
+        void setScale(sf.Vector2f factors)
+        void setOrigin(sf.Vector2f origin)
+        sf.Vector2f getPosition() const
+        sf.Angle getRotation() const
+        sf.Vector2f getScale() const
+        sf.Vector2f getOrigin() const
+        void move(sf.Vector2f offset)
+        void rotate(sf.Angle angle)
+        void scale(sf.Vector2f factor)
+        const SfTransform& getTransform() const
+        const SfTransform& getInverseTransform() const
+
+    cdef cppclass SfColor "Color":
+        SfColor()
+        SfColor(unsigned char, unsigned char, unsigned char, unsigned char)
+        unsigned char r
+        unsigned char g
+        unsigned char b
+        unsigned char a
+
+    cdef cppclass SfImage "Image":
+        SfImage()
+        void resize(SfVector2u size)
+        void resize(SfVector2u size, SfColor color)
+        void resize(SfVector2u size, const unsigned char* pixels)
+        bint loadFromFile(const string&)
+        bint loadFromMemory(const void*, size_t)
+        bint saveToFile(const string&) const
+        void createMaskFromColor(SfColor color, unsigned char alpha)
+        bint copy(const SfImage& source, SfVector2u dest, const SfIntRect& sourceRect, bint applyAlpha)
+        void setPixel(SfVector2u coords, SfColor color)
+        SfColor getPixel(SfVector2u coords) const
+        const unsigned char* getPixelsPtr() const
+        SfVector2u getSize() const
+        void flipHorizontally()
+        void flipVertically()
+
+    cdef cppclass SfTexture "Texture":
+        SfTexture()
+        SfTexture(SfVector2u size, bint sRgb)
+        SfVector2u getSize() const
+        SfImage copyToImage() const
+        void update(const unsigned char* pixels)
+        void update(const unsigned char* pixels, SfVector2u size, SfVector2u dest)
+        void update(const SfImage& image)
+        void update(const SfImage& image, SfVector2u dest)
+        void setSmooth(bint smooth)
+        bint isSmooth() const
+        bint isRepeated() const
+        void setRepeated(bint repeated)
+        bint isSrgb() const
+        bint generateMipmap()
+        unsigned int getNativeHandle() const
+
+    cdef cppclass SfGlyph "Glyph":
+        float advance
+        int lsbDelta
+        int rsbDelta
+        SfFloatRect bounds
+        SfIntRect textureRect
+
+    cdef enum SfBlendFactor "sf::BlendMode::Factor":
+        SfBlendFactorZero "sf::BlendMode::Factor::Zero"
+        SfBlendFactorOne "sf::BlendMode::Factor::One"
+        SfBlendFactorSrcColor "sf::BlendMode::Factor::SrcColor"
+        SfBlendFactorOneMinusSrcColor "sf::BlendMode::Factor::OneMinusSrcColor"
+        SfBlendFactorDstColor "sf::BlendMode::Factor::DstColor"
+        SfBlendFactorOneMinusDstColor "sf::BlendMode::Factor::OneMinusDstColor"
+        SfBlendFactorSrcAlpha "sf::BlendMode::Factor::SrcAlpha"
+        SfBlendFactorOneMinusSrcAlpha "sf::BlendMode::Factor::OneMinusSrcAlpha"
+        SfBlendFactorDstAlpha "sf::BlendMode::Factor::DstAlpha"
+        SfBlendFactorOneMinusDstAlpha "sf::BlendMode::Factor::OneMinusDstAlpha"
+
+    cdef enum SfBlendEquation "sf::BlendMode::Equation":
+        SfBlendEquationAdd "sf::BlendMode::Equation::Add"
+        SfBlendEquationSubtract "sf::BlendMode::Equation::Subtract"
+        SfBlendEquationReverseSubtract "sf::BlendMode::Equation::ReverseSubtract"
+        SfBlendEquationMin "sf::BlendMode::Equation::Min"
+        SfBlendEquationMax "sf::BlendMode::Equation::Max"
+
+    cdef cppclass SfBlendMode "BlendMode":
+        SfBlendMode()
+        SfBlendMode(SfBlendFactor colorSourceFactor,
+                    SfBlendFactor colorDestinationFactor,
+                    SfBlendEquation colorBlendEquation,
+                    SfBlendFactor alphaSourceFactor,
+                    SfBlendFactor alphaDestinationFactor,
+                    SfBlendEquation alphaBlendEquation)
+        SfBlendFactor colorSrcFactor
+        SfBlendFactor colorDstFactor
+        SfBlendEquation colorEquation
+        SfBlendFactor alphaSrcFactor
+        SfBlendFactor alphaDstFactor
+        SfBlendEquation alphaEquation
+
+    const SfBlendMode SfBlendAlpha "sf::BlendAlpha"
+    const SfBlendMode SfBlendAdd "sf::BlendAdd"
+    const SfBlendMode SfBlendMultiply "sf::BlendMultiply"
+    const SfBlendMode SfBlendNone "sf::BlendNone"
+
+    cdef cppclass SfFontInfo "Font::Info":
+        string family
+
+    cdef cppclass SfFont "Font":
+        SfFont()
+        bint openFromFile(const string&)
+        bint openFromMemory(const void*, size_t)
+        SfGlyph& getGlyph(unsigned int, unsigned int, bint, float outlineThickness) const
+        int getKerning(unsigned int, unsigned int, unsigned int) const
+        int getLineSpacing(unsigned int) const
+        const SfTexture& getTexture(unsigned int) const
+        const SfFontInfo& getInfo() const
+
+    cdef cppclass SfShader "Shader":
+        SfShader()
+
+    cdef cppclass SfRenderStates "RenderStates":
+        SfRenderStates()
+        SfBlendMode blendMode
+        SfStencilMode stencilMode
+        SfTransform transform
+        SfCoordinateType coordinateType
+        const SfTexture* texture
+        const SfShader* shader
+
+    const SfRenderStates SfDefaultRenderStates "RenderStates::Default"
+
+    cdef cppclass SfVertex "Vertex":
+        SfVertex()
+        sf.Vector2f position
+        SfColor color
+        sf.Vector2f texCoords
+
+    cdef cppclass SfVertexArray "VertexArray"(SfDrawable):
+        SfVertexArray()
+        SfVertexArray(SfPrimitiveType type, size_t vertexCount)
+        size_t getVertexCount() const
+        SfVertex& operator[](size_t index)
+        void clear()
+        void resize(size_t vertexCount)
+        void append(const SfVertex& vertex)
+        void setPrimitiveType(SfPrimitiveType type)
+        SfPrimitiveType getPrimitiveType() const
+        SfFloatRect getBounds() const
+
+    cdef cppclass SfVertexBuffer "sf::VertexBuffer"(SfDrawable):
+        SfVertexBuffer()
+        SfVertexBuffer(SfPrimitiveType type)
+        SfVertexBuffer(SfVertexBufferUsage usage)
+        SfVertexBuffer(SfPrimitiveType type, SfVertexBufferUsage usage)
+        SfVertexBuffer(const SfVertexBuffer& copy)
+        bint create(size_t vertexCount)
+        size_t getVertexCount() const
+        bint update(const SfVertex* vertices)
+        bint update(const SfVertex* vertices, size_t vertexCount, unsigned int offset)
+        bint update(const SfVertexBuffer& vertexBuffer)
+        unsigned int getNativeHandle() const
+        void setPrimitiveType(SfPrimitiveType type)
+        SfPrimitiveType getPrimitiveType() const
+        void setUsage(SfVertexBufferUsage usage)
+        SfVertexBufferUsage getUsage() const
+
+cdef extern from "SFML/Window/WindowEnums.hpp" namespace "sf::Style":
+    cdef enum SfWindowStyle:
+        SfWindowStyleNone "sf::Style::None"
+        SfWindowStyleTitlebar "sf::Style::Titlebar"
+        SfWindowStyleResize "sf::Style::Resize"
+        SfWindowStyleClose "sf::Style::Close"
+        SfWindowStyleDefault "sf::Style::Default"
+
+cdef extern from "SFML/Graphics.hpp" namespace "sf":
+    cdef cppclass SfView "View":
+        SfView()
+        SfView(const SfFloatRect& rectangle)
+        void setCenter(sf.Vector2f center)
+        void setSize(sf.Vector2f size)
+        void setRotation(sf.Angle angle)
+        void setViewport(const SfFloatRect& viewport)
+        void setScissor(const SfFloatRect& scissor)
+        sf.Vector2f getCenter() const
+        sf.Vector2f getSize() const
+        sf.Angle getRotation() const
+        const SfFloatRect& getViewport() const
+        const SfFloatRect& getScissor() const
+        void move(sf.Vector2f offset)
+        void rotate(sf.Angle angle)
+        void zoom(float factor)
+        const SfTransform& getTransform() const
+        const SfTransform& getInverseTransform() const
+
+    cdef cppclass SfWindow "Window":
+        void display()
+
+    cdef cppclass SfRenderTarget "RenderTarget":
+        void clear()
+        void clear(SfColor color)
+        void clear(SfColor color, SfStencilValue stencilValue)
+        void clearStencil(SfStencilValue stencilValue)
+        void setView(const SfView& view)
+        const SfView& getView() const
+        const SfView& getDefaultView() const
+        SfIntRect getViewport(const SfView& view) const
+        SfIntRect getScissor(const SfView& view) const
+        sf.Vector2f mapPixelToCoords(sf.Vector2i point) const
+        sf.Vector2f mapPixelToCoords(sf.Vector2i point, const SfView& view) const
+        sf.Vector2i mapCoordsToPixel(sf.Vector2f point) const
+        sf.Vector2i mapCoordsToPixel(sf.Vector2f point, const SfView& view) const
+        void draw(const SfDrawable& drawable)
+        void draw(const SfDrawable& drawable, const SfRenderStates& states)
+        void draw(const SfVertex* vertices, size_t vertexCount, SfPrimitiveType type)
+        void draw(const SfVertex* vertices, size_t vertexCount, SfPrimitiveType type, const SfRenderStates& states)
+        void draw(const SfVertexBuffer& vertexBuffer)
+        void draw(const SfVertexBuffer& vertexBuffer, const SfRenderStates& states)
+        void draw(const SfVertexBuffer& vertexBuffer, size_t firstVertex, size_t vertexCount, const SfRenderStates& states)
+        SfVector2u getSize() const
+        bint isSrgb() const
+        bint setActive(bint active)
+        void pushGLStates()
+        void popGLStates()
+        void resetGLStates()
+
+    cdef cppclass SfRenderWindow "RenderWindow"(SfWindow, SfRenderTarget):
+        SfRenderWindow()
+        void create(sf.WindowHandle handle)
+        void create(sf.WindowHandle handle, const sf.ContextSettings& settings)
+
+    cdef cppclass SfRenderTexture "RenderTexture"(SfRenderTarget):
+        SfRenderTexture()
+        void setSmooth(bint smooth)
+        bint isSmooth() const
+        void setRepeated(bint repeated)
+        bint isRepeated() const
+        bint setActive(bint active)
+        bint generateMipmap()
+        bint isSrgb() const
+        void display()
+        const SfTexture& getTexture() const
+
+    cdef cppclass SfSprite "Sprite"(SfDrawable, SfTransformable):
+        SfSprite(const SfTexture& texture)
+        SfSprite(const SfTexture& texture, const SfIntRect& rectangle)
+        void setTexture(const SfTexture& texture, bint resetRect)
+        void setTextureRect(const SfIntRect& rectangle)
+        void setColor(SfColor color)
+        const SfIntRect& getTextureRect() const
+        SfColor getColor() const
+        SfFloatRect getLocalBounds() const
+        SfFloatRect getGlobalBounds() const
+
+    cdef cppclass SfText "Text"(SfDrawable, SfTransformable):
+        SfText(const SfFont& font, sf.String string, unsigned int characterSize)
+        void setString(const sf.String& string)
+        void setFont(const SfFont& font)
+        void setCharacterSize(unsigned int size)
+        void setLineSpacing(float spacingFactor)
+        void setLetterSpacing(float spacingFactor)
+        void setStyle(unsigned int style)
+        void setFillColor(SfColor color)
+        void setOutlineColor(SfColor color)
+        void setOutlineThickness(float thickness)
+        const sf.String& getString() const
+        unsigned int getCharacterSize() const
+        float getLetterSpacing() const
+        float getLineSpacing() const
+        unsigned int getStyle() const
+        SfColor getFillColor() const
+        SfColor getOutlineColor() const
+        float getOutlineThickness() const
+        sf.Vector2f findCharacterPos(size_t) const
+        SfFloatRect getLocalBounds() const
+        SfFloatRect getGlobalBounds() const
+
+    cdef cppclass SfShape "Shape"(SfDrawable, SfTransformable):
+        void setTexture(const SfTexture* texture, bint resetRect)
+        void setTextureRect(const SfIntRect& rect)
+        void setFillColor(SfColor color)
+        void setOutlineColor(SfColor color)
+        void setOutlineThickness(float thickness)
+        const SfIntRect& getTextureRect() const
+        SfColor getFillColor() const
+        SfColor getOutlineColor() const
+        float getOutlineThickness() const
+        size_t getPointCount() const
+        sf.Vector2f getPoint(size_t index) const
+        SfFloatRect getLocalBounds() const
+        SfFloatRect getGlobalBounds() const
+
+    cdef cppclass SfCircleShape "CircleShape"(SfShape):
+        SfCircleShape(float, size_t)
+        void setRadius(float radius)
+        float getRadius() const
+        void setPointCount(size_t count)
+        size_t getPointCount() const
+        sf.Vector2f getPoint(size_t index) const
+
+    cdef cppclass SfConvexShape "ConvexShape"(SfShape):
+        SfConvexShape(size_t)
+        void setPointCount(size_t count)
+        size_t getPointCount() const
+        void setPoint(size_t index, sf.Vector2f point)
+        sf.Vector2f getPoint(size_t index) const
+
+    cdef cppclass SfRectangleShape "RectangleShape"(SfShape):
+        SfRectangleShape(const sf.Vector2f&)
+        void setSize(sf.Vector2f size)
+        sf.Vector2f getSize() const
+        size_t getPointCount() const
+        sf.Vector2f getPoint(size_t index) const
 
 cdef extern from "pysfml/graphics/DerivableDrawable.hpp":
     cdef cppclass DerivableDrawable:
         DerivableDrawable(object)
 
-    const Uint8* getPixelsPtr(object)
+    const unsigned char* getPixelsPtr(object)
 
 cdef extern from "pysfml/graphics/DerivableRenderWindow.hpp":
     cdef cppclass DerivableRenderWindow:
@@ -23,15 +429,69 @@ cdef extern from "pysfml/graphics/DerivableRenderWindow.hpp":
         void createWindow()
         void resizeWindow()
 
+cdef extern from "pysfml/window/compat.hpp" namespace "pysfml::window_compat":
+    void createRenderWindow(SfRenderWindow& window, sf.VideoMode mode, const sf.String& title, unsigned int style, const sf.ContextSettings& settings)
+
+cdef extern from "SFML/Graphics/Texture.hpp" namespace "sf::Texture":
+    unsigned int getMaximumSize()
+    void bind(const SfTexture* texture, SfCoordinateType coordinateType)
+
+cdef extern from "SFML/Graphics/VertexBuffer.hpp":
+    void bindVertexBuffer "sf::VertexBuffer::bind"(const SfVertexBuffer* vertexBuffer)
+    bint vertexBufferIsAvailable "sf::VertexBuffer::isAvailable"()
+
+cdef extern from "pysfml/graphics/shader_compat.hpp" namespace "pysfml::graphics_compat":
+    cdef enum ShaderType:
+        ShaderTypeVertex "pysfml::graphics_compat::Vertex"
+        ShaderTypeGeometry "pysfml::graphics_compat::Geometry"
+        ShaderTypeFragment "pysfml::graphics_compat::Fragment"
+
+    bint loadShaderFromFile(SfShader& shader, const string& filename, int type)
+    bint loadShaderFromFile(SfShader& shader, const string& vertex, const string& fragment)
+    bint loadShaderFromMemory(SfShader& shader, const char* source, int type)
+    bint loadShaderFromMemory(SfShader& shader, const char* vertex, const char* fragment)
+    bint loadTextureFromFile(SfTexture& texture, const string& filename)
+    bint loadTextureFromFile(SfTexture& texture, const string& filename, bint sRgb)
+    bint loadTextureFromFile(SfTexture& texture, const string& filename, const SfIntRect& area)
+    bint loadTextureFromFile(SfTexture& texture, const string& filename, bint sRgb, const SfIntRect& area)
+    bint loadTextureFromMemory(SfTexture& texture, const void* data, size_t size)
+    bint loadTextureFromMemory(SfTexture& texture, const void* data, size_t size, bint sRgb)
+    bint loadTextureFromMemory(SfTexture& texture, const void* data, size_t size, const SfIntRect& area)
+    bint loadTextureFromMemory(SfTexture& texture, const void* data, size_t size, bint sRgb, const SfIntRect& area)
+    bint loadTextureFromImage(SfTexture& texture, const SfImage& image)
+    bint loadTextureFromImage(SfTexture& texture, const SfImage& image, bint sRgb)
+    bint loadTextureFromImage(SfTexture& texture, const SfImage& image, const SfIntRect& area)
+    bint loadTextureFromImage(SfTexture& texture, const SfImage& image, bint sRgb, const SfIntRect& area)
+    void updateTextureFromImage(SfTexture& texture, const SfImage& image)
+    void updateTextureFromImage(SfTexture& texture, const SfImage& image, SfVector2u dest)
+    void updateTextureFromWindow(SfTexture& texture, const sf.Window& window)
+    void updateTextureFromWindow(SfTexture& texture, const sf.Window& window, sf.Vector2u dest)
+    void shaderSetUniform(SfShader& shader, const char* name, float x)
+    void shaderSetUniform(SfShader& shader, const char* name, float x, float y)
+    void shaderSetUniform(SfShader& shader, const char* name, float x, float y, float z)
+    void shaderSetUniform(SfShader& shader, const char* name, float x, float y, float z, float w)
+    void shaderSetUniformVec2(SfShader& shader, const char* name, float x, float y)
+    void shaderSetUniformVec3(SfShader& shader, const char* name, float x, float y, float z)
+    void shaderSetUniformColor(SfShader& shader, const char* name, const SfColor& color)
+    void shaderSetUniformTransform(SfShader& shader, const char* name, const SfTransform& transform)
+    void shaderSetUniformTexture(SfShader& shader, const char* name, const SfTexture& texture)
+    void shaderSetUniformCurrentTexture(SfShader& shader, const char* name)
+    void bindShader(const SfShader* shader)
+    bint shaderIsAvailable()
+    void resetView(SfView& view, const SfFloatRect& rectangle)
+    bint resizeRenderTexture(SfRenderTexture& texture, SfVector2u size, bint depthBuffer, bint sRgb)
+
 from libc.stdlib cimport malloc, free
 
-__all__ = ['BlendMode', 'PrimitiveType', 'Color', 'Rect', 'Transform',
-            'Image', 'Texture', 'Glyph', 'Font', 'Shader',
-            'RenderStates', 'Drawable', 'Transformable', 'Sprite',
-            'Text', 'Shape', 'CircleShape', 'ConvexShape',
-            'RectangleShape', 'Vertex', 'VertexArray', 'View',
-            'RenderTarget', 'RenderTexture', 'RenderWindow',
-            'HandledWindow', 'TransformableDrawable']
+__all__ = ['Factor', 'Equation', 'StencilComparison', 'StencilUpdateOperation',
+            'StencilValue', 'StencilMode', 'CoordinateType', 'BlendMode',
+            'PrimitiveType', 'Color', 'Rect', 'Transform', 'Image', 'Texture',
+            'Glyph', 'Font', 'Shader', 'CurrentTexture', 'RenderStates',
+            'Drawable', 'Transformable', 'TransformableDrawable', 'Sprite',
+            'TextStyle', 'Text', 'Shape', 'CircleShape', 'ConvexShape',
+            'RectangleShape', 'Vertex', 'VertexArray', 'VertexBufferUsage',
+            'VertexBuffer', 'View', 'RenderTarget',
+            'RenderTexture', 'RenderWindow']
 
 __all__ += ['BLEND_ALPHA', 'BLEND_ADD', 'BLEND_MULTIPLY', 'BLEND_NONE']
 
@@ -42,33 +502,44 @@ import sys
 from copy import copy, deepcopy
 from enum import IntEnum
 
-from pysfml.system cimport NumericObject
 from pysfml.system cimport Vector2, Vector3
 from pysfml.system cimport to_vector2i, to_vector2f
 from pysfml.system cimport to_string, wrap_string
 from pysfml.system cimport popLastErrorMessage, import_sfml__system
 from pysfml.window cimport VideoMode, ContextSettings, Window
 
+import sfml.system as sf_system
+
 import_sfml__system()
 
+
+cdef inline sf.Angle to_rotation_angle(object angle):
+    if isinstance(angle, sf_system.Angle):
+        return sf.radians(<float>angle.radians)
+
+    if isinstance(angle, int) or isinstance(angle, float):
+        return sf.degrees(<float>angle)
+
+    raise TypeError("angle must be an sfml.system.Angle or a number of degrees")
+
+
+cdef inline object wrap_rotation_angle(sf.Angle angle):
+    return sf_system.radians(angle.asRadians())
+
 class PrimitiveType:
-    POINTS = sf.primitivetype.Points
-    LINES = sf.primitivetype.Lines
-    LINES_STRIP = sf.primitivetype.LinesStrip
-    TRIANGLES = sf.primitivetype.Triangles
-    TRIANGLES_STRIP = sf.primitivetype.TrianglesStrip
-    TRIANGLES_FAN = sf.primitivetype.TrianglesFan
-    QUADS = sf.primitivetype.Quads
+    POINTS = SfPrimitiveTypePoints
+    LINES = SfPrimitiveTypeLines
+    LINES_STRIP = SfPrimitiveTypeLineStrip
+    TRIANGLES = SfPrimitiveTypeTriangles
+    TRIANGLES_STRIP = SfPrimitiveTypeTriangleStrip
+    TRIANGLES_FAN = SfPrimitiveTypeTriangleFan
 
 
 cdef public class Rect[type PyRectType, object PyRectObject]:
-    cdef sf.Rect[NumericObject] *p_this
-
-    def __cinit__(self):
-        self.p_this = new sf.Rect[NumericObject]()
-
-    def __dealloc__(self):
-        del self.p_this
+    cdef public object left
+    cdef public object top
+    cdef public object width
+    cdef public object height
 
     def __init__(self, position=(0, 0), size=(0, 0)):
         left, top = position
@@ -79,7 +550,7 @@ cdef public class Rect[type PyRectType, object PyRectObject]:
         self.height = height
 
     def __repr__(self):
-        return "Rect(left={0}, top={1}, width={2}, height={3})".format(self.left, self.top, self.width, self.height)
+        return "Rect(position={0}, size={1})".format(self.position, self.size)
 
     def __str__(self):
         return "({0}, {1}, {2}, {3})".format(self.left, self.top, self.width, self.height)
@@ -94,9 +565,9 @@ cdef public class Rect[type PyRectType, object PyRectObject]:
             other = Rect((left, top), (width, height))
 
         if op == 2:
-            return self.p_this[0] == other.p_this[0]
+            return tuple(self) == tuple(other)
         elif op == 3:
-            return self.p_this[0] != other.p_this[0]
+            return tuple(self) != tuple(other)
         else:
             raise NotImplemented
 
@@ -104,84 +575,79 @@ cdef public class Rect[type PyRectType, object PyRectObject]:
         return iter((self.left, self.top, self.width, self.height))
 
     def __copy__(self):
-        cdef sf.Rect[NumericObject] *p = new sf.Rect[NumericObject](self.p_this[0])
-        return wrap_rect(p)
+        return Rect(self.position, self.size)
 
-    property left:
+    property position:
         def __get__(self):
-            return self.p_this.left.get()
+            return Vector2(self.left, self.top)
 
-        def __set__(self, left):
-            self.p_this.left.set(left)
+        def __set__(self, position):
+            self.left, self.top = position
 
-    property top:
+    property size:
         def __get__(self):
-            return self.p_this.top.get()
+            return Vector2(self.width, self.height)
 
-        def __set__(self, top):
-            self.p_this.top.set(top)
-
-    property width:
-        def __get__(self):
-            return self.p_this.width.get()
-
-        def __set__(self, width):
-            self.p_this.width.set(width)
-
-    property height:
-        def __get__(self):
-            return self.p_this.height.get()
-
-        def __set__(self, height):
-            self.p_this.height.set(height)
+        def __set__(self, size):
+            self.width, self.height = size
 
     def contains(self, point):
         if isinstance(point, Vector2):
-            return self.p_this.contains((<Vector2>point).p_this[0])
-        else:
-            x, y = point
-            return self.p_this.contains(Vector2(x, y).p_this[0])
+            point = (<Vector2>point).x, (<Vector2>point).y
 
-    def intersects(self, rectangle):
-        cdef Rect intersection = Rect()
+        x, y = point
+        return self.left <= x < self.left + self.width and self.top <= y < self.top + self.height
+
+    def find_intersection(self, rectangle):
+        cdef Rect other
 
         if isinstance(rectangle, Rect):
-            self.p_this.intersects((<Rect>rectangle).p_this[0], intersection.p_this[0])
+            other = <Rect>rectangle
         else:
             left, top, width, height = rectangle
-            self.p_this.intersects(Rect((left, top), (width, height)).p_this[0], intersection.p_this[0])
+            other = Rect((left, top), (width, height))
+
+        left = max(self.left, other.left)
+        top = max(self.top, other.top)
+        right = min(self.left + self.width, other.left + other.width)
+        bottom = min(self.top + self.height, other.top + other.height)
+
+        if right <= left or bottom <= top:
+            return None
+
+        return Rect((left, top), (right - left, bottom - top))
+
+    def intersects(self, rectangle):
+        cdef object intersection = self.find_intersection(rectangle)
+
+        if intersection is None:
+            return Rect()
 
         return intersection
 
-
-cdef api Rect wrap_rect(sf.Rect[NumericObject]* p):
-    cdef Rect r = Rect.__new__(Rect)
-    r.p_this = p
-    return r
-
 cdef api Rect wrap_intrect(sf.IntRect* p):
     cdef Rect r = Rect.__new__(Rect)
-    r.left = p.left
-    r.top = p.top
-    r.width = p.width
-    r.height = p.height
+    r.left = p[0].position.x
+    r.top = p[0].position.y
+    r.width = p[0].size.x
+    r.height = p[0].size.y
     return r
 
 cdef api Rect wrap_floatrect(sf.FloatRect* p):
     cdef Rect r = Rect.__new__(Rect)
-    r.left = p.left
-    r.top = p.top
-    r.width = p.width
-    r.height = p.height
+    r.left = p[0].position.x
+    r.top = p[0].position.y
+    r.width = p[0].size.x
+    r.height = p[0].size.y
     return r
 
 cdef api sf.FloatRect to_floatrect(rectangle):
     l, t, w, h = rectangle
-    return sf.FloatRect(l, t, w, h)
+    return SfFloatRect(sf.Vector2f(l, t), sf.Vector2f(w, h))
 
 cdef api sf.IntRect to_intrect(rectangle):
     l, t, w, h = rectangle
-    return sf.IntRect(l, t, w, h)
+    return SfIntRect(sf.Vector2i(l, t), sf.Vector2i(w, h))
 
 cdef public class Color [type PyColorType, object PyColorObject]:
     BLACK = Color(0, 0, 0)
@@ -194,10 +660,10 @@ cdef public class Color [type PyColorType, object PyColorObject]:
     CYAN = Color(0, 255, 255)
     TRANSPARENT = Color(0, 0, 0, 0)
 
-    cdef sf.Color *p_this
+    cdef SfColor *p_this
 
-    def __cinit__(self, Uint8 r=0, Uint8 g=0, Uint8 b=0, Uint8 a=255):
-        self.p_this = new sf.Color(r, g, b, a)
+    def __cinit__(self, unsigned char r=0, unsigned char g=0, unsigned char b=0, unsigned char a=255):
+        self.p_this = new SfColor(r, g, b, a)
 
     def __dealloc__(self):
         del self.p_this
@@ -208,54 +674,72 @@ cdef public class Color [type PyColorType, object PyColorObject]:
     def __str__(self):
         return "(R={0}, G={1}, B={2}, A={3})".format(self.r, self.g, self.b, self.a)
 
+    def __int__(self):
+        return ((self.r << 24) | (self.g << 16) | (self.b << 8) | self.a)
+
+    def __index__(self):
+        return int(self)
+
     def __iter__(self):
         return iter((self.r, self.g, self.b, self.a))
 
     def __richcmp__(Color x, Color y, int op):
         if op == 2:
-            return x.p_this[0] == y.p_this[0]
+            return tuple(x) == tuple(y)
         elif op == 3:
-            return x.p_this[0] != y.p_this[0]
+            return tuple(x) != tuple(y)
         else:
             return NotImplemented
 
     def __add__(Color x, Color y):
         r = Color(0, 0, 0)
-        r.p_this[0] = x.p_this[0] + y.p_this[0]
+        r.r = min(255, x.r + y.r)
+        r.g = min(255, x.g + y.g)
+        r.b = min(255, x.b + y.b)
+        r.a = min(255, x.a + y.a)
         return r
 
     def __mul__(Color x, Color y):
         r = Color(0, 0, 0)
-        r.p_this[0] = x.p_this[0] * y.p_this[0]
+        r.r = (x.r * y.r) // 255
+        r.g = (x.g * y.g) // 255
+        r.b = (x.b * y.b) // 255
+        r.a = (x.a * y.a) // 255
         return r
 
     def __iadd__(self, Color x):
-        self.p_this[0] = self.p_this[0] + x.p_this[0]
+        self.r = min(255, self.r + x.r)
+        self.g = min(255, self.g + x.g)
+        self.b = min(255, self.b + x.b)
+        self.a = min(255, self.a + x.a)
         return self
 
     def __imul__(self, Color x):
-        self.p_this[0] = self.p_this[0] * x.p_this[0]
+        self.r = (self.r * x.r) // 255
+        self.g = (self.g * x.g) // 255
+        self.b = (self.b * x.b) // 255
+        self.a = (self.a * x.a) // 255
         return self
 
     property r:
         def __get__(self):
             return self.p_this.r
 
-        def __set__(self, Uint8 r):
+        def __set__(self, unsigned char r):
             self.p_this.r = r
 
     property g:
         def __get__(self):
             return self.p_this.g
 
-        def __set__(self, Uint8 g):
+        def __set__(self, unsigned char g):
             self.p_this.g = g
 
     property b:
         def __get__(self):
             return self.p_this.b
 
-        def __set__(self, Uint8 b):
+        def __set__(self, unsigned char b):
             self.p_this.b = b
 
     property a:
@@ -272,18 +756,18 @@ cdef public class Color [type PyColorType, object PyColorObject]:
 
 cdef api Color wrap_color(sf.Color *p):
     cdef Color r = Color.__new__(Color)
-    r.p_this = p
+    r.p_this = <SfColor*>p
     return r
 
 
 cdef class Transform:
-    cdef sf.Transform *p_this
+    cdef SfTransform *p_this
     cdef bint          delete_this
 
-    IDENTITY = wrap_transform(<sf.Transform*>&sf.transform.Identity)
+    IDENTITY = wrap_transform(<SfTransform*>&SfTransformIdentity)
 
     def __init__(self):
-        self.p_this = new sf.Transform()
+        self.p_this = new SfTransform()
         self.delete_this = True
 
     def __dealloc__(self):
@@ -314,7 +798,8 @@ cdef class Transform:
     @classmethod
     def from_values(cls, float a00, float a01, float a02, float a10, float a11, float a12, float a20, float a21, float a22):
         cdef Transform r = Transform.__new__(Transform)
-        r.p_this = new sf.Transform(a00, a01, a02, a10, a11, a12, a20, a21, a22)
+        r.p_this = new SfTransform(a00, a01, a02, a10, a11, a12, a20, a21, a22)
+        r.delete_this = True
         return r
 
     property matrix:
@@ -323,7 +808,7 @@ cdef class Transform:
 
     property inverse:
         def __get__(self):
-            cdef sf.Transform *p = new sf.Transform()
+            cdef SfTransform *p = new SfTransform()
             p[0] = self.p_this.getInverse()
             return wrap_transform(p)
 
@@ -332,8 +817,8 @@ cdef class Transform:
         return Vector2(p.x, p.y)
 
     def transform_rectangle(self, rectangle):
-        cdef sf.FloatRect p = self.p_this.transformRect(to_floatrect(rectangle))
-        return Rect((p.left, p.top), (p.width, p.height))
+        cdef SfFloatRect p = self.p_this.transformRect(to_floatrect(rectangle))
+        return Rect((p.position.x, p.position.y), (p.size.x, p.size.y))
 
     def combine(self, Transform transform):
         self.p_this.combine(transform.p_this[0])
@@ -343,11 +828,11 @@ cdef class Transform:
         self.p_this.translate(to_vector2f(offset))
         return self
 
-    def rotate(self, float angle, center=None):
+    def rotate(self, angle, center=None):
         if not center:
-            self.p_this.rotate(angle)
+            self.p_this.rotate(to_rotation_angle(angle))
         else:
-            self.p_this.rotate(angle, to_vector2f(center))
+            self.p_this.rotate(to_rotation_angle(angle), to_vector2f(center))
 
         return self
 
@@ -359,40 +844,64 @@ cdef class Transform:
 
         return self
 
-cdef Transform wrap_transform(sf.Transform *p, bint d=True):
+cdef Transform wrap_transform(SfTransform *p, bint d=True):
     cdef Transform r = Transform.__new__(Transform)
     r.p_this = p
     r.delete_this = d
     return r
 
 class Factor(IntEnum):
-    ZERO = sf.blendmode.Zero
-    ONE = sf.blendmode.One
-    SRC_COLOR = sf.blendmode.SrcColor
-    ONE_MINUS_SRC_COLOR = sf.blendmode.OneMinusSrcColor
-    DST_COLOR = sf.blendmode.DstColor
-    ONE_MINUS_DST_COLOR = sf.blendmode.OneMinusDstColor
-    SRC_ALPHA = sf.blendmode.SrcAlpha
-    ONE_MINUS_SRC_ALPHA = sf.blendmode.OneMinusSrcAlpha
-    DST_ALPHA = sf.blendmode.DstAlpha
-    ONE_MINUS_DST_ALPHA = sf.blendmode.OneMinusDstAlpha
+    ZERO = SfBlendFactorZero
+    ONE = SfBlendFactorOne
+    SRC_COLOR = SfBlendFactorSrcColor
+    ONE_MINUS_SRC_COLOR = SfBlendFactorOneMinusSrcColor
+    DST_COLOR = SfBlendFactorDstColor
+    ONE_MINUS_DST_COLOR = SfBlendFactorOneMinusDstColor
+    SRC_ALPHA = SfBlendFactorSrcAlpha
+    ONE_MINUS_SRC_ALPHA = SfBlendFactorOneMinusSrcAlpha
+    DST_ALPHA = SfBlendFactorDstAlpha
+    ONE_MINUS_DST_ALPHA = SfBlendFactorOneMinusDstAlpha
 
 class Equation(IntEnum):
-    ADD = sf.blendmode.Add
-    SUBTRACT = sf.blendmode.Subtract
+    ADD = SfBlendEquationAdd
+    SUBTRACT = SfBlendEquationSubtract
+
+
+class StencilComparison(IntEnum):
+    NEVER = SfStencilComparisonNever
+    LESS = SfStencilComparisonLess
+    LESS_EQUAL = SfStencilComparisonLessEqual
+    GREATER = SfStencilComparisonGreater
+    GREATER_EQUAL = SfStencilComparisonGreaterEqual
+    EQUAL = SfStencilComparisonEqual
+    NOT_EQUAL = SfStencilComparisonNotEqual
+    ALWAYS = SfStencilComparisonAlways
+
+
+class StencilUpdateOperation(IntEnum):
+    KEEP = SfStencilUpdateOperationKeep
+    ZERO = SfStencilUpdateOperationZero
+    REPLACE = SfStencilUpdateOperationReplace
+    INCREMENT = SfStencilUpdateOperationIncrement
+    DECREMENT = SfStencilUpdateOperationDecrement
+    INVERT = SfStencilUpdateOperationInvert
 
 cdef public class BlendMode[type PyBlendModeType, object PyBlendModeObject]:
-    cdef sf.BlendMode *p_this
+    cdef SfBlendMode *p_this
 
     def __cinit__(self,
-        sf.blendmode.Factor color_source_factor = sf.blendmode.SrcAlpha,
-        sf.blendmode.Factor color_destination_factor = sf.blendmode.OneMinusSrcAlpha,
-        sf.blendmode.Equation color_blend_equation = sf.blendmode.Add,
-        sf.blendmode.Factor alpha_source_factor = sf.blendmode.One,
-        sf.blendmode.Factor alpha_destination_factor = sf.blendmode.OneMinusSrcAlpha,
-        sf.blendmode.Equation alpha_blend_equation = sf.blendmode.Add):
-        self.p_this = new sf.BlendMode(color_source_factor, color_destination_factor, color_blend_equation,
-            alpha_source_factor, alpha_destination_factor, alpha_blend_equation)
+        int color_source_factor = 6,
+        int color_destination_factor = 7,
+        int color_blend_equation = 0,
+        int alpha_source_factor = 1,
+        int alpha_destination_factor = 7,
+        int alpha_blend_equation = 0):
+        self.p_this = new SfBlendMode(<SfBlendFactor>color_source_factor,
+            <SfBlendFactor>color_destination_factor,
+            <SfBlendEquation>color_blend_equation,
+            <SfBlendFactor>alpha_source_factor,
+            <SfBlendFactor>alpha_destination_factor,
+            <SfBlendEquation>alpha_blend_equation)
 
     def __dealloc__(self):
         del self.p_this
@@ -403,66 +912,80 @@ cdef public class BlendMode[type PyBlendModeType, object PyBlendModeObject]:
 
     def __richcmp__(BlendMode x, BlendMode y, int op):
         if op == 2:
-            return x.p_this[0] == y.p_this[0]
+            return (
+                x.p_this[0].colorSrcFactor == y.p_this[0].colorSrcFactor and
+                x.p_this[0].colorDstFactor == y.p_this[0].colorDstFactor and
+                x.p_this[0].colorEquation == y.p_this[0].colorEquation and
+                x.p_this[0].alphaSrcFactor == y.p_this[0].alphaSrcFactor and
+                x.p_this[0].alphaDstFactor == y.p_this[0].alphaDstFactor and
+                x.p_this[0].alphaEquation == y.p_this[0].alphaEquation
+            )
         elif op == 3:
-            return x.p_this[0] != y.p_this[0]
+            return (
+                x.p_this[0].colorSrcFactor != y.p_this[0].colorSrcFactor or
+                x.p_this[0].colorDstFactor != y.p_this[0].colorDstFactor or
+                x.p_this[0].colorEquation != y.p_this[0].colorEquation or
+                x.p_this[0].alphaSrcFactor != y.p_this[0].alphaSrcFactor or
+                x.p_this[0].alphaDstFactor != y.p_this[0].alphaDstFactor or
+                x.p_this[0].alphaEquation != y.p_this[0].alphaEquation
+            )
 
         raise NotImplementedError
 
     property color_src_factor:
         def __get__(self):
-            return self.p_this[0].colorSrcFactor
+            return <int>self.p_this[0].colorSrcFactor
 
-        def __set__(self, sf.blendmode.Factor color_src_factor):
-            self.p_this[0].colorSrcFactor = color_src_factor
+        def __set__(self, int color_src_factor):
+            self.p_this[0].colorSrcFactor = <SfBlendFactor>color_src_factor
 
     property color_dst_factor:
         def __get__(self):
-            return self.p_this[0].colorDstFactor
+            return <int>self.p_this[0].colorDstFactor
 
-        def __set__(self, sf.blendmode.Factor color_dst_factor):
-            self.p_this[0].colorDstFactor = color_dst_factor
+        def __set__(self, int color_dst_factor):
+            self.p_this[0].colorDstFactor = <SfBlendFactor>color_dst_factor
 
     property color_equation:
         def __get__(self):
-            return self.p_this[0].colorEquation
+            return <int>self.p_this[0].colorEquation
 
-        def __set__(self, sf.blendmode.Equation color_equation):
-            self.p_this[0].colorEquation = color_equation
+        def __set__(self, int color_equation):
+            self.p_this[0].colorEquation = <SfBlendEquation>color_equation
 
     property alpha_src_factor:
         def __get__(self):
-            return self.p_this[0].alphaSrcFactor
+            return <int>self.p_this[0].alphaSrcFactor
 
-        def __set__(self, sf.blendmode.Factor alpha_src_factor):
-            self.p_this[0].alphaSrcFactor = alpha_src_factor
+        def __set__(self, int alpha_src_factor):
+            self.p_this[0].alphaSrcFactor = <SfBlendFactor>alpha_src_factor
 
     property alpha_dst_factor:
         def __get__(self):
-            return self.p_this[0].alphaDstFactor
+            return <int>self.p_this[0].alphaDstFactor
 
-        def __set__(self, sf.blendmode.Factor alpha_dst_factor):
-            self.p_this[0].alphaDstFactor = alpha_dst_factor
+        def __set__(self, int alpha_dst_factor):
+            self.p_this[0].alphaDstFactor = <SfBlendFactor>alpha_dst_factor
 
     property alpha_equation:
         def __get__(self):
-            return self.p_this[0].alphaEquation
+            return <int>self.p_this[0].alphaEquation
 
-        def __set__(self, sf.blendmode.Equation alpha_equation):
-            self.p_this[0].alphaEquation = alpha_equation
+        def __set__(self, int alpha_equation):
+            self.p_this[0].alphaEquation = <SfBlendEquation>alpha_equation
 
 cdef api BlendMode wrap_blendmode(sf.BlendMode *p):
     cdef BlendMode blendmode = BlendMode()
-    blendmode.p_this[0] = p[0]
+    blendmode.p_this[0] = (<SfBlendMode*>p)[0]
     return blendmode
 
-BLEND_ALPHA = wrap_blendmode(<sf.BlendMode*>&sf.BlendAlpha)
-BLEND_ADD = wrap_blendmode(<sf.BlendMode*>&sf.BlendAdd)
-BLEND_MULTIPLY = wrap_blendmode(<sf.BlendMode*>&sf.BlendMultiply)
-BLEND_NONE = wrap_blendmode(<sf.BlendMode*>&sf.BlendNone)
+BLEND_ALPHA = wrap_blendmode(<sf.BlendMode*>&SfBlendAlpha)
+BLEND_ADD = wrap_blendmode(<sf.BlendMode*>&SfBlendAdd)
+BLEND_MULTIPLY = wrap_blendmode(<sf.BlendMode*>&SfBlendMultiply)
+BLEND_NONE = wrap_blendmode(<sf.BlendMode*>&SfBlendNone)
 
 cdef public class Image[type PyImageType, object PyImageObject]:
-    cdef sf.Image *p_this
+    cdef SfImage *p_this
 
     def __init__(self):
         raise UserWarning("Use a specific constructor")
@@ -474,17 +997,17 @@ cdef public class Image[type PyImageType, object PyImageObject]:
         return "Image(size={0})".format(self.size)
 
     def __getitem__(self, tuple v):
-        cdef sf.Color *p = new sf.Color()
-        p[0] = self.p_this.getPixel(v[0], v[1])
-        return wrap_color(p)
+        cdef SfColor *p = new SfColor()
+        p[0] = self.p_this.getPixel(SfVector2u(v[0], v[1]))
+        return wrap_color(<sf.Color*>p)
 
     def __setitem__(self, tuple k, Color v):
-        self.p_this.setPixel(k[0], k[1], v.p_this[0])
+        self.p_this.setPixel(SfVector2u(k[0], k[1]), v.p_this[0])
 
     def __copy__(self):
-        cdef sf.Image *p = new sf.Image()
+        cdef SfImage *p = new SfImage()
         p[0] = self.p_this[0]
-        return wrap_image(p)
+        return wrap_image(<sf.Image*>p)
 
     def __getbuffer__(self, Py_buffer *buffer, int flags):
         buffer.buf = <char*>self.p_this.getPixelsPtr()
@@ -504,50 +1027,50 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 
     @classmethod
     def create(cls, unsigned int width, unsigned int height, Color color=None):
-        cdef sf.Image *p = new sf.Image()
+        cdef SfImage *p = new SfImage()
 
         if not color:
-            p.create(width, height)
+            p.resize(SfVector2u(width, height))
         else:
-            p.create(width, height, color.p_this[0])
+            p.resize(SfVector2u(width, height), color.p_this[0])
 
-        return wrap_image(p)
+        return wrap_image(<sf.Image*>p)
 
     @classmethod
     def from_size(cls, unsigned int width, unsigned int height, Color color=None):
-        cdef sf.Image *p = new sf.Image()
+        cdef SfImage *p = new SfImage()
 
         if not color:
-            p.create(width, height)
+            p.resize(SfVector2u(width, height))
         else:
-            p.create(width, height, color.p_this[0])
+            p.resize(SfVector2u(width, height), color.p_this[0])
 
-        return wrap_image(p)
+        return wrap_image(<sf.Image*>p)
 
     @classmethod
     def from_pixels(cls, int width, int height, pixels):
-        cdef sf.Image *p = new sf.Image()
-        cdef const sf.Uint8* pixels_ptr = getPixelsPtr(memoryview(pixels))
+        cdef SfImage *p = new SfImage()
+        cdef const unsigned char* pixels_ptr = getPixelsPtr(memoryview(pixels))
 
-        p.create(width, height, pixels_ptr)
-        return wrap_image(p)
+        p.resize(SfVector2u(width, height), pixels_ptr)
+        return wrap_image(<sf.Image*>p)
 
     @classmethod
     def from_file(cls, basestring filename):
-        cdef sf.Image *p = new sf.Image()
+        cdef SfImage *p = new SfImage()
 
         if p.loadFromFile(filename.encode('UTF-8')):
-            return wrap_image(p)
+            return wrap_image(<sf.Image*>p)
 
         del p
         raise IOError(popLastErrorMessage())
 
     @classmethod
     def from_memory(cls, bytes data):
-        cdef sf.Image *p = new sf.Image()
+        cdef SfImage *p = new SfImage()
 
         if p.loadFromMemory(<char*>data, len(data)):
-            return wrap_image(p)
+            return wrap_image(<sf.Image*>p)
 
         del p
         raise IOError(popLastErrorMessage())
@@ -568,16 +1091,16 @@ cdef public class Image[type PyImageType, object PyImageObject]:
         def __get__(self):
             return self.size.y
 
-    def create_mask_from_color(self, Color color, Uint8 alpha=0):
+    def create_mask_from_color(self, Color color, unsigned char alpha=0):
         self.p_this.createMaskFromColor(color.p_this[0], alpha)
 
     def blit(self, Image source, dest, source_rect=None, bint apply_alpha=False):
         x, y = dest
 
         if not source_rect:
-            self.p_this.copy(source.p_this[0], x, y, sf.IntRect(0, 0, 0, 0), apply_alpha)
+            self.p_this.copy(source.p_this[0], SfVector2u(x, y), to_intrect((0, 0, 0, 0)), apply_alpha)
         else:
-            self.p_this.copy(source.p_this[0], x, y, to_intrect(source_rect), apply_alpha)
+            self.p_this.copy(source.p_this[0], SfVector2u(x, y), to_intrect(source_rect), apply_alpha)
 
     property pixels:
         def __get__(self):
@@ -592,15 +1115,169 @@ cdef public class Image[type PyImageType, object PyImageObject]:
 
 cdef api Image wrap_image(sf.Image *p):
     cdef Image r = Image.__new__(Image)
-    r.p_this = p
+    r.p_this = <SfImage*>p
     return r
 
 class CoordinateType(IntEnum):
-    NORMALIZED = sf.texture.Normalized
-    PIXELS = sf.texture.Pixels
+    NORMALIZED = SfCoordinateTypeNormalized
+    PIXELS = SfCoordinateTypePixels
+
+
+class VertexBufferUsage(IntEnum):
+    STREAM = SfVertexBufferUsageStream
+    DYNAMIC = SfVertexBufferUsageDynamic
+    STATIC = SfVertexBufferUsageStatic
+
+
+cdef inline unsigned int to_stencil_uint(value):
+    if isinstance(value, StencilValue):
+        return (<StencilValue>value).p_this[0].value
+
+    return <unsigned int>value
+
+
+cdef class StencilValue:
+    cdef SfStencilValue *p_this
+    cdef bint delete_this
+
+    def __init__(self, unsigned int value=0):
+        self.p_this = new SfStencilValue(value)
+        self.delete_this = True
+
+    def __dealloc__(self):
+        if self.delete_this and self.p_this is not NULL:
+            del self.p_this
+
+    def __repr__(self):
+        return "StencilValue({0})".format(self.value)
+
+    def __int__(self):
+        return self.p_this.value
+
+    def __index__(self):
+        return self.p_this.value
+
+    def __richcmp__(StencilValue self, other, int op):
+        cdef unsigned int other_value
+
+        if isinstance(other, StencilValue):
+            other_value = (<StencilValue>other).p_this.value
+        else:
+            other_value = <unsigned int>other
+
+        if op == 2:
+            return self.p_this.value == other_value
+        elif op == 3:
+            return self.p_this.value != other_value
+
+        return NotImplemented
+
+    property value:
+        def __get__(self):
+            return self.p_this.value
+
+        def __set__(self, unsigned int value):
+            self.p_this.value = value
+
+
+cdef StencilValue wrap_stencilvalue(SfStencilValue *p, bint d=True):
+    cdef StencilValue r = StencilValue.__new__(StencilValue)
+    r.p_this = p
+    r.delete_this = d
+    return r
+
+
+cdef class StencilMode:
+    cdef SfStencilMode *p_this
+    cdef bint delete_this
+
+    def __init__(self,
+                 int comparison=<int>StencilComparison.ALWAYS,
+                 int update_operation=<int>StencilUpdateOperation.KEEP,
+                 reference=0,
+                 mask=0xFFFFFFFF,
+                 bint stencil_only=False):
+        self.p_this = new SfStencilMode()
+        self.delete_this = True
+        self.comparison = comparison
+        self.update_operation = update_operation
+        self.reference = reference
+        self.mask = mask
+        self.stencil_only = stencil_only
+
+    def __dealloc__(self):
+        if self.delete_this and self.p_this is not NULL:
+            del self.p_this
+
+    def __repr__(self):
+        return "StencilMode(comparison={0}, update_operation={1}, reference={2}, mask={3}, stencil_only={4})".format(
+            self.comparison, self.update_operation, self.reference, self.mask, self.stencil_only)
+
+    def __richcmp__(StencilMode self, other, int op):
+        cdef StencilMode other_mode
+
+        if not isinstance(other, StencilMode):
+            return NotImplemented
+
+        other_mode = <StencilMode>other
+
+        if op == 2:
+            return (
+                self.p_this[0].stencilComparison == other_mode.p_this[0].stencilComparison and
+                self.p_this[0].stencilUpdateOperation == other_mode.p_this[0].stencilUpdateOperation and
+                self.p_this[0].stencilReference.value == other_mode.p_this[0].stencilReference.value and
+                self.p_this[0].stencilMask.value == other_mode.p_this[0].stencilMask.value and
+                self.p_this[0].stencilOnly == other_mode.p_this[0].stencilOnly
+            )
+        elif op == 3:
+            return not self.__richcmp__(other, 2)
+
+        return NotImplemented
+
+    property comparison:
+        def __get__(self):
+            return <int>self.p_this[0].stencilComparison
+
+        def __set__(self, int comparison):
+            self.p_this[0].stencilComparison = <SfStencilComparison>comparison
+
+    property update_operation:
+        def __get__(self):
+            return <int>self.p_this[0].stencilUpdateOperation
+
+        def __set__(self, int update_operation):
+            self.p_this[0].stencilUpdateOperation = <SfStencilUpdateOperation>update_operation
+
+    property reference:
+        def __get__(self):
+            return wrap_stencilvalue(&self.p_this[0].stencilReference, False)
+
+        def __set__(self, reference):
+            self.p_this[0].stencilReference = SfStencilValue(to_stencil_uint(reference))
+
+    property mask:
+        def __get__(self):
+            return wrap_stencilvalue(&self.p_this[0].stencilMask, False)
+
+        def __set__(self, mask):
+            self.p_this[0].stencilMask = SfStencilValue(to_stencil_uint(mask))
+
+    property stencil_only:
+        def __get__(self):
+            return self.p_this[0].stencilOnly
+
+        def __set__(self, bint stencil_only):
+            self.p_this[0].stencilOnly = stencil_only
+
+
+cdef StencilMode wrap_stencilmode(SfStencilMode *p, bint d=True):
+    cdef StencilMode r = StencilMode.__new__(StencilMode)
+    r.p_this = p
+    r.delete_this = d
+    return r
 
 cdef public class Texture[type PyTextureType, object PyTextureObject]:
-    cdef sf.Texture *p_this
+    cdef SfTexture *p_this
     cdef bint delete_this
 
     cdef object __weakref__
@@ -613,74 +1290,61 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
             del self.p_this
 
     def __repr__(self):
-        return "Texture(size={0}, smooth={1}, repeated={2})".format(self.size, self.smooth, self.repeated)
+        return "Texture(size={0}, smooth={1}, repeated={2}, srgb={3})".format(self.size, self.smooth, self.repeated, self.srgb)
 
     def __copy__(self):
-        cdef sf.Texture *p = new sf.Texture()
+        cdef SfTexture *p = new SfTexture()
         p[0] = self.p_this[0]
-        return wrap_texture(p, True)
+        return wrap_texture(<sf.Texture*>p, True)
 
     @classmethod
-    def create(cls, unsigned int width, unsigned int height):
-        cdef sf.Texture *p = new sf.Texture()
-
-        if p.create(width, height):
-            return wrap_texture(p, True)
-
-        del p
-        raise ValueError(popLastErrorMessage())
+    def create(cls, unsigned int width, unsigned int height, bint srgb=False):
+        cdef SfTexture *p = new SfTexture(SfVector2u(width, height), srgb)
+        return wrap_texture(<sf.Texture*>p, True)
 
     @classmethod
-    def from_size(cls, unsigned int width, unsigned int height):
-        cdef sf.Texture *p = new sf.Texture()
-
-        if p.create(width, height):
-            return wrap_texture(p, True)
-
-        del p
-        raise ValueError(popLastErrorMessage())
+    def from_size(cls, unsigned int width, unsigned int height, bint srgb=False):
+        cdef SfTexture *p = new SfTexture(SfVector2u(width, height), srgb)
+        return wrap_texture(<sf.Texture*>p, True)
 
     @classmethod
-    def from_file(cls, basestring filename, area=None):
-        cdef sf.Texture *p = new sf.Texture()
+    def from_file(cls, basestring filename, area=None, bint srgb=False):
+        cdef SfTexture *p = new SfTexture()
 
         if not area:
-            if p.loadFromFile(filename.encode('UTF-8')):
-                return wrap_texture(p, True)
+            if loadTextureFromFile(p[0], filename.encode('UTF-8'), srgb):
+                return wrap_texture(<sf.Texture*>p, True)
         else:
-            l, t, w, h = area
-            if p.loadFromFile(filename.encode('UTF-8'), sf.IntRect(l, t, w, h)):
-                return wrap_texture(p, True)
+            if loadTextureFromFile(p[0], filename.encode('UTF-8'), srgb, to_intrect(area)):
+                return wrap_texture(<sf.Texture*>p, True)
 
         del p
         raise IOError(popLastErrorMessage())
 
     @classmethod
-    def from_memory(cls, bytes data, area=None):
-        cdef sf.Texture *p = new sf.Texture()
+    def from_memory(cls, bytes data, area=None, bint srgb=False):
+        cdef SfTexture *p = new SfTexture()
 
         if not area:
-            if p.loadFromMemory(<char*>data, len(data)):
-                return wrap_texture(p, True)
+            if loadTextureFromMemory(p[0], <char*>data, len(data), srgb):
+                return wrap_texture(<sf.Texture*>p, True)
         else:
-            l, t, w, h = area
-            if p.loadFromMemory(<char*>data, len(data), sf.IntRect(l, t, w, h)):
-                return wrap_texture(p, True)
+            if loadTextureFromMemory(p[0], <char*>data, len(data), srgb, to_intrect(area)):
+                return wrap_texture(<sf.Texture*>p, True)
 
         del p
         raise IOError(popLastErrorMessage())
 
     @classmethod
-    def from_image(cls, Image image, area=None):
-        cdef sf.Texture *p = new sf.Texture()
+    def from_image(cls, Image image, area=None, bint srgb=False):
+        cdef SfTexture *p = new SfTexture()
 
         if not area:
-            if p.loadFromImage(image.p_this[0]):
-                return wrap_texture(p, True)
+            if loadTextureFromImage(p[0], image.p_this[0], srgb):
+                return wrap_texture(<sf.Texture*>p, True)
         else:
-            l, t, w, h = area
-            if p.loadFromImage(image.p_this[0], sf.IntRect(l, t, w, h)):
-                return wrap_texture(p, True)
+            if loadTextureFromImage(p[0], image.p_this[0], srgb, to_intrect(area)):
+                return wrap_texture(<sf.Texture*>p, True)
 
         del p
         raise IOError(popLastErrorMessage())
@@ -707,14 +1371,14 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
             raise NotImplemented
 
     def copy_to_image(self):
-        cdef sf.Image *p = new sf.Image()
+        cdef SfImage *p = new SfImage()
         p[0] = self.p_this.copyToImage()
-        return wrap_image(p)
+        return wrap_image(<sf.Image*>p)
 
     def to_image(self):
-        cdef sf.Image *p = new sf.Image()
+        cdef SfImage *p = new SfImage()
         p[0] = self.p_this.copyToImage()
-        return wrap_image(p)
+        return wrap_image(<sf.Image*>p)
 
     def update(self, *args, **kwargs):
         if len(args) == 0:
@@ -745,34 +1409,34 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
             raise UserWarning("The first argument must be either sf.Pixels, sf.Image or sf.Window")
 
     def update_from_pixels(self, pixels, *args):
-        cdef const sf.Uint8* pixels_ptr = getPixelsPtr(memoryview(pixels))
+        cdef const unsigned char* pixels_ptr = getPixelsPtr(memoryview(pixels))
 
         if not args:
             self.p_this.update(pixels_ptr)
         else:
             width, height, x, y = args
-            self.p_this.update(pixels_ptr, width, height, x, y)
+            self.p_this.update(pixels_ptr, SfVector2u(width, height), SfVector2u(x, y))
 
     def update_from_image(self, Image image, position=None):
         if not position:
-            self.p_this.update(image.p_this[0])
+            updateTextureFromImage(self.p_this[0], image.p_this[0])
         else:
             x, y = position
-            self.p_this.update(image.p_this[0], <unsigned int>x, <unsigned int>y)
+            updateTextureFromImage(self.p_this[0], image.p_this[0], SfVector2u(x, y))
 
     def update_from_window(self, Window window, position=None):
         if not position:
-            self.p_this.update(window.p_window[0])
+            updateTextureFromWindow(self.p_this[0], window.p_window[0])
         else:
             x, y = position
-            self.p_this.update(window.p_window[0], <unsigned int>x, <unsigned int>y)
+            updateTextureFromWindow(self.p_this[0], window.p_window[0], sf.Vector2u(x, y))
 
     @staticmethod
-    def bind(Texture texture=None, sf.texture.CoordinateType coordinate_type=sf.texture.Normalized):
+    def bind(Texture texture=None, int coordinate_type=0):
         if not texture:
-            sf.texture.bind(NULL, coordinate_type)
+            bind(NULL, <SfCoordinateType>coordinate_type)
         else:
-            sf.texture.bind(<const sf.Texture*>texture.p_this, coordinate_type)
+            bind(<const SfTexture*>texture.p_this, <SfCoordinateType>coordinate_type)
 
     property smooth:
         def __get__(self):
@@ -788,27 +1452,34 @@ cdef public class Texture[type PyTextureType, object PyTextureObject]:
         def __set__(self, bint repeated):
             self.p_this.setRepeated(repeated)
 
+    property srgb:
+        def __get__(self):
+            return self.p_this.isSrgb()
+
+    def generate_mipmap(self):
+        return self.p_this.generateMipmap()
+
     property native_handle:
         def __get__(self):
             return self.p_this.getNativeHandle()
 
     @staticmethod
     def get_maximum_size():
-        return sf.texture.getMaximumSize()
+        return getMaximumSize()
 
 
 cdef api Texture wrap_texture(sf.Texture *p, bint d):
     cdef Texture r = Texture.__new__(Texture)
-    r.p_this = p
+    r.p_this = <SfTexture*>p
     r.delete_this = d
     return r
 
 
 cdef class Glyph:
-    cdef sf.Glyph *p_this
+    cdef SfGlyph *p_this
 
     def __init__(self):
-        self.p_this = new sf.Glyph()
+        self.p_this = new SfGlyph()
 
     def __dealloc__(self):
         del self.p_this
@@ -818,32 +1489,32 @@ cdef class Glyph:
 
     property advance:
         def __get__(self):
-            return self.p_this.advance
+            return self.p_this[0].advance
 
-        def __set__(self, int advance):
-            self.p_this.advance = advance
+        def __set__(self, float advance):
+            self.p_this[0].advance = advance
 
     property bounds:
         def __get__(self):
-            return wrap_floatrect(&self.p_this.bounds)
+            return wrap_floatrect(&self.p_this[0].bounds)
 
         def __set__(self, bounds):
-            self.p_this.bounds = to_floatrect(bounds)
+            self.p_this[0].bounds = to_floatrect(bounds)
 
     property texture_rectangle:
         def __get__(self):
-            return wrap_intrect(&self.p_this.textureRect)
+            return wrap_intrect(&self.p_this[0].textureRect)
 
         def __set__(self, texture_rectangle):
-            self.p_this.textureRect = to_intrect(texture_rectangle)
+            self.p_this[0].textureRect = to_intrect(texture_rectangle)
 
-cdef Glyph wrap_glyph(sf.Glyph *p):
+cdef Glyph wrap_glyph(SfGlyph *p):
     cdef Glyph r = Glyph.__new__(Glyph)
     r.p_this = p
     return r
 
 cdef class Font:
-    cdef sf.Font *p_this
+    cdef SfFont *p_this
     cdef bint     delete_this
     cdef Texture  m_texture
 
@@ -858,9 +1529,9 @@ cdef class Font:
 
     @classmethod
     def from_file(cls, basestring filename):
-        cdef sf.Font *p = new sf.Font()
+        cdef SfFont *p = new SfFont()
 
-        if p.loadFromFile(filename.encode('UTF-8')):
+        if p.openFromFile(filename.encode('UTF-8')):
             return wrap_font(p)
 
         del p
@@ -868,45 +1539,53 @@ cdef class Font:
 
     @classmethod
     def from_memory(cls, bytes data):
-        cdef sf.Font *p = new sf.Font()
+        cdef SfFont *p = new SfFont()
 
-        if p.loadFromMemory(<char*>data, len(data)):
+        if p.openFromMemory(<char*>data, len(data)):
             return wrap_font(p)
 
         del p
         raise IOError(popLastErrorMessage())
 
-    def get_glyph(self, Uint32 code_point, unsigned int character_size, bint bold):
-        cdef sf.Glyph *p = new sf.Glyph()
-        p[0] = self.p_this.getGlyph(code_point, character_size, bold)
+    def get_glyph(self, unsigned int code_point, unsigned int character_size, bint bold):
+        cdef SfGlyph *p = new SfGlyph()
+        p[0] = self.p_this.getGlyph(code_point, character_size, bold, 0.0)
         return wrap_glyph(p)
 
-    def get_kerning(self, Uint32 first, Uint32 second, unsigned int character_size):
+    def get_kerning(self, unsigned int first, unsigned int second, unsigned int character_size):
         return self.p_this.getKerning(first, second, character_size)
 
     def get_line_spacing(self, unsigned int character_size):
         return self.p_this.getLineSpacing(character_size)
 
     def get_texture(self, unsigned int character_size):
-        cdef sf.Texture *p
-        p = <sf.Texture*>&self.p_this.getTexture(character_size)
-        return wrap_texture(p, False)
+        cdef SfTexture *p
+        p = <SfTexture*>&self.p_this[0].getTexture(character_size)
+        return wrap_texture(<sf.Texture*>p, False)
 
     property info:
         def __get__(self):
-            cdef sf.font.Info info
+            cdef SfFontInfo info
             info = self.p_this[0].getInfo()
             return info.family
 
 
-cdef Font wrap_font(sf.Font *p, bint d=True):
+cdef Font wrap_font(SfFont *p, bint d=True):
     cdef Font r = Font.__new__(Font)
     r.p_this = p
     r.delete_this = d
     return r
 
+
+class CurrentTextureType:
+    def __repr__(self):
+        return "CurrentTexture"
+
+
+CurrentTexture = CurrentTextureType()
+
 cdef class Shader:
-    cdef sf.Shader *p_this
+    cdef SfShader *p_this
     cdef bint              delete_this
 
     def __init__(self):
@@ -920,16 +1599,16 @@ cdef class Shader:
 
     @classmethod
     def from_file(cls, basestring vertex=None, basestring fragment=None):
-        cdef sf.Shader *p = new sf.Shader()
+        cdef SfShader *p = new SfShader()
 
         if vertex and fragment:
-            if p.loadFromFile(<string>vertex.encode('UTF-8'), <string>fragment.encode('UTF-8')):
+            if loadShaderFromFile(p[0], <string>vertex.encode('UTF-8'), <string>fragment.encode('UTF-8')):
                 return wrap_shader(p)
         elif vertex:
-            if p.loadFromFile(<string>vertex.encode('UTF-8'), <sf.shader.Type>sf.shader.Vertex):
+            if loadShaderFromFile(p[0], <string>vertex.encode('UTF-8'), <int>ShaderTypeVertex):
                 return wrap_shader(p)
         elif fragment:
-            if p.loadFromFile(<string>fragment.encode('UTF-8'), <sf.shader.Type>sf.shader.Fragment):
+            if loadShaderFromFile(p[0], <string>fragment.encode('UTF-8'), <int>ShaderTypeFragment):
                 return wrap_shader(p)
         else:
             raise TypeError("This method takes at least 1 argument (0 given)")
@@ -939,66 +1618,71 @@ cdef class Shader:
 
     @classmethod
     def from_memory(cls, char* vertex=NULL, char* fragment=NULL):
-        cdef sf.Shader *p = new sf.Shader()
+        cdef SfShader *p = new SfShader()
 
         if vertex is NULL and fragment is NULL:
             raise TypeError("This method takes at least 1 argument (0 given)")
 
         if vertex and fragment:
-            if p.loadFromMemory(vertex, fragment):
+            if loadShaderFromMemory(p[0], vertex, fragment):
                 return wrap_shader(p)
         elif vertex:
-            if p.loadFromMemory(vertex, sf.shader.Vertex):
+            if loadShaderFromMemory(p[0], vertex, <int>ShaderTypeVertex):
                 return wrap_shader(p)
         elif fragment:
-            if p.loadFromMemory(fragment, sf.shader.Fragment):
+            if loadShaderFromMemory(p[0], fragment, <int>ShaderTypeFragment):
                 return wrap_shader(p)
 
         del p
         raise IOError(popLastErrorMessage())
 
-    def set_parameter(self, *args, **kwargs):
-        if len(args) == 0:
-            raise UserWarning("No arguments provided. It requires at least one string.")
+    def set_uniform(self, name, value, *extra_values):
+        cdef tuple numeric_values
 
-        if type(args[0]) not in [bytes, unicode, str]:
+        if type(name) not in [bytes, unicode, str]:
             raise UserWarning("The first argument must be a string (bytes, unicode or str)")
 
-        if len(args) == 1:
-            self.set_currenttexturetype_parameter(args[0])
-        elif len(args) == 2:
-            if type(args[1]) in [Vector2, tuple]:
-                if type(args[1]) is Vector2:
-                    self.set_vector2_paramater(args[0], args[1])
-                    return
-                elif len(args[1]) == 2:
-                    self.set_vector2_paramater(args[0], args[1])
-                elif len(args[1]) == 3:
-                    self.set_vector3_paramater(args[0], args[1])
-                else:
-                    raise UserWarning("The second argument must be a tuple of length 2 or 3")
-            elif type(args[1]) is Color:
-                self.set_color_parameter(args[0], args[1])
-            elif type(args[1]) is Transform:
-                self.set_transform_parameter(args[0], args[1])
-            elif type(args[1]) is Texture:
-                self.set_texture_parameter(args[0], args[1])
-            elif type(args[1]) in numeric_type:
-                self.set_1float_parameter(args[0], args[1])
+        if extra_values:
+            numeric_values = (value,) + extra_values
+
+            if len(numeric_values) < 2 or len(numeric_values) > 4:
+                raise UserWarning("Wrong number of numeric values.")
+
+            for index, numeric_value in enumerate(numeric_values, start=2):
+                if type(numeric_value) not in numeric_type:
+                    raise UserWarning("Argument {0} must be a number".format(index))
+
+            if len(numeric_values) == 2:
+                self.set_2float_parameter(name, numeric_values[0], numeric_values[1])
+            elif len(numeric_values) == 3:
+                self.set_3float_parameter(name, numeric_values[0], numeric_values[1], numeric_values[2])
             else:
-                raise UserWarning("The second argument type must be a number, an sf.Position, an sf.Color, an sf.Transform or an sf.Texture")
+                self.set_4float_parameter(name, numeric_values[0], numeric_values[1], numeric_values[2], numeric_values[3])
+            return
+
+        if value is CurrentTexture:
+            self.set_currenttexturetype_parameter(name)
+        elif type(value) in [Vector2, tuple]:
+            if type(value) is Vector2:
+                self.set_vector2_paramater(name, value)
+            elif len(value) == 2:
+                self.set_vector2_paramater(name, value)
+            elif len(value) == 3:
+                self.set_vector3_paramater(name, value)
+            elif len(value) == 4:
+                self.set_4float_parameter(name, value[0], value[1], value[2], value[3])
+            else:
+                raise UserWarning("The uniform value tuple must have length 2, 3, or 4")
+        elif type(value) is Color:
+            self.set_color_parameter(name, value)
+        elif type(value) is Transform:
+            self.set_transform_parameter(name, value)
+        elif type(value) is Texture:
+            self.set_texture_parameter(name, value)
+        elif type(value) in numeric_type:
+            self.set_1float_parameter(name, value)
         else:
-            if len(args) > 5:
-                raise UserWarning("Wrong number of argument.")
-            for i in range(1, len(args)):
-                if type(args[i]) not in numeric_type:
-                    raise UserWarning("Argument {0} must be a number".format(i+1))
-            if len(args) == 3:
-                self.set_2float_parameter(args[0], args[1], args[2])
-            elif len(args) == 4:
-                self.set_3float_parameter(args[0], args[1], args[2], args[3])
-            else:
-                self.set_4float_parameter(args[0], args[1], args[2], args[3], args[4])
+            raise UserWarning("The uniform value must be a number, tuple, Vector2, Color, Transform, Texture, or CurrentTexture")
 
     def set_1float_parameter(self, name, float x):
         cdef char* encoded_name
@@ -1006,7 +1690,7 @@ cdef class Shader:
         encoded_name_temporary = name.encode('UTF-8')
         encoded_name = encoded_name_temporary
 
-        self.p_this.setParameter(encoded_name, x)
+        shaderSetUniform(self.p_this[0], encoded_name, x)
 
     def set_2float_parameter(self, name, float x, float y):
         cdef char* encoded_name
@@ -1014,7 +1698,7 @@ cdef class Shader:
         encoded_name_temporary = name.encode('UTF-8')
         encoded_name = encoded_name_temporary
 
-        self.p_this.setParameter(encoded_name, x, y)
+        shaderSetUniform(self.p_this[0], encoded_name, x, y)
 
     def set_3float_parameter(self, name, float x, float y, float z):
         cdef char* encoded_name
@@ -1022,7 +1706,7 @@ cdef class Shader:
         encoded_name_temporary = name.encode('UTF-8')
         encoded_name = encoded_name_temporary
 
-        self.p_this.setParameter(encoded_name, x, y, z)
+        shaderSetUniform(self.p_this[0], encoded_name, x, y, z)
 
     def set_4float_parameter(self, name, float x, float y, float z, float w):
         cdef char* encoded_name
@@ -1030,7 +1714,7 @@ cdef class Shader:
         encoded_name_temporary = name.encode('UTF-8')
         encoded_name = encoded_name_temporary
 
-        self.p_this.setParameter(encoded_name, x, y, z, w)
+        shaderSetUniform(self.p_this[0], encoded_name, x, y, z, w)
 
     def set_vector2_paramater(self, name, vector):
         cdef char* encoded_name
@@ -1039,7 +1723,7 @@ cdef class Shader:
         encoded_name = encoded_name_temporary
 
         x, y = vector
-        self.p_this.setParameter(encoded_name, sf.Vector2f(x, y))
+        shaderSetUniformVec2(self.p_this[0], encoded_name, x, y)
 
     def set_vector3_paramater(self, name, vector):
         cdef char* encoded_name
@@ -1048,7 +1732,7 @@ cdef class Shader:
         encoded_name = encoded_name_temporary
 
         x, y, z = vector
-        self.p_this.setParameter(encoded_name, sf.Vector3f(x, y, z))
+        shaderSetUniformVec3(self.p_this[0], encoded_name, x, y, z)
 
     def set_color_parameter(self, name, Color color):
         cdef char* encoded_name
@@ -1056,7 +1740,7 @@ cdef class Shader:
         encoded_name_temporary = name.encode('UTF-8')
         encoded_name = encoded_name_temporary
 
-        self.p_this.setParameter(encoded_name, color.p_this[0])
+        shaderSetUniformColor(self.p_this[0], encoded_name, color.p_this[0])
 
     def set_transform_parameter(self, name, Transform transform):
         cdef char* encoded_name
@@ -1064,7 +1748,7 @@ cdef class Shader:
         encoded_name_temporary = name.encode('UTF-8')
         encoded_name = encoded_name_temporary
 
-        self.p_this.setParameter(encoded_name, transform.p_this[0])
+        shaderSetUniformTransform(self.p_this[0], encoded_name, transform.p_this[0])
 
     def set_texture_parameter(self, name, Texture texture):
         cdef char* encoded_name
@@ -1072,7 +1756,7 @@ cdef class Shader:
         encoded_name_temporary = name.encode('UTF-8')
         encoded_name = encoded_name_temporary
 
-        self.p_this.setParameter(encoded_name, texture.p_this[0])
+        shaderSetUniformTexture(self.p_this[0], encoded_name, texture.p_this[0])
 
     def set_currenttexturetype_parameter(self, name):
         cdef char* encoded_name
@@ -1080,21 +1764,21 @@ cdef class Shader:
         encoded_name_temporary = name.encode('UTF-8')
         encoded_name = encoded_name_temporary
 
-        self.p_this.setParameter(encoded_name, sf.shader.CurrentTexture)
+        shaderSetUniformCurrentTexture(self.p_this[0], encoded_name)
 
     @staticmethod
     def bind(Shader shader=None):
         if not shader:
-            sf.shader.bind(NULL)
+            bindShader(NULL)
         else:
-            sf.shader.bind(<const sf.Shader*>shader.p_this)
+            bindShader(shader.p_this)
 
     @staticmethod
     def is_available():
-        return sf.shader.isAvailable()
+        return shaderIsAvailable()
 
 
-cdef Shader wrap_shader(sf.Shader *p, bint d=True):
+cdef Shader wrap_shader(SfShader *p, bint d=True):
     cdef Shader r = Shader.__new__(Shader)
     r.p_this = p
     r.delete_this = d
@@ -1102,22 +1786,34 @@ cdef Shader wrap_shader(sf.Shader *p, bint d=True):
 
 
 cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObject]:
-    DEFAULT = wrap_renderstates(<sf.RenderStates*>&sf.renderstates.Default, False)
+    DEFAULT = wrap_renderstates(<SfRenderStates*>&SfDefaultRenderStates, False)
 
-    cdef sf.RenderStates *p_this
+    cdef SfRenderStates *p_this
     cdef bint                    delete_this
+    cdef StencilMode             m_stencil_mode
     cdef Transform               m_transform
     cdef Texture                 m_texture
     cdef Shader                  m_shader
 
-    def __init__(self, BlendMode blendmode=BLEND_ALPHA, Transform transform=None, Texture texture=None, Shader shader=None):
-        self.p_this = new sf.RenderStates()
+    def __init__(self,
+                 BlendMode blend_mode=BLEND_ALPHA,
+                 StencilMode stencil_mode=None,
+                 Transform transform=None,
+                 int coordinate_type=CoordinateType.PIXELS,
+                 Texture texture=None,
+                 Shader shader=None):
+        self.p_this = new SfRenderStates()
 
-        self.m_transform = wrap_transform(&self.p_this.transform, False)
+        self.m_stencil_mode = wrap_stencilmode(&self.p_this[0].stencilMode, False)
+        self.m_transform = wrap_transform(&self.p_this[0].transform, False)
         self.m_texture = None
         self.m_shader = None
 
-        self.blendmode = blendmode
+        self.blend_mode = blend_mode
+        if stencil_mode:
+            self.stencil_mode = stencil_mode
+
+        self.coordinate_type = coordinate_type
         if transform:
             self.transform = transform
 
@@ -1132,28 +1828,43 @@ cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObj
             del self.p_this
 
     def __repr__(self):
-        return "RenderStates(blendmode={0}, transform={1}, texture={2}, shader={3})".format(id(self.blendmode), id(self.transform), id(self.texture), id(self.shader))
+        return "RenderStates(blend_mode={0}, stencil_mode={1}, transform={2}, coordinate_type={3}, texture={4}, shader={5})".format(
+            id(self.blend_mode), self.stencil_mode, id(self.transform), self.coordinate_type, id(self.texture), id(self.shader))
 
-    property blendmode:
+    property blend_mode:
         def __get__(self):
-            return wrap_blendmode(&self.p_this.blendMode)
+            return wrap_blendmode(<sf.BlendMode*>&self.p_this[0].blendMode)
 
-        def __set__(self, BlendMode blendmode):
-            self.p_this.blendMode = blendmode.p_this[0]
+        def __set__(self, BlendMode blend_mode):
+            self.p_this[0].blendMode = blend_mode.p_this[0]
+
+    property stencil_mode:
+        def __get__(self):
+            return self.m_stencil_mode
+
+        def __set__(self, StencilMode stencil_mode):
+            self.p_this[0].stencilMode = stencil_mode.p_this[0]
 
     property transform:
         def __get__(self):
             return self.m_transform
 
         def __set__(self, Transform transform):
-            self.p_this.transform = transform.p_this[0]
+            self.p_this[0].transform = transform.p_this[0]
+
+    property coordinate_type:
+        def __get__(self):
+            return <int>self.p_this[0].coordinateType
+
+        def __set__(self, int coordinate_type):
+            self.p_this[0].coordinateType = <SfCoordinateType>coordinate_type
 
     property texture:
         def __get__(self):
             return self.m_texture
 
         def __set__(self, Texture texture):
-            self.p_this.texture = texture.p_this
+            self.p_this[0].texture = texture.p_this
             self.m_texture = texture
 
     property shader:
@@ -1161,35 +1872,36 @@ cdef public class RenderStates[type PyRenderStatesType, object PyRenderStatesObj
             return self.m_shader
 
         def __set__(self, Shader shader):
-            self.p_this.shader = shader.p_this
+            self.p_this[0].shader = shader.p_this
             self.m_shader = shader
 
-cdef api RenderStates wrap_renderstates(sf.RenderStates *p, bint d):
+cdef api RenderStates wrap_renderstates(SfRenderStates *p, bint d):
     cdef RenderStates r = RenderStates.__new__(RenderStates)
     r.p_this = p
     r.delete_this = d
 
-    r.m_transform = wrap_transform(&p.transform, False)
-    if p.texture:
-        r.m_texture = wrap_texture(<sf.Texture*>p.texture, False)
+    r.m_stencil_mode = wrap_stencilmode(&p[0].stencilMode, False)
+    r.m_transform = wrap_transform(<SfTransform*>&p[0].transform, False)
+    if p[0].texture:
+        r.m_texture = wrap_texture(<sf.Texture*>p[0].texture, False)
     else:
         r.m_texture = None
-    if p.shader:
-        r.m_shader = wrap_shader(<sf.Shader*>p.shader, False)
+    if p[0].shader:
+        r.m_shader = wrap_shader(<SfShader*>p[0].shader, False)
     else:
         r.m_shader = None
 
     return r
 
 cdef public class Drawable[type PyDrawableType, object PyDrawableObject]:
-    cdef sf.Drawable *p_drawable
+    cdef SfDrawable *p_drawable
 
     def __init__(self, *args, **kwargs):
         if self.__class__ == Drawable:
             raise NotImplementedError('Drawable is abstact')
 
         if self.p_drawable is NULL:
-            self.p_drawable = <sf.Drawable*>new DerivableDrawable(self)
+            self.p_drawable = <SfDrawable*>new DerivableDrawable(self)
 
     def __dealloc__(self):
         if self.p_drawable is not NULL:
@@ -1199,16 +1911,24 @@ cdef public class Drawable[type PyDrawableType, object PyDrawableObject]:
         pass
 
 cdef class Transformable:
-    cdef sf.Transformable *p_this
+    cdef SfTransformable *p_this
+    cdef bint             delete_this
 
     def __cinit__(self):
-        self.p_this = new sf.Transformable()
+        self.p_this = NULL
+        self.delete_this = False
+
+    def __init__(self):
+        if self.p_this is NULL:
+            self.p_this = new SfTransformable()
+            self.delete_this = True
 
     def __dealloc__(self):
-        del self.p_this
+        if self.delete_this and self.p_this is not NULL:
+            del self.p_this
 
     def __repr__(self):
-        return "Transformable(position={0}, rotation={1}, ratio={2}, origin={3})".format(self.position, self.rotation, self.ratio, self.origin)
+        return "Transformable(position={0}, rotation={1}, scale={2}, origin={3})".format(self.position, self.rotation, self.scale, self.origin)
 
     property position:
         def __get__(self):
@@ -1219,12 +1939,12 @@ cdef class Transformable:
 
     property rotation:
         def __get__(self):
-            return self.p_this.getRotation()
+            return wrap_rotation_angle(self.p_this.getRotation())
 
-        def __set__(self, float angle):
-            self.p_this.setRotation(angle)
+        def __set__(self, angle):
+            self.p_this.setRotation(to_rotation_angle(angle))
 
-    property ratio:
+    property scale:
         def __get__(self):
             return Vector2(self.p_this.getScale().x, self.p_this.getScale().y)
 
@@ -1241,38 +1961,54 @@ cdef class Transformable:
     def move(self, offset):
         self.p_this.move(to_vector2f(offset))
 
-    def rotate(self, float angle):
-        self.p_this.rotate(angle)
+    def rotate(self, angle):
+        self.p_this.rotate(to_rotation_angle(angle))
 
-    def scale(self, factor):
+    def scale_by(self, factor):
         self.p_this.scale(to_vector2f(factor))
 
     property transform:
         def __get__(self):
-            cdef sf.Transform *p = new sf.Transform()
+            cdef SfTransform *p = new SfTransform()
             p[0] = self.p_this.getTransform()
             return wrap_transform(p)
 
     property inverse_transform:
         def __get__(self):
-            cdef sf.Transform *p = new sf.Transform()
+            cdef SfTransform *p = new SfTransform()
             p[0] = self.p_this.getInverseTransform()
             return wrap_transform(p)
 
-cdef Transformable wrap_transformable(sf.Transformable *p):
+cdef Transformable wrap_transformable(SfTransformable *p, bint d=False):
     cdef Transformable r = Transformable.__new__(Transformable)
     r.p_this = p
+    r.delete_this = d
     return r
 
 cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableType, object PyTransformableDrawableObject]:
-    cdef sf.Transformable *p_transformable
+    cdef SfTransformable *p_transformable
+    cdef bint             delete_transformable
+
+    def __cinit__(self):
+        self.p_transformable = NULL
+        self.delete_transformable = False
 
     def __init__(self, *args, **kwargs):
         if self.__class__ == TransformableDrawable:
             raise NotImplementedError('TransformableDrawable is not meant to be used')
 
+        super().__init__(*args, **kwargs)
+
+        if self.p_transformable is NULL:
+            self.p_transformable = new SfTransformable()
+            self.delete_transformable = True
+
+    def __dealloc__(self):
+        if self.delete_transformable and self.p_transformable is not NULL:
+            del self.p_transformable
+
     def __repr__(self):
-        return "TransformableDrawable(position={0}, rotation={1}, ratio={2}, origin={3})".format(self.position, self.rotation, self.ratio, self.origin)
+        return "TransformableDrawable(position={0}, rotation={1}, scale={2}, origin={3})".format(self.position, self.rotation, self.scale, self.origin)
 
     property position:
         def __get__(self):
@@ -1283,12 +2019,12 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
 
     property rotation:
         def __get__(self):
-            return self.p_transformable.getRotation()
+            return wrap_rotation_angle(self.p_transformable.getRotation())
 
-        def __set__(self, float angle):
-            self.p_transformable.setRotation(angle)
+        def __set__(self, angle):
+            self.p_transformable.setRotation(to_rotation_angle(angle))
 
-    property ratio:
+    property scale:
         def __get__(self):
             return Vector2(self.p_transformable.getScale().x, self.p_transformable.getScale().y)
 
@@ -1305,21 +2041,21 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
     def move(self, offset):
         self.p_transformable.move(to_vector2f(offset))
 
-    def rotate(self, float angle):
-        self.p_transformable.rotate(angle)
+    def rotate(self, angle):
+        self.p_transformable.rotate(to_rotation_angle(angle))
 
-    def scale(self, factor):
+    def scale_by(self, factor):
         self.p_transformable.scale(to_vector2f(factor))
 
     property transform:
         def __get__(self):
-            cdef sf.Transform *p = new sf.Transform()
+            cdef SfTransform *p = new SfTransform()
             p[0] = self.p_transformable.getTransform()
             return wrap_transform(p)
 
     property inverse_transform:
         def __get__(self):
-            cdef sf.Transform *p = new sf.Transform()
+            cdef SfTransform *p = new SfTransform()
             p[0] = self.p_transformable.getInverseTransform()
             return wrap_transform(p)
 
@@ -1329,19 +2065,18 @@ cdef public class TransformableDrawable(Drawable)[type PyTransformableDrawableTy
 
 
 cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpriteObject]:
-    cdef sf.Sprite *p_this
+    cdef SfSprite *p_this
     cdef Texture    m_texture
 
     def __init__(self, Texture texture, rectangle=None):
         if self.p_this is NULL:
             if not rectangle:
-                self.p_this = new sf.Sprite(texture.p_this[0])
+                self.p_this = new SfSprite(texture.p_this[0])
             else:
-                l, t, w, h = rectangle
-                self.p_this = new sf.Sprite(texture.p_this[0], sf.IntRect(l, t, w, h))
+                self.p_this = new SfSprite(texture.p_this[0], to_intrect(rectangle))
 
-            self.p_drawable = <sf.Drawable*>self.p_this
-            self.p_transformable = <sf.Transformable*>self.p_this
+            self.p_drawable = <SfDrawable*>self.p_this
+            self.p_transformable = <SfTransformable*>self.p_this
 
             self.m_texture = texture
 
@@ -1365,54 +2100,55 @@ cdef public class Sprite(TransformableDrawable)[type PySpriteType, object PySpri
 
     property texture_rectangle:
         def __get__(self):
-            return wrap_intrect(<sf.IntRect*>(&self.p_this.getTextureRect()))
+            cdef SfIntRect rect = self.p_this.getTextureRect()
+            return wrap_intrect(&rect)
 
         def __set__(self, rectangle):
             self.p_this.setTextureRect(to_intrect(rectangle))
 
     property color:
         def __get__(self):
-            cdef sf.Color* p = new sf.Color()
+            cdef SfColor* p = new SfColor()
             p[0] = self.p_this.getColor()
-            return wrap_color(p)
+            return wrap_color(<sf.Color*>p)
 
         def __set__(self, Color color):
             self.p_this.setColor(color.p_this[0])
 
     property local_bounds:
         def __get__(self):
-            cdef sf.FloatRect p = self.p_this.getLocalBounds()
+            cdef SfFloatRect p = self.p_this.getLocalBounds()
             return wrap_floatrect(&p)
 
     property global_bounds:
         def __get__(self):
-            cdef sf.FloatRect p = self.p_this.getGlobalBounds()
+            cdef SfFloatRect p = self.p_this.getGlobalBounds()
             return wrap_floatrect(&p)
 
 
-class Style(IntEnum):
-    REGULAR    = sf.text.Regular
-    BOLD       = sf.text.Bold
-    ITALIC     = sf.text.Italic
-    UNDERLINED = sf.text.Underlined
-    STRIKE_THROUGH = sf.text.StrikeThrough
+class TextStyle(IntEnum):
+    REGULAR = SfTextRegular
+    BOLD = SfTextBold
+    ITALIC = SfTextItalic
+    UNDERLINED = SfTextUnderlined
+    STRIKE_THROUGH = SfTextStrikeThrough
 
 cdef class Text(TransformableDrawable):
-    cdef sf.Text *p_this
+    cdef SfText *p_this
     cdef Font     m_font
 
-    def __init__(self, unicode string=None, Font font=None, unsigned int character_size=30):
+    def __init__(self, Font font, unicode string=None, unsigned int character_size=30):
+        if font is None:
+            raise TypeError("font is required")
+
         if self.p_this is NULL:
-            self.p_this = new sf.Text()
-            self.p_drawable = <sf.Drawable*>self.p_this
-            self.p_transformable = <sf.Transformable*>self.p_this
+            if string is None:
+                string = u""
 
-            if string:
-                self.string = string
-            if font:
-                self.font = font
-
-            self.character_size = character_size
+            self.p_this = new SfText(font.p_this[0], to_string(string), character_size)
+            self.p_drawable = <SfDrawable*>self.p_this
+            self.p_transformable = <SfTransformable*>self.p_this
+            self.m_font = font
 
     def __dealloc__(self):
         self.p_drawable = NULL
@@ -1422,11 +2158,13 @@ cdef class Text(TransformableDrawable):
             del self.p_this
 
     def __repr__(self):
-        return "Text(string={0}, font={1}, character_size={2}, style={3}, color={4})".format(self.string[:10], id(self.font), self.character_size, self.style, self.color)
+        return "Text(string={0}, font={1}, character_size={2}, style={3}, fill_color={4}, outline_color={5}, outline_thickness={6})".format(
+            self.string[:10], id(self.font), self.character_size, self.style, self.fill_color, self.outline_color, self.outline_thickness)
 
     property string:
         def __get__(self):
-            return wrap_string(&self.p_this.getString())
+            cdef sf.String value = self.p_this.getString()
+            return wrap_string(&value)
 
         def __set__(self, unicode string):
             self.p_this.setString(to_string(string))
@@ -1446,30 +2184,60 @@ cdef class Text(TransformableDrawable):
         def __set__(self, unsigned int size):
             self.p_this.setCharacterSize(size)
 
+    property letter_spacing:
+        def __get__(self):
+            return self.p_this.getLetterSpacing()
+
+        def __set__(self, float spacing_factor):
+            self.p_this.setLetterSpacing(spacing_factor)
+
+    property line_spacing:
+        def __get__(self):
+            return self.p_this.getLineSpacing()
+
+        def __set__(self, float spacing_factor):
+            self.p_this.setLineSpacing(spacing_factor)
+
     property style:
         def __get__(self):
             return self.p_this.getStyle()
 
-        def __set__(self, Uint32 style):
+        def __set__(self, unsigned int style):
             self.p_this.setStyle(style)
 
-    property color:
+    property fill_color:
         def __get__(self):
-            cdef sf.Color* p = new sf.Color()
-            p[0] = self.p_this.getColor()
-            return wrap_color(p)
+            cdef SfColor* p = new SfColor()
+            p[0] = self.p_this.getFillColor()
+            return wrap_color(<sf.Color*>p)
 
         def __set__(self, Color color):
-            self.p_this.setColor(color.p_this[0])
+            self.p_this.setFillColor(color.p_this[0])
+
+    property outline_color:
+        def __get__(self):
+            cdef SfColor* p = new SfColor()
+            p[0] = self.p_this.getOutlineColor()
+            return wrap_color(<sf.Color*>p)
+
+        def __set__(self, Color color):
+            self.p_this.setOutlineColor(color.p_this[0])
+
+    property outline_thickness:
+        def __get__(self):
+            return self.p_this.getOutlineThickness()
+
+        def __set__(self, float thickness):
+            self.p_this.setOutlineThickness(thickness)
 
     property local_bounds:
         def __get__(self):
-            cdef sf.FloatRect p = self.p_this.getLocalBounds()
+            cdef SfFloatRect p = self.p_this.getLocalBounds()
             return wrap_floatrect(&p)
 
     property global_bounds:
         def __get__(self):
-            cdef sf.FloatRect p = self.p_this.getGlobalBounds()
+            cdef SfFloatRect p = self.p_this.getGlobalBounds()
             return wrap_floatrect(&p)
 
     def find_character_pos(self, size_t index):
@@ -1478,7 +2246,7 @@ cdef class Text(TransformableDrawable):
 
 
 cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeObject]:
-    cdef sf.Shape *p_shape
+    cdef SfShape *p_shape
     cdef Texture   m_texture
 
     def __init__(self, *args, **kwargs):
@@ -1498,30 +2266,31 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
                 self.p_shape.setTexture(texture.p_this, True)
                 self.m_texture = texture
             else:
-                self.p_shape.setTexture(NULL)
+                self.p_shape.setTexture(<SfTexture*>NULL, True)
                 self.m_texture = None
 
     property texture_rectangle:
         def __get__(self):
-            return wrap_intrect(<sf.IntRect*>(&self.p_shape.getTextureRect()))
+            cdef SfIntRect rect = self.p_shape.getTextureRect()
+            return wrap_intrect(&rect)
 
         def __set__(self, rectangle):
             self.p_shape.setTextureRect(to_intrect(rectangle))
 
     property fill_color:
         def __get__(self):
-            cdef sf.Color* p = new sf.Color()
+            cdef SfColor* p = new SfColor()
             p[0] = self.p_shape.getFillColor()
-            return wrap_color(p)
+            return wrap_color(<sf.Color*>p)
 
         def __set__(self, Color color):
             self.p_shape.setFillColor(color.p_this[0])
 
     property outline_color:
         def __get__(self):
-            cdef sf.Color* p = new sf.Color()
+            cdef SfColor* p = new SfColor()
             p[0] = self.p_shape.getOutlineColor()
-            return wrap_color(p)
+            return wrap_color(<sf.Color*>p)
 
         def __set__(self, Color color):
             self.p_shape.setOutlineColor(color.p_this[0])
@@ -1535,12 +2304,12 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 
     property local_bounds:
         def __get__(self):
-            cdef sf.FloatRect p = self.p_shape.getLocalBounds()
+            cdef SfFloatRect p = self.p_shape.getLocalBounds()
             return wrap_floatrect(&p)
 
     property global_bounds:
         def __get__(self):
-            cdef sf.FloatRect p = self.p_shape.getGlobalBounds()
+            cdef SfFloatRect p = self.p_shape.getGlobalBounds()
             return wrap_floatrect(&p)
 
     property point_count:
@@ -1552,15 +2321,15 @@ cdef public class Shape(TransformableDrawable)[type PyShapeType, object PyShapeO
 
 
 cdef class CircleShape(Shape):
-    cdef sf.CircleShape *p_this
+    cdef SfCircleShape *p_this
 
     def __init__(self, float radius=0, unsigned int point_count=30):
         if self.p_this is NULL:
-            self.p_this = new sf.CircleShape(radius, point_count)
+            self.p_this = new SfCircleShape(radius, point_count)
 
-            self.p_drawable = <sf.Drawable*>self.p_this
-            self.p_transformable = <sf.Transformable*>self.p_this
-            self.p_shape = <sf.Shape*>self.p_this
+            self.p_drawable = <SfDrawable*>self.p_this
+            self.p_transformable = <SfTransformable*>self.p_this
+            self.p_shape = <SfShape*>self.p_this
 
     def __dealloc__(self):
         self.p_shape = NULL
@@ -1586,15 +2355,15 @@ cdef class CircleShape(Shape):
             self.p_this.setPointCount(count)
 
 cdef public class ConvexShape(Shape)[type PyConvexShapeType, object PyConvexShapeObject]:
-    cdef sf.ConvexShape *p_this
+    cdef SfConvexShape *p_this
 
     def __init__(self, unsigned int point_count=0):
         if self.p_this is NULL:
-            self.p_this = new sf.ConvexShape(point_count)
+            self.p_this = new SfConvexShape(point_count)
 
-            self.p_drawable = <sf.Drawable*>self.p_this
-            self.p_transformable = <sf.Transformable*>self.p_this
-            self.p_shape = <sf.Shape*>self.p_this
+            self.p_drawable = <SfDrawable*>self.p_this
+            self.p_transformable = <SfTransformable*>self.p_this
+            self.p_shape = <SfShape*>self.p_this
 
     def __dealloc__(self):
         self.p_shape = NULL
@@ -1618,23 +2387,23 @@ cdef public class ConvexShape(Shape)[type PyConvexShapeType, object PyConvexShap
 
 cdef api object wrap_convexshape(sf.ConvexShape *p):
     cdef ConvexShape r = ConvexShape.__new__(ConvexShape)
-    r.p_this = p
-    r.p_drawable = <sf.Drawable*>p
-    r.p_transformable = <sf.Transformable*>p
-    r.p_shape = <sf.Shape*>p
+    r.p_this = <SfConvexShape*>p
+    r.p_drawable = <SfDrawable*>p
+    r.p_transformable = <SfTransformable*>p
+    r.p_shape = <SfShape*>p
 
     return r
 
 cdef class RectangleShape(Shape):
-    cdef sf.RectangleShape *p_this
+    cdef SfRectangleShape *p_this
 
     def __init__(self, size=(0, 0)):
         if self.p_this is NULL:
-            self.p_this = new sf.RectangleShape(to_vector2f(size))
+            self.p_this = new SfRectangleShape(to_vector2f(size))
 
-            self.p_drawable = <sf.Drawable*>self.p_this
-            self.p_transformable = <sf.Transformable*>self.p_this
-            self.p_shape = <sf.Shape*>self.p_this
+            self.p_drawable = <SfDrawable*>self.p_this
+            self.p_transformable = <SfTransformable*>self.p_this
+            self.p_shape = <SfShape*>self.p_this
 
     def __dealloc__(self):
         self.p_shape = NULL
@@ -1657,11 +2426,11 @@ cdef class RectangleShape(Shape):
             return self.p_this.getPointCount()
 
 cdef class Vertex:
-    cdef sf.Vertex *p_this
+    cdef SfVertex *p_this
     cdef bint              delete_this
 
     def __init__(self, position=None, Color color=None, tex_coords=None):
-        self.p_this = new sf.Vertex()
+        self.p_this = new SfVertex()
         self.delete_this = True
 
         if position:
@@ -1689,9 +2458,9 @@ cdef class Vertex:
 
     property color:
         def __get__(self):
-            cdef sf.Color *p = new sf.Color()
+            cdef SfColor *p = new SfColor()
             p[0] = self.p_this.color
-            return wrap_color(p)
+            return wrap_color(<sf.Color*>p)
 
         def __set__(self, Color color):
             self.p_this.color = color.p_this[0]
@@ -1703,20 +2472,48 @@ cdef class Vertex:
         def __set__(self, tex_coords):
             self.p_this.texCoords.x, self.p_this.texCoords.y = tex_coords
 
-cdef Vertex wrap_vertex(sf.Vertex* p, bint d=True):
+cdef Vertex wrap_vertex(SfVertex* p, bint d=True):
     cdef Vertex r = Vertex.__new__(Vertex)
     r.p_this = p
     r.delete_this = d
     return r
 
 
-cdef class VertexArray(Drawable):
-    cdef sf.VertexArray *p_this
+cdef SfVertex* vertex_sequence_to_array(vertices, size_t *vertex_count) except NULL:
+    cdef tuple vertex_items = tuple(vertices)
+    cdef size_t count = len(vertex_items)
+    cdef SfVertex* raw_vertices = NULL
+    cdef size_t index
+    cdef object vertex
 
-    def __init__(self, sf.primitivetype.PrimitiveType type = sf.primitivetype.Points, unsigned int vertex_count=0):
+    if vertex_count != NULL:
+        vertex_count[0] = count
+
+    if count == 0:
+        return <SfVertex*>NULL
+
+    raw_vertices = <SfVertex*>malloc(count * sizeof(SfVertex))
+    if raw_vertices == NULL:
+        raise MemoryError()
+
+    for index in range(count):
+        vertex = vertex_items[index]
+        if not isinstance(vertex, Vertex):
+            free(raw_vertices)
+            raise TypeError("vertices must contain only sf.Vertex instances")
+
+        raw_vertices[index] = (<Vertex>vertex).p_this[0]
+
+    return raw_vertices
+
+
+cdef class VertexArray(Drawable):
+    cdef SfVertexArray *p_this
+
+    def __init__(self, int type=0, unsigned int vertex_count=0):
         if self.p_this is NULL:
-            self.p_this = new sf.VertexArray(type, vertex_count)
-            self.p_drawable = <sf.Drawable*>self.p_this
+            self.p_this = new SfVertexArray(<SfPrimitiveType>type, vertex_count)
+            self.p_drawable = <SfDrawable*>self.p_this
 
     def __dealloc__(self):
         self.p_drawable = NULL
@@ -1750,33 +2547,101 @@ cdef class VertexArray(Drawable):
 
     property primitive_type:
         def __get__(self):
-            return self.p_this.getPrimitiveType()
+            return <int>self.p_this.getPrimitiveType()
 
-        def __set__(self, sf.primitivetype.PrimitiveType primitive_type):
-            self.p_this.setPrimitiveType(primitive_type)
+        def __set__(self, int primitive_type):
+            self.p_this.setPrimitiveType(<SfPrimitiveType>primitive_type)
 
     property bounds:
         def __get__(self):
-            cdef sf.FloatRect p = self.p_this.getBounds()
+            cdef SfFloatRect p = self.p_this.getBounds()
             return wrap_floatrect(&p)
 
 
+cdef class VertexBuffer(Drawable):
+    cdef SfVertexBuffer *p_this
+
+    def __init__(self, int primitive_type=<int>PrimitiveType.POINTS, int usage=<int>VertexBufferUsage.STREAM):
+        if self.p_this is NULL:
+            self.p_this = new SfVertexBuffer(<SfPrimitiveType>primitive_type, <SfVertexBufferUsage>usage)
+            self.p_drawable = <SfDrawable*>self.p_this
+
+    def __dealloc__(self):
+        self.p_drawable = NULL
+
+        if self.p_this is not NULL:
+            del self.p_this
+
+    def __repr__(self):
+        return "VertexBuffer(length={0}, primitive_type={1}, usage={2})".format(len(self), self.primitive_type, self.usage)
+
+    def __len__(self):
+        return self.p_this.getVertexCount()
+
+    def create(self, unsigned int vertex_count):
+        return self.p_this.create(vertex_count)
+
+    def update(self, vertices, unsigned int offset=0):
+        cdef size_t vertex_count = 0
+        cdef SfVertex* raw_vertices = NULL
+
+        if isinstance(vertices, VertexBuffer):
+            return self.p_this.update((<VertexBuffer>vertices).p_this[0])
+
+        raw_vertices = vertex_sequence_to_array(vertices, &vertex_count)
+
+        try:
+            return self.p_this.update(raw_vertices, vertex_count, offset)
+        finally:
+            if raw_vertices != NULL:
+                free(raw_vertices)
+
+    property primitive_type:
+        def __get__(self):
+            return <int>self.p_this.getPrimitiveType()
+
+        def __set__(self, int primitive_type):
+            self.p_this.setPrimitiveType(<SfPrimitiveType>primitive_type)
+
+    property usage:
+        def __get__(self):
+            return <int>self.p_this.getUsage()
+
+        def __set__(self, int usage):
+            self.p_this.setUsage(<SfVertexBufferUsage>usage)
+
+    property native_handle:
+        def __get__(self):
+            return self.p_this.getNativeHandle()
+
+    @staticmethod
+    def bind(VertexBuffer vertex_buffer=None):
+        if vertex_buffer is None:
+            bindVertexBuffer(<const SfVertexBuffer*>NULL)
+        else:
+            bindVertexBuffer(<const SfVertexBuffer*>vertex_buffer.p_this)
+
+    @staticmethod
+    def is_available():
+        return vertexBufferIsAvailable()
+
+
 cdef class View:
-    cdef sf.View      *p_this
+    cdef SfView       *p_this
     cdef RenderWindow  m_renderwindow
     cdef RenderTarget  m_rendertarget
 
     def __init__(self, rectangle=None):
         if not rectangle:
-            self.p_this = new sf.View()
+            self.p_this = new SfView()
         else:
-            self.p_this = new sf.View(to_floatrect(rectangle))
+            self.p_this = new SfView(to_floatrect(rectangle))
 
     def __dealloc__(self):
         del self.p_this
 
     def __repr__(self):
-        return "View(center={0}, size={1}, rotation={2}, viewport={3})".format(self.center, self.size, self.rotation, self.viewport)
+        return "View(center={0}, size={1}, rotation={2}, viewport={3}, scissor={4})".format(self.center, self.size, self.rotation, self.viewport, self.scissor)
 
     property center:
         def __get__(self):
@@ -1796,30 +2661,40 @@ cdef class View:
 
     property rotation:
         def __get__(self):
-            return self.p_this.getRotation()
+            return wrap_rotation_angle(self.p_this.getRotation())
 
-        def __set__(self, float angle):
-            self.p_this.setRotation(angle)
+        def __set__(self, angle):
+            self.p_this.setRotation(to_rotation_angle(angle))
             self._update_target()
 
     property viewport:
         def __get__(self):
-            return wrap_floatrect(<sf.FloatRect*>(&self.p_this.getViewport()))
+            cdef SfFloatRect rect = self.p_this.getViewport()
+            return wrap_floatrect(&rect)
 
         def __set__(self, viewport):
             self.p_this.setViewport(to_floatrect(viewport))
             self._update_target()
 
+    property scissor:
+        def __get__(self):
+            cdef SfFloatRect rect = self.p_this.getScissor()
+            return wrap_floatrect(&rect)
+
+        def __set__(self, scissor):
+            self.p_this.setScissor(to_floatrect(scissor))
+            self._update_target()
+
     def reset(self, rectangle):
-        self.p_this.reset(to_floatrect(rectangle))
+        resetView(self.p_this[0], to_floatrect(rectangle))
         self._update_target()
 
     def move(self, float x, float y):
-        self.p_this.move(sf.Vector2f(x, y))
+        self.p_this.move(to_vector2f((x, y)))
         self._update_target()
 
-    def rotate(self, float angle):
-        self.p_this.rotate(angle)
+    def rotate(self, angle):
+        self.p_this.rotate(to_rotation_angle(angle))
         self._update_target()
 
     def zoom(self, float factor):
@@ -1828,13 +2703,13 @@ cdef class View:
 
     property transform:
         def __get__(self):
-            cdef sf.Transform *p = new sf.Transform()
+            cdef SfTransform *p = new SfTransform()
             p[0] = self.p_this.getTransform()
             return wrap_transform(p)
 
     property inverse_transform:
         def __get__(self):
-            cdef sf.Transform *p = new sf.Transform()
+            cdef SfTransform *p = new SfTransform()
             p[0] = self.p_this.getInverseTransform()
             return wrap_transform(p)
 
@@ -1845,18 +2720,18 @@ cdef class View:
         if self.m_rendertarget:
             self.m_rendertarget.view = self
 
-cdef View wrap_view(sf.View *p):
+cdef View wrap_view(SfView *p):
     cdef View r = View.__new__(View)
     r.p_this = p
     return r
 
-cdef View wrap_view_for_renderwindow(sf.View *p, RenderWindow renderwindow):
+cdef View wrap_view_for_renderwindow(SfView *p, RenderWindow renderwindow):
     cdef View r = View.__new__(View)
     r.p_this = p
     r.m_renderwindow = renderwindow
     return r
 
-cdef View wrap_view_for_rendertarget(sf.View *p, RenderTarget rendertarget):
+cdef View wrap_view_for_rendertarget(SfView *p, RenderTarget rendertarget):
     cdef View r = View.__new__(View)
     r.p_this = p
     r.m_rendertarget = rendertarget
@@ -1864,21 +2739,42 @@ cdef View wrap_view_for_rendertarget(sf.View *p, RenderTarget rendertarget):
 
 
 cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObject]:
-    cdef sf.RenderTarget *p_rendertarget
+    cdef SfRenderTarget *p_rendertarget
 
     def __init__(self, *args, **kwargs):
         if self.__class__ == RenderTarget:
             raise NotImplementedError('RenderTarget is abstact')
 
-    def clear(self, Color color=None):
-        if not color:
-            self.p_rendertarget.clear()
+    def clear(self, Color color=None, stencil_value=None):
+        cdef SfColor clear_color
+
+        if stencil_value is None:
+            if color is None:
+                self.p_rendertarget.clear()
+            else:
+                self.p_rendertarget.clear(color.p_this[0])
+            return
+
+        if color is None:
+            clear_color = SfColor(0, 0, 0, 255)
         else:
-            self.p_rendertarget.clear(color.p_this[0])
+            clear_color = color.p_this[0]
+
+        self.p_rendertarget.clear(clear_color, SfStencilValue(to_stencil_uint(stencil_value)))
+
+    def clear_stencil(self, value=0):
+        self.p_rendertarget.clearStencil(SfStencilValue(to_stencil_uint(value)))
+
+    def set_active(self, bint active=True):
+        return self.p_rendertarget.setActive(active)
+
+    property srgb:
+        def __get__(self):
+            return self.p_rendertarget.isSrgb()
 
     property view:
         def __get__(self):
-            cdef sf.View *p = new sf.View()
+            cdef SfView *p = new SfView()
             p[0] = self.p_rendertarget.getView()
             return wrap_view_for_rendertarget(p, self)
 
@@ -1889,12 +2785,16 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 
     property default_view:
         def __get__(self):
-            cdef sf.View *p = new sf.View()
+            cdef SfView *p = new SfView()
             p[0] = self.p_rendertarget.getDefaultView()
             return wrap_view_for_rendertarget(p, self)
 
     def get_viewport(self, View view):
-        cdef sf.IntRect p = self.p_rendertarget.getViewport(view.p_this[0])
+        cdef SfIntRect p = self.p_rendertarget.getViewport(view.p_this[0])
+        return wrap_intrect(&p)
+
+    def get_scissor(self, View view):
+        cdef SfIntRect p = self.p_rendertarget.getScissor(view.p_this[0])
         return wrap_intrect(&p)
 
     def map_pixel_to_coords(self, point, View view=None):
@@ -1923,6 +2823,43 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
         else:
             self.p_rendertarget.draw(drawable.p_drawable[0], states.p_this[0])
 
+    def draw_vertices(self, vertices, int primitive_type, RenderStates states=None):
+        cdef size_t vertex_count = 0
+        cdef SfVertex* raw_vertices = vertex_sequence_to_array(vertices, &vertex_count)
+
+        try:
+            if not states:
+                self.p_rendertarget.draw(raw_vertices, vertex_count, <SfPrimitiveType>primitive_type)
+            else:
+                self.p_rendertarget.draw(raw_vertices, vertex_count, <SfPrimitiveType>primitive_type, states.p_this[0])
+        finally:
+            if raw_vertices != NULL:
+                free(raw_vertices)
+
+    def draw_vertex_buffer(self, VertexBuffer vertex_buffer, RenderStates states=None, first_vertex=None, vertex_count=None):
+        cdef size_t first = 0
+        cdef size_t count = 0
+
+        if first_vertex is None and vertex_count is None:
+            if not states:
+                self.p_rendertarget.draw(vertex_buffer.p_this[0])
+            else:
+                self.p_rendertarget.draw(vertex_buffer.p_this[0], states.p_this[0])
+            return
+
+        if first_vertex is not None:
+            first = <size_t>first_vertex
+
+        if vertex_count is None:
+            count = len(vertex_buffer) - first
+        else:
+            count = <size_t>vertex_count
+
+        if not states:
+            self.p_rendertarget.draw(vertex_buffer.p_this[0], first, count, SfDefaultRenderStates)
+        else:
+            self.p_rendertarget.draw(vertex_buffer.p_this[0], first, count, states.p_this[0])
+
     property size:
         def __get__(self):
             return Vector2(self.p_rendertarget.getSize().x, self.p_rendertarget.getSize().y)
@@ -1947,17 +2884,17 @@ cdef public class RenderTarget[type PyRenderTargetType, object PyRenderTargetObj
 
 cdef api object wrap_rendertarget(sf.RenderTarget* p):
     cdef RenderTarget r = RenderTarget.__new__(RenderTarget)
-    r.p_rendertarget = p
+    r.p_rendertarget = <SfRenderTarget*>p
     return r
 
 
 cdef class RenderWindow(Window):
-    cdef sf.RenderWindow *p_this
+    cdef SfRenderWindow *p_this
 
-    def __init__(self, VideoMode mode, unicode title, Uint32 style=sf.style.Default, ContextSettings settings=ContextSettings()):
+    def __init__(self, VideoMode mode, unicode title, unsigned int style=SfWindowStyleDefault, ContextSettings settings=ContextSettings()):
         if self.p_this == NULL:
-            self.p_this = <sf.RenderWindow*>new DerivableRenderWindow(self)
-            self.p_this.create(mode.p_this[0], to_string(title), style, settings.p_this[0])
+            self.p_this = <SfRenderWindow*>new DerivableRenderWindow(self)
+            createRenderWindow(self.p_this[0], mode.p_this[0], to_string(title), style, settings.p_this[0])
             self.p_window = <sf.Window*>self.p_this
 
     def __dealloc__(self):
@@ -1968,15 +2905,33 @@ cdef class RenderWindow(Window):
     def __repr__(self):
         return "RenderWindow(position={0}, size={1}, is_open={2})".format(self.position, self.size, self.is_open)
 
-    def clear(self, Color color=None):
-        if not color:
-            self.p_this.clear()
+    def clear(self, Color color=None, stencil_value=None):
+        cdef SfColor clear_color
+
+        if stencil_value is None:
+            if color is None:
+                self.p_this.clear()
+            else:
+                self.p_this.clear(color.p_this[0])
+            return
+
+        if color is None:
+            clear_color = SfColor(0, 0, 0, 255)
         else:
-            self.p_this.clear(color.p_this[0])
+            clear_color = color.p_this[0]
+
+        self.p_this.clear(clear_color, SfStencilValue(to_stencil_uint(stencil_value)))
+
+    def clear_stencil(self, value=0):
+        self.p_this.clearStencil(SfStencilValue(to_stencil_uint(value)))
+
+    property srgb:
+        def __get__(self):
+            return self.p_this.isSrgb()
 
     property view:
         def __get__(self):
-            cdef sf.View *p = new sf.View()
+            cdef SfView *p = new SfView()
             p[0] = self.p_this.getView()
             return wrap_view_for_renderwindow(p, self)
 
@@ -1987,12 +2942,16 @@ cdef class RenderWindow(Window):
 
     property default_view:
         def __get__(self):
-            cdef sf.View *p = new sf.View()
+            cdef SfView *p = new SfView()
             p[0] = self.p_this.getDefaultView()
             return wrap_view_for_renderwindow(p, self)
 
     def get_viewport(self, View view):
-        cdef sf.IntRect p = self.p_this.getViewport(view.p_this[0])
+        cdef SfIntRect p = self.p_this.getViewport(view.p_this[0])
+        return wrap_intrect(&p)
+
+    def get_scissor(self, View view):
+        cdef SfIntRect p = self.p_this.getScissor(view.p_this[0])
         return wrap_intrect(&p)
 
     def map_pixel_to_coords(self, point, View view=None):
@@ -2021,6 +2980,43 @@ cdef class RenderWindow(Window):
         else:
             self.p_this.draw(drawable.p_drawable[0], states.p_this[0])
 
+    def draw_vertices(self, vertices, int primitive_type, RenderStates states=None):
+        cdef size_t vertex_count = 0
+        cdef SfVertex* raw_vertices = vertex_sequence_to_array(vertices, &vertex_count)
+
+        try:
+            if not states:
+                self.p_this.draw(raw_vertices, vertex_count, <SfPrimitiveType>primitive_type)
+            else:
+                self.p_this.draw(raw_vertices, vertex_count, <SfPrimitiveType>primitive_type, states.p_this[0])
+        finally:
+            if raw_vertices != NULL:
+                free(raw_vertices)
+
+    def draw_vertex_buffer(self, VertexBuffer vertex_buffer, RenderStates states=None, first_vertex=None, vertex_count=None):
+        cdef size_t first = 0
+        cdef size_t count = 0
+
+        if first_vertex is None and vertex_count is None:
+            if not states:
+                self.p_this.draw(vertex_buffer.p_this[0])
+            else:
+                self.p_this.draw(vertex_buffer.p_this[0], states.p_this[0])
+            return
+
+        if first_vertex is not None:
+            first = <size_t>first_vertex
+
+        if vertex_count is None:
+            count = len(vertex_buffer) - first
+        else:
+            count = <size_t>vertex_count
+
+        if not states:
+            self.p_this.draw(vertex_buffer.p_this[0], first, count, SfDefaultRenderStates)
+        else:
+            self.p_this.draw(vertex_buffer.p_this[0], first, count, states.p_this[0])
+
     def push_GL_states(self):
         self.p_this.pushGLStates()
 
@@ -2030,11 +3026,6 @@ cdef class RenderWindow(Window):
     def reset_GL_states(self):
         self.p_this.resetGLStates()
 
-    def capture(self):
-        cdef sf.Image *p = new sf.Image()
-        p[0] = self.p_this.capture()
-        return wrap_image(p)
-
     def on_create(self):
         (<DerivableRenderWindow*>self.p_this).createWindow()
 
@@ -2042,15 +3033,15 @@ cdef class RenderWindow(Window):
         (<DerivableRenderWindow*>self.p_this).resizeWindow()
 
 cdef class RenderTexture(RenderTarget):
-    cdef sf.RenderTexture *p_this
+    cdef SfRenderTexture *p_this
     cdef Texture m_texture
 
-    def __init__(self, unsigned int width, unsigned int height, bint depthBuffer=False):
+    def __init__(self, unsigned int width, unsigned int height, bint depthBuffer=False, bint srgb=False):
         if self.p_this is NULL:
-            self.p_this = new sf.RenderTexture()
-            self.p_rendertarget = <sf.RenderTarget*>self.p_this
+            self.p_this = new SfRenderTexture()
+            self.p_rendertarget = <SfRenderTarget*>self.p_this
 
-            self.p_this.create(width, height, depthBuffer)
+            resizeRenderTexture(self.p_this[0], SfVector2u(width, height), depthBuffer, srgb)
 
             self.m_texture = wrap_texture(<sf.Texture*>&self.p_this.getTexture(), False)
 
@@ -2061,7 +3052,7 @@ cdef class RenderTexture(RenderTarget):
             del self.p_this
 
     def __repr__(self):
-        return "RenderTexture(size={0}, smooth={1}, repeated={2})".format(self.size, self.smooth, self.repeated)
+        return "RenderTexture(size={0}, smooth={1}, repeated={2}, srgb={3})".format(self.size, self.smooth, self.repeated, self.srgb)
 
     property smooth:
         def __get__(self):
@@ -2077,9 +3068,11 @@ cdef class RenderTexture(RenderTarget):
         def __set__(self, bint repeated):
             self.p_this.setRepeated(repeated)
 
-    property active:
-        def __set__(self, bint active):
-            self.p_this.setActive(active)
+    def set_active(self, bint active=True):
+        return self.p_this.setActive(active)
+
+    def generate_mipmap(self):
+        return self.p_this.generateMipmap()
 
     def display(self):
         self.p_this.display()
@@ -2087,28 +3080,3 @@ cdef class RenderTexture(RenderTarget):
     property texture:
         def __get__(self):
             return self.m_texture
-
-cdef class HandledWindow(RenderTarget):
-    cdef sf.RenderWindow *p_this
-    cdef sf.Window *p_window
-
-    def __init__(self):
-        if self.p_this is NULL:
-            self.p_this = new sf.RenderWindow()
-            self.p_rendertarget = <sf.RenderTarget*>self.p_this
-            self.p_window = <sf.Window*>self.p_this
-
-    def __dealloc__(self):
-        self.p_rendertarget = NULL
-
-        if self.p_this is not NULL:
-            del self.p_this
-
-    def create(self, unsigned long window_handle, ContextSettings settings=None):
-        if not settings:
-            self.p_this.create(<sf.WindowHandle>window_handle)
-        else:
-            self.p_this.create(<sf.WindowHandle>window_handle, settings.p_this[0])
-
-    def display(self):
-        self.p_window.display()

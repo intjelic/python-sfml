@@ -6,6 +6,8 @@
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
+cimport sfml as sf
+
 cdef extern from "SFML/Audio.hpp" namespace "sf::SoundRecorder":
     cdef bint isAvailable()
     cdef vector[string] getAvailableDevices()

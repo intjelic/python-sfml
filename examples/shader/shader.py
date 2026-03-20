@@ -22,7 +22,7 @@ class Effect(sf_graphics.Drawable):
         return self._name
 
     def load(self):
-        self.is_loaded = sf.Shader.is_available() and self.on_load()
+        self.is_loaded = sf_graphics.Shader.is_available() and self.on_load()
 
     def update(self, time, x, y):
         if self.is_loaded:
@@ -32,7 +32,7 @@ class Effect(sf_graphics.Drawable):
         if self.is_loaded:
             self.on_draw(target, states)
         else:
-            error = sf_graphics.Text("Shader not\nsupported", ERROR_FONT)
+            error = sf_graphics.Text(ERROR_FONT, "Shader not\nsupported")
             error.position = (320, 200)
             error.character_size = 36
             target.draw(error, states)
@@ -48,7 +48,7 @@ class Pixelate(Effect):
             self.texture = sf_graphics.Texture.from_file(str(DATA_DIR / "background.jpg"))
             self.sprite = sf_graphics.Sprite(self.texture)
             self.shader = sf_graphics.Shader.from_file(fragment=str(DATA_DIR / "pixelate.frag"))
-            self.shader.set_parameter("texture")
+            self.shader.set_uniform("texture", sf_graphics.CurrentTexture)
         except IOError as error:
             print(f"An error occurred: {error}")
             exit(1)
@@ -56,7 +56,7 @@ class Pixelate(Effect):
         return True
 
     def on_update(self, time, x, y):
-        self.shader.set_parameter("pixel_threshold", (x + y) / 30)
+        self.shader.set_uniform("pixel_threshold", (x + y) / 30)
 
     def on_draw(self, target, states):
         states.shader = self.shader
@@ -69,7 +69,7 @@ class WaveBlur(Effect):
 
     def on_load(self):
         with open(DATA_DIR / "text.txt", encoding="utf-8") as file:
-            self.text = sf_graphics.Text(file.read(), ERROR_FONT, 22)
+            self.text = sf_graphics.Text(ERROR_FONT, file.read(), 22)
             self.text.position = (30, 20)
 
         try:
@@ -84,9 +84,9 @@ class WaveBlur(Effect):
         return True
 
     def on_update(self, time, x, y):
-        self.shader.set_parameter("wave_phase", time)
-        self.shader.set_parameter("wave_amplitude", x * 40, y * 40)
-        self.shader.set_parameter("blur_radius", (x + y) * 0.008)
+        self.shader.set_uniform("wave_phase", time)
+        self.shader.set_uniform("wave_amplitude", x * 40, y * 40)
+        self.shader.set_uniform("blur_radius", (x + y) * 0.008)
 
     def on_draw(self, target, states):
         states.shader = self.shader
@@ -121,10 +121,10 @@ class StormBlink(Effect):
 
     def on_update(self, time, x, y):
         radius = 200 + cos(time) * 150
-        self.shader.set_parameter("storm_position", x * 800, y * 600)
-        self.shader.set_parameter("storm_inner_radius", radius / 3)
-        self.shader.set_parameter("storm_total_radius", radius)
-        self.shader.set_parameter("blink_alpha", 0.5 + cos(time*3) * 0.25)
+        self.shader.set_uniform("storm_position", x * 800, y * 600)
+        self.shader.set_uniform("storm_inner_radius", radius / 3)
+        self.shader.set_uniform("storm_total_radius", radius)
+        self.shader.set_uniform("blink_alpha", 0.5 + cos(time*3) * 0.25)
 
     def on_draw(self, target, states):
         states.shader = self.shader
@@ -154,12 +154,12 @@ class Edge(Effect):
             self.entities.append(sprite)
 
         self.shader = sf_graphics.Shader.from_file(fragment=str(DATA_DIR / "edge.frag"))
-        self.shader.set_parameter("texture")
+        self.shader.set_uniform("texture", sf_graphics.CurrentTexture)
 
         return True
 
     def on_update(self, time, x, y):
-        self.shader.set_parameter("edge_threshold", 1 - (x + y) / 2)
+        self.shader.set_uniform("edge_threshold", 1 - (x + y) / 2)
 
         for i, entity in enumerate(self.entities):
             x_position = cos(0.25 * (time * i + (len(self.entities) - i))) * 300 + 350
@@ -180,8 +180,8 @@ class Edge(Effect):
 
 
 if __name__ == "__main__":
-    render_window = sf_graphics.RenderWindow(sf_window.VideoMode(800, 600), "PySFML - Shader")
-    render_window.vertical_synchronization = True
+    render_window = sf_graphics.RenderWindow(sf_window.VideoMode(800, 600), "pySFML - Shader")
+    render_window.set_vertical_synchronization_enabled(True)
 
     effects = (Pixelate(), WaveBlur(), StormBlink(), Edge())
     current = 0
@@ -205,13 +205,13 @@ if __name__ == "__main__":
         print(f"An error occurred: {error}")
         exit(1)
 
-    description = sf_graphics.Text(f"Current effect: {effects[current].name}", font, 20)
+    description = sf_graphics.Text(font, f"Current effect: {effects[current].name}", 20)
     description.position = (10, 530)
-    description.color = sf_graphics.Color(80, 80, 80)
+    description.fill_color = sf_graphics.Color(80, 80, 80)
 
-    instructions = sf_graphics.Text("Press left and right arrows to change the current shader", font, 20)
+    instructions = sf_graphics.Text(font, "Press left and right arrows to change the current shader", 20)
     instructions.position = (280, 555)
-    instructions.color = sf_graphics.Color(80, 80, 80)
+    instructions.fill_color = sf_graphics.Color(80, 80, 80)
 
     clock = sf_system.Clock()
 
@@ -222,15 +222,15 @@ if __name__ == "__main__":
         effects[current].update(clock.elapsed_time.seconds, x, y)
 
         for event in render_window.events:
-            if event.type == sf_window.EventType.CLOSED:
+            if isinstance(event, sf_window.ClosedEvent):
                 render_window.close()
-            elif event.type == sf_window.EventType.KEY_PRESSED:
-                if event.get("code") == sf_window.Keyboard.ESCAPE:
+            elif isinstance(event, sf_window.KeyPressedEvent):
+                if event.code == sf_window.Keyboard.ESCAPE:
                     render_window.close()
-                elif event.get("code") == sf_window.Keyboard.LEFT:
+                elif event.code == sf_window.Keyboard.LEFT:
                     current = len(effects) - 1 if current == 0 else current - 1
                     description.string = f"Current effect: {effects[current].name}"
-                elif event.get("code") == sf_window.Keyboard.RIGHT:
+                elif event.code == sf_window.Keyboard.RIGHT:
                     current = 0 if current == len(effects) - 1 else current + 1
                     description.string = f"Current effect: {effects[current].name}"
 

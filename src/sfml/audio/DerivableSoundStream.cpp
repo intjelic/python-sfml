@@ -7,6 +7,8 @@
 
 #include <pysfml/audio/DerivableSoundStream.hpp>
 
+#include <vector>
+
 DerivableSoundStream::DerivableSoundStream(void* pyobj):
 sf::SoundStream (),
 m_pyobj         (static_cast<PyObject*>(pyobj))
@@ -16,9 +18,11 @@ m_pyobj         (static_cast<PyObject*>(pyobj))
     import_sfml__audio();
 };
 
-void DerivableSoundStream::initialize(unsigned int channelCount, unsigned int sampleRate)
+void DerivableSoundStream::initialize(unsigned int channelCount,
+                                      unsigned int sampleRate,
+                                      const std::vector<sf::SoundChannel>& channelMap)
 {
-    sf::SoundStream::initialize(channelCount, sampleRate);
+    sf::SoundStream::initialize(channelCount, sampleRate, channelMap);
 }
 
 bool DerivableSoundStream::onGetData(sf::SoundStream::Chunk &data)
@@ -35,7 +39,7 @@ bool DerivableSoundStream::onGetData(sf::SoundStream::Chunk &data)
     if(!r)
         PyErr_Print();
 
-    data.samples = static_cast<const sf::Int16*>(terminate_chunk(pyChunk));
+    data.samples = terminate_chunk(pyChunk);
     data.sampleCount = PyObject_Length(pyChunk);
 
     Py_DECREF(pyChunk);

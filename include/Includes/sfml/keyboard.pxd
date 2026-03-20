@@ -3,7 +3,7 @@
 #
 # This file is part of PySFML and is available under the zlib license.
 
-cdef extern from "SFML/Window.hpp" namespace "sf::Keyboard":
+cdef extern from "pysfml/window/compat.hpp" namespace "pysfml::keyboard_compat":
     cdef enum Key:
         Unknown
         A

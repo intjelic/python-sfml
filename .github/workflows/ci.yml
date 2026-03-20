@@ -23,8 +23,8 @@ jobs:
 
     env:
       ALSOFT_DRIVERS: "null"
-      SFML_VERSION: 2.6.2
-      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-2.6.2-install
+      SFML_VERSION: 3.0.2
+      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-3.0.2-install
 
     steps:
       - name: Check out repository
@@ -45,20 +45,17 @@ jobs:
             libflac-dev \
             libfreetype6-dev \
             libgl1-mesa-dev \
-            libjpeg-dev \
-            libopenal-dev \
             libudev-dev \
             libvorbis-dev \
             libx11-dev \
             libxcursor-dev \
             libxi-dev \
-            libxinerama-dev \
             libxrandr-dev \
             ninja-build \
             pkg-config \
             xvfb
 
-      - name: Build SFML 2.6.2
+      - name: Build SFML 3.0.2
         run: bash .github/scripts/build-sfml-unix.sh "$SFML_VERSION" "$SFML_INSTALL_PREFIX"
 
       - name: Install Python tooling
@@ -89,8 +86,8 @@ jobs:
 
     env:
       ALSOFT_DRIVERS: "null"
-      SFML_VERSION: 2.6.2
-      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-2.6.2-install
+      SFML_VERSION: 3.0.2
+      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-3.0.2-install
 
     steps:
       - name: Check out repository
@@ -111,19 +108,16 @@ jobs:
             libflac-dev \
             libfreetype6-dev \
             libgl1-mesa-dev \
-            libjpeg-dev \
-            libopenal-dev \
             libudev-dev \
             libvorbis-dev \
             libx11-dev \
             libxcursor-dev \
             libxi-dev \
-            libxinerama-dev \
             libxrandr-dev \
             ninja-build \
             pkg-config
 
-      - name: Build SFML 2.6.2
+      - name: Build SFML 3.0.2
         run: bash .github/scripts/build-sfml-unix.sh "$SFML_VERSION" "$SFML_INSTALL_PREFIX"
 
       - name: Install packaging tools
@@ -173,8 +167,8 @@ jobs:
 
     env:
       ALSOFT_DRIVERS: "null"
-      SFML_VERSION: 2.6.2
-      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-2.6.2-install
+      SFML_VERSION: 3.0.2
+      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-3.0.2-install
 
     steps:
       - name: Check out repository
@@ -185,7 +179,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Build SFML 2.6.2
+      - name: Build SFML 3.0.2
         run: bash .github/scripts/build-sfml-unix.sh "$SFML_VERSION" "$SFML_INSTALL_PREFIX" 1
 
       - name: Install package and pytest
@@ -208,7 +202,7 @@ jobs:
     runs-on: windows-2022
 
     env:
-      SFML_VERSION: 2.6.2
+      SFML_VERSION: 3.0.2
 
     steps:
       - name: Check out repository
@@ -219,10 +213,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Build SFML 2.6.2
+      - name: Build SFML 3.0.2
         shell: pwsh
         run: |
-          $prefix = Join-Path $env:GITHUB_WORKSPACE '.deps\sfml-2.6.2-install'
+          $prefix = Join-Path $env:GITHUB_WORKSPACE '.deps\sfml-3.0.2-install'
           "SFML_INSTALL_PREFIX=$prefix" >> $env:GITHUB_ENV
           "SFML_HEADERS=$(Join-Path $prefix 'include')" >> $env:GITHUB_ENV
           "SFML_LIBRARIES=$(Join-Path $prefix 'lib')" >> $env:GITHUB_ENV
@@ -254,8 +248,8 @@ jobs:
     runs-on: ubuntu-24.04
 
     env:
-      SFML_VERSION: 2.6.2
-      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-2.6.2-install
+      SFML_VERSION: 3.0.2
+      SFML_INSTALL_PREFIX: ${{ github.workspace }}/.deps/sfml-3.0.2-install
 
     steps:
       - name: Check out repository
@@ -276,19 +270,16 @@ jobs:
             libflac-dev \
             libfreetype6-dev \
             libgl1-mesa-dev \
-            libjpeg-dev \
-            libopenal-dev \
             libudev-dev \
             libvorbis-dev \
             libx11-dev \
             libxcursor-dev \
             libxi-dev \
-            libxinerama-dev \
             libxrandr-dev \
             ninja-build \
             pkg-config
 
-      - name: Build SFML 2.6.2
+      - name: Build SFML 3.0.2
         run: bash .github/scripts/build-sfml-unix.sh "$SFML_VERSION" "$SFML_INSTALL_PREFIX"
 
       - name: Install package and mypy

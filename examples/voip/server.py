@@ -39,7 +39,7 @@ class NetworkAudioStream(sf_audio.SoundStream):
     def start_stream(self, port):
         if not self.has_finished:
             try:
-                self.listener.listen(port)
+                self.listener.listen(port, sf_network.IpAddress.ANY)
                 print("Server is listening to port {0}, waiting for connections... ".format(port))
 
                 self.client = self.listener.accept()

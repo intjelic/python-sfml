@@ -1,3 +1,5 @@
+import math
+
 import pytest
 
 import sfml.system as sf
@@ -117,12 +119,77 @@ def test_vector3_ordering_is_not_supported():
         sf.Vector3(1, 2, 3) < sf.Vector3(3, 2, 1)
 
 
-def test_clock_and_sleep_are_usable():
+def test_clock_lifecycle_and_sleep_are_usable():
     clock = sf.Clock()
+
+    assert clock.is_running is True
 
     sf.sleep(sf.milliseconds(5))
     elapsed = clock.elapsed_time
 
     assert elapsed.microseconds >= 3_000
-    assert clock.restart().microseconds >= 3_000
+
+    clock.stop()
+    stopped = clock.elapsed_time.microseconds
+    assert clock.is_running is False
+
+    sf.sleep(sf.milliseconds(5))
+    assert clock.elapsed_time.microseconds == pytest.approx(stopped, abs=1_000)
+
+    clock.start()
+    assert clock.is_running is True
+
+    sf.sleep(sf.milliseconds(5))
+    assert clock.elapsed_time.microseconds >= stopped + 3_000
+
+    restarted = clock.restart()
+    assert restarted.microseconds >= 3_000
+    assert clock.is_running is True
     assert clock.elapsed_time.microseconds >= 0
+
+    clock.stop()
+    reset_elapsed = clock.reset()
+    assert reset_elapsed.microseconds >= 0
+    assert clock.is_running is False
+
+    reset_value = clock.elapsed_time.microseconds
+    sf.sleep(sf.milliseconds(2))
+    assert clock.elapsed_time.microseconds == pytest.approx(reset_value, abs=500)
+
+
+def test_angle_factories_and_normalization_helpers():
+    assert sf.Angle.ZERO.degrees == pytest.approx(0.0)
+    assert sf.Angle().radians == pytest.approx(0.0)
+    assert sf.degrees(180).radians == pytest.approx(math.pi)
+    assert sf.radians(math.pi / 2).degrees == pytest.approx(90.0)
+    assert sf.degrees(540).wrap_signed().degrees == pytest.approx(-180.0)
+    assert sf.degrees(-90).wrap_unsigned().degrees == pytest.approx(270.0)
+
+
+def test_angle_arithmetic_and_inplace_operations():
+    angle = sf.degrees(90)
+    other = sf.degrees(30)
+
+    assert (angle + other).degrees == pytest.approx(120.0)
+    assert (angle - other).degrees == pytest.approx(60.0)
+    assert (angle * 2).degrees == pytest.approx(180.0)
+    assert (2 * angle).degrees == pytest.approx(180.0)
+    assert (angle / 2).degrees == pytest.approx(45.0)
+    assert angle / other == pytest.approx(3.0)
+    assert (sf.degrees(-90) % sf.degrees(40)).degrees == pytest.approx(30.0)
+    assert (-angle).degrees == pytest.approx(-90.0)
+
+    angle += sf.degrees(15)
+    assert angle.degrees == pytest.approx(105.0)
+
+    angle -= sf.degrees(45)
+    assert angle.degrees == pytest.approx(60.0)
+
+    angle *= 2
+    assert angle.degrees == pytest.approx(120.0)
+
+    angle /= 3
+    assert angle.degrees == pytest.approx(40.0)
+
+    angle %= sf.degrees(15)
+    assert angle.degrees == pytest.approx(10.0)

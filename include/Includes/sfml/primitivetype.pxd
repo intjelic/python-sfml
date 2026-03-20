@@ -11,4 +11,3 @@ cdef extern from "SFML/Graphics.hpp" namespace "sf":
         Triangles
         TrianglesStrip
         TrianglesFan
-        Quads

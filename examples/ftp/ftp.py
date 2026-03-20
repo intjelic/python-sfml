@@ -45,6 +45,8 @@ def main():
             print("7. Remove file")
             print("8. Download file")
             print("9. Upload file")
+            print("10. Upload file and append")
+            print("11. Send raw FTP command")
             print("0. Disconnect")
 
             try:
@@ -88,6 +90,14 @@ def main():
                 filename = input("Local file to upload: ").strip()
                 directory = input("Remote destination directory: ").strip()
                 print_response(server.upload(filename, directory))
+            elif choice == 10:
+                filename = input("Local file to upload: ").strip()
+                directory = input("Remote destination directory: ").strip()
+                print_response(server.upload(filename, directory, sf_network.Ftp.BINARY, append=True))
+            elif choice == 11:
+                command = input("FTP command: ").strip().upper()
+                parameter = input("Optional parameter: ").strip()
+                print_response(server.send_command(command, parameter))
             elif choice == 0:
                 break
             else:

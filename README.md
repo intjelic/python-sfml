@@ -2,26 +2,43 @@
 
 PySFML provides Python bindings for **SFML**.
 
-The current package targets **SFML 2.6.2** with modern Python packaging, pytest-based validation, and wheel builds.
+This release line targets **SFML 3.0.2**.
 
 PySFML is distributed under the terms of the **zlib** license.
 
+## Status
+
+- Supported Python versions: **3.10+**
+- Upstream target: **SFML 3.0.2**
+- Packaging baseline: **pyproject.toml**, **setuptools**, **setuptools-scm**, **Cython 3.2.x**
+- Test baseline: **pytest** smoke coverage for all compiled modules plus curated window and graphics coverage under Xvfb on Linux
+- Published distribution name: **SFML**
+- Import namespace: **sfml**
+
 ## Installation
 
-Install the published package with pip:
+Install the current release from PyPI:
 
 ```bash
+python -m pip install --upgrade pip
 python -m pip install SFML
 ```
 
-Binary wheels are the preferred installation path.
+If you need the older bindings for **SFML 2.6.2**, install that release explicitly:
 
-## Current Baseline
+```bash
+python -m pip install SFML==2.6.2
+```
 
-- Supported Python versions: **3.10+**
-- Bound SFML release: **2.6.2**
-- Packaging baseline: **pyproject.toml**, **setuptools**, **setuptools-scm**, **Cython 3.2.x**
-- Validation baseline: **pytest** smoke coverage for all compiled modules plus curated window and graphics coverage under Xvfb on Linux
+For local development or custom SFML builds, install from a local checkout against a local SFML install:
+
+```bash
+python -m pip install --upgrade pip
+export SFML_INSTALL_PREFIX=/path/to/sfml
+python -m pip install .
+```
+
+If you prefer explicit paths, set `SFML_HEADERS` and `SFML_LIBRARIES` instead of `SFML_INSTALL_PREFIX`.
 
 ## Quick Example
 
@@ -40,14 +57,14 @@ texture = graphics.Texture.from_file("cute_image.jpg")
 sprite = graphics.Sprite(texture)
 
 font = graphics.Font.from_file("arial.ttf")
-text = graphics.Text("Hello PySFML", font, 50)
+text = graphics.Text(font, "Hello SFML", 50)
 
 music = audio.Music.from_file("nice_music.ogg")
 music.play()
 
 while render_window.is_open:
 	for event in render_window.events:
-		if event.type == window.EventType.CLOSED:
+		if isinstance(event, window.ClosedEvent):
 			render_window.close()
 
 	render_window.clear()
@@ -59,9 +76,13 @@ while render_window.is_open:
 The main differences from the C++ form are:
 
 - resource loading is constructor-style via `from_file(...)`
-- event kinds use `window.EventType`
+- events are concrete typed objects such as `window.ClosedEvent`
 - the event loop is exposed as `render_window.events`
 - module imports are the preferred style instead of a single monolithic namespace
+
+The example above reflects the current Python binding surface.
+
+On the audio side, PySFML exposes the SFML 3 listener, device, and channel-map surface, including `PlaybackDevice`, `SoundChannel`, `Cone`, richer `SoundSource` state, and `Music.loop_points`.
 
 See `docs/getting-started.md` for source-build prerequisites and the local build flow.
 
@@ -96,28 +117,16 @@ The CI and release workflows referenced below live in `.github/workflows/`.
 
 ## CI And Releases
 
-GitHub Actions is centered on:
+The repository includes CI, release, and TestPyPI validation workflows under `.github/workflows/`.
 
-- editable-install validation on Linux against a pinned SFML 2.6.2 build
-- packaging validation for both wheel and sdist artifacts
-- smoke-install checks on Linux, macOS, and Windows
-- curated typing validation using `mypy`
-- tag-driven wheel and sdist builds via `cibuildwheel` and `python -m build`
-
-Release publishing is restricted to `v*` tags:
-
-- prerelease tags containing `a`, `b`, or `rc` publish to TestPyPI
-- other `v*` tags publish to PyPI
-
-Release artifacts are validated before publish with `.github/scripts/validate-dist.py` and `twine check`, and the wheel builds run the deterministic wheel-safe pytest subset configured in `pyproject.toml`.
-
-There is also a manual `TestPyPI Validation` GitHub Actions workflow for installing an already-uploaded TestPyPI version on fresh Linux, macOS, and Windows runners.
+For contributor-facing release and packaging details, see `CONTRIBUTING.md` together with the workflow definitions in `.github/workflows/`.
 
 ## Documentation
 
 - `docs/getting-started.md`: installation and source-build guidance
 - `docs/recipes.md`: minimal task-oriented snippets for common PySFML patterns
 - `docs/modules.md`: module overview and import strategy
+- `docs/system-module.md`, `docs/window-module.md`, `docs/graphics-module.md`, `docs/audio-module.md`, `docs/network-module.md`: quick Python-oriented guides for each primary module
 - `docs/compatibility.md`: support boundaries, known differences, and unsupported features
 - `examples/README.md`: maintained examples policy and classification
 - `pyproject.toml`: packaging metadata and test configuration

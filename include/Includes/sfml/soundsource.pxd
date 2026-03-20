@@ -4,7 +4,7 @@
 # This file is part of PySFML and is available under the zlib license.
 
 cdef extern from "SFML/Audio.hpp" namespace "sf::SoundSource":
-    cdef enum Status:
-        Stopped
-        Paused
-        Playing
+    cdef enum Status "sf::SoundSource::Status":
+        Stopped "sf::SoundSource::Status::Stopped"
+        Paused "sf::SoundSource::Status::Paused"
+        Playing "sf::SoundSource::Status::Playing"

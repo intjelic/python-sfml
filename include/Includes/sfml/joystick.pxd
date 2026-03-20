@@ -12,20 +12,19 @@ cdef extern from "SFML/System/String.hpp" namespace "sf":
 
 cdef extern from "SFML/Window.hpp" namespace "sf::Joystick":
 
-    cdef enum:
-        Count
-        ButtonCount
-        AxisCount
+    cdef const unsigned int Count
+    cdef const unsigned int ButtonCount
+    cdef const unsigned int AxisCount
 
-    cdef enum Axis:
-        X
-        Y
-        Z
-        R
-        U
-        V
-        PovX
-        PovY
+    cdef enum Axis "sf::Joystick::Axis":
+        X "sf::Joystick::Axis::X"
+        Y "sf::Joystick::Axis::Y"
+        Z "sf::Joystick::Axis::Z"
+        R "sf::Joystick::Axis::R"
+        U "sf::Joystick::Axis::U"
+        V "sf::Joystick::Axis::V"
+        PovX "sf::Joystick::Axis::PovX"
+        PovY "sf::Joystick::Axis::PovY"
 
     cdef struct Identification:
         Identification()

@@ -9,6 +9,7 @@
 #define PYSFML_GRAPHICS_DERIVABLEDRAWABLE_HPP
 
 #include "Python.h"
+#include <pysfml/graphics/cython_compat.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 
 

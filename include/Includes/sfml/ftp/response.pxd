@@ -3,48 +3,48 @@
 #
 # This file is part of PySFML and is available under the zlib license.
 
-cdef extern from "SFML/Graphics.hpp" namespace "sf::Ftp::Response":
-    cdef enum Status:
-        RestartMarkerReply
-        ServiceReadySoon
-        DataConnectionAlreadyOpened
-        OpeningDataConnection
-        Ok
-        PointlessCommand
-        SystemStatus
-        DirectoryStatus
-        FileStatus
-        HelpMessage
-        SystemType
-        ServiceReady
-        ClosingConnection
-        DataConnectionOpened
-        ClosingDataConnection
-        EnteringPassiveMode
-        LoggedIn
-        FileActionOk
-        DirectoryOk
-        NeedPassword
-        NeedAccountToLogIn
-        NeedInformation
-        ServiceUnavailable
-        DataConnectionUnavailable
-        TransferAborted
-        FileActionAborted
-        LocalError
-        InsufficientStorageSpace
-        CommandUnknown
-        ParametersUnknown
-        CommandNotImplemented
-        BadCommandSequence
-        ParameterNotImplemented
-        NotLoggedIn
-        NeedAccountToStore
-        FileUnavailable
-        PageTypeUnknown
-        NotEnoughMemory
-        FilenameNotAllowed
-        InvalidResponse
-        ConnectionFailed
-        ConnectionClosed
-        InvalidFile
+cdef extern from "SFML/Network.hpp" namespace "sf::Ftp::Response":
+    cdef enum Status "sf::Ftp::Response::Status":
+        RestartMarkerReply "sf::Ftp::Response::Status::RestartMarkerReply"
+        ServiceReadySoon "sf::Ftp::Response::Status::ServiceReadySoon"
+        DataConnectionAlreadyOpened "sf::Ftp::Response::Status::DataConnectionAlreadyOpened"
+        OpeningDataConnection "sf::Ftp::Response::Status::OpeningDataConnection"
+        Ok "sf::Ftp::Response::Status::Ok"
+        PointlessCommand "sf::Ftp::Response::Status::PointlessCommand"
+        SystemStatus "sf::Ftp::Response::Status::SystemStatus"
+        DirectoryStatus "sf::Ftp::Response::Status::DirectoryStatus"
+        FileStatus "sf::Ftp::Response::Status::FileStatus"
+        HelpMessage "sf::Ftp::Response::Status::HelpMessage"
+        SystemType "sf::Ftp::Response::Status::SystemType"
+        ServiceReady "sf::Ftp::Response::Status::ServiceReady"
+        ClosingConnection "sf::Ftp::Response::Status::ClosingConnection"
+        DataConnectionOpened "sf::Ftp::Response::Status::DataConnectionOpened"
+        ClosingDataConnection "sf::Ftp::Response::Status::ClosingDataConnection"
+        EnteringPassiveMode "sf::Ftp::Response::Status::EnteringPassiveMode"
+        LoggedIn "sf::Ftp::Response::Status::LoggedIn"
+        FileActionOk "sf::Ftp::Response::Status::FileActionOk"
+        DirectoryOk "sf::Ftp::Response::Status::DirectoryOk"
+        NeedPassword "sf::Ftp::Response::Status::NeedPassword"
+        NeedAccountToLogIn "sf::Ftp::Response::Status::NeedAccountToLogIn"
+        NeedInformation "sf::Ftp::Response::Status::NeedInformation"
+        ServiceUnavailable "sf::Ftp::Response::Status::ServiceUnavailable"
+        DataConnectionUnavailable "sf::Ftp::Response::Status::DataConnectionUnavailable"
+        TransferAborted "sf::Ftp::Response::Status::TransferAborted"
+        FileActionAborted "sf::Ftp::Response::Status::FileActionAborted"
+        LocalError "sf::Ftp::Response::Status::LocalError"
+        InsufficientStorageSpace "sf::Ftp::Response::Status::InsufficientStorageSpace"
+        CommandUnknown "sf::Ftp::Response::Status::CommandUnknown"
+        ParametersUnknown "sf::Ftp::Response::Status::ParametersUnknown"
+        CommandNotImplemented "sf::Ftp::Response::Status::CommandNotImplemented"
+        BadCommandSequence "sf::Ftp::Response::Status::BadCommandSequence"
+        ParameterNotImplemented "sf::Ftp::Response::Status::ParameterNotImplemented"
+        NotLoggedIn "sf::Ftp::Response::Status::NotLoggedIn"
+        NeedAccountToStore "sf::Ftp::Response::Status::NeedAccountToStore"
+        FileUnavailable "sf::Ftp::Response::Status::FileUnavailable"
+        PageTypeUnknown "sf::Ftp::Response::Status::PageTypeUnknown"
+        NotEnoughMemory "sf::Ftp::Response::Status::NotEnoughMemory"
+        FilenameNotAllowed "sf::Ftp::Response::Status::FilenameNotAllowed"
+        InvalidResponse "sf::Ftp::Response::Status::InvalidResponse"
+        ConnectionFailed "sf::Ftp::Response::Status::ConnectionFailed"
+        ConnectionClosed "sf::Ftp::Response::Status::ConnectionClosed"
+        InvalidFile "sf::Ftp::Response::Status::InvalidFile"

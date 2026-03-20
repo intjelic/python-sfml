@@ -14,10 +14,6 @@ cdef extern from "SFML/Network/IpAddress.hpp" namespace "sf":
         pass
 
 cdef extern from "SFML/Network.hpp" namespace "sf::IpAddress":
-    cdef IpAddress getLocalAddress()
-    cdef IpAddress getPublicAddress()
-    cdef IpAddress getPublicAddress(Time)
-
-    IpAddress None
+    IpAddress Any
     IpAddress LocalHost
     IpAddress Broadcast

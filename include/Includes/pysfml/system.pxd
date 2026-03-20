@@ -23,6 +23,9 @@ cdef extern from "pysfml/system/system.h":
     cdef class sfml.system.Time [object PyTimeObject]:
         cdef sf.Time *p_this
 
+    cdef class sfml.system.Angle [object PyAngleObject]:
+        cdef sf.Angle *p_this
+
 cdef extern from "pysfml/system/system_api.h":
     int import_sfml__system()
 
@@ -48,3 +51,4 @@ cdef extern from "pysfml/system/system_api.h":
     cdef sf.Vector3f to_vector3f(object)
 
     cdef object wrap_time(sf.Time*)
+    cdef object wrap_angle(sf.Angle*)

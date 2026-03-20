@@ -19,7 +19,9 @@ class DerivableSoundStream : public sf::SoundStream
 public :
     DerivableSoundStream(void* pyThis);
 
-    void initialize(unsigned int channelCount, unsigned int sampleRate);
+    void initialize(unsigned int channelCount,
+                    unsigned int sampleRate,
+                    const std::vector<sf::SoundChannel>& channelMap);
 
 protected:
     virtual bool onGetData(sf::SoundStream::Chunk &data);

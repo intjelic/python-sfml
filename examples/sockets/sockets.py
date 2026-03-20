@@ -18,7 +18,7 @@ def run_tcp_server():
 
     try:
         listener = sf_network.TcpListener()
-        listener.listen(PORT)
+        listener.listen(PORT, sf_network.IpAddress.ANY)
 
         print("Server is listening to port {0}, waiting for connections...".format(PORT))
 
@@ -26,8 +26,8 @@ def run_tcp_server():
         print("Client connected: {0}".format(ip_to_text(socket.remote_address)))
 
         message = "Hi, I'm the server"
-        socket.send(message.encode('utf-8'))
-        print("Message sent to the client: {0}".format(message))
+        sent = socket.send(message.encode('utf-8'))
+        print("Sent {0} bytes to the client: {1}".format(sent, message))
 
         answer = socket.receive(128).decode('utf-8')
         print("Answer received from the client: {0}".format(answer))
@@ -53,8 +53,8 @@ def run_tcp_client():
         print("Message received from the server: {0}".format(message))
 
         answer = "Hi, I'm a client"
-        socket.send(answer.encode('utf-8'))
-        print("Message sent to the server: {0}".format(answer))
+        sent = socket.send(answer.encode('utf-8'))
+        print("Sent {0} bytes to the server: {1}".format(sent, answer))
 
     except sf_network.SocketException as error:
         print("An error occurred!")
@@ -67,7 +67,7 @@ def run_udp_server():
     socket = sf_network.UdpSocket()
 
     try:
-        socket.bind(PORT)
+        socket.bind(PORT, sf_network.IpAddress.ANY)
         print("Server is listening to port {0}, waiting for message...".format(PORT))
 
         message, ip, port = socket.receive(128)

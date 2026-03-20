@@ -6,13 +6,21 @@ from pathlib import Path
 _dll_directories = []
 
 
+def _candidate_repo_prefixes(package_dir: Path):
+	repo_deps_dir = package_dir.parent.parent / ".deps"
+	for prefix_name in ("sfml-3.0.2-install", "sfml-3-install", "sfml-2.6.2-install"):
+		yield repo_deps_dir / prefix_name
+
+
 def _candidate_dll_directories():
 	package_dir = Path(__file__).resolve().parent
 	candidates = []
 
 	install_prefix = os.environ.get("SFML_INSTALL_PREFIX")
 	if install_prefix:
-		candidates.append(Path(install_prefix) / "bin")
+		prefix_dir = Path(install_prefix)
+		candidates.append(prefix_dir / "bin")
+		candidates.append(prefix_dir / "lib")
 
 	sfml_libraries = os.environ.get("SFML_LIBRARIES")
 	if sfml_libraries:
@@ -20,8 +28,9 @@ def _candidate_dll_directories():
 		candidates.append(library_dir)
 		candidates.append(library_dir.parent / "bin")
 
-	repo_prefix = package_dir.parent.parent / ".deps" / "sfml-2.6.2-install"
-	candidates.append(repo_prefix / "bin")
+	for repo_prefix in _candidate_repo_prefixes(package_dir):
+		candidates.append(repo_prefix / "bin")
+		candidates.append(repo_prefix / "lib")
 	candidates.append(package_dir)
 
 	seen = set()

@@ -12,6 +12,8 @@
 #include <SFML/Audio.hpp>
 #include <pysfml/audio/audio_api.h>
 
+#include <cstdint>
+
 class DerivableSoundRecorder : public sf::SoundRecorder
 {
 public :
@@ -19,7 +21,7 @@ public :
 
 protected:
     virtual bool onStart();
-    virtual bool onProcessSamples(const sf::Int16* samples, std::size_t sampleCount);
+    virtual bool onProcessSamples(const std::int16_t* samples, std::size_t sampleCount);
     virtual void onStop();
 
     PyObject* m_pyobj;

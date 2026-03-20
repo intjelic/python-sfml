@@ -2,9 +2,17 @@
 
 PySFML exposes five primary modules that mirror the major SFML areas while keeping a Python-oriented API surface.
 
+This page is the top-level map. Each module also has its own quick usage guide:
+
+- `sfml.system`: see `system-module.md`
+- `sfml.window`: see `window-module.md`
+- `sfml.graphics`: see `graphics-module.md`
+- `sfml.audio`: see `audio-module.md`
+- `sfml.network`: see `network-module.md`
+
 ## `sfml.system`
 
-Core utility types such as time values, clocks, vectors, and rectangles live here.
+Core utility types such as time values, clocks, angles, and vectors live here.
 
 Example:
 
@@ -16,18 +24,20 @@ clock = system.Clock()
 timeout = system.seconds(0.5)
 
 if clock.elapsed_time > timeout:
-	print("Half a second elapsed")
+    print("Half a second elapsed")
 ```
 
 Use this module for:
 
 - clocks and elapsed time measurement
 - time values and conversions
-- vector and rectangle data structures shared by other modules
+- angle values and normalization
+- vector data structures shared by other modules
 
 Python-specific note:
 
 - the preferred clock interface uses `elapsed_time` rather than a C++-style getter name
+- angle handling is exposed directly through `system.Angle`, `system.degrees(...)`, and `system.radians(...)`
 
 ## `sfml.window`
 
@@ -42,20 +52,24 @@ from sfml import graphics, window
 render_window = graphics.RenderWindow(window.VideoMode(800, 600), "Window example")
 
 for event in render_window.events:
-	if event.type == window.EventType.KEY_PRESSED:
-		print("Key pressed:", event.get("code"))
+    if isinstance(event, window.KeyPressedEvent):
+        print("Key pressed:", window.Keyboard.get_description(event.scancode))
 ```
 
 Use this module for:
 
 - opening native windows
 - polling and waiting for events
+- explicit window state and method-based window configuration
+- clipboard and cursor integration
 - keyboard, mouse, joystick, touch, and sensor input facades
 - context and video-mode configuration
 
 Python-specific note:
 
-- event payload data is accessed as mapping data at runtime rather than attribute fields
+- event polling returns concrete event objects with typed payload attributes
+- the window surface separates `State.WINDOWED` and `State.FULLSCREEN` from the `Style` flags
+- the runtime prefers explicit setter methods such as `set_title()`, `set_visible()`, and `set_mouse_cursor()`
 
 ## `sfml.graphics`
 
@@ -69,7 +83,8 @@ from sfml import graphics
 
 texture = graphics.Texture.from_file("player.png")
 sprite = graphics.Sprite(texture)
-label = graphics.Text("Hello", graphics.Font.from_file("arial.ttf"), 24)
+font = graphics.Font.from_file("arial.ttf")
+label = graphics.Text(font, "Hello", 24)
 label.position = (20, 20)
 ```
 
@@ -82,21 +97,27 @@ Use this module for:
 
 Python-specific note:
 
-- some naming differs from SFML where the binding has historically adopted a more Python-friendly surface
+- the graphics surface uses names such as `scale`, `scale_by()`, `set_uniform()`, `TextStyle`, and `VertexBuffer`
+- angles come from `sfml.system`, not from a graphics-local type
+- `PrimitiveType` does not include `QUADS`
 
 ## `sfml.audio`
 
-This module provides listener state, sound buffers, sound sources, music streaming, recording, and low-level audio callback integration.
+This module provides playback-device management, listener state, sound buffers, sound sources, music streaming, recording, and low-level audio callback integration.
 
 Example:
 
 ```python
-from sfml import audio
+from sfml import audio, system
 
 
 click_buffer = audio.SoundBuffer.from_file("click.wav")
 click = audio.Sound(click_buffer)
 music = audio.Music.from_file("theme.ogg")
+
+audio.Listener.set_position((0, 0, 0))
+audio.Listener.set_direction((0, 0, -1))
+music.loop_points = (system.seconds(1), system.seconds(4))
 
 click.play()
 music.play()
@@ -104,18 +125,20 @@ music.play()
 
 Use this module for:
 
+- playback-device discovery and selection
 - short buffered sounds
 - streamed music playback
 - custom audio streams and recorders
-- listener and sound-source configuration
+- listener and sound-source configuration, including channel maps and directional audio state
 
 Python-specific note:
 
-- callback-oriented audio classes expose a Python surface intended for subclassing and deterministic tests where practical
+- the audio surface includes `PlaybackDevice`, `SoundChannel`, `Cone`, richer `Listener` state, recorder channel configuration, and `Music.loop_points`
+- callback-oriented audio classes expose a Python surface intended for subclassing
 
 ## `sfml.network`
 
-This module covers IPv4 addresses, TCP/UDP networking, socket readiness selection, and the FTP and HTTP client wrappers.
+This module covers IPv4 addresses, TCP and UDP networking, socket readiness selection, and the FTP and HTTP client wrappers.
 
 Example:
 
@@ -126,8 +149,10 @@ from sfml import network
 socket = network.TcpSocket()
 server = network.IpAddress.from_string("127.0.0.1")
 socket.connect(server, 5000)
-socket.send(b"hello")
+sent = socket.send(b"hello")
 reply = socket.receive(64)
+
+print(sent, reply)
 ```
 
 Use this module for:
@@ -139,6 +164,9 @@ Use this module for:
 
 Python-specific note:
 
+- `TcpSocket.send(...)` returns the number of bytes written so nonblocking callers can observe partial progress explicitly
+- HTTP requests use explicit builder methods such as `set_uri()`, `set_field()`, and `set_body()`
+- `Http()` can be created without a host and configured later with `set_host(...)`
 - the documented public network surface does not currently include `Packet`
 
 ## Import Strategy
@@ -159,7 +187,8 @@ from sfml import audio, graphics, system, window
 
 clock = system.Clock()
 render_window = graphics.RenderWindow(window.VideoMode(640, 480), "Mixed modules")
-sound = audio.Sound()
+sound_buffer = audio.SoundBuffer.from_file("click.wav")
+sound = audio.Sound(sound_buffer)
 
 print(clock.elapsed_time)
 print(render_window.is_open)
@@ -170,6 +199,7 @@ print(sound.status)
 
 This page is an orientation guide. It does not replace examples or provide a complete API reference.
 
+- See `system-module.md`, `window-module.md`, `graphics-module.md`, `audio-module.md`, and `network-module.md` for module-specific quick usage guides.
 - See `recipes.md` for small task-oriented code snippets.
 - See `getting-started.md` for installation and source builds.
 - See `compatibility.md` for known differences and unsupported features.

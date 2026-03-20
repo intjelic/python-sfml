@@ -8,11 +8,16 @@ from libcpp.vector cimport vector
 
 from sfml.ftp cimport response
 
+cdef extern from "<filesystem>" namespace "std::filesystem":
+    cdef cppclass path:
+        path() except +
+        string u8string() const
+
 cdef extern from "SFML/Network.hpp" namespace "sf::Ftp":
-    cdef enum TransferMode:
-        Binary
-        Ascii
-        Ebcdic
+    cdef enum TransferMode "sf::Ftp::TransferMode":
+        Binary "sf::Ftp::TransferMode::Binary"
+        Ascii "sf::Ftp::TransferMode::Ascii"
+        Ebcdic "sf::Ftp::TransferMode::Ebcdic"
 
     cdef cppclass Response:
         Response()
@@ -24,7 +29,7 @@ cdef extern from "SFML/Network.hpp" namespace "sf::Ftp":
 
     cdef cppclass DirectoryResponse:
         DirectoryResponse(const Response&)
-        const string& getDirectory() const
+        const path& getDirectory() const
 
     cdef cppclass ListingResponse:
         ListingResponse(const Response&, const string&)

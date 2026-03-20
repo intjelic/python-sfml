@@ -3,7 +3,7 @@
 #
 # This file is part of PySFML and is available under the zlib license.
 
-cdef extern from "SFML/Window.hpp" namespace "sf::Event":
+cdef extern from "pysfml/window/compat.hpp" namespace "pysfml::event_compat":
     cdef enum EventType:
         Closed
         Resized
@@ -17,6 +17,7 @@ cdef extern from "SFML/Window.hpp" namespace "sf::Event":
         MouseButtonPressed
         MouseButtonReleased
         MouseMoved
+        MouseMovedRaw
         MouseEntered
         MouseLeft
         JoystickButtonPressed
