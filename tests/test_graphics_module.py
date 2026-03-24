@@ -74,6 +74,22 @@ def test_rect_color_and_transform_behaviors_are_deterministic():
     assert transform.rotate(15) is transform
 
 
+def test_rect_ordering_is_not_supported():
+    left = sf.Rect((0, 0), (4, 4))
+    right = sf.Rect((0, 0), (4, 4))
+
+    assert left == right
+    assert not (left != right)
+
+    with pytest.raises(TypeError) as excinfo:
+        left > right
+
+    message = str(excinfo.value)
+    assert "not supported" in message
+    assert "Rect" in message
+    assert "BaseException" not in message
+
+
 def test_render_texture_uses_explicit_activation_api_and_exposes_texture():
     render_texture = sf.RenderTexture(8, 8)
 
