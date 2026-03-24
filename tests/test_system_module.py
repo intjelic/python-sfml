@@ -78,8 +78,19 @@ def test_vector2_inplace_operations():
 
 
 def test_vector2_ordering_is_not_supported():
-    with pytest.raises(TypeError):
-        sf.Vector2(1, 2) < sf.Vector2(2, 3)
+    left = sf.Vector2(1, 2)
+    right = sf.Vector2(1, 2)
+
+    assert left == right
+    assert not (left != right)
+
+    with pytest.raises(TypeError) as excinfo:
+        left > right
+
+    message = str(excinfo.value)
+    assert "not supported" in message
+    assert "Vector2" in message
+    assert "BaseException" not in message
 
 
 def test_vector3_sequence_interop_and_scalar_arithmetic():

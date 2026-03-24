@@ -569,7 +569,7 @@ cdef public class Rect[type PyRectType, object PyRectObject]:
         elif op == 3:
             return tuple(self) != tuple(other)
         else:
-            raise NotImplemented
+            return NotImplemented
 
     def __iter__(self):
         return iter((self.left, self.top, self.width, self.height))
